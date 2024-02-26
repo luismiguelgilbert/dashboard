@@ -4,8 +4,6 @@ const tabs = [
   { slot: 'user', value: 'user', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { slot: 'colors', value: 'colors',label: 'Color', icon: 'i-heroicons-swatch', defaultOpen: false },
 ]
-
-
 </script>
 
 <template>
