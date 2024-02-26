@@ -80,13 +80,8 @@ const onSubmit = async (data: any) => {
     const { error } = await supabase.auth.signInWithPassword(credentials)
     error && (loginError.value = error)
     if (!error) {
-      // document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/") })
       await generateSBcookies()
       navigateTo('/auth/confirm')
-      // await navigateTo(
-      //   { path: '/', query: { from: 'after-fetch' } },
-      //   { replace: true }
-      // )
     } else {
       loading.value = false
     }

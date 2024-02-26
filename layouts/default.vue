@@ -3,7 +3,6 @@ import type { DashboardSidebarLink } from '#ui-pro/types'
 
 const appConfig = useAppConfig()
 const state = useUser()
-const { isHelpSlideoverOpen } = useDashboard()
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
   return state.value.menuData.filter((menu) => !menu.parent)
@@ -46,34 +45,6 @@ if (!userError.value && userData.value) {
   state.value.preferedDarkColor = state.value.userData.default_dark_color ?? 'cool'
   appConfig.ui.gray = state.value.preferedDarkColor
 }
-
-const footerLinks = [{
-  label: 'Invite people',
-  icon: 'i-heroicons-plus',
-  to: '/settings/members'
-}, {
-  label: 'Help & Support',
-  icon: 'i-heroicons-question-mark-circle',
-  click: () => isHelpSlideoverOpen.value = true
-}]
-
-// const groups = [{
-//   key: 'links',
-//   label: 'Go to',
-//   // commands: links.map(link => ({ ...link, shortcuts: link.tooltip?.shortcuts }))
-//   commands: userMenu.value.map(link => ({ ...link, shortcuts: link.tooltip?.shortcuts }))
-// }, {
-//   key: 'code',
-//   label: 'Code',
-//   commands: [{
-//     id: 'source',
-//     label: 'View page source',
-//     icon: 'i-simple-icons-github',
-//     click: () => {
-//       window.open(`https://github.com/nuxt-ui-pro/dashboard/blob/main/pages${route.path === '/' ? '/index' : route.path}.vue`, '_blank')
-//     }
-//   }]
-// }]
 </script>
 
 <template>
@@ -87,9 +58,6 @@ const footerLinks = [{
 
       <UDashboardSidebar>
         <UDashboardSidebarLinks :links="userMenu" />
-        <UDivider />
-        <div class="flex-1" />
-        <UDashboardSidebarLinks :links="footerLinks" />
         <UDivider class="sticky bottom-0" />
         <template #footer>
           <!-- ~/components/UserDropdown.vue -->
@@ -101,14 +69,5 @@ const footerLinks = [{
     <suspense>
       <slot />
     </suspense>
-
-    <!-- ~/components/HelpSlideover.vue -->
-    <!-- <HelpSlideover /> -->
-    <!-- ~/components/NotificationsSlideover.vue -->
-    <!-- <NotificationsSlideover /> -->
-
-    <!-- <ClientOnly>
-      <LazyUDashboardSearch :groups="groups" />
-    </ClientOnly> -->
   </UDashboardLayout>
 </template>

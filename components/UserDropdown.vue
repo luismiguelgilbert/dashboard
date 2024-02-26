@@ -36,9 +36,9 @@ const logout = async () => {
 <template>
   <UDropdown mode="hover" :items="items" :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }" :popper="{ strategy: 'absolute', placement: 'top' }" class="w-full">
     <template #default="{ open }">
-      <UButton color="gray" variant="ghost" class="w-full" label="Benjamin" :class="[open && 'bg-gray-50 dark:bg-gray-800']">
+      <UButton color="gray" variant="ghost" class="w-full" :label="state.userData.user_name" :class="[open && 'bg-gray-50 dark:bg-gray-800']">
         <template #leading>
-          <UAvatar src="https://avatars.githubusercontent.com/u/739984?v=4" size="2xs" />
+          <NuxtImg v-if="state.userData?.avatar_url" :src="state.userData?.avatar_url!" width="15" height="15" class="rounded" />
         </template>
 
         <template #trailing>
