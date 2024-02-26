@@ -2,6 +2,7 @@
 import { sub } from 'date-fns'
 import type { Period, Range } from '~/types'
 
+useHead({ title: 'Inicio' })
 const { isNotificationsSlideoverOpen } = useDashboard()
 
 const items = [[{

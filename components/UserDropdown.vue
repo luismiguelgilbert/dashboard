@@ -1,49 +1,36 @@
 <script setup lang="ts">
-const { isHelpSlideoverOpen } = useDashboard()
-const { isDashboardSearchModalOpen } = useUIState()
-const { metaSymbol } = useShortcuts()
+import { sys_users } from '@/types/server/sys_users'
+const state = useUser()
+const supabase = useSupabaseClient()
 
 const items = computed(() => [
-  [{
-    slot: 'account',
-    label: '',
-    disabled: true
-  }], [{
-    label: 'Settings',
-    icon: 'i-heroicons-cog-8-tooth',
-    to: '/settings'
-  }, {
-    label: 'Command menu',
-    icon: 'i-heroicons-command-line',
-    shortcuts: [metaSymbol.value, 'K'],
-    click: () => {
-      isDashboardSearchModalOpen.value = true
+  [
+    {
+      slot: 'account',
+      to: '/'
     }
-  }, {
-    label: 'Help & Support',
-    icon: 'i-heroicons-question-mark-circle',
-    shortcuts: ['?'],
-    click: () => isHelpSlideoverOpen.value = true
-  }], [{
-    label: 'Documentation',
-    icon: 'i-heroicons-book-open',
-    to: 'https://ui.nuxt.com/pro/getting-started',
-    target: '_blank'
-  }, {
-    label: 'GitHub repository',
-    icon: 'i-simple-icons-github',
-    to: 'https://github.com/nuxt-ui-pro/dashboard',
-    target: '_blank'
-  }, {
-    label: 'Buy Nuxt UI Pro',
-    icon: 'i-heroicons-credit-card',
-    to: 'https://ui.nuxt.com/pro/purchase',
-    target: '_blank'
-  }], [{
-    label: 'Sign out',
-    icon: 'i-heroicons-arrow-left-on-rectangle'
-  }]
+  ],
+  [
+    {
+      label: 'Sign out',
+      icon: 'i-heroicons-arrow-left-start-on-rectangle',
+      click: () => logout()
+    }
+  ]
 ])
+
+const logout = async () => {
+  // isLoading.value = true;
+  await supabase.auth.signOut()
+  // document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
+  // await router.push('/login');
+  navigateTo('/auth/login')
+  //Reset state
+  state.value.menuData = []
+  state.value.userData = sys_users.parse({})
+  state.value.menuSelected = '-1'
+  state.value.isMenuOpen = false
+}
 </script>
 
 <template>
@@ -62,11 +49,11 @@ const items = computed(() => [
 
     <template #account>
       <div class="text-left">
-        <p>
-          Signed in as
+        <p class="font-extralight">
+          Usuario:
         </p>
-        <p class="truncate font-medium text-gray-900 dark:text-white">
-          ben@nuxtlabs.com
+        <p class="truncate font-semibold text-gray-900 dark:text-white">
+          {{ state.userData?.email }}
         </p>
       </div>
     </template>

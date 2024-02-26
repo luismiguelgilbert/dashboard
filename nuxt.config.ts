@@ -5,11 +5,26 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/fontaine',
     '@nuxtjs/google-fonts',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    '@nuxtjs/supabase',
   ],
   ui: {
     icons: ['heroicons', 'simple-icons'],
     safelistColors: ['primary', 'red', 'orange', 'green']
+  },
+  supabase: {
+    redirect: false,
+    // redirectOptions: {
+    //   login: '/auth/login',
+    //   callback: '/auth/confirm',
+    //   exclude: ['auth/login', 'auth/confirm'],
+    //   cookieRedirect: true,
+    // },
+    // cookieOptions: {
+    //   maxAge: 60 * 60 * 8,
+    //   sameSite: 'lax',
+    //   secure: true
+    // },
   },
   components: [{
     path: '~/components'

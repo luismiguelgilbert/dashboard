@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
 
+definePageMeta({
+  layout: 'auth'
+})
+
 useSeoMeta({
   title: 'Page not found',
   description: 'We are sorry but this page could not be found.'
@@ -25,7 +29,12 @@ useHead({
     <UMain>
       <UContainer>
         <UPage>
-          <UPageError :error="error" />
+          <UPageError
+            :error="error"
+            :status="404"
+            name="Página no existe"
+            message="Esta página no existe."
+          />
         </UPage>
       </UContainer>
     </UMain>
