@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DashboardSidebarLink } from '#ui-pro/types'
 
+const colorMode = useColorMode()
 const appConfig = useAppConfig()
 const state = useUser()
 
@@ -26,23 +27,22 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
 //Load Menu Data
 const { data:menuData, error:menuError } = await useFetch('/api/system/userMenu')
 if (menuError.value) { navigateTo('/auth/login') }
-if (!menuError.value && menuData.value) {
-  state.value.menuData = menuData.value
-}
+if (!menuError.value && menuData.value) { state.value.menuData = menuData.value }
 
 
 //Load User Data
 const { data:userData, error:userError } = await useFetch('/api/system/userData')
 if (userError.value) { navigateTo('/auth/login') }
 if (!userError.value && userData.value) {
-  
   state.value.userData = userData.value.userData
   state.value.userCompanies = userData.value.userCompanies
   state.value.userCompany = userData.value.userCompany.id
   state.value.theme = userData.value.userData.dark_enabled ? 'dark' : 'light'
   state.value.preferedColor = state.value.userData.default_color ?? 'indigo'
-  appConfig.ui.primary = state.value.preferedColor
   state.value.preferedDarkColor = state.value.userData.default_dark_color ?? 'cool'
+  //Preset colors:
+  colorMode.preference = state.value.theme
+  appConfig.ui.primary = state.value.preferedColor
   appConfig.ui.gray = state.value.preferedDarkColor
 }
 </script>

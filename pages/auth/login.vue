@@ -22,9 +22,9 @@ const fields = [
   },
   {
     name: 'password',
-    label: 'Password',
+    label: 'Clave',
     type: 'password',
-    placeholder: 'Ingrese su password',
+    placeholder: 'Ingrese su clave',
     color: 'gray'
   }
 ]
@@ -97,16 +97,20 @@ const onSubmit = async (data: any) => {
     <UAuthForm
       :fields="fields"
       :validate="validate"
-      title="Bienvenido"
+      title="Iniciar sesión"
       align="top"
-      icon="i-heroicons-lock-closed"
       :loading="loading"
       :ui="{ base: 'text-center', footer: 'text-center' }"
-      :submit-button="{ trailingIcon: 'i-heroicons-arrow-right-20-solid' }"
+      :submit-button="{ label: 'Iniciar sesión', trailingIcon: 'i-heroicons-arrow-right-20-solid' }"
       @submit="onSubmit"
     >
+      <template #email-hint>
+        <NuxtLink to="/auth/signup" class="text-primary font-medium">
+          No tiene una cuenta?
+        </NuxtLink>
+      </template>
       <template #password-hint>
-        <NuxtLink to="/" class="text-primary font-medium">
+        <NuxtLink to="/auth/forgot" class="text-primary font-medium">
           Olvidó su password?
         </NuxtLink>
       </template>
