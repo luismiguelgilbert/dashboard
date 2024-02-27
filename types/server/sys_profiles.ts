@@ -21,14 +21,17 @@ export const sys_profiles_lookup = z.object({
 
 export type type_sys_profiles_lookup = z.infer<typeof sys_profiles_lookup>
 
-export const status_options = [
-  { label: 'Perfiles Activos', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
-  { label: 'Perfiles Inactivos', value: 2, sqlValue: 'false', icon: 'i-heroicons-funnel' },
-  { label: 'Todos los Perfiles', value: 3, sqlValue: 'a.is_active', icon: 'i-heroicons-funnel' },
+export const filter_options = [
+  { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
+  { label: 'Inactivos', value: 2, sqlValue: 'a.is_active = false', icon: 'i-heroicons-funnel' },
+  // { label: 'Activos', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
+  // { label: 'Inactivos', value: 2, sqlValue: 'false', icon: 'i-heroicons-funnel' },
+  // { label: 'Todos los Perfiles', value: 3, sqlValue: 'a.is_active', icon: 'i-heroicons-funnel' },
 ]
 
 export const sort_options = [
-  { label: 'Ordenar por Nombre', value: 1, sqlValue: 'a.name_es', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Ordenar por Estado', value: 2, sqlValue: 'a.is_active', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Ordenar por Código', value: 3, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' }
+  { label: 'Nombre', value: 1, sqlValue: 'a.name_es', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'Estado', value: 2, sqlValue: 'a.is_active', icon: 'i-heroicons-bars-arrow-down' },
+  { label: '# Usuarios', value: 3, sqlValue: 'user_count desc', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'Código', value: 4, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' },
 ]

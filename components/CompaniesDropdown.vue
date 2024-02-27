@@ -23,7 +23,6 @@ const updateSelectedCompany = (company: string) => {
 <template>
   <UDropdown
     v-slot="{ open }"
-    mode="hover"
     :items="[companies]"
     class="w-full"
     :ui="{ width: 'w-full' }"
