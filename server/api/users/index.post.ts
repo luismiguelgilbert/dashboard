@@ -1,10 +1,10 @@
 import serverDB from '@/server/utils/db'
+import { sanitizeSQL } from '@/utils/utils'
 import { filter_options, sort_options, sys_users, type type_sys_users } from '@/types/server/sys_users'
 
 export default defineEventHandler( async (event) => {
   try{
     const filter = await readBody(event)
-    // const filter: filter_payload = await readBody(event)
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
     const page = Number(filter.page)
@@ -17,6 +17,10 @@ export default defineEventHandler( async (event) => {
       }
     })
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
+    const search_string = sanitizeSQL(filter.searchString)
+    const filterSearchString = search_string.length > 0
+      ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
+      : ''
 
     const text = `
       select
@@ -38,15 +42,11 @@ export default defineEventHandler( async (event) => {
       left join sys_profiles d on c.sys_profile_id = d.id
       WHERE 1 = 1
       ${filterBy}
+      ${filterSearchString}
       ORDER BY ${sortBy}
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    /*
-      ${search_string.trim().length > 0 
-        ? 'and (b.user_name ILIKE "%" + search_string + "%' or b.user_lastname ILIKE '%" + search_string + "%' or a.email ILIKE '%" + search_string + "%')"
-        : ""}
-    */
     const data = await serverDB.query(text)
     const result: type_sys_users[] = sys_users.array().parse(data.rows)
     

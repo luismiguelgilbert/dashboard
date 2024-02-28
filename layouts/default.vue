@@ -4,6 +4,7 @@ import type { DashboardSidebarLink } from '#ui-pro/types'
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
 const state = useUser()
+colorMode.preference = 'dark'
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
   return state.value.menuData.filter((menu) => !menu.parent)

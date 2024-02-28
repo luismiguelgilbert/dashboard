@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const colorMode = useColorMode()
+colorMode.preference = 'dark'
 useHead({
   bodyAttrs: {
     class: 'dark:bg-gray-950'

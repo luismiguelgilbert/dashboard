@@ -18,14 +18,16 @@ const fields = [
     type: 'text',
     label: 'Email',
     placeholder: 'Ingrese su email',
-    color: 'gray'
+    color: 'gray',
+    size: 'xl',
   },
   {
     name: 'password',
     label: 'Clave',
     type: 'password',
     placeholder: 'Ingrese su clave',
-    color: 'gray'
+    color: 'gray',
+    size: 'xl',
   }
 ]
 
@@ -93,27 +95,29 @@ const onSubmit = async (data: any) => {
 </script>
 
 <template>
-  <UCard class="max-w-sm w-full bg-white/75 dark:bg-white/5 backdrop-blur">
-    <UAuthForm
-      :fields="fields"
-      :validate="validate"
-      title="Iniciar sesión"
-      align="top"
-      :loading="loading"
-      :ui="{ base: 'text-center', footer: 'text-center' }"
-      :submit-button="{ label: 'Iniciar sesión', trailingIcon: 'i-heroicons-arrow-right-20-solid' }"
-      @submit="onSubmit"
-    >
-      <template #email-hint>
-        <NuxtLink to="/auth/signup" class="text-primary font-medium">
-          No tiene una cuenta?
-        </NuxtLink>
-      </template>
-      <template #password-hint>
-        <NuxtLink to="/auth/forgot" class="text-primary font-medium">
-          Olvidó su password?
-        </NuxtLink>
-      </template>
-    </UAuthForm>
-  </UCard>
+  <div class="h-screen flex items-start sm:items-center backdrop-blur">
+    <UCard class="w-dvw sm:w-96">
+      <UAuthForm
+        :fields="fields"
+        align="top"
+        title="Iniciar sesión"
+        :loading="loading"
+        :validate="validate"
+        :ui="{ base: 'text-center', footer: 'text-center' }"
+        :submit-button="{ label: 'Iniciar sesión', trailingIcon: 'i-heroicons-arrow-right-20-solid', size: 'xl' }"
+        @submit="onSubmit"
+      >
+        <template #email-hint>
+          <NuxtLink to="/auth/signup" class="text-primary font-medium">
+            No tiene una cuenta?
+          </NuxtLink>
+        </template>
+        <template #password-hint>
+          <NuxtLink to="/auth/forgot" class="text-primary font-medium">
+            Olvidó su password?
+          </NuxtLink>
+        </template>
+      </UAuthForm>
+    </UCard>
+  </div>
 </template>

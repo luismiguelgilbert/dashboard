@@ -7,28 +7,27 @@ useSeoMeta({
   title: 'Sign up'
 })
 
-/*
-
-        user_lastname: string;
-*/
 const fields = [
   {
     name: 'email',
     type: 'text',
     label: 'Email',
     placeholder: 'Ingrese su email',
+    size: 'xl',
   },
   {
     name: 'user_name',
     type: 'text',
     label: 'Nombres',
     placeholder: 'Ingrese sus nombres',
+    size: 'xl',
   },
   {
     name: 'user_lastname',
     type: 'text',
     label: 'Apellidos',
     placeholder: 'Ingrese sus apellidos',
+    size: 'xl',
   },
 ]
 
@@ -54,7 +53,7 @@ function onSubmit (data: any) {
       align="top"
       title="Registrar cuenta"
       :ui="{ base: 'text-center', footer: 'text-center' }"
-      :submit-button="{ label: 'Registrar cuenta', trailingIcon: 'i-heroicons-user-plus' }"
+      :submit-button="{ label: 'Registrar cuenta', trailingIcon: 'i-heroicons-user-plus', size: 'xl' }"
       @submit="onSubmit"
     >
       <template #email-hint>

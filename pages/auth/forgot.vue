@@ -16,7 +16,8 @@ const fields = [
     type: 'text',
     label: 'Email',
     placeholder: 'Ingrese su email',
-    color: 'gray'
+    color: 'gray',
+    size: 'xl',
   }
 ]
 
@@ -42,7 +43,7 @@ const onSubmit = async (data: any) => {
       icon="i-heroicons-envelope"
       :loading="loading"
       :ui="{ base: 'text-center', footer: 'text-center' }"
-      :submit-button="{ label: 'Enviar correo', trailingIcon: 'i-heroicons-envelope' }"
+      :submit-button="{ label: 'Enviar correo', trailingIcon: 'i-heroicons-envelope', size: 'xl' }"
       @submit="onSubmit"
     >
       <template #email-hint>
