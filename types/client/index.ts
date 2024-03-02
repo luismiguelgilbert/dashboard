@@ -1,5 +1,12 @@
 import type { Avatar } from '#ui/types'
 
+export type FilterOption = {
+  label: string,
+  value: string | number,
+  sqlValue: string,
+  icon: string,
+};
+
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 
 export interface User {

@@ -25,13 +25,13 @@ export default defineEventHandler( async (event) => {
     const text = `
       select
       a.id,
-      b.user_name,
-      b.user_lastname,
+      INITCAP(b.user_name) as user_name,
+      INITCAP(b.user_lastname) as user_lastname,
       b.avatar_url,
       b.website,
       a.email,
       coalesce(c.sys_profile_id, 0) as sys_profile_id,
-      coalesce(d.name_es, '...') as sys_profile_name,
+      INITCAP(coalesce(d.name_es, '...')) as sys_profile_name,
       to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at,
       to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at,
       to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at,

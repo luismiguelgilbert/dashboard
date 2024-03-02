@@ -31,7 +31,7 @@ export default defineEventHandler( async (event) => {
       )
       SELECT
           a.id
-        , a.name_es
+        , INITCAP(a.name_es) as name_es
         , a.is_active
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
         , COALESCE(b.user_count,0) as user_count

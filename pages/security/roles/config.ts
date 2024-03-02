@@ -3,18 +3,23 @@ export const title = 'Perfiles'
 export const module = 'perfil'
 export const columns = [
   {
-    key: 'column-a',
+    key: 'name_es',
     label: 'Perfil',
     sortable: false
   },
   {
-    key: 'column-b',
+    key: 'user_count',
     label: '# Usuarios',
     sortable: false
   },
   {
-    key: 'column-c',
+    key: 'is_active',
     label: 'Estado',
+    sortable: false
+  },
+  {
+    key: 'updated_at',
+    label: 'Actualizado',
     sortable: false
   },
   {
@@ -22,12 +27,6 @@ export const columns = [
     label: '',
     sortable: false
   },
-]
-export const pageSizeOptions = [
-  { label: '25 registros', value: 25, icon: 'i-heroicons-bolt' },
-  { label: '50 registros', value: 50, icon: 'i-heroicons-bolt' },
-  { label: '100 registros', value: 100, icon: 'i-heroicons-clock' },
-  { label: '500 registros', value: 500, icon: 'i-heroicons-clock' },
 ]
 export const rowActions = (row: type_sys_profiles) => [
   [{

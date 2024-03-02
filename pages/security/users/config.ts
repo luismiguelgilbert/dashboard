@@ -3,17 +3,17 @@ export const title = 'Usuarios'
 export const module = 'usuario'
 export const columns = [
   {
-    key: 'column-a',
+    key: 'id',
     label: 'Usuario',
     sortable: false
   },
   {
-    key: 'column-b',
+    key: 'email',
     label: 'Email',
     sortable: false
   },
   {
-    key: 'column-c',
+    key: 'sys_profile_name',
     label: 'Perfil',
     sortable: false
   },
@@ -22,12 +22,6 @@ export const columns = [
     label: '',
     sortable: false
   },
-]
-export const pageSizeOptions = [
-  { label: '25 registros', value: 25, icon: 'i-heroicons-bolt' },
-  { label: '50 registros', value: 50, icon: 'i-heroicons-bolt' },
-  { label: '100 registros', value: 100, icon: 'i-heroicons-clock' },
-  { label: '500 registros', value: 500, icon: 'i-heroicons-clock' },
 ]
 
 export const rowActions = (row: type_sys_users) => [
