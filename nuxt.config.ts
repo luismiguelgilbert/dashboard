@@ -27,12 +27,15 @@ export default defineNuxtConfig({
     //   secure: true
     // },
   },
-  components: [{
-    path: '~/components'
-  }, {
-    path: '~/components/common',
-    pathPrefix: false
-  }],
+  components: [
+    {
+      path: '~/components'
+    },
+    {
+      path: '~/components/common',
+      pathPrefix: false
+    }
+  ],
   // Fonts
   fontMetrics: {
     fonts: ['DM Sans']

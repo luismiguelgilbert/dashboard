@@ -26,11 +26,6 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 )
 
 const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.filterPayload })
 if (!error.value && data.value) { state.rows = data.value ?? [] }
-
-const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
-  state.filterPayload.page = 1
-  state.filterPayload.searchString = (inputEvent.target as HTMLInputElement).value ?? ''
-}, 1000)
 </script>
 
 <template>
@@ -46,30 +41,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
             :placeholder="`Buscar ${module}...`"
             :filterOptions="filter_options"
             :sortOptions="sort_options" />
-          <!-- <USelectMenu
-            v-if="filter_options?.length > 1"
-            v-model="state.filterPayload.filterBy"
-            class="hidden lg:block"
-            icon="i-heroicons-funnel"
-            placeholder="Todos"
-            value-attribute="value"
-            multiple
-            :options="filter_options"
-            :ui-menu="{ option: { base: 'capitalize' } }"
-            @change="() => { state.filterPayload.page = 1 }"
-          />
-          <USelectMenu
-            v-model="state.filterPayload.sortBy"
-            class="hidden lg:block"
-            icon="i-heroicons-bars-arrow-down"
-            placeholder="Location"
-            value-attribute="value"
-            :options="sort_options"
-          />
-          <UButtonGroup size="sm" orientation="horizontal">
-            <UButton :label="`Crear ${module}`" color="gray" icon="i-heroicons-plus" />
-            <UButton icon="i-heroicons-chevron-down-20-solid" color="gray" />
-          </UButtonGroup> -->
+          <IndexCreateButton :label="`Nuevo ${module}`" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">

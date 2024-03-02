@@ -1,6 +1,6 @@
-import { type type_sys_users } from '@/types/server/sys_users'
-export const title = 'Usuarios'
-export const module = 'usuario'
+import { type type_sys_users } from '@/types/server/sys_users';
+export const title = 'Usuarios';
+export const module = 'usuario';
 export const columns = [
   {
     key: 'id',
@@ -22,13 +22,13 @@ export const columns = [
     label: '',
     sortable: false
   },
-]
+];
 
 export const rowActions = (row: type_sys_users) => [
   [{
     label: 'Edit',
     icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => console.log('Edit', row.user_name)
+    click: async () => { await navigateTo(`/security/users/${row.id}`) },
   }, {
     label: 'Duplicate',
     icon: 'i-heroicons-document-duplicate-20-solid'
@@ -42,4 +42,4 @@ export const rowActions = (row: type_sys_users) => [
     label: 'Delete',
     icon: 'i-heroicons-trash-20-solid'
   }]
-]
+];

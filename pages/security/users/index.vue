@@ -23,7 +23,9 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 )
 const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.filterPayload })
 if (!error.value && data.value) { state.rows = data.value }
 
-
+const goToCreateForm = async () => {
+  await navigateTo('/security/users/create');
+}
 </script>
 
 <template>
@@ -39,12 +41,9 @@ if (!error.value && data.value) { state.rows = data.value }
             :placeholder="`Buscar ${module}...`"
             :filterOptions="filter_options"
             :sortOptions="sort_options" />
-          <!-- 
-          
-          <UButtonGroup size="sm" orientation="horizontal">
-            <UButton :label="`Crear ${module}`" color="gray" icon="i-heroicons-plus" />
-            <UButton icon="i-heroicons-chevron-down-20-solid" color="gray" />
-          </UButtonGroup> -->
+          <IndexCreateButton
+            :label="`Nuevo ${module}`"
+            @click="goToCreateForm" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">

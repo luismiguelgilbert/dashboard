@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { columns, rowActions } from './config'
-import { type type_sys_users } from '@/types/server/sys_users'
+import { columns, rowActions } from './config';
+import { type type_sys_users } from '@/types/server/sys_users';
 
 defineProps({
   rows: {
@@ -8,7 +8,7 @@ defineProps({
     required: false,
     default: () => []
   }
-})
+});
 </script>
 
 <template>
