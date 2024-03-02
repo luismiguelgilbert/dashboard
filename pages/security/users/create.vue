@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isLoading } = useSecurityUsersForm();
+const { isLoading, resetUserData } = useSecurityUsersForm();
 
 const tabs = [
   { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
@@ -8,6 +8,7 @@ const tabs = [
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
+resetUserData();
 
 const cancel = async () => {
   isLoading.value = true;
