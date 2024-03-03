@@ -17,8 +17,8 @@ useHead({
   }
 })
 
-const title = 'Nuxt UI Pro - Dashboard template'
-const description = 'Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes.'
+const title = 'Framework - Powered by BITT'
+const description = 'Framework es una plataforma para administrar organizaciones.'
 
 useSeoMeta({
   title,
@@ -33,12 +33,10 @@ useSeoMeta({
 
 <template>
   <div>
-    <NuxtLoadingIndicator />
-
     <NuxtLayout>
+      <NuxtLoadingIndicator :throttle="100" />
       <NuxtPage />
     </NuxtLayout>
-
     <UNotifications />
     <UModals />
   </div>

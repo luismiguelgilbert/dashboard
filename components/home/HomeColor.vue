@@ -54,10 +54,10 @@ const setColor = async () => {
     <div class="col-span-1 sm:col-span-2 pt-1" />
     <div>
       <p class="text-gray-900 dark:text-white font-semibold">
-        Tema:
+        Activar tema oscuro:
       </p>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Combinación de colores preferida.
+        Utilizar fondo oscuro.
       </p>
     </div>
     <UToggle
@@ -67,10 +67,10 @@ const setColor = async () => {
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
       <p class="text-gray-900 dark:text-white font-semibold">
-        Color de fondo:
+        Tonalidad de fondo oscuro:
       </p>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Color de fondo para tema Oscuro (Dark).
+        Al activar el fondo oscuro, se usará el tono seleccionado.
       </p>
     </div>
     <USelectMenu

@@ -9,5 +9,5 @@ watch(user, () => {
 </script>
 
 <template>
-  <div>Esperando for login...</div>
+  <div>Cargando sesión...</div>
 </template>
