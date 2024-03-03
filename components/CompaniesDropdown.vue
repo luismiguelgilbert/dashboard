@@ -1,23 +1,20 @@
 <script setup lang="ts">
-const state = useUser()
+const { sessionData } = useUserSession()
 
 const companies = computed(() => {
-  return state.value.userCompanies
-    .map(menu => { 
-      return {
-        label: menu.name_es_short,
-        click: () => { updateSelectedCompany(menu.id) }
-      }
-    })
+  return sessionData.value.userCompanies?.map(company => { 
+    return {
+      label: company.name_es_short,
+      click: () => { updateSelectedCompany(company.id) }
+    }
+  }) ?? [];
 })
 
 const companyName = computed(() => {
-  return state.value.userCompanies.find(company => company.id === state.value.userCompany)?.name_es_short ?? '...'
+  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.name_es_short ?? '...'
 })
 
-const updateSelectedCompany = (company: string) => {
-  state.value.userCompany = company
-}
+const updateSelectedCompany = (company: string) => { sessionData.value.userCompany = company };
 </script>
 
 <template>
@@ -30,7 +27,7 @@ const updateSelectedCompany = (company: string) => {
   >
     <UButton color="gray" variant="ghost" :class="[open && 'bg-gray-50 dark:bg-gray-800']" class="w-full">
       <!-- <UAvatar :src="team.avatar.src" size="2xs" /> -->
-      <span class="truncate text-gray-900 dark:text-white font-semibold">{{ companyName }}</span>
+      <span class="truncate text-gray-900 dark:text-white font-semibold uppercase">{{ companyName }}</span>
     </UButton>
   </UDropdown>
 </template>

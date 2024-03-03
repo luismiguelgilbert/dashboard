@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { sys_users } from '@/types/server/sys_users'
-const state = useUser()
+const { sessionData } = useUserSession()
 const supabase = useSupabaseClient()
 
 const items = computed(() => [
@@ -20,25 +19,24 @@ const items = computed(() => [
 ])
 
 const logout = async () => {
-  // isLoading.value = true;
   await supabase.auth.signOut()
-  // document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });
-  // await router.push('/login');
+  document.cookie.split(';').forEach((c) => {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
   navigateTo('/auth/login')
   //Reset state
-  state.value.menuData = []
-  state.value.userData = sys_users.parse({})
-  state.value.menuSelected = '-1'
-  state.value.isMenuOpen = false
+  sessionData.value.userData = null;
+  sessionData.value.userCompanies = null;
+  sessionData.value.userMenuData = null;
 }
 </script>
 
 <template>
   <UDropdown mode="hover" :items="items" :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }" :popper="{ strategy: 'absolute', placement: 'top' }" class="w-full">
     <template #default="{ open }">
-      <UButton color="gray" variant="ghost" class="w-full" :label="state.userData.user_name" :class="[open && 'bg-gray-50 dark:bg-gray-800']">
+      <UButton color="gray" variant="ghost" class="w-full" :label="sessionData.userData?.user_name" :class="[open && 'bg-gray-50 dark:bg-gray-800']">
         <template #leading>
-          <NuxtImg v-if="state.userData?.avatar_url" :src="state.userData?.avatar_url!" width="15" height="15" class="rounded" />
+          <NuxtImg v-if="sessionData.userData?.avatar_url" :src="sessionData.userData.avatar_url" width="15" height="15" class="rounded" />
         </template>
 
         <template #trailing>
@@ -53,7 +51,7 @@ const logout = async () => {
           Usuario:
         </p>
         <p class="truncate font-semibold text-gray-900 dark:text-white">
-          {{ state.userData?.email }}
+          {{ sessionData.userData?.email }}
         </p>
       </div>
     </template>

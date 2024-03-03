@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const state = useUser()
+const { sessionData } = useUserSession();
 </script>
 
 <template>
@@ -14,14 +14,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.email"
+      :value="sessionData.userData?.email"
       size="xl"
       type="text"
       name="email"
       aria-label="Email"
       icon="i-heroicons-envelope"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -33,14 +32,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.user_name"
+      :value="sessionData.userData?.user_name"
       label="Nombres"
       size="xl"
       type="text"
       name="user_name"
       icon="i-heroicons-user"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -52,14 +50,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.user_lastname"
+      :value="sessionData.userData?.user_lastname"
       label="Apellidos"
       size="xl"
       type="text"
       name="user_lastname"
       icon="i-heroicons-user"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -71,14 +68,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.sys_profile_name"
+      :value="sessionData.userData?.sys_profile_name"
       label="Perfil"
       size="xl"
       type="text"
       name="sys_profile_name"
       icon="i-heroicons-user-circle"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -90,7 +86,7 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.id"
+      :value="sessionData.userData?.id"
       required
       size="xl"
       type="text"
@@ -98,7 +94,6 @@ const state = useUser()
       label="Código"
       icon="i-heroicons-circle-stack"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -110,14 +105,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.last_sign_in_at"
+      :value="sessionData.userData?.last_sign_in_at"
       label="Último Ingreso"
       size="xl"
       type="text"
       name="last_sign_in_at"
       icon="i-heroicons-arrow-right-end-on-rectangle"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -129,14 +123,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.created_at"
+      :value="sessionData.userData?.created_at"
       label="Fecha de creación"
       size="xl"
       type="text"
       name="created_at"
       icon="i-heroicons-calendar"
       readonly
-      :loading="state.isLoadingUser"
     />
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
@@ -148,14 +141,13 @@ const state = useUser()
       </p>
     </div>
     <UInput
-      :value="state.userData.updated_at"
+      :value="sessionData.userData?.updated_at"
       label="Fecha de actualización"
       size="xl"
       type="text"
       name="updated_at"
       icon="i-heroicons-pencil-square"
       readonly
-      :loading="state.isLoadingUser"
     />
     <div class="col-span-1 sm:col-span-2 pb-6" />
   </div>

@@ -6,22 +6,12 @@ import indexList from './indexList.vue'
 
 useHead({ title })
 
-const state = reactive({
-  rows: [] as type_sys_users[],
-  rowsCount: 0,
-  selectedRows: [],
-  filterPayload: {
-    pageSize: 50,
-    filterBy: [],
-    sortBy: 1,
-    page: 1,
-    searchString: ''
-  }
-})
-const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 )
+const { filterPayload } = useSecurityUsers();
+const rows = ref<type_sys_users[]>([]);
+const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.filterPayload })
-if (!error.value && data.value) { state.rows = data.value }
+const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: filterPayload.value })
+if (!error.value && data.value) { rows.value = data.value }
 
 const goToCreateForm = async () => {
   await navigateTo('/security/users/create');
@@ -34,13 +24,13 @@ const goToCreateForm = async () => {
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
           <IndexSearchDesktop
-            v-model:searchString="state.filterPayload.searchString"
-            v-model:page="state.filterPayload.page"
-            v-model:filterBy="state.filterPayload.filterBy"
-            v-model:sortBy="state.filterPayload.sortBy"
+            v-model:searchString="filterPayload.searchString"
+            v-model:page="filterPayload.page"
+            v-model:filterBy="filterPayload.filterBy"
+            v-model:sortBy="filterPayload.sortBy"
             :placeholder="`Buscar ${module}...`"
-            :filterOptions="filter_options"
-            :sortOptions="sort_options" />
+            :filter-options="filter_options"
+            :sort-options="sort_options" />
           <IndexCreateButton
             :label="`Nuevo ${module}`"
             @click="goToCreateForm" />
@@ -50,10 +40,10 @@ const goToCreateForm = async () => {
         <indexList v-if="data" :rows="data" />
         <indexTable v-if="data" :rows="data" />
         <IndexPagination
-          v-model:pageSize="state.filterPayload.pageSize"
-          v-model:page="state.filterPayload.page"
+          v-model:pageSize="filterPayload.pageSize"
+          v-model:page="filterPayload.page"
           :pending="pending"
-          :totalRows="totalRows" />
+          :total-rows="totalRows" />
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

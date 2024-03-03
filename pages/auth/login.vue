@@ -95,7 +95,7 @@ const onSubmit = async (data: any) => {
 </script>
 
 <template>
-  <div class="h-screen flex items-start sm:items-center backdrop-blur">
+  <div class="flex items-start sm:items-center backdrop-blur">
     <UCard class="w-dvw sm:w-96">
       <UAuthForm
         :fields="fields"

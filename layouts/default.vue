@@ -3,13 +3,13 @@ import type { DashboardSidebarLink } from '#ui-pro/types'
 
 const colorMode = useColorMode()
 const appConfig = useAppConfig()
-const state = useUser()
+const { sessionData } = useUserSession();
 colorMode.preference = 'dark'
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
-  return state.value.menuData.filter((menu) => !menu.parent)
+  return sessionData.value?.userMenuData?.filter((menu) => !menu.parent)
     .map(menu => { 
-      const children = state.value.menuData.filter((child) => child.parent === menu.id)
+      const children = sessionData.value?.userMenuData?.filter((child) => child.parent === menu.id)
         .map(x => { return {
           label: x.name_es,
           to: x.link!,
@@ -22,29 +22,21 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
         to: menu.id === '0' ? '/' : undefined,
         children: menu.id != '0' ? children : undefined
       }
-    })
+    }) ?? [];
 })
 
-//Load Menu Data
-const { data:menuData, error:menuError } = await useFetch('/api/system/userMenu')
-if (menuError.value) { navigateTo('/auth/login') }
-if (!menuError.value && menuData.value) { state.value.menuData = menuData.value }
 
-
-//Load User Data
-const { data:userData, error:userError } = await useFetch('/api/system/userData')
-if (userError.value) { navigateTo('/auth/login') }
-if (!userError.value && userData.value) {
-  state.value.userData = userData.value.userData
-  state.value.userCompanies = userData.value.userCompanies
-  state.value.userCompany = userData.value.userCompany.id
-  state.value.theme = userData.value.userData.dark_enabled ? 'dark' : 'light'
-  state.value.preferedColor = state.value.userData.default_color ?? 'indigo'
-  state.value.preferedDarkColor = state.value.userData.default_dark_color ?? 'cool'
+const { data, error } = await useFetch('/api/system/userData')
+if (error.value) { navigateTo('/auth/login') }
+if (!error.value && data.value) {
+  sessionData.value.userData = data.value.userData;
+  sessionData.value.userCompanies = data.value.userCompanies;
+  sessionData.value.userMenuData = data.value.userMenu;
+  sessionData.value.userCompany = data.value.userCompanies.find((company) => company.is_default)?.id ?? null;
   //Preset colors:
-  colorMode.preference = state.value.theme
-  appConfig.ui.primary = state.value.preferedColor
-  appConfig.ui.gray = state.value.preferedDarkColor
+  colorMode.preference = sessionData.value.userData.dark_enabled ? 'dark' : 'light';
+  appConfig.ui.primary = sessionData.value.userData.default_color;
+  appConfig.ui.gray = sessionData.value.userData.default_dark_color;
 }
 </script>
 
@@ -61,7 +53,6 @@ if (!userError.value && userData.value) {
         <UDashboardSidebarLinks :links="userMenu" />
         <UDivider class="sticky bottom-0" />
         <template #footer>
-          <!-- ~/components/UserDropdown.vue -->
           <UserDropdown />
         </template>
       </UDashboardSidebar>

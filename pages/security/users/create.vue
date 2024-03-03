@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { isLoading, resetUserData } = useSecurityUsersForm();
+import { sys_users } from '@/types/server/sys_users';
+const { isLoading, userData, resetUserData } = useSecurityUsersForm();
 
 const tabs = [
   { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies',label: 'Compañías', icon: 'i-heroicons-swatch', defaultOpen: false },
-  { value: 'avatar',label: 'Avatar', icon: 'i-heroicons-swatch', defaultOpen: false },
+  { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+  { value: 'avatar',label: 'Avatar', icon: 'i-heroicons-camera', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
@@ -16,7 +17,10 @@ const cancel = async () => {
 };
 const save = async() => {
   isLoading.value = true;
-  await navigateTo('/security/users');
+  const temp = sys_users.safeParse(userData);
+  console.log(temp);
+  
+  // await navigateTo('/security/users');
 };
 </script>
 
