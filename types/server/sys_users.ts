@@ -16,9 +16,9 @@ export const sys_users = z.object({
   updated_at: z.coerce.date(),
   last_sign_in_at: z.coerce.date(),
   row_count: z.coerce.number(),
-})//.refine(data => data.user_name.length >= 3, { message: 'Nombres debe tener al menos 3 caracteres.' });
+});
 
-export type type_sys_users = z.infer<typeof sys_users>
+export type type_sys_users = z.infer<typeof sys_users>;
 
 export const sys_users_form = z.object({
   user_name: z.coerce.string().min(3, { message: 'Nombre debe incluir 3 o más caracteres.' }),
@@ -69,24 +69,25 @@ export const UseUserSession = z.object({
   userCompany: z.coerce.string().optional().nullable(),
   userMenuData: z.array(userMenuData).optional().nullable(),
 });
-// user_name.min(3, { message: 'Apellidos del Usuario debe incluir 3 o más caracteres.' }),
-// user_lastname.min(3, { message: 'Apellidos del Usuario debe incluir 3 o más caracteres.' }),
-// email.email({ message: 'Correo Electrónico no es válido.' }),
-// sys_profile_id: z.coerce.number().default(1)
-// dark_enabled: z.coerce.boolean().optional().nullable().default(false),
-// default_color: z.coerce.string().optional().nullable().default('indigo'),
-// default_dark_color: z.coerce.string().optional().nullable().default('neutral'),
-// created_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-// updated_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-// last_sign_in_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
+
+export const userDataForm = z.object({
+  id: z.coerce.string().optional(),
+  user_name: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
+  user_lastname: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
+  avatar_url: z.coerce.string().optional().nullable(),
+  email: z.coerce.string().email({ message: 'Debe ser un correo electrónico válido.' }),
+  sys_profile_id: z.coerce.number().positive({ message: 'Debe seleccionar un Perfil.' }),
+});
+
+export type type_userDataForm = z.infer<typeof userDataForm>;
 
 export const filter_options = [
   { label: 'Todos los Usuarios', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
-]
+];
 
 export const sort_options = [
   { label: 'Apellidos', value: 1, sqlValue: 'b.user_lastname', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Nombres', value: 2, sqlValue: 'b.user_name', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Mail', value: 3, sqlValue: 'a.email', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Perfil', value: 4, sqlValue: 'd.name_es', icon: 'i-heroicons-bars-arrow-down' }
-]
+];

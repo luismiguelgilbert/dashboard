@@ -25,21 +25,11 @@ export const columns = [
 ];
 
 export const rowActions = (row: type_sys_users) => [
-  [{
-    label: 'Edit',
-    icon: 'i-heroicons-pencil-square-20-solid',
-    click: async () => { await navigateTo(`/security/users/${row.id}`) },
-  }, {
-    label: 'Duplicate',
-    icon: 'i-heroicons-document-duplicate-20-solid'
-  }], [{
-    label: 'Archive',
-    icon: 'i-heroicons-archive-box-20-solid'
-  }, {
-    label: 'Move',
-    icon: 'i-heroicons-arrow-right-circle-20-solid'
-  }], [{
-    label: 'Delete',
-    icon: 'i-heroicons-trash-20-solid'
-  }]
+  [
+    {
+      label: 'Edit',
+      icon: 'i-heroicons-pencil-square-20-solid',
+      click: async () => { await navigateTo(`/security/users/${row.id}`) },
+    }
+  ]
 ];

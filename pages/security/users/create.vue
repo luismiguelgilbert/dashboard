@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { sys_users } from '@/types/server/sys_users';
-const { isLoading, userData, resetUserData } = useSecurityUsersForm();
+import type { SystemUsersBasic } from '#build/components';
+
+const { isLoading, resetUserData } = useSecurityUsersForm();
 
 const tabs = [
   { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
@@ -9,18 +10,23 @@ const tabs = [
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
+const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
 
 const cancel = async () => {
   isLoading.value = true;
   await navigateTo('/security/users');
 };
-const save = async() => {
+
+const save = async () => {
   isLoading.value = true;
-  const temp = sys_users.safeParse(userData);
-  console.log(temp);
-  
-  // await navigateTo('/security/users');
+  const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
+  if (!isBasicFormInvalid) {
+    await navigateTo('/security/users');
+    isLoading.value = false;
+  } else {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -35,12 +41,9 @@ const save = async() => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs
-        v-model="tab"
-        :items="tabs"
-      />
+      <BTabs v-model="tab" :items="tabs" />
       <UDashboardPanelContent>
-        <SystemUsersBasic v-show="tab === 'basic'" />
+        <SystemUsersBasic v-show="tab === 'basic'" ref="systemUsersBasic" />
         <SystemUsersCompanies v-show="tab === 'companies'" />
         <SystemUsersAvatar v-show="tab === 'avatar'" />
       </UDashboardPanelContent>

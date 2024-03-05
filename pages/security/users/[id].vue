@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type type_sys_companies } from '~/types/server/sys_companies';
 import { type type_sys_users } from '~/types/server/sys_users';
+import type { SystemUsersBasic } from '#build/components';
 
 const { isLoading, userData, userCompanies } = useSecurityUsersForm();
 
@@ -11,6 +12,7 @@ const tabs = [
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
+const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 
 const route = useRoute();
 if (route.params.id) {
@@ -26,9 +28,16 @@ const cancel = async () => {
   isLoading.value = true;
   await navigateTo('/security/users');
 };
-const save = async() => {
+
+const save = async () => {
   isLoading.value = true;
-  await navigateTo('/security/users');
+  const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
+  if (!isBasicFormInvalid) {
+    await navigateTo('/security/users');
+    isLoading.value = false;
+  } else {
+    isLoading.value = false;
+  }
 };
 </script>
 
@@ -37,7 +46,9 @@ const save = async() => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Usuario">
         <template #right>
-          <UButton label="Regresar" color="gray" icon="i-heroicons-arrow-left-circle" :disabled="isLoading" @click="cancel" />
+          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="isLoading" @click="cancel">
+            <span class="hidden sm:block">Regresar</span>
+          </UButton>
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
@@ -46,7 +57,7 @@ const save = async() => {
         :items="tabs"
       />
       <UDashboardPanelContent>
-        <SystemUsersBasic v-show="tab === 'basic'" />
+        <SystemUsersBasic v-show="tab === 'basic'" ref="systemUsersBasic" :is-editing="true" />
         <SystemUsersCompanies v-show="tab === 'companies'" />
         <SystemUsersAvatar v-show="tab === 'avatar'" />
       </UDashboardPanelContent>
