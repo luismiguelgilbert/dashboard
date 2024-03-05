@@ -14,12 +14,12 @@ defineProps({
   },
 });
 
-const pageSize = defineModel<number>("pageSize", { default: 0 });
-const page = defineModel<number>("page", { default: 1 });
+const pageSize = defineModel<number>('pageSize', { default: 0 });
+const page = defineModel<number>('page', { default: 1 });
 </script>
 
 <template>
-  <UProgress v-if="pending" animation="carousel" size="xs" />
+  <UProgress v-if="pending" animation="carousel" size="2xs" class="hidden sm:block" />
   <div class="flex justify-center sm:justify-between px-3 py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
     <USelectMenu
       v-model="pageSize"

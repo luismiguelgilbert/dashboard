@@ -42,13 +42,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
     icon="i-heroicons-magnifying-glass"
     autocomplete="off"
     :placeholder="placeholder"
-    @keydown.esc="$event.target.blur()"
-    @input="updatePropSearchString">
-    <template #trailing>
-      <UKbd value="/" />
-    </template>
-  </UInput>
-  <!--Select for Filter-->
+    @input="updatePropSearchString" />
   <USelectMenu
     v-if="filterOptions.length > 1"
     v-model="filterBy"
@@ -58,10 +52,17 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
     multiple
     :options="filterOptions"
     :ui-menu="{ option: { base: 'capitalize' } }"
-    @change="() => { page = 1 }" />
+    @change="() => { page = 1 }">
+    <template #label>
+      <span>Filtros</span>
+    </template>
+  </USelectMenu>
   <USelectMenu
     v-model="sortBy"
-    icon="i-heroicons-bars-arrow-down"
     value-attribute="value"
-    :options="sortOptions" />
+    :options="sortOptions">
+    <template #label>
+      <span>Orden</span>
+    </template>
+  </USelectMenu>
 </template>

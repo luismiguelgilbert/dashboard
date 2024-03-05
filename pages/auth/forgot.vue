@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FormError } from '#ui/types'
+import type { FormError, FormGroupSize } from '#ui/types'
 
 useHead({ title: 'BITT - Ingreso' })
 
@@ -9,7 +9,7 @@ definePageMeta({
 
 const loading = ref<boolean>(false)
 
-
+const sizeXL: FormGroupSize = 'xl';
 const fields = [
   {
     name: 'email',
@@ -17,7 +17,7 @@ const fields = [
     label: 'Email',
     placeholder: 'Ingrese su email',
     color: 'gray',
-    size: 'xl',
+    size: sizeXL,
   }
 ]
 
@@ -34,23 +34,25 @@ const onSubmit = async (data: any) => {
 </script>
 
 <template>
-  <UCard class="max-w-sm w-full bg-white/75 dark:bg-white/5 backdrop-blur">
-    <UAuthForm
-      :fields="fields"
-      :validate="validate"
-      title="Enviar correo de recuperación"
-      align="top"
-      icon="i-heroicons-envelope"
-      :loading="loading"
-      :ui="{ base: 'text-center', footer: 'text-center' }"
-      :submit-button="{ label: 'Enviar correo', trailingIcon: 'i-heroicons-envelope', size: 'xl' }"
-      @submit="onSubmit"
-    >
-      <template #email-hint>
-        <NuxtLink to="/auth/login" class="text-primary font-medium">
-          Regresar al inicio de sesión
-        </NuxtLink>
-      </template>
-    </UAuthForm>
-  </UCard>
+  <div class="h-full sm:h-0 flex items-start sm:items-center backdrop-blur">
+    <UCard class="w-dvw h-full sm:h-auto sm:w-96">
+      <UAuthForm
+        :fields="fields"
+        :validate="validate"
+        title="Enviar correo de recuperación"
+        align="top"
+        icon="i-heroicons-envelope"
+        :loading="loading"
+        :ui="{ base: 'text-center', footer: 'text-center' }"
+        :submit-button="{ label: 'Enviar correo', trailingIcon: 'i-heroicons-envelope', size: 'xl' }"
+        @submit="onSubmit"
+      >
+        <template #email-hint>
+          <NuxtLink to="/auth/login" class="text-primary font-medium">
+            Regresar al inicio de sesión
+          </NuxtLink>
+        </template>
+      </UAuthForm>
+    </UCard>
+  </div>
 </template>

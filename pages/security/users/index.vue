@@ -23,19 +23,34 @@ const goToCreateForm = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
-          <IndexSearchDesktop
-            v-model:searchString="filterPayload.searchString"
-            v-model:page="filterPayload.page"
-            v-model:filterBy="filterPayload.filterBy"
-            v-model:sortBy="filterPayload.sortBy"
-            :placeholder="`Buscar ${module}...`"
-            :filter-options="filter_options"
-            :sort-options="sort_options" />
+          <div class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5">
+            <IndexSearchDesktop
+              v-model:searchString="filterPayload.searchString"
+              v-model:page="filterPayload.page"
+              v-model:filterBy="filterPayload.filterBy"
+              v-model:sortBy="filterPayload.sortBy"
+              class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
+              :placeholder="`Buscar ${module}...`"
+              :filter-options="filter_options"
+              :sort-options="sort_options" />
+          </div>
           <IndexCreateButton
             :label="`Nuevo ${module}`"
             @click="goToCreateForm" />
         </template>
       </UDashboardNavbar>
+      <UDashboardToolbar class="flex sm:hidden">
+        <IndexSearchMobile
+          v-model:searchString="filterPayload.searchString"
+          v-model:page="filterPayload.page"
+          v-model:filterBy="filterPayload.filterBy"
+          v-model:sortBy="filterPayload.sortBy"
+          class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
+          :placeholder="`Buscar ${module}...`"
+          :filter-options="filter_options"
+          :sort-options="sort_options" />
+      </UDashboardToolbar>
+      <UProgress class="block sm:hidden" size="2xs" :value="!pending ? 0: undefined" :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
         <indexList v-if="data" :rows="data" />
         <indexTable v-if="data" :rows="data" />

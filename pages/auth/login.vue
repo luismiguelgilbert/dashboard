@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AuthError } from '@supabase/supabase-js'
-import type { FormError } from '#ui/types'
+import type { FormError, FormGroupSize } from '#ui/types'
 
 useHead({ title: 'BITT - Ingreso' })
 
@@ -11,7 +11,7 @@ const supabase = useSupabaseClient()
 const loading = ref<boolean>(false)
 const loginError = ref<AuthError>(new AuthError('', 0))
 
-
+const sizeXL: FormGroupSize = 'xl';
 const fields = [
   {
     name: 'email',
@@ -19,7 +19,7 @@ const fields = [
     label: 'Email',
     placeholder: 'Ingrese su email',
     color: 'gray',
-    size: 'xl',
+    size: sizeXL,
   },
   {
     name: 'password',
@@ -27,7 +27,7 @@ const fields = [
     type: 'password',
     placeholder: 'Ingrese su clave',
     color: 'gray',
-    size: 'xl',
+    size: sizeXL,
   }
 ]
 
@@ -96,7 +96,7 @@ const onSubmit = async (data: any) => {
 
 <template>
   <div class="h-full sm:h-0 flex items-start sm:items-center backdrop-blur">
-    <UCard class="w-dvw sm:w-96">
+    <UCard class="w-dvw h-full sm:h-auto sm:w-96">
       <UAuthForm
         :fields="fields"
         align="top"
