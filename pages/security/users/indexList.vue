@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { rowActions } from './config';
 import { type type_sys_users } from '@/types/server/sys_users'
 
 defineProps({
@@ -45,9 +44,11 @@ defineProps({
             </p>
           </div>
         </div>
-        <UDropdown :items="rowActions(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-        </UDropdown>
+        <UButton
+          icon="i-heroicons-pencil"
+          variant="link"
+          color="gray"
+          @click="navigateTo(`/security/users/${row.id}`)" />
       </li>
     </ul>
   </div>

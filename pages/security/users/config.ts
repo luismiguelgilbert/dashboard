@@ -1,4 +1,3 @@
-import { type type_sys_users } from '@/types/server/sys_users';
 export const title = 'Usuarios';
 export const module = 'usuario';
 export const columns = [
@@ -22,14 +21,4 @@ export const columns = [
     label: '',
     sortable: false
   },
-];
-
-export const rowActions = (row: type_sys_users) => [
-  [
-    {
-      label: 'Edit',
-      icon: 'i-heroicons-pencil-square-20-solid',
-      click: async () => { await navigateTo(`/security/users/${row.id}`) },
-    }
-  ]
 ];

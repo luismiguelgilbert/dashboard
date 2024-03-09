@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { columns, rowActions } from './config';
+import { columns } from './config';
 import { type type_sys_users } from '@/types/server/sys_users';
 
 defineProps({
@@ -37,10 +37,12 @@ defineProps({
         </div>
       </div>
     </template>
-    <template #actions-data="{ row }">
-      <UDropdown :items="rowActions(row)">
-        <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-      </UDropdown>
+    <template #actions-data="{ row }: { row: type_sys_users }">
+      <UButton
+        icon="i-heroicons-pencil"
+        variant="link"
+        color="gray"
+        @click="navigateTo(`/security/users/${row.id}`)" />
     </template>
   </UTable>
 </template>
