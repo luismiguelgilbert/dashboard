@@ -1,10 +1,10 @@
 import serverDB from '@/server/utils/db';
-import type { type_sys_users, type_userBody } from "@/types/server/sys_users";
+import type { type_userBody } from "@/types/server/sys_users";
 import { PermissionsList } from '@/types/client/permissionsEnum';
 
 export default defineEventHandler( async (event) => {
   try{
-    const payload: { userData: type_sys_users, userCompanies: string[]} = await readBody(event);
+    const payload: type_userBody = await readBody(event);
     const id = (event.context.params?.id);
 
     //Check Permissions
@@ -28,7 +28,6 @@ export default defineEventHandler( async (event) => {
     const user_name = payload.userData.user_name ? `'${payload.userData.user_name}'` : null;
     const user_lastname = payload.userData.user_lastname ? `'${payload.userData.user_lastname}'` : null;
     const avatar_url = payload.userData.avatar_url ? `'${payload.userData.avatar_url}'` : null;
-    const website = payload.userData.website ? `'${payload.userData.website}'` : null;
     const sys_profile_id = payload.userData.sys_profile_id ? `${payload.userData.sys_profile_id}` : null;
     const dark_enabled = payload.userData.dark_enabled;
     const default_color = payload.userData.default_color ? `'${payload.userData.default_color}'` : 'indigo';
@@ -41,7 +40,6 @@ export default defineEventHandler( async (event) => {
        user_name = COALESCE(${user_name}, user_name)
       ,user_lastname = COALESCE(${user_lastname}, user_lastname)
       ,avatar_url = COALESCE(${avatar_url}, avatar_url)
-      ,website = COALESCE(${website}, website)
       ,dark_enabled = COALESCE(${dark_enabled}, dark_enabled)
       ,default_color = COALESCE(${default_color}, default_color)
       ,default_dark_color = COALESCE(${default_dark_color}, default_dark_color)

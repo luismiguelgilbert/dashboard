@@ -3,7 +3,7 @@ import { type type_sys_companies } from '~/types/server/sys_companies';
 import { type type_sys_users } from '~/types/server/sys_users';
 import type { SystemUsersBasic } from '#build/components';
 
-const { isLoading, userData, userCompanies, resetUserData } = useSecurityUsersForm();
+const { isLoading, userData, avatar, userCompanies, resetUserData } = useSecurityUsersForm();
 const toast = useToast();
 
 
@@ -33,7 +33,9 @@ const cancel = async () => {
 const save = async () => {
   isLoading.value = true;
   const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
-  if (!isBasicFormInvalid) {
+  const isCompaniesInvalid = userCompanies.value.length <= 0;
+  if (!isBasicFormInvalid && !isCompaniesInvalid) {
+    //Upload Data
     const { error } = await useFetch(`/api/users/${route.params.id}`, {
       method: 'PATCH',
       body: {
@@ -42,16 +44,41 @@ const save = async () => {
       },
     });
     toast.add({
-      title: error.value ? 'Error al guardar' : 'Datos guardados correctamente',
+      title: (error.value ) ? 'Error al guardar' : 'Datos guardados correctamente',
       description: error.value ? error.value?.message: undefined,
       icon: error.value ? 'i-heroicons-exclamation-triangle' : 'i-heroicons-check-circle',
       color: error.value ? 'rose' : 'primary',
       timeout: error.value ? 0 : 2000,
     });
-    if (error.value) { return }
+    if (error.value) { isLoading.value = false; return }
+
+    //Upload Avatar
+    if (avatar.value) {
+      const body = new FormData();
+      body.append('file', avatar.value);
+      const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
+        method: 'PATCH',
+        body,
+      });
+      toast.add({
+        title: (avatarError.value ) ? 'Error al guardar avatar' : 'Avatar guardados correctamente',
+        description: avatarError.value ? avatarError.value?.message: undefined,
+        icon: avatarError.value ? 'i-heroicons-exclamation-triangle' : 'i-heroicons-check-circle',
+        color: avatarError.value ? 'rose' : 'primary',
+        timeout: avatarError.value ? 0 : 2000,
+      });
+      if (error.value) { isLoading.value = false; return }
+    }
     await navigateTo('/security/users');
     isLoading.value = false;
   } else {
+    toast.add({
+      title: 'Datos incompletos',
+      description: 'Por favor, complete los campos requeridos',
+      icon: 'i-heroicons-no-symbol',
+      color: 'rose',
+      timeout: 2000,
+    });
     isLoading.value = false;
   }
 };
