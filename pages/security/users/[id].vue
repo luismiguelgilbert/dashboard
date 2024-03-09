@@ -10,7 +10,6 @@ const toast = useToast();
 const tabs = [
   { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
-  { value: 'avatar',label: 'Avatar', icon: 'i-heroicons-camera', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
