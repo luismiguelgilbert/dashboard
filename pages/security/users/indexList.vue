@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type type_sys_users } from '@/types/server/sys_users'
+import { type type_sys_users } from '@/types/server/sys_users';
 
 defineProps({
   rows: {

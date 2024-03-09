@@ -77,9 +77,22 @@ export const userDataForm = z.object({
   avatar_url: z.coerce.string().optional().nullable(),
   email: z.coerce.string().email({ message: 'Debe ser un correo electrónico válido.' }),
   sys_profile_id: z.coerce.number().positive({ message: 'Debe seleccionar un Perfil.' }),
+  dark_enabled: z.coerce.boolean(),
+  default_color: z.coerce.string(),
+  default_dark_color: z.coerce.string(),
 });
 
 export type type_userDataForm = z.infer<typeof userDataForm>;
+
+export const userCompaniesForm = z.array(z.coerce.string());
+
+export type type_userCompaniesForm = z.infer<typeof userCompaniesForm>;
+
+export type type_userBody = {
+  userData: type_userDataForm,
+  userCompanies: type_userCompaniesForm,
+};
+
 
 export const filter_options = [
   { label: 'Todos los Usuarios', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },

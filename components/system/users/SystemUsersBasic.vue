@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { colors, darkColors } from '@/components/home/config';
 import type { Form } from '#ui/types'
 import { userDataForm, type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
@@ -115,7 +116,56 @@ profileOptions.value = profileOptionsData.value ?? [];
           option-attribute="name_es"
           :options="profileOptions" />
       </UFormGroup>
-      <UDivider v-if="isEditing" class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+
+      <div>
+        <p class="text-gray-900 dark:text-white font-semibold">
+          Tema oscuro::
+        </p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Utilizar fondo oscuro.
+        </p>
+      </div>
+      <UFormGroup name="dark_enabled">
+        <UToggle
+          v-model="userData.dark_enabled"
+          :disabled="isLoading" />
+      </UFormGroup>
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+
+      <div>
+        <p class="text-gray-900 dark:text-white font-semibold">
+          Tonalidad de fondo oscuro:
+        </p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Al activar el fondo oscuro, se usará el tono seleccionado.
+        </p>
+      </div>
+      <UFormGroup name="default_dark_color">
+        <USelectMenu
+          v-model="userData.default_dark_color"
+          size="xl"
+          :options="darkColors"
+          :loading="isLoading"/>
+      </UFormGroup>
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+
+      <div>
+        <p class="text-gray-900 dark:text-white font-semibold">
+          Color:
+        </p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Color de acentuación preferido.
+        </p>
+      </div>
+      <UFormGroup name="default_dark_color">
+        <USelectMenu
+          v-model="userData.default_color"
+          size="xl"
+          :options="colors"
+          :loading="isLoading"/>
+      </UFormGroup>
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
 
       <div v-if="isEditing">
         <p class="text-gray-900 dark:text-white font-semibold">

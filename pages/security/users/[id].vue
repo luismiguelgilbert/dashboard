@@ -3,25 +3,26 @@ import { type type_sys_companies } from '~/types/server/sys_companies';
 import { type type_sys_users } from '~/types/server/sys_users';
 import type { SystemUsersBasic } from '#build/components';
 
-const { isLoading, userData, userCompanies } = useSecurityUsersForm();
+const { isLoading, userData, userCompanies, resetUserData } = useSecurityUsersForm();
+const toast = useToast();
+
 
 const tabs = [
-  { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
   { value: 'avatar',label: 'Avatar', icon: 'i-heroicons-camera', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'|'avatar'>('basic');
 isLoading.value = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
+resetUserData();
 
 const route = useRoute();
 if (route.params.id) {
   const { data } = await useFetch<type_sys_users[]>(`/api/users/${route.params.id}`);
   userData.value = data.value?.[0]!;
   const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
-  companiesData.value?.forEach((company) => {
-    userCompanies.value.push(company.id);
-  });
+  userCompanies.value = companiesData.value?.map(company => company.id.toString()) ?? [];
 }
 
 const cancel = async () => {
@@ -33,6 +34,21 @@ const save = async () => {
   isLoading.value = true;
   const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
   if (!isBasicFormInvalid) {
+    const { error } = await useFetch(`/api/users/${route.params.id}`, {
+      method: 'PATCH',
+      body: {
+        userData: userData.value,
+        userCompanies: userCompanies.value,
+      },
+    });
+    toast.add({
+      title: error.value ? 'Error al guardar' : 'Datos guardados correctamente',
+      description: error.value ? error.value?.message: undefined,
+      icon: error.value ? 'i-heroicons-exclamation-triangle' : 'i-heroicons-check-circle',
+      color: error.value ? 'rose' : 'primary',
+      timeout: error.value ? 0 : 2000,
+    });
+    if (error.value) { return }
     await navigateTo('/security/users');
     isLoading.value = false;
   } else {
