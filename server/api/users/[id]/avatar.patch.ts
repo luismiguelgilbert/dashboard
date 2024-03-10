@@ -11,7 +11,7 @@ export default defineEventHandler( async (event) => {
     const { data: updloadedFileData, error: uploadError } = await supabaseClient.storage
       .from('avatars')
       .upload(newfilename, files[0].data,
-        {contentType: 'image', cacheControl: '3600', upsert: true}
+        {contentType: 'image', cacheControl: '100', upsert: true}
       );
 
     if (!uploadError && updloadedFileData) {

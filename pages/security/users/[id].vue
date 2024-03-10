@@ -33,8 +33,9 @@ const save = async () => {
   isLoading.value = true;
   const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
   const isCompaniesInvalid = userCompanies.value.length <= 0;
+  
+  //Upload Data
   if (!isBasicFormInvalid && !isCompaniesInvalid) {
-    //Upload Data
     const { error } = await useFetch(`/api/users/${route.params.id}`, {
       method: 'PATCH',
       body: {
@@ -42,34 +43,16 @@ const save = async () => {
         userCompanies: userCompanies.value,
       },
     });
-    toast.add({
-      title: (error.value ) ? 'Error al guardar' : 'Datos guardados correctamente',
-      description: error.value ? error.value?.message: undefined,
-      icon: error.value ? 'i-heroicons-exclamation-triangle' : 'i-heroicons-check-circle',
-      color: error.value ? 'rose' : 'primary',
-      timeout: error.value ? 0 : 2000,
-    });
-    if (error.value) { isLoading.value = false; return }
-
-    //Upload Avatar
-    if (avatar.value) {
-      const body = new FormData();
-      body.append('file', avatar.value);
-      const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
-        method: 'PATCH',
-        body,
-      });
+    if (error.value) {
       toast.add({
-        title: (avatarError.value ) ? 'Error al guardar avatar' : 'Avatar guardados correctamente',
-        description: avatarError.value ? avatarError.value?.message: undefined,
-        icon: avatarError.value ? 'i-heroicons-exclamation-triangle' : 'i-heroicons-check-circle',
-        color: avatarError.value ? 'rose' : 'primary',
-        timeout: avatarError.value ? 0 : 2000,
+        title: 'Error al guardar',
+        description: error.value?.message,
+        icon: 'i-heroicons-exclamation-triangle',
+        color: 'rose',
+        timeout: 0,
       });
-      if (error.value) { isLoading.value = false; return }
+      return;  
     }
-    await navigateTo('/security/users');
-    isLoading.value = false;
   } else {
     toast.add({
       title: 'Datos incompletos',
@@ -79,7 +62,37 @@ const save = async () => {
       timeout: 2000,
     });
     isLoading.value = false;
+    return;
   }
+
+  //Upload Avatar
+  if (avatar.value) {
+    const body = new FormData();
+    body.append('file', avatar.value);
+    const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
+      method: 'PATCH',
+      body,
+    });
+    if (avatarError.value) {
+      toast.add({
+        title: 'Error al guardar avatar',
+        description: avatarError.value?.message,
+        icon: 'i-heroicons-exclamation-triangle',
+        color: 'rose',
+        timeout: 0,
+      });
+      return;
+    }
+  }
+
+  toast.add({
+    title: 'Datos guardados correctamente',
+    icon: 'i-heroicons-check-circle',
+    color: 'primary',
+    timeout: 2000,
+  });
+  await navigateTo('/security/users');
+  isLoading.value = false;
 };
 </script>
 
