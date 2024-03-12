@@ -104,6 +104,22 @@ profileOptions.value = profileOptionsData.value ?? [];
           :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
+
+      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+      <div>
+        <p class="text-gray-900 dark:text-white font-semibold">
+          Sexo:
+        </p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          Sexo del usuario.
+        </p>
+      </div>
+      <UFormGroup name="user_sex">
+        <UToggle
+          v-model="userData.user_sex"
+          :disabled="isLoading" />
+        <span class="ml-5" style="vertical-align: text-bottom;">{{ userData.user_sex ? 'Hombre' : 'Mujer' }}</span>
+      </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div>
@@ -157,7 +173,10 @@ profileOptions.value = profileOptionsData.value ?? [];
       <UFormGroup name="dark_enabled">
         <UToggle
           v-model="userData.dark_enabled"
+          on-icon="i-heroicons-moon"
+          off-icon="i-heroicons-sun"
           :disabled="isLoading" />
+        <span class="ml-5" style="vertical-align: text-bottom;">{{ userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

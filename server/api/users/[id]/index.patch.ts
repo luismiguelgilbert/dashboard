@@ -27,6 +27,7 @@ export default defineEventHandler( async (event) => {
     //UserData sanitization
     const user_name = payload.userData.user_name ? `'${payload.userData.user_name}'` : null;
     const user_lastname = payload.userData.user_lastname ? `'${payload.userData.user_lastname}'` : null;
+    const user_sex = payload.userData.user_sex;
     const avatar_url = payload.userData.avatar_url ? `'${payload.userData.avatar_url}'` : null;
     const sys_profile_id = payload.userData.sys_profile_id ? `${payload.userData.sys_profile_id}` : null;
     const dark_enabled = payload.userData.dark_enabled;
@@ -39,6 +40,7 @@ export default defineEventHandler( async (event) => {
     const sqlUpdateUserData = `update sys_users set
        user_name = COALESCE(${user_name}, user_name)
       ,user_lastname = COALESCE(${user_lastname}, user_lastname)
+      ,user_sex = COALESCE(${user_sex}, user_sex)
       ,avatar_url = COALESCE(${avatar_url}, avatar_url)
       ,dark_enabled = COALESCE(${dark_enabled}, dark_enabled)
       ,default_color = COALESCE(${default_color}, default_color)

@@ -16,6 +16,7 @@ export const useSecurityUsersForm = () => {
       id: '',
       user_name: '',
       user_lastname: '',
+      user_sex: false,
       avatar_url: '',
       email: '',
       sys_profile_id: -1,

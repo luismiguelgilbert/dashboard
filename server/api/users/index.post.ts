@@ -27,6 +27,7 @@ export default defineEventHandler( async (event) => {
       a.id,
       INITCAP(b.user_name) as user_name,
       INITCAP(b.user_lastname) as user_lastname,
+      b.user_sex,
       b.avatar_url,
       b.website,
       a.email,
