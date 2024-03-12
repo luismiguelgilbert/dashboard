@@ -24,6 +24,7 @@ export const useSecurityUsersForm = () => {
       default_color: 'indigo',
     };
     avatar.value = null;
+    userCompanies.value = [];
   };
 
   return { isLoading, userData, userCompanies, avatar, profileOptions, companyOptions, resetUserData };

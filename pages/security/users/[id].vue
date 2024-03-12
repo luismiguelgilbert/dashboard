@@ -6,12 +6,11 @@ import type { SystemUsersBasic } from '#build/components';
 const { isLoading, userData, avatar, userCompanies, resetUserData } = useSecurityUsersForm();
 const toast = useToast();
 
-
 const tabs = [
   { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
-const tab = ref<'basic'|'companies'|'avatar'>('basic');
+const tab = ref<'basic'|'companies'>('basic');
 isLoading.value = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
@@ -51,7 +50,8 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
-      return;  
+      isLoading.value = false;
+      return;
     }
   } else {
     toast.add({
@@ -81,6 +81,7 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
+      isLoading.value = false;
       return;
     }
   }

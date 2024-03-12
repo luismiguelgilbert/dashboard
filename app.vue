@@ -33,8 +33,8 @@ useSeoMeta({
 
 <template>
   <div>
+    <NuxtLoadingIndicator :throttle="100" />
     <NuxtLayout>
-      <NuxtLoadingIndicator :throttle="100" />
       <NuxtPage />
     </NuxtLayout>
     <UNotifications />

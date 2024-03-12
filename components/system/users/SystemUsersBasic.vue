@@ -64,8 +64,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Nombres:
@@ -84,8 +84,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Apellidos:
@@ -104,8 +104,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           :ui="inputUI"
           :loading="isLoading" />
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Rol:
@@ -127,8 +127,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           option-attribute="name_es"
           :options="profileOptions" />
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Avatar:
@@ -144,8 +144,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           <UInput ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange" />
         </div>
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Tema oscuro::
@@ -159,8 +159,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           v-model="userData.dark_enabled"
           :disabled="isLoading" />
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Tonalidad de fondo oscuro:
@@ -176,8 +176,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           :options="darkColors"
           :loading="isLoading"/>
       </UFormGroup>
+      
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
           Color:
@@ -193,8 +193,8 @@ profileOptions.value = profileOptionsData.value ?? [];
           :options="colors"
           :loading="isLoading"/>
       </UFormGroup>
-      <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-
+      
+      <UDivider v-if="isEditing" class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div v-if="isEditing">
         <p class="text-gray-900 dark:text-white font-semibold">
           Código:

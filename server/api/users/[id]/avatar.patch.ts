@@ -1,5 +1,5 @@
 import serverDB from '@/server/utils/db';
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler( async (event) => {
   const id = (event.context.params?.id);
