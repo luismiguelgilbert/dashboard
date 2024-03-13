@@ -40,7 +40,7 @@ function onFileClick () {
 
 async function onSubmit (event: FormSubmitEvent<any>) {
   // Do something with data
-  console.log(event.data)
+  console.info(event.data)
 
   toast.add({ title: 'Profile updated', icon: 'i-heroicons-check-circle' })
 }

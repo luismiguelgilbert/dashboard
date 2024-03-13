@@ -1,28 +1,15 @@
 import serverDB from '@/server/utils/db';
-import type { type_userBody } from "@/types/server/sys_users";
+import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
+import { userBody } from "@/types/server/sys_users";
+import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
   try{
-    const payload: type_userBody = await readBody(event);
-    const id = (event.context.params?.id);
-
-    //Check Permissions
-    const userId = event.context.user.id;
-    const isUserAllowed = `select * 
-      from sys_users a
-      inner join sys_profiles_users b on a.id = b.user_id
-      inner join sys_profiles c on c.id = b.sys_profile_id
-      inner join sys_profiles_links d on d.sys_profile_id = c.id
-      where a.id = '${userId}'
-      and d.sys_link_id = '${PermissionsList.USERS_EDIT}'`;
-    const isUserAllowedResult = (await serverDB.query(isUserAllowed)).rowCount;
-    if (isUserAllowedResult === 0) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Forbidden',
-      });
-    }
+    const userSessionId = event.context.user.id;
+    const id = getRouterParam(event, 'id')
+    const payload = await readValidatedBody(event, body => userBody.parse(body))
+    await hasUserPermission(userSessionId, PermissionsList.USERS_EDIT);
 
     //UserData sanitization
     const user_name = payload.userData.user_name ? `'${payload.userData.user_name}'` : null;
@@ -46,7 +33,7 @@ export default defineEventHandler( async (event) => {
       ,default_color = COALESCE(${default_color}, default_color)
       ,default_dark_color = COALESCE(${default_dark_color}, default_dark_color)
       ,updated_at = now()
-      ,updated_by = '${userId}'
+      ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
 
@@ -69,12 +56,12 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlCompaniesInsert);
     
     await serverDB.query('COMMIT');
-    return { id: userId };
-  }catch(err) {
+    return { id: id };
+  } catch(err: NuxtError | any) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
-      statusCode: 500,
+      statusCode: err.statusCode ?? 500,
       statusMessage: `${err ?? 'Unhandled exception'}`,
     });
   }

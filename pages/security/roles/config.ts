@@ -32,7 +32,7 @@ export const rowActions = (row: type_sys_profiles) => [
   [{
     label: `Editar ${row.name_es}`,
     icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => console.log('Edit', row.name_es)
+    click: () => console.info('Edit', row.name_es)
   }, {
     label: 'Duplicate',
     icon: 'i-heroicons-document-duplicate-20-solid'

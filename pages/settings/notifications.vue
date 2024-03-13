@@ -39,7 +39,7 @@ const sections = [{
 
 async function onChange () {
   // Do something with data
-  console.log(state)
+  console.info(state)
 }
 </script>
 

@@ -92,6 +92,11 @@ export const userCompaniesForm = z.array(z.coerce.string());
 
 export type type_userCompaniesForm = z.infer<typeof userCompaniesForm>;
 
+export const userBody = z.object({
+  userData: userDataForm,
+  userCompanies: userCompaniesForm,
+});
+
 export type type_userBody = {
   userData: type_userDataForm,
   userCompanies: type_userCompaniesForm,

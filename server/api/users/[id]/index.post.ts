@@ -1,28 +1,15 @@
 import serverDB from '@/server/utils/db';
-import { serverSupabaseClient, serverSupabaseServiceRole } from '#supabase/server';
-import type { type_userBody } from "@/types/server/sys_users";
+import { serverSupabaseServiceRole } from '#supabase/server';
+import { hasUserPermission } from '~/server/utils/hasUserPermission';
+import { userBody } from "@/types/server/sys_users";
 import { PermissionsList } from '@/types/client/permissionsEnum';
+import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
-  try{
-    const payload: type_userBody = await readBody(event);
-
-    //Check Permissions
-    const userId = event.context.user.id;
-    const isUserAllowed = `select * 
-      from sys_users a
-      inner join sys_profiles_users b on a.id = b.user_id
-      inner join sys_profiles c on c.id = b.sys_profile_id
-      inner join sys_profiles_links d on d.sys_profile_id = c.id
-      where a.id = '${userId}'
-      and d.sys_link_id = '${PermissionsList.USERS_CREATE}'`;
-    const isUserAllowedResult = (await serverDB.query(isUserAllowed)).rowCount;
-    if (isUserAllowedResult === 0) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Forbidden',
-      });
-    }
+  try {
+    const userSessionId = event.context.user.id;
+    const payload = await readValidatedBody(event, body => userBody.parse(body))
+    await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     //UserData sanitization
     const email = `'${payload.userData.email}'`;
@@ -35,10 +22,8 @@ export default defineEventHandler( async (event) => {
     const default_color = payload.userData.default_color ? `'${payload.userData.default_color}'` : 'indigo';
     const default_dark_color = payload.userData.default_dark_color ? `'${payload.userData.default_dark_color}'` : 'zinc';
 
-    //Process
-    // const supabaseClient = await serverSupabaseClient(event);
+    //Create User on Supabase
     const supabaseService = await serverSupabaseServiceRole(event);
-
     const { data, error } = await supabaseService.auth.signUp({
       email: email.replaceAll("'", ''),
       password: process.env.NEWUSERSDEFAULTPWD!,
@@ -50,7 +35,6 @@ export default defineEventHandler( async (event) => {
         }
       }
     });
-
     if (error) {
       console.error({error});
       throw createError({
@@ -58,15 +42,14 @@ export default defineEventHandler( async (event) => {
         statusMessage: error.message,
       });
     }
-
     const id = data.user?.id;
 
+    //Database actions
     await serverDB.query('BEGIN');
 
     //Insert user data
     const sqlInsertUserData = `insert into public.sys_users (id, user_name, user_lastname, avatar_url, updated_by)
-      values ('${id}', ${user_name}, ${user_lastname}, '', '${id}');
-    `;
+      values ('${id}', ${user_name}, ${user_lastname}, '', '${id}');`;
     await serverDB.query(sqlInsertUserData);
 
     //Update user data
@@ -79,7 +62,7 @@ export default defineEventHandler( async (event) => {
       ,default_color = COALESCE(${default_color}, default_color)
       ,default_dark_color = COALESCE(${default_dark_color}, default_dark_color)
       ,updated_at = now()
-      ,updated_by = '${userId}'
+      ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
 
@@ -102,12 +85,12 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlCompaniesInsert);
     
     await serverDB.query('COMMIT');
-    return { id: userId };
-  }catch(err) {
+    return { id: id };
+  } catch(err: NuxtError | any) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
-      statusCode: 500,
+      statusCode: err.statusCode ?? 500,
       statusMessage: `${err ?? 'Unhandled exception'}`,
     });
   }

@@ -28,8 +28,8 @@ const validate = (state: any) => {
 }
 
 const onSubmit = async (data: any) => {
-  console.log('onSubmit')
-  console.log(data)
+  console.info('onSubmit')
+  console.info(data)
 }
 </script>
 

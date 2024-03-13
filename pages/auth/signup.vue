@@ -41,7 +41,7 @@ const validate = (state: any) => {
 }
 
 function onSubmit (data: any) {
-  console.log('Submitted', data)
+  console.info('Submitted', data)
 }
 </script>
 
