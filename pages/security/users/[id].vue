@@ -3,7 +3,7 @@ import { type type_sys_companies } from '~/types/server/sys_companies';
 import { type type_sys_users } from '~/types/server/sys_users';
 import type { SystemUsersBasic } from '#build/components';
 
-const { isLoading, userData, avatar, userCompanies, resetUserData } = useSecurityUsersForm();
+const { state, resetUserData } = useSecurityUsersForm();
 const toast = useToast();
 
 const tabs = [
@@ -11,35 +11,35 @@ const tabs = [
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'>('basic');
-isLoading.value = false;
+state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
 
 const route = useRoute();
 if (route.params.id) {
   const { data } = await useFetch<type_sys_users[]>(`/api/users/${route.params.id}`);
-  userData.value = data.value?.[0]!;
+  state.value.userData = data.value?.[0]!;
   const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
-  userCompanies.value = companiesData.value?.map(company => company.id.toString()) ?? [];
+  state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
 }
 
 const cancel = async () => {
-  isLoading.value = true;
+  state.value.isLoading = true;
   await navigateTo('/security/users');
 };
 
 const save = async () => {
-  isLoading.value = true;
+  state.value.isLoading = true;
   const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
-  const isCompaniesInvalid = userCompanies.value.length <= 0;
+  const isCompaniesInvalid = state.value.userCompanies.length <= 0;
   
   //Upload Data
   if (!isBasicFormInvalid && !isCompaniesInvalid) {
     const { error } = await useFetch(`/api/users/${route.params.id}`, {
       method: 'PATCH',
       body: {
-        userData: userData.value,
-        userCompanies: userCompanies.value,
+        userData: state.value.userData,
+        userCompanies: state.value.userCompanies,
       },
     });
     if (error.value) {
@@ -50,7 +50,7 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
-      isLoading.value = false;
+      state.value.isLoading = false;
       return;
     }
   } else {
@@ -61,14 +61,14 @@ const save = async () => {
       color: 'rose',
       timeout: 2000,
     });
-    isLoading.value = false;
+    state.value.isLoading = false;
     return;
   }
 
   //Upload Avatar
-  if (avatar.value) {
+  if (state.value.avatar) {
     const body = new FormData();
-    body.append('file', avatar.value);
+    body.append('file', state.value.avatar);
     const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
       method: 'PATCH',
       body,
@@ -81,7 +81,7 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
-      isLoading.value = false;
+      state.value.isLoading = false;
       return;
     }
   }
@@ -93,7 +93,7 @@ const save = async () => {
     timeout: 2000,
   });
   await navigateTo('/security/users');
-  isLoading.value = false;
+  state.value.isLoading = false;
 };
 </script>
 
@@ -102,10 +102,10 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Usuario">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="isLoading" @click="cancel">
+          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="isLoading" @click="save" />
+          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
       <BTabs
@@ -115,7 +115,6 @@ const save = async () => {
       <UDashboardPanelContent>
         <SystemUsersBasic v-show="tab === 'basic'" ref="systemUsersBasic" :is-editing="true" />
         <SystemUsersCompanies v-show="tab === 'companies'" />
-        <SystemUsersAvatar v-show="tab === 'avatar'" />
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

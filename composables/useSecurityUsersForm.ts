@@ -3,16 +3,18 @@ import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
 
 export const useSecurityUsersForm = () => {
-  const isLoading = useState<boolean>('isLoading', () => false);
-  const userData = useState<type_userDataForm>('userData');
-  const userCompanies = useState<string[]>('userCompanies', () => []);
-  const avatar = useState<File | null>('avatar', () => null);
-  const profileOptions = useState<type_sys_profiles[]>('profileOptions', () => []);
-  const companyOptions = useState<type_sys_companies[]>('companyOptions', () => []);
+  const state = useState('useSecurityUsersForm', () => { return {
+    isLoading: false as boolean,
+    userData: {} as type_userDataForm,
+    userCompanies: [] as String[],
+    avatar: null as File|null,
+    profileOptions: [] as type_sys_profiles[],
+    companyOptions: [] as type_sys_companies[],
+  }});
 
   const resetUserData = () => { 
-    userData.value = {
-      ...userData.value,
+    state.value.userData = {
+      ...state.value.userData,
       id: '',
       user_name: '',
       user_lastname: '',
@@ -24,9 +26,9 @@ export const useSecurityUsersForm = () => {
       default_dark_color: 'zinc',
       default_color: 'indigo',
     };
-    avatar.value = null;
-    userCompanies.value = [];
+    state.value.avatar = null;
+    state.value.userCompanies = [];
   };
 
-  return { isLoading, userData, userCompanies, avatar, profileOptions, companyOptions, resetUserData };
+  return { state, resetUserData };
 };

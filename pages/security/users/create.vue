@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SystemUsersBasic } from '#build/components';
 
-const { isLoading, userData, avatar, userCompanies, resetUserData } = useSecurityUsersForm();
+const { state, resetUserData } = useSecurityUsersForm();
 const toast = useToast();
 
 const tabs = [
@@ -9,28 +9,28 @@ const tabs = [
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'>('basic');
-isLoading.value = false;
+state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
 
 const cancel = async () => {
-  isLoading.value = true;
+  state.value.isLoading = true;
   await navigateTo('/security/users');
 };
 
 const save = async () => {
-  isLoading.value = true;
+  state.value.isLoading = true;
   let newUserId = null;
   const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
-  const isCompaniesInvalid = userCompanies.value.length <= 0;
+  const isCompaniesInvalid = state.value.userCompanies.length <= 0;
 
   //Upload Data
   if (!isBasicFormInvalid && !isCompaniesInvalid) {
     const { data, error } = await useFetch(`/api/users/0`, {
       method: 'POST',
       body: {
-        userData: userData.value,
-        userCompanies: userCompanies.value,
+        userData: state.value.userData,
+        userCompanies: state.value.userCompanies,
       },
     });
     if (error.value) {
@@ -41,7 +41,7 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
-      isLoading.value = false;
+      state.value.isLoading = false;
       return;
     }
     newUserId = data.value?.id;
@@ -53,14 +53,14 @@ const save = async () => {
       color: 'rose',
       timeout: 2000,
     });
-    isLoading.value = false;
+    state.value.isLoading = false;
     return;
   }
 
   //Upload Avatar
-  if (avatar.value && newUserId) {
+  if (state.value.avatar && newUserId) {
     const body = new FormData();
-    body.append('file', avatar.value);
+    body.append('file', state.value.avatar);
     const { error: avatarError } = await useFetch(`/api/users/${newUserId}/avatar`, {
       method: 'PATCH',
       body,
@@ -73,7 +73,7 @@ const save = async () => {
         color: 'rose',
         timeout: 0,
       });
-      isLoading.value = false;
+      state.value.isLoading = false;
       return;
     }
   }
@@ -85,7 +85,7 @@ const save = async () => {
     timeout: 2000,
   });
   await navigateTo('/security/users');
-  isLoading.value = false;
+  state.value.isLoading = false;
 };
 </script>
 
@@ -94,10 +94,10 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Crear Usuario">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="isLoading" @click="cancel">
+          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="isLoading" @click="save" />
+          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
       <BTabs v-model="tab" :items="tabs" />

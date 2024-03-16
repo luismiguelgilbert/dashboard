@@ -12,7 +12,7 @@ defineProps({
   }
 })
 
-const { isLoading, userData, avatar, profileOptions } = useSecurityUsersForm();
+const { state } = useSecurityUsersForm();
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const mainForm = ref<Form<type_userDataForm>>();
 const fileRef = ref<{ input: HTMLInputElement }>();
@@ -21,8 +21,8 @@ const onFileChange = (e: Event) => {
   const input = e.target as HTMLInputElement;
   if (!input.files?.length) { return }
   if (input.files[0].size / 1024 / 1024 > 1) { return }
-  avatar.value = input.files[0];
-  userData.value.avatar_url = URL.createObjectURL(input.files[0]);
+  state.value.avatar = input.files[0];
+  state.value.userData.avatar_url = URL.createObjectURL(input.files[0]);
 }
 
 const onFileClick = () => { fileRef.value?.input.click() }
@@ -39,11 +39,11 @@ const validateForm = async() => {
 defineExpose({ validateForm });
 
 const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
-profileOptions.value = profileOptionsData.value ?? [];
+state.value.profileOptions = profileOptionsData.value ?? [];
 </script>
 
 <template>
-  <UForm ref="mainForm" :state="userData" :schema="userDataForm">
+  <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
       <div class="col-span-1 sm:col-span-2 pt-1" />
       <div>
@@ -56,13 +56,13 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="email">
         <UInput
-          v-model:model-value="userData.email"
+          v-model:model-value="state.userData.email"
           size="xl"
           placeholder="Email del Usuario error?"
           icon="i-heroicons-envelope"
           error
           :ui="inputUI"
-          :loading="isLoading" />
+          :loading="state.isLoading" />
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -76,13 +76,13 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="user_name">
         <UInput
-          v-model:model-value="userData.user_name"
+          v-model:model-value="state.userData.user_name"
           required
           size="xl"
           placeholder="Nombres del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
-          :loading="isLoading" />
+          :loading="state.isLoading" />
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -96,13 +96,13 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="user_lastname">
         <UInput
-          v-model:model-value="userData.user_lastname"
+          v-model:model-value="state.userData.user_lastname"
           required
           size="xl"
           placeholder="Apellidos del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
-          :loading="isLoading" />
+          :loading="state.isLoading" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -116,9 +116,9 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="user_sex">
         <UToggle
-          v-model="userData.user_sex"
-          :disabled="isLoading" />
-        <span class="ml-5" style="vertical-align: text-bottom;">{{ userData.user_sex ? 'Hombre' : 'Mujer' }}</span>
+          v-model="state.userData.user_sex"
+          :disabled="state.isLoading" />
+        <span class="ml-5" style="vertical-align: text-bottom;">{{ state.userData.user_sex ? 'Hombre' : 'Mujer' }}</span>
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -132,16 +132,16 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="sys_profile_id">
         <USelectMenu
-          v-model="userData.sys_profile_id"
+          v-model="state.userData.sys_profile_id"
           searchable
-          :loading="isLoading"
+          :loading="state.isLoading"
           searchable-placeholder="Buscar rol..."
           placeholder="Seleccionar rol..."
           size="xl"
           icon="i-heroicons-user-circle"
           value-attribute="id"
           option-attribute="name_es"
-          :options="profileOptions" />
+          :options="state.profileOptions" />
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -155,7 +155,7 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="sys_profile_id">
         <div class="flex items-center">
-          <UAvatar :src="userData.avatar_url" :alt="userData.user_lastname" size="lg" />
+          <UAvatar :src="state.userData.avatar_url" :alt="state.userData.user_lastname" size="lg" />
           <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
           <UInput ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange" />
         </div>
@@ -172,11 +172,11 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="dark_enabled">
         <UToggle
-          v-model="userData.dark_enabled"
+          v-model="state.userData.dark_enabled"
           on-icon="i-heroicons-moon"
           off-icon="i-heroicons-sun"
-          :disabled="isLoading" />
-        <span class="ml-5" style="vertical-align: text-bottom;">{{ userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
+          :disabled="state.isLoading" />
+        <span class="ml-5" style="vertical-align: text-bottom;">{{ state.userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -190,10 +190,10 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="default_dark_color">
         <USelectMenu
-          v-model="userData.default_dark_color"
+          v-model="state.userData.default_dark_color"
           size="xl"
           :options="darkColors"
-          :loading="isLoading"/>
+          :loading="state.isLoading"/>
       </UFormGroup>
       
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -207,10 +207,10 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="default_dark_color">
         <USelectMenu
-          v-model="userData.default_color"
+          v-model="state.userData.default_color"
           size="xl"
           :options="colors"
-          :loading="isLoading"/>
+          :loading="state.isLoading"/>
       </UFormGroup>
       
       <UDivider v-if="isEditing" class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -224,7 +224,7 @@ profileOptions.value = profileOptionsData.value ?? [];
       </div>
       <UInput
         v-if="isEditing"
-        v-model:model-value="userData.id"
+        v-model:model-value="state.userData.id"
         required
         label="Código"
         size="xl"
@@ -232,7 +232,7 @@ profileOptions.value = profileOptionsData.value ?? [];
         placeholder="ID del Usuario"
         icon="i-heroicons-circle-stack"
         :ui="inputUI"
-        :loading="isLoading" />
+        :loading="state.isLoading" />
     </div>
     <br /> <br />
   </UForm>

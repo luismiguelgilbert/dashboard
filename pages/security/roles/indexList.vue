@@ -17,16 +17,17 @@ defineProps({
       <li
         v-for="(row, index) in rows"
         :key="index"
-        class="grid grid-cols-1 gap-x-6 p-4">
-        <div class="flex min-w-0 gap-x-2">
-          <UAvatar size="xs">
-            {{ row.name_es[0] }}
-          </UAvatar>
-          <p class="text-sm font-semibold leading-6 whitespace-normal break-all mr-2">
-            {{ row.name_es }}
-          </p>
-        </div>
-        <div class="grid grid-co1">
+        class="flex justify-between gap-x-6 py-5">
+        <div class="flex min-w-0 gap-x-4">
+          <div class="pl-2">
+            <UAvatar size="xs">
+              {{ row.name_es[0] }}
+            </UAvatar>
+          </div>
+          <div class="min-w-0 flex-auto">
+            <p class="text-sm font-semibold leading-6">
+              {{ row.name_es }}
+            </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
               Usuarios: {{ row.user_count }}
             </p>
@@ -39,7 +40,15 @@ defineProps({
               :color="row.is_active ? 'green' : 'red'"
               variant="link"
               class="capitalize p-0" />
+          </div>
         </div>
+        
+        <UButton
+          class="ml-2"
+          icon="i-heroicons-pencil-square"
+          variant="link"
+          color="gray"
+          @click="navigateTo(`/security/roles/${row.id}`)" />
       </li>
     </ul>
   </div>
