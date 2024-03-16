@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { module, title } from './config'
+import { actions, mainAction, module, title } from './config'
 import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles'
 import indexTable from './indexTable.vue'
 import indexList from './indexList.vue'
 
 useHead({ title })
 
-const { filterPayload } = useSecurityRoles();
+const { state } = useSecurityRoles();
 const rows = ref<type_sys_profiles[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: filterPayload.value })
+const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
-
-const goToCreateForm = async () => {
-  await navigateTo('/security/users/create');
-}
 </script>
 
 <template>
@@ -25,25 +21,27 @@ const goToCreateForm = async () => {
         <template #right>
           <div class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5">
             <IndexSearchDesktop
-              v-model:searchString="filterPayload.searchString"
-              v-model:page="filterPayload.page"
-              v-model:filterBy="filterPayload.filterBy"
-              v-model:sortBy="filterPayload.sortBy"
+              v-model:searchString="state.filterPayload.searchString"
+              v-model:page="state.filterPayload.page"
+              v-model:filterBy="state.filterPayload.filterBy"
+              v-model:sortBy="state.filterPayload.sortBy"
+              class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
               :placeholder="`Buscar ${module}...`"
               :filter-options="filter_options"
               :sort-options="sort_options" />
           </div>
           <IndexCreateButton
-            :label="`Nuevo ${module}`"
-            @click="goToCreateForm" />
+            :main-action="mainAction"
+            :actions="actions"
+            :is-loading="state.isLoading" />
         </template>
       </UDashboardNavbar>
       <UDashboardToolbar class="flex sm:hidden">
         <IndexSearchMobile
-          v-model:searchString="filterPayload.searchString"
-          v-model:page="filterPayload.page"
-          v-model:filterBy="filterPayload.filterBy"
-          v-model:sortBy="filterPayload.sortBy"
+          v-model:searchString="state.filterPayload.searchString"
+          v-model:page="state.filterPayload.page"
+          v-model:filterBy="state.filterPayload.filterBy"
+          v-model:sortBy="state.filterPayload.sortBy"
           class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
           :placeholder="`Buscar ${module}...`"
           :filter-options="filter_options"
@@ -54,8 +52,8 @@ const goToCreateForm = async () => {
         <indexList v-if="data" :rows="data" />
         <indexTable v-if="data" :rows="data" />
         <IndexPagination
-          v-model:pageSize="filterPayload.pageSize"
-          v-model:page="filterPayload.page"
+          v-model:pageSize="state.filterPayload.pageSize"
+          v-model:page="state.filterPayload.page"
           :pending="pending"
           :total-rows="totalRows" />
       </UDashboardPanelContent>

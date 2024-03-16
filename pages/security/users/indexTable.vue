@@ -39,7 +39,7 @@ defineProps({
     </template>
     <template #actions-data="{ row }: { row: type_sys_users }">
       <UButton
-        icon="i-heroicons-pencil"
+        icon="i-heroicons-pencil-square"
         variant="link"
         color="gray"
         @click="navigateTo(`/security/users/${row.id}`)" />

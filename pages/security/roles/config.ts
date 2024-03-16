@@ -1,4 +1,4 @@
-import { type type_sys_profiles } from '@/types/server/sys_profiles'
+import { type DropdownItem } from '#ui/types';
 export const title = 'Perfiles'
 export const module = 'perfil'
 export const columns = [
@@ -27,23 +27,45 @@ export const columns = [
     label: '',
     sortable: false
   },
-]
-export const rowActions = (row: type_sys_profiles) => [
-  [{
-    label: `Editar ${row.name_es}`,
-    icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => console.info('Edit', row.name_es)
-  }, {
-    label: 'Duplicate',
-    icon: 'i-heroicons-document-duplicate-20-solid'
-  }], [{
-    label: 'Archive',
-    icon: 'i-heroicons-archive-box-20-solid'
-  }, {
-    label: 'Move',
-    icon: 'i-heroicons-arrow-right-circle-20-solid'
-  }], [{
-    label: 'Delete',
-    icon: 'i-heroicons-trash-20-solid'
-  }]
-]
+];
+export const mainAction: DropdownItem = {
+  label: 'Nuevo perfil',
+  icon: 'i-heroicons-plus',
+  click: () => { navigateTo('/security/roles/create') }  
+};
+export const actions: DropdownItem[][] = [
+  [
+    {
+      label: 'Descargar',
+      icon: 'i-heroicons-document-arrow-down',
+      click: async () => { downloadFile() }
+    },
+  ],
+];
+//Functions
+const downloadFile = async() => {
+  try {
+    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityRoles) {
+      const nuxtApp = window.useNuxtApp();
+      const state = nuxtApp.payload.state.$suseSecurityRoles;
+      state.isLoading = true;
+      const { data, error } = await useFetch('/api/roles/download', {
+        headers: { "Content-Type": "multipart/form-data" },
+        method: 'post', 
+        body: state.filterPayload,
+      });
+      if (!error.value && data.value) {
+        const url = window.URL.createObjectURL(data.value);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Perfiles.xls');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      state.isLoading = false;
+    }
+  } catch (error) {
+    console.error(error)
+  }
+};

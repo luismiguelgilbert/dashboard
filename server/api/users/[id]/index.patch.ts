@@ -6,8 +6,8 @@ import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
   try{
-    const userSessionId = event.context.user.id;
     const id = getRouterParam(event, 'id')
+    const userSessionId = event.context.user.id;
     const payload = await readValidatedBody(event, body => userBody.parse(body))
     await hasUserPermission(userSessionId, PermissionsList.USERS_EDIT);
 

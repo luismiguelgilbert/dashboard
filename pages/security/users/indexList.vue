@@ -45,7 +45,8 @@ defineProps({
           </div>
         </div>
         <UButton
-          icon="i-heroicons-pencil"
+          class="ml-2"
+          icon="i-heroicons-pencil-square"
           variant="link"
           color="gray"
           @click="navigateTo(`/security/users/${row.id}`)" />

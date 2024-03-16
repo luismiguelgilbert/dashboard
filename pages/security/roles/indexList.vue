@@ -28,7 +28,7 @@ defineProps({
         </div>
         <div class="grid grid-co1">
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
-              Usuarios: {{ row.row_count }}
+              Usuarios: {{ row.user_count }}
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
               Creado: {{ isToday(new Date(row.created_at!)) ? format(new Date(row.created_at!), 'HH:mm') : format(new Date(row.created_at!), 'dd MMM') }}

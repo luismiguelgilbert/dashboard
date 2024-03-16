@@ -1,22 +1,19 @@
-import serverDB from '@/server/utils/db'
+import serverDB from '@/server/utils/db';
+import Excel from 'exceljs';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { sanitizeSQL } from '@/utils/utils'
 import { filter_payload } from '@/types/server/filter_payload'
-import { filter_options, sort_options, sys_users, type type_sys_users } from '@/types/server/sys_users'
-import type { NuxtError } from '#app';
+import { sanitizeSQL } from '@/utils/utils'
+import { filter_options, sort_options } from '@/types/server/sys_users'
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.USERS_READ);
-
+    await hasUserPermission(userSessionId, PermissionsList.USERS_EXPORT);
+    
     const filter = await readValidatedBody(event, body => filter_payload.parse(body))
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
-    const page = Number(filter.page)
-    const pageSize = Number(filter.pageSize)
-    const offset = pageSize * (page - 1)
     const filterConditions: Array<string> = []
     filter_options.forEach(x => {
       if (filter.filterBy.includes(x.value)) {
@@ -38,12 +35,10 @@ export default defineEventHandler( async (event) => {
       b.avatar_url,
       b.website,
       a.email,
-      coalesce(c.sys_profile_id, 0) as sys_profile_id,
       INITCAP(coalesce(d.name_es, '...')) as sys_profile_name,
       to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at,
       to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at,
-      to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at,
-      count(*) OVER() AS row_count
+      to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
       from auth.users a
       left join sys_users b on a.id = b.id
       left join sys_profiles_users c on c.user_id = a.id
@@ -52,18 +47,33 @@ export default defineEventHandler( async (event) => {
       ${filterBy}
       ${filterSearchString}
       ORDER BY ${sortBy}
-      OFFSET ${offset}
-      LIMIT ${pageSize}
     `
-    const data = await serverDB.query(text)
-    const result: type_sys_users[] = sys_users.array().parse(data.rows)
-    
-    return result
-  } catch(err: NuxtError | any) {
-    console.error(`Error at ${event.path}. ${err}`);
+    const data = await serverDB.query(text);
+    const workbook = new Excel.Workbook();
+    const worksheet = await workbook.addWorksheet('Usuarios');
+    const fileColumns = [
+      { key: 'id', header: 'Código', width: 50  },
+      { key: 'user_name', header: 'Nombres', width: 25 },
+      { key: 'user_lastname', header: 'Apellidos', width: 25 },
+      { key: 'user_sex', header: 'Sexo', width: 25 },
+      { key: 'email', header: 'email', width: 35 },
+      { key: 'sys_profile_name', header: 'Perfil', width: 25 },
+      { key: 'last_sign_in_at', header: 'Último_Ingreso', width: 25 },
+      { key: 'created_at', header: 'Fecha_Creación', width: 25 },
+      { key: 'updated_at', header: 'Fecha_Actualización', width: 25 },
+    ];
+    worksheet.columns = fileColumns;
+    worksheet.getRow(1).font = { size: 16, bold: true };
+    worksheet.views = [{state: 'frozen', ySplit: 1}];
+    worksheet.addRows(data.rows);
+    setHeader(event, 'Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    return await workbook.xlsx.writeBuffer();
+  } catch(err) {
+    console.error(`Error at ${event.path}. ${err}`)
     throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+      statusCode: 500,
+      statusMessage: 'Unhandled exception',
+    })
   }
-})
+});

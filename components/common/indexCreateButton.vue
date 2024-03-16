@@ -1,32 +1,34 @@
 <script setup lang="ts">
+import type { DropdownItem } from '#ui/types'
+
 defineProps({
-  label: {
-    type: String,
+  mainAction: {
+    type: Object as PropType<DropdownItem>,
     required: false,
-    default: 'Nuevo'
+    default: () => ({})
   },
-  totalRows: {
-    type: Number,
+  actions: {
+    type: Array as PropType<DropdownItem[][]>,
     required: false,
-    default: 0
+    default: () => []
   },
-  loading: {
+  isLoading: {
     type: Boolean,
     required: false,
     default: false
   },
 });
-const emit = defineEmits(['new'])
-
 </script>
 
 <template>  
   <UButtonGroup size="sm" orientation="horizontal">
-    <UButton color="gray" :label="label" @click="emit('new')" :loading="loading">
-      <template #leading v-if="!loading">
-        <i class="i-heroicons-plus hidden sm:block" />
+    <UButton color="white" :label="mainAction.label" @click="mainAction.click"  :loading="isLoading">
+      <template #leading v-if="!isLoading">
+        <i :class="`${mainAction.icon} hidden sm:block`" />
       </template>
     </UButton>
-    <UButton icon="i-heroicons-chevron-down-20-solid" color="gray" :loading="loading" />
+    <UDropdown :items="actions" :popper="{ placement: 'bottom-start' }" >
+      <UButton color="gray" trailing-icon="i-heroicons-chevron-down-20-solid" />
+    </UDropdown>
   </UButtonGroup>
 </template>

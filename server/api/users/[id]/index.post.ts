@@ -1,9 +1,10 @@
 import serverDB from '@/server/utils/db';
 import { serverSupabaseServiceRole } from '#supabase/server';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
-import { userBody } from "@/types/server/sys_users";
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import type { NuxtError } from '#app';
+
+import { userBody } from "@/types/server/sys_users";
 
 export default defineEventHandler( async (event) => {
   try {

@@ -1,3 +1,5 @@
+import { type DropdownItem } from '#ui/types';
+
 export const title = 'Usuarios';
 export const module = 'usuario';
 export const columns = [
@@ -22,3 +24,49 @@ export const columns = [
     sortable: false
   },
 ];
+export const mainAction: DropdownItem = {
+  label: 'Nuevo usuario',
+  icon: 'i-heroicons-plus',
+  click: () => { navigateTo('/security/users/create') }  
+};
+export const actions: DropdownItem[][] = [
+  [
+    {
+      label: 'Descargar',
+      icon: 'i-heroicons-document-arrow-down',
+      click: async () => { downloadFile() }
+    },
+    {
+      label: 'Carga en lote',
+      icon: 'i-heroicons-pencil-square-20-solid',
+      click: () => { console.info('Bulk upload!!') }
+    }
+  ],
+];
+//Functions
+const downloadFile = async() => {
+  try {
+    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityUsers) {
+      const nuxtApp = window.useNuxtApp();
+      const state = nuxtApp.payload.state.$suseSecurityUsers;
+      state.isLoading = true;
+      const { data, error } = await useFetch('/api/users/download', {
+        headers: { "Content-Type": "multipart/form-data" },
+        method: 'post', 
+        body: state.filterPayload,
+      });
+      if (!error.value && data.value) {
+        const url = window.URL.createObjectURL(data.value);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Usuarios.xls');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+      state.isLoading = false;
+    }
+  } catch (error) {
+    console.error(error)
+  }
+};

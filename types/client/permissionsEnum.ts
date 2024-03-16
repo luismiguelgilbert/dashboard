@@ -1,8 +1,10 @@
 // FROM [dbo].[sys_links]
 export enum PermissionsList {
+  USERS_READ = '0101',
   USERS_CREATE = '010101',
   USERS_EDIT = '010102',
   USERS_EXPORT = '010103',
+  ROLES_READ = '0102',
   ROLES_CREATE = '010201',
   ROLES_EDIT = '010202',
   ROLES_EXPORT = '010203',  

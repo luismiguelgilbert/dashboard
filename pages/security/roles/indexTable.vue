@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { columns, rowActions } from './config'
+import { columns } from './config'
 import { type type_sys_profiles } from '@/types/server/sys_profiles'
 import { format, isToday } from 'date-fns'
 
@@ -43,10 +43,12 @@ defineProps({
         {{ isToday(new Date(row.updated_at!)) ? format(new Date(row.updated_at!), 'HH:mm') : format(new Date(row.updated_at!), 'dd MMM') }}
       </div>
     </template>
-    <template #actions-data="{ row }">
-      <UDropdown :items="rowActions(row)">
-        <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-      </UDropdown>
+    <template #actions-data="{ row }: { row: type_sys_profiles }">
+      <UButton
+        icon="i-heroicons-pencil-square"
+        variant="link"
+        color="gray"
+        @click="navigateTo(`/security/roles/${row.id}`)" />
     </template>
   </UTable>
 </template>
