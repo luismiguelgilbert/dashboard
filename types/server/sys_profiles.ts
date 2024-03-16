@@ -24,9 +24,6 @@ export type type_sys_profiles_lookup = z.infer<typeof sys_profiles_lookup>
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
   { label: 'Inactivos', value: 2, sqlValue: 'a.is_active = false', icon: 'i-heroicons-funnel' },
-  // { label: 'Activos', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
-  // { label: 'Inactivos', value: 2, sqlValue: 'false', icon: 'i-heroicons-funnel' },
-  // { label: 'Todos los Perfiles', value: 3, sqlValue: 'a.is_active', icon: 'i-heroicons-funnel' },
 ]
 
 export const sort_options = [
@@ -35,3 +32,11 @@ export const sort_options = [
   { label: '# Usuarios', value: 3, sqlValue: 'user_count desc', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Código', value: 4, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' },
 ]
+
+export const profileDataForm = z.object({
+  id: z.coerce.string().optional(),
+  name_es: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
+  is_active: z.coerce.boolean(),
+});
+
+export type type_profileDataForm = z.infer<typeof profileDataForm>;

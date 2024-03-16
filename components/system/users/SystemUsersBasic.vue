@@ -23,9 +23,9 @@ const onFileChange = (e: Event) => {
   if (input.files[0].size / 1024 / 1024 > 1) { return }
   state.value.avatar = input.files[0];
   state.value.userData.avatar_url = URL.createObjectURL(input.files[0]);
-}
+};
 
-const onFileClick = () => { fileRef.value?.input.click() }
+const onFileClick = () => { fileRef.value?.input.click() };
 
 const validateForm = async() => {
   try {
@@ -58,9 +58,10 @@ state.value.profileOptions = profileOptionsData.value ?? [];
         <UInput
           v-model:model-value="state.userData.email"
           size="xl"
-          placeholder="Email del Usuario error?"
+          placeholder="Email del Usuario"
           icon="i-heroicons-envelope"
           error
+          :disabled="isEditing"
           :ui="inputUI"
           :loading="state.isLoading" />
       </UFormGroup>
@@ -155,7 +156,7 @@ state.value.profileOptions = profileOptionsData.value ?? [];
       </div>
       <UFormGroup name="sys_profile_id">
         <div class="flex items-center">
-          <UAvatar :src="state.userData.avatar_url" :alt="state.userData.user_lastname" size="lg" />
+          <UAvatar :src="state.userData.avatar_url!" :alt="state.userData.user_lastname" size="lg" />
           <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
           <UInput ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange" />
         </div>
