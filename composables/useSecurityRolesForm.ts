@@ -1,4 +1,5 @@
 import { profileDataForm,  type type_profileDataForm } from '@/types/server/sys_profiles';
+import { type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_links } from '@/types/server/sys_links';
 
 export const useSecurityRolesForm = () => {
@@ -6,6 +7,7 @@ export const useSecurityRolesForm = () => {
     isLoading: false as boolean,
     profileData: {} as type_profileDataForm,
     profileLinks: [] as string[],
+    profileUsers: [] as type_userDataForm[],
     syslinksOptions: [] as type_sys_links[],
   }});
 

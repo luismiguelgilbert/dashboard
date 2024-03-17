@@ -7,7 +7,7 @@ const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
 const toast = useToast();
 
 const tabs = [
-  { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
 ];
 const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();

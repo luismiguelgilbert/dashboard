@@ -2,6 +2,7 @@
 import type { Form } from '#ui/types'
 import { type type_profile_sys_links } from '~/types/server/sys_links';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
+import { type type_userDataForm } from '@/types/server/sys_users';
 import type { SystemRolesBasic } from '#build/components';
 
 const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
@@ -9,7 +10,7 @@ const toast = useToast();
 const route = useRoute();
 
 const tabs = [
-  { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'users',label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 const tab = ref<'basic'|'users'>('basic');
@@ -23,6 +24,8 @@ if (route.params.id) {
   state.value.profileData = data.value?.[0]!;
   const { data: profileLinks } = await useFetch<type_profile_sys_links[]>(`/api/roles/${route.params.id}/links`);
   state.value.profileLinks = profileLinks.value?.map(link => link.sys_link_id) ?? [];
+  const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/roles/${route.params.id}/users`);
+  state.value.profileUsers = profileUsers.value ?? [];
 }
 
 const cancel = async () => {
@@ -73,71 +76,6 @@ const save = async () => {
   } else {
     showInvalidFormData();
   }
-  // isLoading.value = true;
-  // const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
-  // const isCompaniesInvalid = userCompanies.value.length <= 0;
-  
-  // //Upload Data
-  // if (!isBasicFormInvalid && !isCompaniesInvalid) {
-  //   const { error } = await useFetch(`/api/users/${route.params.id}`, {
-  //     method: 'PATCH',
-  //     body: {
-  //       userData: userData.value,
-  //       userCompanies: userCompanies.value,
-  //     },
-  //   });
-  //   if (error.value) {
-  //     toast.add({
-  //       title: 'Error al guardar',
-  //       description: error.value?.message,
-  //       icon: 'i-heroicons-exclamation-triangle',
-  //       color: 'rose',
-  //       timeout: 0,
-  //     });
-  //     isLoading.value = false;
-  //     return;
-  //   }
-  // } else {
-  //   toast.add({
-  //     title: 'Datos incompletos',
-  //     description: 'Por favor, complete los campos requeridos',
-  //     icon: 'i-heroicons-no-symbol',
-  //     color: 'rose',
-  //     timeout: 2000,
-  //   });
-  //   isLoading.value = false;
-  //   return;
-  // }
-
-  // //Upload Avatar
-  // if (avatar.value) {
-  //   const body = new FormData();
-  //   body.append('file', avatar.value);
-  //   const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
-  //     method: 'PATCH',
-  //     body,
-  //   });
-  //   if (avatarError.value) {
-  //     toast.add({
-  //       title: 'Error al guardar avatar',
-  //       description: avatarError.value?.message,
-  //       icon: 'i-heroicons-exclamation-triangle',
-  //       color: 'rose',
-  //       timeout: 0,
-  //     });
-  //     isLoading.value = false;
-  //     return;
-  //   }
-  // }
-
-  // toast.add({
-  //   title: 'Datos guardados correctamente',
-  //   icon: 'i-heroicons-check-circle',
-  //   color: 'primary',
-  //   timeout: 2000,
-  // });
-  // await navigateTo('/security/users');
-  // isLoading.value = false;
 };
 </script>
 
