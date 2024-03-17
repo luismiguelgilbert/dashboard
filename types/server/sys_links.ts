@@ -16,3 +16,8 @@ export const sys_links = z.object({
   sort_path: z.coerce.string().optional().nullable(),
 })
 export type type_sys_links = z.infer<typeof sys_links>
+
+export const profile_sys_links = z.object({
+  sys_link_id: z.coerce.string(),
+});
+export type type_profile_sys_links = z.infer<typeof profile_sys_links>

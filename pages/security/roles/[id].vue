@@ -1,32 +1,46 @@
 <script setup lang="ts">
-import { type type_sys_companies } from '~/types/server/sys_companies';
-import { type type_sys_users } from '~/types/server/sys_users';
-import type { SystemUsersBasic } from '#build/components';
+import type { Form } from '#ui/types'
+import { type type_profile_sys_links } from '~/types/server/sys_links';
+import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
+import type { SystemRolesBasic } from '#build/components';
 
 const { state, resetProfileData } = useSecurityRolesForm();
 const toast = useToast();
+const route = useRoute();
 
 const tabs = [
-  { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'basic', label: 'Información', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'users',label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 const tab = ref<'basic'|'users'>('basic');
+const mainForm = ref<Form<type_profileDataForm>>();
 state.value.isLoading = false;
-const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
+const systemRolesBasic = ref<InstanceType<typeof SystemRolesBasic>>();
 resetProfileData();
 
-const route = useRoute();
 if (route.params.id) {
-  const { data } = await useFetch<type_sys_users[]>(`/api/roles/${route.params.id}`);
-  // state.value.profileData = data.value?.[0]!;
-  // const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
-  // userCompanies.value = companiesData.value?.map(company => company.id.toString()) ?? [];
+  const { data } = await useFetch<type_profileDataForm[]>(`/api/roles/${route.params.id}`);
+  state.value.profileData = data.value?.[0]!;
+  const { data: profileLinks } = await useFetch<type_profile_sys_links[]>(`/api/roles/${route.params.id}/links`);
+  state.value.profileLinks = profileLinks.value?.map(link => link.sys_link_id) ?? [];
 }
 
 const cancel = async () => {
   state.value.isLoading = true;
   await navigateTo('/security/roles');
 };
+
+const showInvalidFormData = () => {
+  toast.add({
+    title: 'Datos incompletos',
+    description: 'Por favor, complete los campos requeridos',
+    icon: 'i-heroicons-no-symbol',
+    color: 'rose',
+    timeout: 2000,
+  });
+  state.value.isLoading = false;
+  mainForm.value?.validate();
+}
 
 const save = async () => {
   // isLoading.value = true;
@@ -108,13 +122,12 @@ const save = async () => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs
-        v-model="tab"
-        :items="tabs"
-      />
+      <BTabs v-model="tab" :items="tabs"/>
       <UDashboardPanelContent>
-        <SystemRolesBasic v-show="tab === 'basic'" ref="systemRolesBasic" :is-editing="true" />
-        <SystemRolesUsers v-show="tab === 'users'" />
+        <UForm ref="mainForm" :state="state.profileData" :schema="profileDataForm">
+          <SystemRolesBasic v-if="tab === 'basic'" ref="systemRolesBasic" :is-editing="true" />
+          <SystemRolesUsers v-if="tab === 'users'" />
+        </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

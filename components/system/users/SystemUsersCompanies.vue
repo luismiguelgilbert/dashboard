@@ -2,8 +2,6 @@
 import type { type_sys_companies } from '~/types/server/sys_companies';
 
 const { state } = useSecurityUsersForm();
-const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
-state.value.companyOptions = companyOptionsData.value ?? [];
 
 const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
   return state.value.userCompanies.some(company => company === selectedCompany.id);
@@ -16,6 +14,12 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
   } else {
     state.value.userCompanies.push(selectedCompany.id);
   }
+}
+
+//LOOKUP DATA
+if (!state.value.companyOptions.length) {
+  const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
+  state.value.companyOptions = companyOptionsData.value ?? [];
 }
 </script>
 

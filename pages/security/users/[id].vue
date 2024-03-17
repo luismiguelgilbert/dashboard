@@ -1,21 +1,23 @@
 <script setup lang="ts">
+import type { Form } from '#ui/types'
 import { type type_sys_companies } from '~/types/server/sys_companies';
-import { type type_sys_users } from '~/types/server/sys_users';
+import { userDataForm, type type_sys_users, type type_userDataForm } from '~/types/server/sys_users';
 import type { SystemUsersBasic } from '#build/components';
 
-const { state, resetUserData } = useSecurityUsersForm();
+const { state, resetUserData, validateUserData } = useSecurityUsersForm();
 const toast = useToast();
+const route = useRoute();
 
 const tabs = [
   { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'>('basic');
+const mainForm = ref<Form<type_userDataForm>>();
 state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
 
-const route = useRoute();
 if (route.params.id) {
   const { data } = await useFetch<type_sys_users[]>(`/api/users/${route.params.id}`);
   state.value.userData = data.value?.[0]!;
@@ -28,13 +30,24 @@ const cancel = async () => {
   await navigateTo('/security/users');
 };
 
+const showInvalidFormData = () => {
+  toast.add({
+    title: 'Datos incompletos',
+    description: 'Por favor, complete los campos requeridos',
+    icon: 'i-heroicons-no-symbol',
+    color: 'rose',
+    timeout: 2000,
+  });
+  state.value.isLoading = false;
+  mainForm.value?.validate();
+}
+
 const save = async () => {
   state.value.isLoading = true;
-  const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
-  const isCompaniesInvalid = state.value.userCompanies.length <= 0;
+  const isDataValid = await validateUserData();
   
   //Upload Data
-  if (!isBasicFormInvalid && !isCompaniesInvalid) {
+  if (isDataValid) {
     const { error } = await useFetch(`/api/users/${route.params.id}`, {
       method: 'PATCH',
       body: {
@@ -53,47 +66,38 @@ const save = async () => {
       state.value.isLoading = false;
       return;
     }
-  } else {
+    //Upload Avatar
+    if (state.value.avatar) {
+      const body = new FormData();
+      body.append('file', state.value.avatar);
+      const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
+        method: 'PATCH',
+        body,
+      });
+      if (avatarError.value) {
+        toast.add({
+          title: 'Error al guardar avatar',
+          description: avatarError.value?.message,
+          icon: 'i-heroicons-exclamation-triangle',
+          color: 'rose',
+          timeout: 0,
+        });
+        state.value.isLoading = false;
+        return;
+      }
+    }
+
     toast.add({
-      title: 'Datos incompletos',
-      description: 'Por favor, complete los campos requeridos',
-      icon: 'i-heroicons-no-symbol',
-      color: 'rose',
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      color: 'primary',
       timeout: 2000,
     });
+    await navigateTo('/security/users');
     state.value.isLoading = false;
-    return;
+  } else {
+    showInvalidFormData();
   }
-
-  //Upload Avatar
-  if (state.value.avatar) {
-    const body = new FormData();
-    body.append('file', state.value.avatar);
-    const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
-      method: 'PATCH',
-      body,
-    });
-    if (avatarError.value) {
-      toast.add({
-        title: 'Error al guardar avatar',
-        description: avatarError.value?.message,
-        icon: 'i-heroicons-exclamation-triangle',
-        color: 'rose',
-        timeout: 0,
-      });
-      state.value.isLoading = false;
-      return;
-    }
-  }
-
-  toast.add({
-    title: 'Datos guardados correctamente',
-    icon: 'i-heroicons-check-circle',
-    color: 'primary',
-    timeout: 2000,
-  });
-  await navigateTo('/security/users');
-  state.value.isLoading = false;
 };
 </script>
 
@@ -108,13 +112,12 @@ const save = async () => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs
-        v-model="tab"
-        :items="tabs"
-      />
+      <BTabs v-model="tab" :items="tabs"/>
       <UDashboardPanelContent>
-        <SystemUsersBasic v-show="tab === 'basic'" ref="systemUsersBasic" :is-editing="true" />
-        <SystemUsersCompanies v-show="tab === 'companies'" />
+        <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
+          <SystemUsersBasic v-if="tab === 'basic'" ref="systemUsersBasic" :is-editing="true" />
+          <SystemUsersCompanies v-if="tab === 'companies'" />
+        </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

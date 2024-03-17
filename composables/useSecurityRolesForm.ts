@@ -1,4 +1,4 @@
-import { type type_profileDataForm } from '@/types/server/sys_profiles';
+import { profileDataForm,  type type_profileDataForm } from '@/types/server/sys_profiles';
 import { type type_sys_links } from '@/types/server/sys_links';
 
 export const useSecurityRolesForm = () => {
@@ -16,7 +16,15 @@ export const useSecurityRolesForm = () => {
       name_es: '',
       is_active: true,
     };
+    state.value.profileLinks = [];
   };
 
-  return { state, resetProfileData };
+  const validateProfileData = async () => {
+    const isProfileDataValid = await profileDataForm.safeParse(state.value.profileData);
+    const isLinksDataValid = state.value.profileLinks.length > 0;
+
+    return isProfileDataValid.success && isLinksDataValid;
+  };
+
+  return { state, resetProfileData, validateProfileData };
 };

@@ -40,3 +40,10 @@ export const profileDataForm = z.object({
 });
 
 export type type_profileDataForm = z.infer<typeof profileDataForm>;
+
+export const profileLinksForm = z.array(z.coerce.string());
+
+export const profileBody = z.object({
+  profileData: profileDataForm,
+  profileLinks: profileLinksForm,
+});

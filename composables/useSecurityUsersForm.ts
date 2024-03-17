@@ -1,4 +1,4 @@
-import { type type_userDataForm } from '@/types/server/sys_users';
+import { userDataForm, type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
 
@@ -28,7 +28,15 @@ export const useSecurityUsersForm = () => {
     };
     state.value.avatar = null;
     state.value.userCompanies = [];
+    state.value.profileOptions = [];
   };
 
-  return { state, resetUserData };
+  const validateUserData = async () => {
+    const isUserDataValid = await  userDataForm.safeParse(state.value.userData);
+    const isCompaniesDataValid = state.value.userCompanies.length > 0;
+
+    return isUserDataValid.success && isCompaniesDataValid;
+  };
+
+  return { state, resetUserData, validateUserData };
 };
