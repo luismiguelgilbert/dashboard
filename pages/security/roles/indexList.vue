@@ -25,7 +25,7 @@ defineProps({
             </UAvatar>
           </div>
           <div class="min-w-0 flex-auto">
-            <p class="text-sm font-semibold leading-6">
+            <p class="text-sm truncate font-semibold leading-6">
               {{ row.name_es }}
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">

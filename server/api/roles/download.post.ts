@@ -39,6 +39,7 @@ export default defineEventHandler( async (event) => {
         , INITCAP(a.name_es) as name_es
         , a.is_active
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
+        , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
         , COALESCE(b.user_count,0) as user_count
       FROM sys_profiles a
       LEFT JOIN users_by_profile b on a.id = b.sys_profile_id
@@ -53,9 +54,10 @@ export default defineEventHandler( async (event) => {
     const fileColumns = [
       { key: 'id', header: 'Código', width: 10  },
       { key: 'name_es', header: 'Perfil', width: 40 },
-      { key: 'is_active', header: 'Activo', width: 25 },
-      { key: 'user_count', header: '# Usuarios', width: 25 },
+      { key: 'is_active', header: 'Activo', width: 10 },
+      { key: 'user_count', header: '# Usuarios', width: 15 },
       { key: 'created_at', header: 'Fecha_Creación', width: 25 },
+      { key: 'updated_at', header: 'Fecha_Actualización', width: 25 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };

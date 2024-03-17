@@ -34,6 +34,7 @@ export default defineEventHandler( async (event) => {
         , a.company_number
         , a.name_es
         , a.name_es_short
+        , a.avatar_url
         , a.billing_phone
         , a.billing_address
         , a.is_active

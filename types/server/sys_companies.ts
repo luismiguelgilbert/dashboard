@@ -15,6 +15,7 @@ export const sys_companies = z.object({
   billing_phone: z.string().optional().default(''),
   billing_address: z.string().optional().default(''),
   is_active: z.boolean().default(true),
+  avatar_url: z.coerce.string().optional().nullable(),
   created_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
   updated_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
   row_count: z.coerce.number().optional().nullable().default(0),

@@ -41,6 +41,11 @@ defineProps({
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
               {{ row.company_number }}
             </p>
+            <UButton
+              :label="row.is_active? 'activo' : 'inactivo'"
+              :color="row.is_active ? 'green' : 'red'"
+              variant="link"
+              class="capitalize p-0" />
           </div>
         </div>
         <UButton
