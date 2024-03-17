@@ -25,9 +25,9 @@ useSeoMeta({
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: 'https://dashboard-template.nuxt.dev/social-card.png',
-  twitterImage: 'https://dashboard-template.nuxt.dev/social-card.png',
-  twitterCard: 'summary_large_image'
+  // ogImage: 'https://dashboard-template.nuxt.dev/social-card.png',
+  // twitterImage: 'https://dashboard-template.nuxt.dev/social-card.png',
+  // twitterCard: 'summary_large_image'
 })
 </script>
 
@@ -41,3 +41,15 @@ useSeoMeta({
     <UModals />
   </div>
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.4s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+</style>
