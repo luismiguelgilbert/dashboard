@@ -4,7 +4,7 @@ import { type type_profile_sys_links } from '~/types/server/sys_links';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
 import type { SystemRolesBasic } from '#build/components';
 
-const { state, resetProfileData } = useSecurityRolesForm();
+const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
 const toast = useToast();
 const route = useRoute();
 
@@ -43,6 +43,36 @@ const showInvalidFormData = () => {
 }
 
 const save = async () => {
+  state.value.isLoading = true;
+  const isDataValid = await validateProfileData();
+  if (isDataValid) {
+    const { data, error } = await useFetch(`/api/roles/${route.params.id}`, {
+      method: 'PATCH',
+      body: {
+        profileData: state.value.profileData,
+        profileLinks: state.value.profileLinks,
+      },
+    });
+    if (error.value) {
+      toast.add({
+        title: 'Error al guardar',
+        description: error.value?.message,
+        icon: 'i-heroicons-exclamation-triangle',
+        color: 'rose',
+        timeout: 0,
+      });
+    }
+    toast.add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      color: 'primary',
+      timeout: 2000,
+    });
+    await navigateTo('/security/roles');
+    state.value.isLoading = false;
+  } else {
+    showInvalidFormData();
+  }
   // isLoading.value = true;
   // const isBasicFormInvalid = await systemUsersBasic.value?.validateForm();
   // const isCompaniesInvalid = userCompanies.value.length <= 0;
