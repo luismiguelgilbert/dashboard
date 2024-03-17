@@ -21,14 +21,13 @@ export const sys_companies = z.object({
 })
 export type type_sys_companies = z.infer<typeof sys_companies>
 
-export const status_options = [
-  { label: 'Compañías Activas', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
-  { label: 'Compañías Inactivas', value: 2, sqlValue: 'false', icon: 'i-heroicons-funnel' },
-  { label: 'Todas los Compañías', value: 3, sqlValue: 'a.is_active', icon: 'i-heroicons-funnel' },
+export const filter_options = [
+  { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
+  { label: 'Inactivos', value: 2, sqlValue: 'a.is_active = false', icon: 'i-heroicons-funnel' },
 ]
 
 export const sort_options = [
-  { label: 'Ordenar por Nombre', value: 1, sqlValue: 'a.name_es', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Ordenar por Razón Social', value: 2, sqlValue: 'a.is_active', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Ordenar por Código', value: 3, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' }
+  { label: 'Nombre', value: 1, sqlValue: 'a.name_es_short', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'Razón Social', value: 2, sqlValue: 'a.name_es', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'RUC', value: 3, sqlValue: 'a.company_number', icon: 'i-heroicons-bars-arrow-down' }
 ]
