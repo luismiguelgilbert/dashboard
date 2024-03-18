@@ -4,7 +4,7 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { filter_payload } from '@/types/server/filter_payload'
 import { sanitizeSQL } from '@/utils/utils'
-import { filter_options, sort_options } from '@/types/server/sys_users'
+import { filter_options, sort_options } from '@/types/server/sys_companies'
 
 export default defineEventHandler( async (event) => {
   try{
@@ -23,26 +23,22 @@ export default defineEventHandler( async (event) => {
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
     const search_string = sanitizeSQL(filter.searchString)
     const filterSearchString = search_string.length > 0
-      ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
+      ? ` and (a.name_es ILIKE '%${search_string}%' or a.name_es_short ILIKE '%${search_string}%' or a.company_number ILIKE '%${search_string}%' )`
       : ''
 
     const text = `
       select
-      a.id,
-      INITCAP(b.user_name) as user_name,
-      INITCAP(b.user_lastname) as user_lastname,
-      b.user_sex,
-      b.avatar_url,
-      b.website,
-      a.email,
-      INITCAP(coalesce(d.name_es, '...')) as sys_profile_name,
-      to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at,
-      to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at,
-      to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
-      from auth.users a
-      left join sys_users b on a.id = b.id
-      left join sys_profiles_users c on c.user_id = a.id
-      left join sys_profiles d on c.sys_profile_id = d.id
+       a.id
+      ,a.company_number
+      ,INITCAP(a.name_es) as name_es
+      ,INITCAP(a.name_es_short) as name_es_short
+      ,a.avatar_url
+      ,a.billing_phone
+      ,INITCAP(a.billing_address) as billing_address
+      ,a.is_active
+      ,to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
+      ,to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
+      FROM sys_companies a
       WHERE 1 = 1
       ${filterBy}
       ${filterSearchString}
@@ -53,12 +49,12 @@ export default defineEventHandler( async (event) => {
     const worksheet = await workbook.addWorksheet('Usuarios');
     const fileColumns = [
       { key: 'id', header: 'Código', width: 50  },
-      { key: 'user_name', header: 'Nombres', width: 25 },
-      { key: 'user_lastname', header: 'Apellidos', width: 25 },
-      { key: 'user_sex', header: 'Sexo', width: 25 },
-      { key: 'email', header: 'email', width: 35 },
-      { key: 'sys_profile_name', header: 'Perfil', width: 25 },
-      { key: 'last_sign_in_at', header: 'Último_Ingreso', width: 25 },
+      { key: 'name_es_short', header: 'Organización', width: 25 },
+      { key: 'company_number', header: 'RUC', width: 25 },
+      { key: 'name_es', header: 'Razón Social', width: 25 },
+      { key: 'is_active', header: 'Activo?', width: 25 },
+      { key: 'billing_address', header: 'billing_address', width: 35 },
+      { key: 'billing_phone', header: 'billing_phone', width: 25 },
       { key: 'created_at', header: 'Fecha_Creación', width: 25 },
       { key: 'updated_at', header: 'Fecha_Actualización', width: 25 },
     ];

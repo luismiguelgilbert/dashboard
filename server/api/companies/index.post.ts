@@ -32,11 +32,11 @@ export default defineEventHandler( async (event) => {
     const text = `SELECT 
           a.id
         , a.company_number
-        , a.name_es
-        , a.name_es_short
+        , INITCAP(a.name_es) as name_es
+        , INITCAP(a.name_es_short) as name_es_short
         , a.avatar_url
         , a.billing_phone
-        , a.billing_address
+        , INITCAP(a.billing_address) as billing_address
         , a.is_active
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
         , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at

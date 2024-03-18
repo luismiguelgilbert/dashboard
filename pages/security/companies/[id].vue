@@ -2,6 +2,7 @@
 import type { Form } from '#ui/types'
 import { companyDataForm, type type_companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
 import type { SystemCompaniesBasic } from '#build/components';
+import { type type_userDataForm } from '@/types/server/sys_users';
 
 const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
 const toast = useToast();
@@ -20,8 +21,8 @@ resetCompanyData();
 if (route.params.id) {
   const { data } = await useFetch<type_sys_companies[]>(`/api/companies/${route.params.id}`);
   state.value.companyData = data.value?.[0]!;
-  // const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
-  // state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
+  const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/companies/${route.params.id}/users`);
+  state.value.companyUsers = profileUsers.value ?? [];
 }
 
 const cancel = async () => {
@@ -115,7 +116,7 @@ const save = async () => {
       <UDashboardPanelContent>
         <UForm ref="mainForm" :state="state.companyData" :schema="companyDataForm">
           <SystemCompaniesBasic v-if="tab === 'basic'" ref="systemCompaniesBasic" :is-editing="true" />
-          <!-- <SystemUsersCompanies v-if="tab === 'companies'" /> -->
+          <SystemCompaniesUsers v-if="tab === 'users'" />
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>

@@ -46,9 +46,9 @@ export const actions: DropdownItem[][] = [
 //Functions
 const downloadFile = async() => {
   try {
-    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityUsers) {
+    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityCompanies) {
       const nuxtApp = window.useNuxtApp();
-      const state = nuxtApp.payload.state.$suseSecurityUsers;
+      const state = nuxtApp.payload.state.$suseSecurityCompanies;
       state.isLoading = true;
       const { data, error } = await useFetch('/api/companies/download', {
         headers: { "Content-Type": "multipart/form-data" },
@@ -59,7 +59,7 @@ const downloadFile = async() => {
         const url = window.URL.createObjectURL(data.value);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Usuarios.xls');
+        link.setAttribute('download', 'Organizaciones.xls');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

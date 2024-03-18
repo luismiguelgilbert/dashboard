@@ -1,12 +1,12 @@
 import { companyDataForm, type type_companyDataForm } from '@/types/server/sys_companies';
-import { type type_sys_companies } from '@/types/server/sys_companies';
+import { type type_userDataForm } from '@/types/server/sys_users';
 
 export const useSecurityCompaniesForm = () => {
   const state = useState('useSecurityCompaniesForm', () => { return {
     isLoading: false as boolean,
     companyData: {} as type_companyDataForm,
+    companyUsers: [] as type_userDataForm[],
     avatar: null as File|null,
-    // companyOptions: [] as type_sys_companies[],
   }});
 
   const resetCompanyData = () => { 
@@ -22,6 +22,7 @@ export const useSecurityCompaniesForm = () => {
       billing_phone: '',
     };
     state.value.avatar = null;
+    state.value.companyUsers = [];
   };
 
   const validateCompanyData = async () => {
