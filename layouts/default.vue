@@ -32,11 +32,18 @@ if (!error.value && data.value) {
   sessionData.value.userData = data.value.userData;
   sessionData.value.userCompanies = data.value.userCompanies;
   sessionData.value.userMenuData = data.value.userMenu;
-  sessionData.value.userCompany = data.value.userCompanies.find((company) => company.is_default)?.id ?? null;
   //Preset colors:
   colorMode.preference = sessionData.value.userData.dark_enabled ? 'dark' : 'light';
   appConfig.ui.primary = sessionData.value.userData.default_color;
   appConfig.ui.gray = sessionData.value.userData.default_dark_color;
+  //Select default Company
+  const defaultCompanyID = data.value.userCompanies?.find((company) => company.is_default)?.id;
+  if (defaultCompanyID) {
+    sessionData.value.userCompany = defaultCompanyID;
+  } else {
+    const firstActiveCompanyID = data.value.userCompanies?.find(c => c.is_active)?.id
+    sessionData.value.userCompany = firstActiveCompanyID ?? null;
+  }
 }
 </script>
 

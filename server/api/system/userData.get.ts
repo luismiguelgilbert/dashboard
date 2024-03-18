@@ -39,6 +39,7 @@ export default defineEventHandler( async (event) => {
       INITCAP(b.name_es) as name_es,
       INITCAP(b.name_es_short) as name_es_short,
       b.is_active,
+      b.avatar_url,
       a.is_default
       from sys_companies_users a
       inner join sys_companies b on a.sys_company_id = b.id

@@ -5,6 +5,7 @@ const companies = computed(() => {
   return sessionData.value.userCompanies?.map(company => { 
     return {
       label: company.name_es_short,
+      avatar_url: company.avatar_url,
       click: () => { updateSelectedCompany(company.id) }
     }
   }) ?? [];
@@ -12,6 +13,10 @@ const companies = computed(() => {
 
 const companyName = computed(() => {
   return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.name_es_short ?? '...'
+})
+
+const companyAvatar = computed(() => {
+  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.avatar_url ?? null
 })
 
 const updateSelectedCompany = (company: string) => { sessionData.value.userCompany = company };
@@ -26,7 +31,7 @@ const updateSelectedCompany = (company: string) => { sessionData.value.userCompa
     :popper="{ strategy: 'absolute' }"
   >
     <UButton color="gray" variant="ghost" :class="[open && 'bg-gray-50 dark:bg-gray-800']" class="w-full">
-      <!-- <UAvatar :src="team.avatar.src" size="2xs" /> -->
+      <UAvatar v-if="companyAvatar" :src="companyAvatar" size="2xs" />
       <span class="truncate text-gray-900 dark:text-white font-semibold uppercase">{{ companyName }}</span>
     </UButton>
   </UDropdown>

@@ -54,6 +54,7 @@ export const userCompanies = z.object({
   id: z.coerce.string(),
   name_es: z.coerce.string(),
   name_es_short: z.coerce.string(),
+  avatar_url: z.coerce.string(),
   is_active: z.coerce.boolean(),
   is_default: z.coerce.boolean(),
 });
