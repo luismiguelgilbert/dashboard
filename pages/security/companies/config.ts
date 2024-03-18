@@ -30,9 +30,9 @@ export const columns = [
   },
 ];
 export const mainAction: DropdownItem = {
-  label: 'Nuevo usuario',
+  label: 'Nuevo registro',
   icon: 'i-heroicons-plus',
-  click: () => { navigateTo('/security/users/create') }  
+  click: () => { navigateTo('/security/companies/create') }  
 };
 export const actions: DropdownItem[][] = [
   [

@@ -9,7 +9,7 @@ import { filter_options, sort_options } from '@/types/server/sys_users'
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.USERS_EXPORT);
+    await hasUserPermission(userSessionId, PermissionsList.COMPANIES_EXPORT);
     
     const filter = await readValidatedBody(event, body => filter_payload.parse(body))
     const sortById = Number(filter.sortBy)

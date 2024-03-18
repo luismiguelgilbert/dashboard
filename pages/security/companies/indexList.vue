@@ -53,7 +53,7 @@ defineProps({
           icon="i-heroicons-pencil-square"
           variant="link"
           color="gray"
-          @click="navigateTo(`/security/users/${row.id}`)" />
+          @click="navigateTo(`/security/companies/${row.id}`)" />
       </li>
     </ul>
   </div>

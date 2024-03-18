@@ -82,7 +82,7 @@ const save = async () => {
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Editar Usuario">
+      <UDashboardNavbar title="Editar Perfil">
         <template #right>
           <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>

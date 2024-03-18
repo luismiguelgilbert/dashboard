@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
-import type { SystemUsersBasic } from '#build/components';
-import { userDataForm, type type_userDataForm } from '@/types/server/sys_users';
+import type { SystemCompaniesBasic } from '#build/components';
+import { companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
 
-const { state, resetUserData, validateUserData } = useSecurityUsersForm();
+const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
 const toast = useToast();
 
 const tabs = [
-  { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+  { value: 'basic', label: 'Organización', icon: 'i-heroicons-user-group', defaultOpen: true },
 ];
 const tab = ref<'basic'|'companies'>('basic');
-const mainForm = ref<Form<type_userDataForm>>();
+const mainForm = ref<Form<type_sys_companies>>();
 state.value.isLoading = false;
-const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
-resetUserData();
+const systemCompaniesBasic = ref<InstanceType<typeof SystemCompaniesBasic>>();
+resetCompanyData();
 
 const cancel = async () => {
   state.value.isLoading = true;
-  await navigateTo('/security/users');
+  await navigateTo('/security/companies');
 };
 
 const showInvalidFormData = () => {
@@ -35,15 +34,15 @@ const showInvalidFormData = () => {
 
 const save = async () => {
   state.value.isLoading = true;
-  let newUserId = null;
-  const isDataValid = await validateUserData();
+  let newId = null;
+  const isDataValid = await validateCompanyData();
   //Upload Data
   if (isDataValid) {
-    const { data, error } = await useFetch(`/api/users/0`, {
+    const { data, error } = await useFetch(`/api/companies/0`, {
       method: 'POST',
       body: {
-        userData: state.value.userData,
-        userCompanies: state.value.userCompanies,
+        companyData: state.value.companyData,
+        // userCompanies: state.value.userCompanies,
       },
     });
     if (error.value) {
@@ -57,12 +56,12 @@ const save = async () => {
       state.value.isLoading = false;
       return;
     }
-    newUserId = data.value?.id;
+    newId = data.value?.id;
     //Upload Avatar
-    if (state.value.avatar && newUserId) {
+    if (state.value.avatar && newId) {
       const body = new FormData();
       body.append('file', state.value.avatar);
-      const { error: avatarError } = await useFetch(`/api/users/${newUserId}/avatar`, {
+      const { error: avatarError } = await useFetch(`/api/companies/${newId}/avatar`, {
         method: 'PATCH',
         body,
       });
@@ -84,7 +83,7 @@ const save = async () => {
         color: 'primary',
         timeout: 2000,
       });
-      await navigateTo('/security/users');
+      await navigateTo('/security/companies');
       state.value.isLoading = false;
     }
   } else {
@@ -96,7 +95,7 @@ const save = async () => {
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Crear Usuario">
+      <UDashboardNavbar title="Crear Organización">
         <template #right>
           <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
@@ -106,9 +105,9 @@ const save = async () => {
       </UDashboardNavbar>
       <BTabs v-model="tab" :items="tabs" />
       <UDashboardPanelContent>
-        <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
-          <SystemUsersBasic v-if="tab === 'basic'" ref="systemUsersBasic" :is-editing="false" />
-          <SystemUsersCompanies v-if="tab === 'companies'" />
+        <UForm ref="mainForm" :state="state.companyData" :schema="companyDataForm">
+          <SystemCompaniesBasic v-if="tab === 'basic'" ref="systemCompaniesBasic" :is-editing="false" />
+          <!-- <SystemUsersCompanies v-if="tab === 'companies'" /> -->
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>
