@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const tab = ref('user')
 const tabs = [
-  { slot: 'user', value: 'user', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { slot: 'colors', value: 'colors',label: 'Color', icon: 'i-heroicons-swatch', defaultOpen: false },
+  { value: 'user', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'settings',label: 'Ajustes', icon: 'i-heroicons-adjustments-vertical', defaultOpen: false },
 ]
 </script>
 
@@ -16,7 +16,7 @@ const tabs = [
       />
       <UDashboardPanelContent>
         <HomeUser v-if="tab === 'user'" />
-        <HomeColor v-if="tab === 'colors'" />
+        <HomeSettings v-if="tab === 'settings'" />
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

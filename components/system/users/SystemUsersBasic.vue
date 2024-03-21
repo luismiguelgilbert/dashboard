@@ -181,6 +181,7 @@ if (!state.value.profileOptions.length) {
       <USelectMenu
         v-model="state.userData.default_dark_color"
         size="xl"
+        icon="i-heroicons-moon"
         :options="darkColors"
         :loading="state.isLoading"/>
     </UFormGroup>
@@ -198,6 +199,7 @@ if (!state.value.profileOptions.length) {
       <USelectMenu
         v-model="state.userData.default_color"
         size="xl"
+        icon="i-heroicons-swatch"
         :options="colors"
         :loading="state.isLoading"/>
     </UFormGroup>
