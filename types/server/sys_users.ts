@@ -67,6 +67,8 @@ export const userMenuData = z.object({
   link: z.coerce.string().optional().nullable(),
 });
 
+export type type_userMenuData = z.infer<typeof userMenuData>;
+
 export const UseUserSession = z.object({
   userData: userData.optional().nullable(),
   userCompanies: z.array(userCompanies).optional().nullable(),

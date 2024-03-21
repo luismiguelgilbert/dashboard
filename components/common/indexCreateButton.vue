@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import type { DropdownItem } from '#ui/types'
+import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
 
-defineProps({
-  mainAction: {
-    type: Object as PropType<DropdownItem>,
-    required: false,
-    default: () => ({})
-  },
+const props = defineProps({
   actions: {
-    type: Array as PropType<DropdownItem[][]>,
+    type: Array as PropType<DropdownItemExtended[][]>,
     required: false,
     default: () => []
   },
@@ -18,16 +13,27 @@ defineProps({
     default: false
   },
 });
+
+const mainAction = props.actions[0].find(x => x.isMainAction);
+const nonMainActions = [props.actions[0].filter(x => !x.isMainAction)];
 </script>
 
-<template>  
+<template>
   <UButtonGroup size="sm" orientation="horizontal">
-    <UButton color="white" :label="mainAction.label" @click="mainAction.click"  :loading="isLoading">
+    <UButton
+      v-if="mainAction"
+      color="white"
+      :label="mainAction.label"
+      :loading="isLoading"
+      :disabled="mainAction.disabled"
+      @click="mainAction.click">
       <template #leading v-if="!isLoading">
         <i :class="`${mainAction.icon} hidden sm:block`" />
       </template>
     </UButton>
-    <UDropdown :items="actions" :popper="{ placement: 'bottom-start' }" >
+    <UDropdown
+      :items="nonMainActions"
+      :popper="{ placement: 'bottom-start' }" >
       <UButton color="gray" trailing-icon="i-heroicons-chevron-down-20-solid" />
     </UDropdown>
   </UButtonGroup>

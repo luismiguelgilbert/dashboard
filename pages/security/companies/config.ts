@@ -1,4 +1,5 @@
-import { type DropdownItem } from '#ui/types';
+import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
+import { PermissionsList } from '~/types/client/permissionsEnum';
 
 export const title = 'Organizaciones';
 export const module = 'organización';
@@ -29,18 +30,25 @@ export const columns = [
     sortable: false
   },
 ];
-export const mainAction: DropdownItem = {
-  label: 'Nuevo registro',
-  icon: 'i-heroicons-plus',
-  click: () => { navigateTo('/security/companies/create') }  
-};
-export const actions: DropdownItem[][] = [
+export const actions: DropdownItemExtended[][] = [
   [
     {
+      id: PermissionsList.COMPANIES_CREATE,
+      isMainAction: true,
+      disabled: false,
+      label: 'Nuevo registro',
+      icon: 'i-heroicons-plus',
+      click: () => { navigateTo('/security/companies/create') }  
+    },
+    {
+      id: PermissionsList.COMPANIES_EXPORT,
+      isMainAction: false,
+      disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
       click: async () => { downloadFile() }
     },
+    
   ],
 ];
 //Functions

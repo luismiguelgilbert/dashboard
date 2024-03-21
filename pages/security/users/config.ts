@@ -1,4 +1,5 @@
-import { type DropdownItem } from '#ui/types';
+import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
+import { PermissionsList } from '~/types/client/permissionsEnum';
 
 export const title = 'Usuarios';
 export const module = 'usuario';
@@ -24,19 +25,28 @@ export const columns = [
     sortable: false
   },
 ];
-export const mainAction: DropdownItem = {
-  label: 'Nuevo usuario',
-  icon: 'i-heroicons-plus',
-  click: () => { navigateTo('/security/users/create') }  
-};
-export const actions: DropdownItem[][] = [
+export const actions: DropdownItemExtended[][] = [
   [
     {
+      id: PermissionsList.USERS_CREATE,
+      isMainAction: true,
+      disabled: false,
+      label: 'Nuevo usuario',
+      icon: 'i-heroicons-plus',
+      click: () => { navigateTo('/security/users/create') }  
+    },
+    {
+      id: PermissionsList.USERS_EXPORT,
+      isMainAction: false,
+      disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
       click: async () => { downloadFile() }
     },
     {
+      id: PermissionsList.USERS_CREATE,
+      isMainAction: false,
+      disabled: false,
       label: 'Carga en lote',
       icon: 'i-heroicons-pencil-square-20-solid',
       click: () => { console.info('Bulk upload!!') }

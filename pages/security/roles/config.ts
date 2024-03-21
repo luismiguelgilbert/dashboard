@@ -1,4 +1,6 @@
-import { type DropdownItem } from '#ui/types';
+import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
+import { PermissionsList } from '~/types/client/permissionsEnum';
+
 export const title = 'Perfiles'
 export const module = 'perfil'
 export const columns = [
@@ -28,14 +30,20 @@ export const columns = [
     sortable: false
   },
 ];
-export const mainAction: DropdownItem = {
-  label: 'Nuevo perfil',
-  icon: 'i-heroicons-plus',
-  click: () => { navigateTo('/security/roles/create') }  
-};
-export const actions: DropdownItem[][] = [
+export const actions: DropdownItemExtended[][] = [
   [
     {
+      id: PermissionsList.ROLES_CREATE,
+      isMainAction: true,
+      disabled: false,
+      label: 'Nuevo perfil',
+      icon: 'i-heroicons-plus',
+      click: () => { navigateTo('/security/roles/create') }  
+    },
+    {
+      id: PermissionsList.ROLES_EXPORT,
+      isMainAction: false,
+      disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
       click: async () => { downloadFile() }

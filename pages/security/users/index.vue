@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { actions, mainAction, module, title } from './config'
+import { actions, module, title } from './config'
 import { filter_options, sort_options, type type_sys_users } from '@/types/server/sys_users'
 import indexTable from './indexTable.vue'
 import indexList from './indexList.vue'
@@ -7,6 +7,7 @@ import indexList from './indexList.vue'
 useHead({ title })
 
 const { state } = useSecurityUsers();
+const { sessionData } = useUserSession();
 const rows = ref<type_sys_users[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
@@ -31,8 +32,7 @@ if (!error.value && data.value) { rows.value = data.value }
               :sort-options="sort_options" />
           </div>
           <IndexCreateButton
-            :main-action="mainAction"
-            :actions="actions"
+            :actions="validatePermissions(actions, sessionData.userMenuData)"
             :is-loading="state.isLoading" />
         </template>
       </UDashboardNavbar>
