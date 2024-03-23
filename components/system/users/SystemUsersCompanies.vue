@@ -2,6 +2,7 @@
 import type { type_sys_companies } from '~/types/server/sys_companies';
 
 const { state } = useSecurityUsersForm();
+const toast = useToast();
 
 const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
   return state.value.userCompanies.some(company => company === selectedCompany.id);
@@ -9,17 +10,22 @@ const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
 
 const toggleCompany = (selectedCompany: type_sys_companies): void => {
   const isCompanyFound = state.value.userCompanies.some(company => company === selectedCompany.id);
+  const isPreferredCompany = state.value.userData.prefered_company_id === selectedCompany.id;
   if (isCompanyFound) {
-    state.value.userCompanies = state.value.userCompanies.filter(company => company !== selectedCompany.id);
+    if (!isPreferredCompany) {
+      state.value.userCompanies = state.value.userCompanies.filter(company => company !== selectedCompany.id);
+    } else {
+      toast.add({
+        title: 'Organización preferida',
+        description: 'No puede desactivar la Organización preferida del usuario.',
+        icon: 'i-heroicons-no-symbol',
+        color: 'rose',
+        timeout: 2000,
+      });
+    }
   } else {
     state.value.userCompanies.push(selectedCompany.id);
   }
-}
-
-//LOOKUP DATA
-if (!state.value.companyOptions.length) {
-  const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
-  state.value.companyOptions = companyOptionsData.value ?? [];
 }
 </script>
 

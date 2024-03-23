@@ -25,6 +25,7 @@ export const useSecurityUsersForm = () => {
       dark_enabled: true,
       default_dark_color: 'zinc',
       default_color: 'indigo',
+      prefered_company_id: '',
     };
     state.value.avatar = null;
     state.value.userCompanies = [];

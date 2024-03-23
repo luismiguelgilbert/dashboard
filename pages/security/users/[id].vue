@@ -23,6 +23,8 @@ if (route.params.id) {
   state.value.userData = data.value?.[0]!;
   const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
   state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
+  const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
+  state.value.companyOptions = companyOptionsData.value ?? [];
 }
 
 const cancel = async () => {

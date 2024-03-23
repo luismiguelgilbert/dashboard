@@ -20,6 +20,7 @@ export default defineEventHandler( async (event) => {
     const dark_enabled = payload.userData.dark_enabled;
     const default_color = payload.userData.default_color ? `'${payload.userData.default_color}'` : 'indigo';
     const default_dark_color = payload.userData.default_dark_color ? `'${payload.userData.default_dark_color}'` : 'zinc';
+    const prefered_company_id = payload.userData.prefered_company_id ? `'${payload.userData.prefered_company_id}'` : null;
 
     //Process
     await serverDB.query('BEGIN');
@@ -54,6 +55,12 @@ export default defineEventHandler( async (event) => {
     });
     sqlCompaniesInsert = sqlCompaniesInsert.replace(/\,$/, '');
     await serverDB.query(sqlCompaniesInsert);
+
+    const sqlUpdateDefaultCompany = `update sys_companies_users 
+      set is_default = true 
+      where user_id = '${id}'
+      and sys_company_id = ${prefered_company_id}`;
+    await serverDB.query(sqlUpdateDefaultCompany);
     
     await serverDB.query('COMMIT');
     return { id: id };

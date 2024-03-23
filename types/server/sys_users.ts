@@ -13,6 +13,7 @@ export const sys_users = z.object({
   dark_enabled: z.coerce.boolean(),
   default_color: z.coerce.string(),
   default_dark_color: z.coerce.string(),
+  prefered_company_id: z.coerce.string(),
   created_at: z.coerce.date(),
   updated_at: z.coerce.date(),
   last_sign_in_at: z.coerce.date(),
@@ -87,6 +88,7 @@ export const userDataForm = z.object({
   dark_enabled: z.coerce.boolean(),
   default_color: z.coerce.string(),
   default_dark_color: z.coerce.string(),
+  prefered_company_id: z.coerce.string().min(1, { message: 'Debe seleccionar una Organización.' }),
 });
 
 export type type_userDataForm = z.infer<typeof userDataForm>;

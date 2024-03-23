@@ -24,6 +24,12 @@ const onFileChange = (e: Event) => {
 
 const onFileClick = () => { fileRef.value?.input.click() };
 
+const toggleCompany = (selectedCompanyId: any) => {
+  const isCompanyFound = state.value.userCompanies.some(company => company === selectedCompanyId);
+  if (!isCompanyFound) {
+    state.value.userCompanies.push(selectedCompanyId);
+  }
+};
 //LOOKUP DATA
 if (!state.value.profileOptions.length) {
   const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
@@ -131,6 +137,30 @@ if (!state.value.profileOptions.length) {
         value-attribute="id"
         option-attribute="name_es"
         :options="state.profileOptions" />
+    </UFormGroup>
+
+    <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+    <div>
+      <p class="text-gray-900 dark:text-white font-semibold">
+        Organización preferida:
+      </p>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Organización seleccionada al iniciar sesión.
+      </p>
+    </div>
+    <UFormGroup name="prefered_company_id">
+      <USelectMenu
+        v-model="state.userData.prefered_company_id"
+        searchable
+        :loading="state.isLoading"
+        searchable-placeholder="Buscar organización..."
+        placeholder="Seleccionar organización..."
+        size="xl"
+        icon="i-heroicons-building-office-2"
+        value-attribute="id"
+        option-attribute="name_es_short"
+        :options="state.companyOptions"
+        @update:model-value="toggleCompany" />
     </UFormGroup>
     
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

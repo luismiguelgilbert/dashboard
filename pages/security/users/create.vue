@@ -77,16 +77,16 @@ const save = async () => {
         state.value.isLoading = false;
         return;
       }
-
-      toast.add({
-        title: 'Datos guardados correctamente',
-        icon: 'i-heroicons-check-circle',
-        color: 'primary',
-        timeout: 2000,
-      });
-      await navigateTo('/security/users');
-      state.value.isLoading = false;
     }
+
+    toast.add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      color: 'primary',
+      timeout: 2000,
+    });
+    await navigateTo('/security/users');
+    state.value.isLoading = false;
   } else {
     showInvalidFormData();
   }

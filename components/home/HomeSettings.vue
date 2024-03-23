@@ -18,7 +18,7 @@ const toggleTheme = async () => {
     isUpdating.value = false
     if (error.value ) { hasError.value = true }
   }
-}
+};
 
 const setDarkColor = async () => {
   if (sessionData.value.userData) {
@@ -31,7 +31,7 @@ const setDarkColor = async () => {
     isUpdating.value = false
     if (error.value ) { hasError.value = true }
   }
-}
+};
 
 const setColor = async () => {
   if (sessionData.value.userData) {
@@ -46,12 +46,46 @@ const setColor = async () => {
     isUpdating.value = false
     if (error.value ) { hasError.value = true }
   }
-}
+};
+
+const setPreferedCompany = async () => {
+  if (sessionData.value.userData) {
+    isUpdating.value = true
+    hasError.value = false
+    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/preferences`, {
+      method: 'patch',
+      body: { prefered_company: sessionData.value.userData.default_color },
+    })
+    isUpdating.value = false
+    if (error.value ) { hasError.value = true }
+  }
+};
 </script>
 
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4">
     <div class="col-span-1 sm:col-span-2 pt-1" />
+    
+    <div>
+      <p class="text-gray-900 dark:text-white font-semibold">
+        Organización predeterminada:
+      </p>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Organización predeterminada al iniciar sesión.
+      </p>
+    </div>
+    <USelectMenu
+      v-if="sessionData.userData"
+      v-model="sessionData.userData.pr"
+      size="xl"
+      icon="i-heroicons-home-modern"
+      :options="sessionData.userCompanies"
+      :loading="isUpdating"
+      option-attribute="name_es_short"
+      value-attribute="id"
+    />
+
+    <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
       <p class="text-gray-900 dark:text-white font-semibold">
         Activar tema oscuro:
@@ -64,6 +98,7 @@ const setColor = async () => {
       :model-value="sessionData.userData?.dark_enabled"
       :disabled="isUpdating"
       @update:model-value="toggleTheme" />
+
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
       <p class="text-gray-900 dark:text-white font-semibold">
@@ -82,6 +117,7 @@ const setColor = async () => {
       :loading="isUpdating"
       @update:model-value="setDarkColor"
     />
+
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
     <div>
       <p class="text-gray-900 dark:text-white font-semibold">
