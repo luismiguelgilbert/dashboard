@@ -2,8 +2,10 @@
 import type { Form } from '#ui/types'
 import type { SystemRolesBasic } from '#build/components';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
+import { PermissionsList } from '~/types/client/permissionsEnum';
 
 const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
+const { sessionData } = useUserSession();
 const toast = useToast();
 
 const tabs = [
@@ -11,6 +13,7 @@ const tabs = [
 ];
 const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();
+const canSave = hasSessionPermission(PermissionsList.ROLES_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
 const systemRolesBasicForm = ref<InstanceType<typeof SystemRolesBasic>>();
 resetProfileData();
@@ -76,7 +79,7 @@ const save = async () => {
           <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save"/>
+          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
         </template>
       </UDashboardNavbar>
       <BTabs v-model="tab" :items="tabs" />

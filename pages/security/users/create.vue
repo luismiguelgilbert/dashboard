@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
 import type { SystemUsersBasic } from '#build/components';
-import { userDataForm, type type_userDataForm } from '@/types/server/sys_users';
+import { userDataForm, type type_userDataForm, type type_userMenuData } from '@/types/server/sys_users';
+import { PermissionsList } from '~/types/client/permissionsEnum';
 
 const { state, resetUserData, validateUserData } = useSecurityUsersForm();
+const { sessionData } = useUserSession();
 const toast = useToast();
 
 const tabs = [
@@ -12,6 +14,7 @@ const tabs = [
 ];
 const tab = ref<'basic'|'companies'>('basic');
 const mainForm = ref<Form<type_userDataForm>>();
+const canSave = hasSessionPermission(PermissionsList.USERS_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
@@ -101,7 +104,7 @@ const save = async () => {
           <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading" @click="save" />
+          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
         </template>
       </UDashboardNavbar>
       <BTabs v-model="tab" :items="tabs" />

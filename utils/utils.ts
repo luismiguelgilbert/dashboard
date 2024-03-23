@@ -28,4 +28,8 @@ export const validatePermissions = (
       }
     })
   });
-}
+};
+
+export const hasSessionPermission = (permission: string, userPermissions: type_userMenuData[]) : boolean => {
+  return userPermissions.some(userPermission => userPermission.id === permission);
+};
