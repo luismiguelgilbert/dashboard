@@ -8,10 +8,9 @@ useHead({ title })
 
 const { state } = useSystemInvTypes();
 const { sessionData } = useUserSession();
-watch(() => sessionData.value.userCompany, (newVal) => state.value.filterPayload.sys_company_id = newVal!);
-
 const rows = ref<type_sys_users[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
+watch(() => sessionData.value.userCompany, (newVal) => state.value.filterPayload.sys_company_id = newVal!);
 
 const { data, error, pending } = await useFetch('/api/inv_types', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }

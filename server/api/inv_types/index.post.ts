@@ -7,9 +7,7 @@ import { filter_options, sort_options, sys_profiles, type type_sys_profiles } fr
 import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
-  try{
-    // const sys_company_id = (event.context.params?.sys_company_id) ?? 'abc';
-    // console.log('sys_company_id', sys_company_id)
+  try {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.INVTYPES_READ);
 
@@ -47,9 +45,8 @@ export default defineEventHandler( async (event) => {
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    console.log(text)
-    const data = await serverDB.query(text)
     // const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows)
+    const data = await serverDB.query(text)
     const result = data.rows;
     
     return result

@@ -1,16 +1,6 @@
 <script setup lang="ts">
 const { sessionData } = useUserSession()
 
-const companies = computed(() => {
-  return sessionData.value.userCompanies?.map(company => { 
-    return {
-      label: company?.name_es_short,
-      avatar_url: company?.avatar_url,
-      click: () => { updateSelectedCompany(company?.id) }
-    }
-  }) ?? [];
-})
-
 const companyName = computed(() => {
   return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.name_es_short ?? '...'
 })
@@ -19,12 +9,31 @@ const companyAvatar = computed(() => {
   return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.avatar_url ?? null
 })
 
-// const updateSelectedCompany = (company: string) => { sessionData.value.userCompany = company };
-const updateSelectedCompany = (company: string) => { console.log('cgange here'); sessionData.value.userCompany = company; };
 </script>
 
 <template>
-  <UDropdown
+  <USelectMenu
+    v-model="sessionData.userCompany" 
+    :options="sessionData.userCompanies"
+    class="w-full"
+    variant="none"
+    option-attribute="name_es_short"
+    value-attribute="id"
+    placeholder="Organización">
+    <template #leading>
+      <UAvatar
+        v-if="companyAvatar && companyAvatar != 'null'"
+        :src="companyAvatar"
+        size="2xs" />
+      <UAvatar
+        v-if="!companyAvatar || companyAvatar == 'null'"
+        size="xs">
+        {{ companyName[0] }}
+      </UAvatar>
+    </template>
+  </USelectMenu>
+    <!-- {{ sessionData.userCompanies }} -->
+  <!-- <UDropdown
     v-slot="{ open }"
     :items="[companies]"
     class="w-full"
@@ -35,5 +44,5 @@ const updateSelectedCompany = (company: string) => { console.log('cgange here');
       <UAvatar v-if="companyAvatar" :src="companyAvatar" size="2xs" />
       <span class="truncate text-gray-900 dark:text-white font-semibold uppercase">{{ companyName }}</span>
     </UButton>
-  </UDropdown>
+  </UDropdown> -->
 </template>
