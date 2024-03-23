@@ -4,9 +4,9 @@ const { sessionData } = useUserSession()
 const companies = computed(() => {
   return sessionData.value.userCompanies?.map(company => { 
     return {
-      label: company.name_es_short,
-      avatar_url: company.avatar_url,
-      click: () => { updateSelectedCompany(company.id) }
+      label: company?.name_es_short,
+      avatar_url: company?.avatar_url,
+      click: () => { updateSelectedCompany(company?.id) }
     }
   }) ?? [];
 })
@@ -19,7 +19,8 @@ const companyAvatar = computed(() => {
   return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.avatar_url ?? null
 })
 
-const updateSelectedCompany = (company: string) => { sessionData.value.userCompany = company };
+// const updateSelectedCompany = (company: string) => { sessionData.value.userCompany = company };
+const updateSelectedCompany = (company: string) => { console.log('cgange here'); sessionData.value.userCompany = company; };
 </script>
 
 <template>

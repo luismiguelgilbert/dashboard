@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { columns } from './config';
-import { type type_sys_companies } from '@/types/server/sys_companies';
+import { type type_sys_users } from '@/types/server/sys_users';
 
 defineProps({
   rows: {
-    type: Array<type_sys_companies>,
+    type: Array<type_sys_users>,
     required: false,
     default: () => []
   }
@@ -19,7 +19,7 @@ defineProps({
     sort-mode="manual"
     class="w-full hidden sm:block"
   >
-    <template #id-data="{ row }: { row: type_sys_companies }">
+    <template #id-data="{ row }: { row: type_sys_users }">
       <div class="flex items-center gap-3">
         <NuxtImg 
           v-if="row.avatar_url && row.avatar_url.length > 0"
@@ -30,27 +30,19 @@ defineProps({
         <UAvatar
           v-else
           size="xs">
-          {{ row.name_es_short[0] }}
+          {{ row.user_name[0] }}
         </UAvatar>
         <div class="text-base font-semibold dark:text-white text-black">
-          {{ row.name_es_short }}
+          {{ `${row.user_name} ${row.user_lastname}` }}
         </div>
       </div>
     </template>
-    <template #is_active-data="{ row }: { row: type_sys_companies }">
-      <UBadge
-        :label="row.is_active? 'activo' : 'inactivo'"
-        :color="row.is_active ? 'green' : 'red'"
-        variant="subtle"
-        class="capitalize"
-      />
-    </template>
-    <template #actions-data="{ row }: { row: type_sys_companies }">
+    <template #actions-data="{ row }: { row: type_sys_users }">
       <UButton
         icon="i-heroicons-pencil-square"
         variant="link"
         color="gray"
-        @click="navigateTo(`/security/companies/${row.id}`)" />
+        @click="navigateTo(`/security/users/${row.id}`)" />
     </template>
   </UTable>
 </template>

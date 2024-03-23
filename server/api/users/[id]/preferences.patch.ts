@@ -7,7 +7,7 @@ export default defineEventHandler( async (event) => {
     const default_color = payload.default_color ? `'${payload.default_color}'` : null
     const default_dark_color = payload.default_dark_color ? `'${payload.default_dark_color}'` : null
     const avatar_url = payload.avatar_url ? `'${payload.avatar_url}'` : null
-    const prefered_company = payload.prefered_company ? payload.prefered_company : null
+    const prefered_company_id = payload.prefered_company_id ? `'${payload.prefered_company_id}'` : null;
 
     //Process
     await serverDB.query('BEGIN')
@@ -20,9 +20,9 @@ export default defineEventHandler( async (event) => {
       WHERE id = '${id}'`
     await serverDB.query(sqlUpdateUserData)
 
-    if (prefered_company) {
+    if (prefered_company_id) {
       const sqlUpdateUserCompanyReset = `update sys_companies_users set is_default = false where user_id = '${id}'`
-      const sqlUpdateUserCompany = `update sys_companies_users set is_default = true where user_id = '${id}' and sys_company_id = '${prefered_company}'`
+      const sqlUpdateUserCompany = `update sys_companies_users set is_default = true where user_id = '${id}' and sys_company_id = ${prefered_company_id}`
       await serverDB.query(sqlUpdateUserCompanyReset)
       await serverDB.query(sqlUpdateUserCompany)
     }

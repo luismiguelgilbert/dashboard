@@ -6,12 +6,14 @@ import indexList from './indexList.vue'
 
 useHead({ title })
 
-const { state } = useSecurityUsers();
+const { state } = useSystemInvTypes();
 const { sessionData } = useUserSession();
+watch(() => sessionData.value.userCompany, (newVal) => state.value.filterPayload.sys_company_id = newVal!);
+
 const rows = ref<type_sys_users[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload })
+const { data, error, pending } = await useFetch('/api/inv_types', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 </script>
 

@@ -6,7 +6,19 @@ export default defineEventHandler( async (event) => {
     const id = (event.context.user.id);
 
     //Get User Data
-    const sqlUserSessionDataRows = `select
+    const sqlUserSessionDataRows = `WITH user_company AS (
+        select
+        int1.id as user_id
+        ,int3.id as sys_company_id
+        ,int2.is_default
+        from sys_users int1
+        inner join sys_companies_users int2 on int2.user_id = int1.id
+        inner join sys_companies int3 on int3.id = int2.sys_company_id
+        WHERE int1.id = '${id}'
+        order by int2.is_default desc, int3.name_es_short
+        limit 1
+      )
+      SELECT
       a.id,
       INITCAP(b.user_name) as user_name,
       INITCAP(b.user_lastname) as user_lastname,
@@ -19,6 +31,7 @@ export default defineEventHandler( async (event) => {
       b.dark_enabled,
       b.default_color,
       b.default_dark_color,
+      e.sys_company_id as prefered_company_id,
       to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at,
       to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at,
       to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
@@ -26,6 +39,7 @@ export default defineEventHandler( async (event) => {
       left join sys_users b on a.id = b.id
       left join sys_profiles_users c on c.user_id = a.id
       left join sys_profiles d on c.sys_profile_id = d.id
+      left join user_company e on e.user_id = a.id
       WHERE a.id = '${id}'`;
     const userSessionDataResultset = await serverDB.query(sqlUserSessionDataRows);
     const userSessionDataRows = userData.array().parse(userSessionDataResultset.rows);

@@ -34,7 +34,7 @@ defineProps({
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"
         :color="row.is_active ? 'green' : 'red'"
-        variant="soft"
+        variant="subtle"
         class="capitalize"
       />
     </template>

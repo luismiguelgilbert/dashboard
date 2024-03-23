@@ -46,6 +46,7 @@ export const userData = z.object({
   dark_enabled: z.coerce.boolean(),
   default_color: z.coerce.string(),
   default_dark_color: z.coerce.string(),
+  prefered_company_id: z.coerce.string(),
   created_at: z.coerce.string(),
   updated_at: z.coerce.string(),
   last_sign_in_at: z.coerce.string(),
