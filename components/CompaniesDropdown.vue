@@ -15,7 +15,6 @@ const companyAvatar = computed(() => {
   <USelectMenu
     v-model="sessionData.userCompany" 
     :options="sessionData.userCompanies"
-    class="w-full"
     variant="none"
     option-attribute="name_es_short"
     value-attribute="id"

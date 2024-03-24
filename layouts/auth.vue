@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-colorMode.preference = 'dark'
+// colorMode.preference = 'dark'
 useHead({
   bodyAttrs: {
     class: 'dark:bg-gray-950'
@@ -32,14 +32,14 @@ useHead({
 .overlay {
   background-size: 100px 100px;
   background-image:
-    linear-gradient(to right, rgb(var(--color-gray-200)) 0.5px, transparent 0.5px),
-    linear-gradient(to bottom, rgb(var(--color-gray-200)) 0.5px, transparent 0.5px);
+    linear-gradient(to right, rgb(var(--color-gray-200)) 2.5px, transparent 0.5px),
+    linear-gradient(to bottom, rgb(var(--color-gray-200)) 2.5px, transparent 0.5px);
 }
 .dark {
   .overlay {
     background-image:
-      linear-gradient(to right, rgb(var(--color-gray-900)) 0.5px, transparent 0.5px),
-      linear-gradient(to bottom, rgb(var(--color-gray-900)) 0.5px, transparent 0.5px);
+      linear-gradient(to right, rgb(var(--color-gray-900)) 2.5px, transparent 0.5px),
+      linear-gradient(to bottom, rgb(var(--color-gray-900)) 2.5px, transparent 0.5px);
   }
 }
 </style>

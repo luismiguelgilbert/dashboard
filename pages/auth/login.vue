@@ -114,7 +114,7 @@ const onSubmit = async (data: any) => {
         </template>
         <template #password-hint>
           <NuxtLink to="/auth/forgot" class="text-primary font-medium">
-            Olvidó su password?
+            Olvidó su clave?
           </NuxtLink>
         </template>
       </UAuthForm>

@@ -11,7 +11,7 @@ const items = computed(() => [
   ],
   [
     {
-      label: 'Sign out',
+      label: 'Cerrar sesión',
       icon: 'i-heroicons-arrow-left-start-on-rectangle',
       click: () => logout()
     }
