@@ -1,4 +1,7 @@
+import nuxtConfig from '@nuxt/ui-pro';
 import fs from 'fs';
+import { useNuxt } from 'nuxt/kit';
+import { object } from 'zod';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
@@ -56,21 +59,21 @@ export default defineNuxtConfig({
   },
   hooks: {
     "build:before": () => {
-      console.log('Building BITT!!!!...');
-      const someFile = './node_modules/@nuxt/ui-pro/modules/pro/index.ts';
-      // const testFolder = './node_modules/@nuxt/ui-pro/modules/pro/';
-      fs.readFile(someFile, 'utf8', function (err,data) {
-        if (err) {
-          return console.log(err);
-        }
-        // console.log(data);
-        var result = data.replace(/await validateLicense/g, '//await validateLicense');
-        console.log(result);
-      
-        fs.writeFile(someFile, result, 'utf8', function (err) {
-          if (err) return console.log(err);
+      const nuxtInstance = useNuxt();
+      if (!nuxtInstance.options.dev) {
+        console.log('Start build process for BITT!!!!...');
+        const someFile = './node_modules/@nuxt/ui-pro/modules/pro/index.ts';
+        fs.readFile(someFile, 'utf8', function (err,data) {
+          if (err) {
+            return console.log(err);
+          }
+          var result = data.replace(/await validateLicense/g, '//await validateLicense');
+        
+          fs.writeFile(someFile, result, 'utf8', function (err) {
+            if (err) return console.log(err);
+          });
         });
-      });
+      }
     }
   }
 })
