@@ -33,7 +33,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Nuevo usuario',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/users/create') }  
+      click: () => { navigateTo('/security/users/create') }
     },
     {
       id: PermissionsList.USERS_EXPORT,
@@ -49,7 +49,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Carga en lote',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => { console.info('Bulk upload!!') }
+      click: () => { navigateTo('/security/users/create-batch') }
     }
   ],
 ];

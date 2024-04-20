@@ -54,6 +54,10 @@ if (!error.value && data.value) {
         <template #left>
           <CompaniesDropdown />
         </template>
+        <template #right>
+          <UColorModeToggle />
+        </template>
+
       </UDashboardNavbar>
 
       <UDashboardSidebar>

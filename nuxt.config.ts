@@ -1,7 +1,6 @@
-import nuxtConfig from '@nuxt/ui-pro';
+// import nuxtConfig from '@nuxt/ui-pro';
 import fs from 'fs';
 import { useNuxt } from 'nuxt/kit';
-import { object } from 'zod';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
