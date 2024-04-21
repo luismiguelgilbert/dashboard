@@ -9,8 +9,8 @@ const { sessionData } = useUserSession();
 const toast = useToast();
 
 const tabs = [
-  { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'companies', slot: 'companies', label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'>('basic');
 const mainForm = ref<Form<type_userDataForm>>();
@@ -107,11 +107,16 @@ const save = async () => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs v-model="tab" :items="tabs" />
-      <UDashboardPanelContent>
+      <UDashboardPanelContent class="p-0">
         <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
-          <SystemUsersBasic v-if="tab === 'basic'" ref="systemUsersBasic" :is-editing="false" />
-          <SystemUsersCompanies v-if="tab === 'companies'" />
+          <BTabs v-model="tab" :items="tabs">
+            <template #basic>
+                <SystemUsersBasic ref="systemUsersBasic" :is-editing="false" />
+            </template>
+            <template #companies>
+                <SystemUsersCompanies />
+            </template>
+          </BTabs>
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>

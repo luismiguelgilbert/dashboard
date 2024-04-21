@@ -11,8 +11,8 @@ const toast = useToast();
 const route = useRoute();
 
 const tabs = [
-  { value: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies',label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'companies', slot: 'companies', label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
 const tab = ref<'basic'|'companies'>('basic');
 const mainForm = ref<Form<type_userDataForm>>();
@@ -21,13 +21,12 @@ state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
 resetUserData();
 
+const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
+state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
+
 if (route.params.id) {
   const { data } = await useFetch<type_sys_users[]>(`/api/users/${route.params.id}`);
-  state.value.userData = data.value?.[0]!;
-  const { data: companiesData } = await useFetch<type_sys_companies[]>(`/api/users/${route.params.id}/companies`);
-  state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
-  const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
-  state.value.companyOptions = companyOptionsData.value ?? [];
+  state.value.userData = data.value?.[0]!;  
 }
 
 const cancel = async () => {
@@ -117,11 +116,17 @@ const save = async () => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs v-model="tab" :items="tabs"/>
-      <UDashboardPanelContent>
+      <!-- <BTabs v-model="tab" :items="tabs"/> -->
+      <UDashboardPanelContent class="p-0">
         <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
-          <SystemUsersBasic v-if="tab === 'basic'" ref="systemUsersBasic" :is-editing="true" />
-          <SystemUsersCompanies v-if="tab === 'companies'" />
+          <BTabs v-model="tab" :items="tabs">
+            <template #basic>
+                <SystemUsersBasic ref="systemUsersBasic" :is-editing="true" />
+            </template>
+            <template #companies>
+                <SystemUsersCompanies />
+            </template>
+          </BTabs>
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>

@@ -4,17 +4,21 @@ import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
 
 //REF PROPS
-type columns = {
+type column = {
+  index: number,
   key: string,
   label: string,
   sortable: boolean
 }
-const rows = ref([]);
-const columns = ref<unknown[]>([]);
+const rows = ref<any[]>([]);
+const columns = ref<column[]>([]);
 const pageCount = 50;
 const page = ref(1);
+const errorPage = ref(1);
 const tab = ref('file');
 const isLoading = ref(false);
+const hasErrors = ref(false);
+const errors = ref<any[]>([]);
 const accordionKey = ref(1);
 const profileOptions = ref<type_sys_profiles[]>([]);
 const companyOptions = ref<type_sys_companies[]>([]);
@@ -31,19 +35,28 @@ const mapping = ref({
 const tabs = computed(() =>
   [
     { slot: 'file', value: 'file', label: '1. Cargar archivo', icon: 'i-heroicons-document-arrow-up', defaultOpen: tab.value === 'file'},
-    { slot: 'table', value: 'table', label: '2. Ver Datos', icon: 'i-heroicons-table-cells', defaultOpen: tab.value === 'table' },
+    { slot: 'table', value: 'table', label: '2. Ver datos', icon: 'i-heroicons-table-cells', defaultOpen: tab.value === 'table' },
     { slot: 'mapping',value: 'mapping', label: '3. Definiciones', icon: 'i-heroicons-adjustments-horizontal', defaultOpen: tab.value === 'mapping' },
-    { slot: 'validate',value: 'validate', label: '4. Validar', icon: 'i-heroicons-document-check', defaultOpen: tab.value === 'validate' },
-    { slot: 'upload', value: 'upload', label: '5. Cargar', icon: 'i-heroicons-document-check', defaultOpen: tab.value === 'upload' },
-    { slot: 'report', value: 'report', label: '6. Reporte', icon: 'i-heroicons-document-chart-bar', defaultOpen: tab.value === 'report' },
+    { slot: 'validate',value: 'validate', label: '4. Validar y crear', icon: 'i-heroicons-document-check', defaultOpen: tab.value === 'validate' },
   ]
 );
 const totalRows = computed(() => rows.value.length);
 const profileOptionsFormatted = computed(() => profileOptions.value.map(p => ({ ...p, disabled: p.is_active })));
 const computeRows = computed(() => {
   return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
-})
-
+});
+const computeErrorRows = computed(() => {
+  return errors.value.slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount)
+});
+const totalErrorRows = computed(() => errors.value.length);
+const isValidateDisabled = computed(() => isLoading.value || rows.value.length === 0 || !mapping.value.email || !mapping.value.user_name || !mapping.value.user_lastname || !mapping.value.user_sex || !mapping.value.sys_profile_id || !mapping.value.prefered_company_id);
+const errorColumns = computed(() => {
+  return [
+    ...columns.value,
+    { index: columns.value.length + 1, key: 'errors', label: 'Error(es)', sortable: false },
+  ];
+});
+  
 //ACTIONS
 const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
 const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
@@ -58,18 +71,9 @@ const cancel = async () => {
 
 const mappingPreview = (field: string | null) => {
   if (field) {
-    const columnKey = columns.value?.find(c => c.label === field);
     const firstRow = rows.value[0];
-    
-    if (firstRow && columnKey && columnKey.key) {
-      return firstRow[columnKey.key];
-    }
+    return firstRow[field];
   }
-  return null;
-};
-
-const validateData = async () => {
-  console.log('validateData');
 };
 
 const { files, open, reset, onChange } = useFileDialog({
@@ -81,6 +85,8 @@ onChange(async (files) => {
   if (files && files[0]) {
     try {
       isLoading.value = true;
+      //Reset data
+      let index = 1;
       rows.value = [];
       mapping.value = {
         email: null,
@@ -91,34 +97,36 @@ onChange(async (files) => {
         prefered_company_id: null,
       };
       columns.value = [];
+      hasErrors.value = false;
+      errors.value = [];
 
+      //Read XLS file
       const workbook = new Excel.Workbook();
       const arrayBuffer = await files[0].arrayBuffer();
       const wb = await workbook.xlsx.load(arrayBuffer);
-      wb.eachSheet((sheet, id) => {
-        if (id === 1) {
-          sheet.getRow(1).eachCell((cell, cellColNumber) => {
-            columns.value.push({
-              key: `col${cellColNumber}`,
-              label: cell.text,
-              sortable: false,
-            });
-          });
-        }
+      // Take the first sheet and the first row
+      const firstWorksheet = wb.getWorksheet(1)!;
+      const firstWorksheetFirstRow = firstWorksheet.getRow(1);
+      // Generate columns
+      firstWorksheetFirstRow.eachCell((cell) => {
+        columns.value.push({
+          index: index++,
+          key: cell.text,
+          label: cell.text,
+          sortable: false,
+        });
       });
-
-
-      const worksheet = wb.getWorksheet(1)!;
-
-      worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
-        if (rowNumber > 1) {
-          const rowObject = {};
-          row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
-            rowObject[`col${colNumber}`] = cell.value;
+      // Generate named rows
+      firstWorksheet.eachRow((row, rowNumber) => {
+        if (rowNumber === 1) return;
+        if (row.hasValues){
+          let obj: any = {};
+          row.eachCell((cell, colNumber) => {
+            const key = columns.value[colNumber - 1].key;
+            obj[key] = cell.value;
           });
-
-          rows.value.push(rowObject);
-        }  
+          rows.value.push(obj);
+        }
       });
     } catch (error) {
       console.error(error);
@@ -129,8 +137,25 @@ onChange(async (files) => {
       accordionKey.value += 1;
     }
   }
-})
+});
 
+const validateData = async () => {
+  isLoading.value = true;
+  const { error, data } = await useFetch(`/api/users/bulk-create-validate`, {
+    method: 'POST',
+    body: {
+      mapping: mapping.value,
+      users: rows.value,
+    },
+  });
+  if (error || data.value?.length) {
+    hasErrors.value = true;
+    errors.value = data.value ?? [];
+    isLoading.value = false;
+    return;
+  }
+  isLoading.value = false;
+};
 </script>
 
 <template>
@@ -138,7 +163,7 @@ onChange(async (files) => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Cargar Usuarios" :badge="rows.length">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="isLoading" @click="cancel">
+          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :loading="isLoading" :disabled="isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
         </template>
@@ -153,19 +178,19 @@ onChange(async (files) => {
           class="my-3 px-3"
           size="xl">
           <template #file>
-            <div class="grid place-content-center" style="height: calc(100dvh - 450px);">
+            <div class="grid place-content-center" style="height: calc(100dvh - 330px);">
               <UButton color="gray" icon="i-heroicons-folder-open" :disabled="isLoading" @click="open">
                 <span class="hidden sm:block">Cargar</span>
               </UButton>
             </div>
           </template>
           <template #table>
-            <div class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 450px);">
+            <div class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
               <UTable
                 :rows="computeRows"
                 :columns="columns"
                 :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-                style="height: calc(100dvh - 500px);"
+                style="height: calc(100dvh - 390px);"
                 sort-mode="manual"/>
               <UDivider/>
               <UPagination
@@ -176,7 +201,7 @@ onChange(async (files) => {
             </div>
           </template>
           <template #mapping>
-            <div class="overflow-y-scroll px-5" style="height: calc(100dvh - 450px);">
+            <div class="overflow-y-scroll px-5" style="height: calc(100dvh - 330px);">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4">
 
                 <UFormGroup label="Email" required class="px-5">
@@ -295,29 +320,34 @@ onChange(async (files) => {
             </div>
           </template>
           <template #validate>
-            <div class="grid place-content-center" style="height: calc(100dvh - 450px);">
-              <UButton color="gray" icon="i-heroicons-shield-check" :disabled="isLoading">
+            <div v-if="!hasErrors" class="grid place-content-center" style="height: calc(100dvh - 450px);">
+              <UButton  color="gray" icon="i-heroicons-shield-check" :disabled="isValidateDisabled" :loading="isLoading" @click="validateData">
                 <span class="hidden sm:block">Validar</span>
               </UButton>
             </div>
-          </template>
-          <template #upload>
-            <div class="grid place-content-center" style="height: calc(100dvh - 450px);">
-              <UButton color="gray" icon="i-heroicons-shield-check" :disabled="isLoading">
-                <span class="hidden sm:block">Cargar Información</span>
-              </UButton>
-            </div>
-          </template>
-          <template #report>
-            <div class="grid place-content-center" style="height: calc(100dvh - 450px);">
-              <span>Some stats about the results</span>
+            <div v-if="hasErrors" class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
+              <UTable
+                :rows="computeErrorRows"
+                :columns="errorColumns"
+                :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+                style="height: calc(100dvh - 390px);"
+                sort-mode="manual">
+                <template #errors-data="{ row }">
+                  <li v-for="error in row.errors">
+                    <span class="text-red-500">{{ error.message }}</span>
+                  </li>
+                </template>
+              </UTable>
+              <UDivider/>
+              <UPagination
+                v-model="errorPage"
+                :page-count="pageCount"
+                :total="totalErrorRows"
+                class="place-content-end p-2"/>
             </div>
           </template>
         </UAccordion>
       </UDashboardPanelContent>
-      <div v-if="tab === 'file'" class="flex justify-center sm:justify-between px-3 py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
-        
-      </div>
     </UDashboardPanel>
   </UDashboardPage>
 </template>

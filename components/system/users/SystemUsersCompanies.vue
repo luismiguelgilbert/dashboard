@@ -27,6 +27,9 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
     state.value.userCompanies.push(selectedCompany.id);
   }
 }
+//LOOKUP DATA
+const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
+state.value.companyOptions = companyOptionsData.value ?? [];
 </script>
 
 <template>
@@ -48,6 +51,7 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
             <div class="text-sm min-w-0">
               <p class="text-gray-900 dark:text-white font-medium truncate">
                 {{ company.name_es_short }}
+                <b v-if="!company.is_active" class="text-red-500 italic">Desactivada</b>
               </p>
               <p class="text-gray-500 dark:text-gray-400 truncate">
                 {{ company.name_es }}

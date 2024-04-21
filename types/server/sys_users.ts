@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { unknown, z } from 'zod'
 
 export const sys_users = z.object({
   id: z.coerce.string(),
@@ -108,6 +108,19 @@ export type type_userBody = {
   userCompanies: type_userCompaniesForm,
 };
 
+export const bulkMapping = z.object({
+  email: z.coerce.string().min(1, { message: 'Debe incluir 1 o más caracteres.' }),
+  user_name: z.coerce.string().min(1, { message: 'Debe incluir 1 o más caracteres.' }),
+  user_lastname: z.coerce.string().min(1, { message: 'Debe incluir 1 o más caracteres.' }),
+  user_sex: z.coerce.string().min(1, { message: 'Debe incluir 1 o más caracteres.' }),
+  sys_profile_id: z.coerce.number().positive({ message: 'Debe seleccionar un Perfil.' }),
+  prefered_company_id: z.coerce.string().min(1, { message: 'Debe seleccionar una Organización.' }),
+});
+
+export const bulkUsers = z.object({
+  mapping: bulkMapping,
+  users: z.array(z.unknown()),
+});
 
 export const filter_options = [
   { label: 'Todos los Usuarios', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },

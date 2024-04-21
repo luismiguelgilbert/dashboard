@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { colors, darkColors } from '@/components/home/config';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
+import { type type_sys_companies } from '@/types/server/sys_companies';
 
 defineProps({
   isEditing: {
@@ -31,10 +32,8 @@ const toggleCompany = (selectedCompanyId: any) => {
   }
 };
 //LOOKUP DATA
-if (!state.value.profileOptions.length) {
-  const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
-  state.value.profileOptions = profileOptionsData.value ?? [];
-}
+const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
+state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disabled: p.is_active })) ?? [];
 </script>
 
 <template>

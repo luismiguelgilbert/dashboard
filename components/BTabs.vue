@@ -3,6 +3,7 @@ export interface bTabItem {
   value: string | number,
   label: string,
   icon?: string,
+  slot?: string,
 }
 export interface bTabsProps {
   items: bTabItem[],
@@ -53,5 +54,12 @@ const tabClick = (tab: bTabItem) => {
         </ul>
       </nav>
     </div>
+  </div>
+  <div
+    v-for="(item, index) of props.items"
+    :key="index"
+    :class="{'hidden': innerValue !== item.slot}">
+    <slot :name="item.slot">
+    </slot>
   </div>
 </template>
