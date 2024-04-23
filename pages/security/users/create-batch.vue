@@ -15,9 +15,10 @@ const columns = ref<column[]>([]);
 const pageCount = 50;
 const page = ref(1);
 const errorPage = ref(1);
+const validPage = ref(1);
 const tab = ref('file');
 const isLoading = ref(false);
-const hasErrors = ref(false);
+const isValidated = ref(false);
 const errors = ref<any[]>([]);
 const accordionKey = ref(1);
 const profileOptions = ref<type_sys_profiles[]>([]);
@@ -30,6 +31,12 @@ const mapping = ref({
   sys_profile_id: null,
   prefered_company_id: null,
 });
+const validationTab = ref('results');
+const validationTabs = [
+  { value: 'results', slot: 'results', label: 'Resultados', icon: 'i-heroicons-chart-bar', defaultOpen: true },
+  { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
+  { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
+];
 
 //COMPUTED PROPS
 const tabs = computed(() =>
@@ -41,14 +48,21 @@ const tabs = computed(() =>
   ]
 );
 const totalRows = computed(() => rows.value.length);
-const profileOptionsFormatted = computed(() => profileOptions.value.map(p => ({ ...p, disabled: p.is_active })));
+const profileOptionsFormatted = computed(() => profileOptions.value.map(p => ({ ...p, disabled: !p.is_active })));
+const companyOptionsFormatted = computed(() => companyOptions.value.map(p => ({ ...p, disabled: !p.is_active })));
+
 const computeRows = computed(() => {
   return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
 });
-const computeErrorRows = computed(() => {
-  return errors.value.slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount)
+const computedErrorRows = computed(() => {
+  return errors.value.filter(x => x.errors.length > 0).slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount)
 });
-const totalErrorRows = computed(() => errors.value.length);
+const totalErrorRows = computed(() => errors.value.filter(x => x.errors.length > 0).length);
+const computedValidRows = computed(() => {
+  return errors.value.filter(x => x.errors.length <= 0).slice((validPage.value - 1) * pageCount, (validPage.value) * pageCount)
+});
+const totalValidRows = computed(() => errors.value.filter(x => x.errors.length <= 0).length);
+
 const isValidateDisabled = computed(() => isLoading.value || rows.value.length === 0 || !mapping.value.email || !mapping.value.user_name || !mapping.value.user_lastname || !mapping.value.user_sex || !mapping.value.sys_profile_id || !mapping.value.prefered_company_id);
 const errorColumns = computed(() => {
   return [
@@ -56,13 +70,19 @@ const errorColumns = computed(() => {
     { index: columns.value.length + 1, key: 'errors', label: 'Error(es)', sortable: false },
   ];
 });
-  
+const errorStats = computed(() => {
+  const invalidRows = errors.value.filter(x => x.errors?.length > 0);
+  return [
+    { label: 'Total de registros', value: rows.value.length, icon: "i-heroicons-chart-bar" },
+    { label: 'Registros válidos', value: (rows.value.length - invalidRows.length), icon: "i-heroicons-check-circle" },
+    { label: 'Registros con errores', value: invalidRows.length, icon: "i-heroicons-exclamation-triangle" },
+  ];
+});
 //ACTIONS
 const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
 const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
 profileOptions.value = profileOptionsData.value ?? [];
 companyOptions.value = companyOptionsData.value ?? [];
-
 
 const cancel = async () => {
   isLoading.value = true;
@@ -85,6 +105,7 @@ onChange(async (files) => {
   if (files && files[0]) {
     try {
       isLoading.value = true;
+      isValidated.value = false;
       //Reset data
       let index = 1;
       rows.value = [];
@@ -97,8 +118,9 @@ onChange(async (files) => {
         prefered_company_id: null,
       };
       columns.value = [];
-      hasErrors.value = false;
       errors.value = [];
+      errorPage.value = 1;
+      validationTab.value = "results";
 
       //Read XLS file
       const workbook = new Excel.Workbook();
@@ -123,7 +145,7 @@ onChange(async (files) => {
           let obj: any = {};
           row.eachCell((cell, colNumber) => {
             const key = columns.value[colNumber - 1].key;
-            obj[key] = cell.value;
+            obj[key] = cell.text.trim();
           });
           rows.value.push(obj);
         }
@@ -148,12 +170,22 @@ const validateData = async () => {
       users: rows.value,
     },
   });
+  isValidated.value = true;
+  isLoading.value = false;
   if (error || data.value?.length) {
-    hasErrors.value = true;
     errors.value = data.value ?? [];
-    isLoading.value = false;
-    return;
   }
+};
+
+const createUsers = async () => {
+  isLoading.value = true;
+  await useFetch(`/api/users/bulk-create`, {
+    method: 'POST',
+    body: {
+      mapping: mapping.value,
+      users: errors.value.filter(x => x.errors.length <= 0).slice(0, 2),
+    },
+  });
   isLoading.value = false;
 };
 </script>
@@ -202,11 +234,25 @@ const validateData = async () => {
           </template>
           <template #mapping>
             <div class="overflow-y-scroll px-5" style="height: calc(100dvh - 330px);">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4">
-
-                <UFormGroup label="Email" required class="px-5">
+              <UCard class="mt-2">
+                <template #header>
+                  <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
+                    <p class="text-gray-900 dark:text-white font-semibold">
+                      Dato:
+                    </p>
+                    <p class="col-span-2 text-gray-900 dark:text-white font-semibold">
+                      Columna en el archivo:
+                    </p>
+                    <p class="col-span-2 text-gray-900 dark:text-white font-semibold">
+                      Vista Previa:
+                    </p>
+                  </div>
+                </template>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
+                  <p class="text-gray-900 dark:text-white place-content-center">Email</p>
                   <USelectMenu
                     v-model="mapping.email"
+                    class="col-span-2"
                     searchable
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar campo email..."
@@ -215,20 +261,20 @@ const validateData = async () => {
                     value-attribute="label"
                     option-attribute="label"
                     :options="columns" />
-                </UFormGroup>
-                <UFormGroup label="Vista previa de Email" required class="px-5">
                   <UInput
                     :value="mappingPreview(mapping.email)"
+                    class="col-span-3"
+                    variant="none"
                     placeholder="Seleccionar campo email..."
                     size="xl"
                     readonly
                     icon="i-heroicons-envelope" />
-                </UFormGroup>
-
-                <UDivider class="col-span-1 sm:col-span-2 my-3 sm:my-0 px-5" />
-                <UFormGroup label="Nombres" required class="px-5">
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
+                  <p class="text-gray-900 dark:text-white place-content-center">Nombres</p>
                   <USelectMenu
                     v-model="mapping.user_name"
+                    class="col-span-2"
                     searchable
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar campo de nombres..."
@@ -237,21 +283,21 @@ const validateData = async () => {
                     value-attribute="label"
                     option-attribute="label"
                     :options="columns" />
-                </UFormGroup>
-                <UFormGroup label="Vista previa de Nombre" required class="px-5">
                   <UInput
                     :value="mappingPreview(mapping.user_name)"
                     placeholder="Seleccionar campo Nombres..."
+                    class="col-span-3"
+                    variant="none"
                     size="xl"
                     readonly
                     icon="i-heroicons-user" />
-                </UFormGroup>
-
-                <UDivider class="col-span-1 sm:col-span-2 my-3 sm:my-0 px-5" />
-                <UFormGroup label="Apellidos" required class="px-5">
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
+                  <p class="text-gray-900 dark:text-white place-content-center">Apellidos</p>
                   <USelectMenu
                     v-model="mapping.user_lastname"
                     searchable
+                    class="col-span-2"
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar campo de apellidos..."
                     size="xl"
@@ -259,21 +305,21 @@ const validateData = async () => {
                     value-attribute="label"
                     option-attribute="label"
                     :options="columns" />
-                </UFormGroup>
-                <UFormGroup label="Vista previa de Apellidos" required class="px-5">
                   <UInput
                     :value="mappingPreview(mapping.user_lastname)"
                     placeholder="Seleccionar campo Apellidos..."
+                    class="col-span-3"
+                    variant="none"
                     size="xl"
                     readonly
                     icon="i-heroicons-user" />
-                </UFormGroup>
-
-                <UDivider class="col-span-1 sm:col-span-2 my-3 sm:my-0 px-5" />
-                <UFormGroup label="Sexo" required class="px-5">
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
+                  <p class="text-gray-900 dark:text-white place-content-center">Sexo</p>
                   <USelectMenu
                     v-model="mapping.user_sex"
                     searchable
+                    class="col-span-2"
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar campo de sexo..."
                     size="xl"
@@ -281,20 +327,20 @@ const validateData = async () => {
                     value-attribute="label"
                     option-attribute="label"
                     :options="columns" />
-                </UFormGroup>
-                <UFormGroup label="Vista previa de Sexo" required class="px-5">
                   <UInput
                     :value="mappingPreview(mapping.user_sex)"
                     placeholder="Seleccionar campo Sexo..."
+                    class="col-span-3"
+                    variant="none"
                     size="xl"
                     readonly
                     icon="i-heroicons-user" />
-                </UFormGroup>
-                
-                <UDivider class="col-span-1 sm:col-span-2 my-3 sm:my-0 px-5" />
-                <UFormGroup label="Perfil" required class="px-5 pb-2 col-span-2">
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
+                  <p class="text-gray-900 dark:text-white place-content-center">Perfil</p>
                   <USelectMenu
                     v-model="mapping.sys_profile_id"
+                    class="col-span-5"
                     searchable
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar rol..."
@@ -303,10 +349,12 @@ const validateData = async () => {
                     value-attribute="id"
                     option-attribute="name_es"
                     :options="profileOptionsFormatted" />
-                </UFormGroup>
-                <UFormGroup label="Organización" required class="px-5 pb-2 col-span-2">
+                </div>
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
+                  <p class="text-gray-900 dark:text-white place-content-center">Organización</p>
                   <USelectMenu
                     v-model="mapping.prefered_company_id"
+                    class="col-span-5"
                     searchable
                     searchable-placeholder="Buscar campo..."
                     placeholder="Seleccionar organización..."
@@ -314,36 +362,65 @@ const validateData = async () => {
                     icon="i-heroicons-building-office-2"
                     value-attribute="id"
                     option-attribute="name_es_short"
-                    :options="companyOptions" />
-                </UFormGroup>
-              </div>
+                    :options="companyOptionsFormatted" />
+                </div>
+              </UCard>
             </div>
           </template>
           <template #validate>
-            <div v-if="!hasErrors" class="grid place-content-center" style="height: calc(100dvh - 450px);">
+            <div v-if="!isValidated" class="grid place-content-center" style="height: calc(100dvh - 330px);">
               <UButton  color="gray" icon="i-heroicons-shield-check" :disabled="isValidateDisabled" :loading="isLoading" @click="validateData">
                 <span class="hidden sm:block">Validar</span>
               </UButton>
             </div>
-            <div v-if="hasErrors" class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
-              <UTable
-                :rows="computeErrorRows"
-                :columns="errorColumns"
-                :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-                style="height: calc(100dvh - 390px);"
-                sort-mode="manual">
-                <template #errors-data="{ row }">
-                  <li v-for="error in row.errors">
-                    <span class="text-red-500">{{ error.message }}</span>
-                  </li>
+            <div v-if="isValidated" class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
+              <BTabs v-model="validationTab" :items="validationTabs">
+                <template #results>
+                  <UDashboardCard
+                    v-for="(stat) in errorStats"
+                    class="rounded-none"
+                    :title="stat.label"
+                    :description="`Se encontraron ${stat.value} registros`"
+                    :icon="stat.icon"
+                    :links="stat.label == 'Registros válidos' ? [{ label: 'Crear', color: 'green', trailingIcon: 'i-heroicons-plus-circle', click: createUsers, disabled: (stat.value <= 0) }] : []"
+                  />
                 </template>
-              </UTable>
-              <UDivider/>
-              <UPagination
-                v-model="errorPage"
-                :page-count="pageCount"
-                :total="totalErrorRows"
-                class="place-content-end p-2"/>
+                <template #error>
+                  <UTable
+                    :rows="computedErrorRows"
+                    :columns="errorColumns"
+                    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+                    style="height: calc(100dvh - 430px);"
+                    sort-mode="manual">
+                    <template #errors-data="{ row }">
+                      <li v-for="error in row.errors">
+                        <span class="text-red-500">{{ error.message }}</span>
+                      </li>
+                    </template>
+                  </UTable>
+                  <UDivider/>
+                  <UPagination
+                    v-model="errorPage"
+                    :page-count="pageCount"
+                    :total="totalErrorRows"
+                    class="place-content-end p-2"/>
+                </template>
+                <template #valid>
+                  <UTable
+                    :rows="computedValidRows"
+                    :columns="columns"
+                    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+                    style="height: calc(100dvh - 430px);"
+                    sort-mode="manual">
+                  </UTable>
+                  <UDivider/>
+                  <UPagination
+                    v-model="validPage"
+                    :page-count="pageCount"
+                    :total="totalValidRows"
+                    class="place-content-end p-2"/>
+                </template>
+              </BTabs>
             </div>
           </template>
         </UAccordion>

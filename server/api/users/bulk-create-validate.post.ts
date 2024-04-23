@@ -18,28 +18,50 @@ export default defineEventHandler( async (event) => {
     const user_sex_field = payload.mapping.user_sex;
     const sys_profile_id_field = payload.mapping.sys_profile_id;
     const prefered_company_id_field = payload.mapping.prefered_company_id;
-    //Check data is valid
+
+    //Get existing emails
+    const { rows } = await serverDB.query('select email from auth.users order by email')
+    
+    //Validations
+    let rowWithErros: any[] = [];
     const userValidationSchema = z.object({
       email: z.coerce.string().email({ message: 'Correo Electrónico no es válido.' }),
       user_name: z.coerce.string().min(3, { message: 'Nombre debe incluir 3 o más caracteres.' }),
       user_lastname: z.coerce.string().min(3, { message: 'Apellido debe incluir 3 o más caracteres.' }),
       user_sex: z.coerce.boolean(),
     });
+    payload.users.forEach((row: any, index) => {
+      let errors = [];
 
-    //Validations
-    //pending - check if mail is duplicated on same file
-    //pending - check if mail exists in database (left join for simple pass)
-    let rowWithErros: any[] = [];
-    payload.users.forEach((row: any) => {
-      const result = userValidationSchema.safeParse({
+      //1) Validate if data has the correct schema
+      const validationError = userValidationSchema.safeParse({
         email: row[email_field],
         user_name: row[user_name_field],
         user_lastname: row[user_lastname_field],
         user_sex: row[user_sex_field],
       });
-      if (!result.success) {
-        rowWithErros.push({...row, errors: result.error.issues});
+      if (!validationError.success) {
+        errors.push(...validationError.error.issues);
+      };
+      //2) Check if email is duplicated on same file (compares if mail is the same in a different row)
+      const currentRowEmail = row[email_field].toLowerCase();
+      const isDuplicate = payload.users.some((item: any, idx) => item[email_field].toLowerCase() === currentRowEmail && index !== idx);
+      if (isDuplicate) {
+        errors.push({
+          code: "duplicated_email",
+          message: "Correo Electrónico duplicado.",
+        });
       }
+      //3) Check if email already created in the Users table
+      const isUser = rows.some((item: any) => item.email === currentRowEmail);
+      if (isUser) {
+        errors.push({
+          code: "existing_user",
+          message: "Correo Electrónico ya existe.",
+        });
+      }
+
+      rowWithErros.push({...row, errors});
     });
     return rowWithErros;
   } catch(err: NuxtError | any) {
