@@ -12,9 +12,13 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxt/image'
   ],
+  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   ui: {
     icons: ['heroicons', 'simple-icons'],
     safelistColors: ['primary', 'red', 'orange', 'green']
+  },
+  build: {
+    transpile: ['@fortawesome/vue-fontawesome']
   },
   supabase: {
     redirect: false,

@@ -25,8 +25,8 @@ defineProps({
         <NuxtImg 
           v-if="row.avatar_url && row.avatar_url.length > 0"
           :src="row.avatar_url"
-          width="30"
-          height="25"
+          width="40"
+          height="35"
           class="ml-1 mt-1 rounded" />
         <UAvatar
           v-else
@@ -35,6 +35,9 @@ defineProps({
         </UAvatar>
         <div class="text-base font-semibold dark:text-white text-black">
           {{ `${row.user_full_name}` }}
+          <font-awesome-icon v-if="!row.es_consiliario && row.user_sex" icon="fa-solid fa-person" class="text-emerald-500" />
+          <font-awesome-icon v-if="!row.es_consiliario && !row.user_sex" icon="fa-solid fa-person-dress" class="text-rose-500" />
+          <font-awesome-icon v-if="row.es_consiliario" icon="fa-solid fa-person-praying" />
           <p class="font-light">{{ row.email }}</p>
         </div>
       </div>

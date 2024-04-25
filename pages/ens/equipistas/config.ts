@@ -6,7 +6,7 @@ export const module = 'equipo'
 export const columns = [
   {
     key: 'name_es',
-    label: 'Nombres',
+    label: 'Equipista',
     sortable: false
   },
   {
