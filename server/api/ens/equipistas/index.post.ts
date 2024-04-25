@@ -26,7 +26,7 @@ export default defineEventHandler( async (event) => {
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
     const search_string = sanitizeSQL(filter.searchString)
     const filterSearchString = search_string.length > 0
-      ? ` and (a.name_es ILIKE '%${search_string}%' )` 
+      ? ` and (concat(b.user_name, ' ', b.user_lastname) ILIKE '%${search_string}%' or bb.email ILIKE '%${search_string}%' )` 
       : ''
 
     const text = `

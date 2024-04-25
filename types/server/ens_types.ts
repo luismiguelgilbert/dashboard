@@ -20,11 +20,13 @@ export type type_ens_members = z.infer<typeof ens_members>;
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
   { label: 'Inactivos', value: 2, sqlValue: 'a.is_active = false', icon: 'i-heroicons-funnel' },
+  { label: 'Hombre', value: 3, sqlValue: 'b.user_sex = true', icon: 'i-heroicons-funnel' },
+  { label: 'Mujer', value: 4, sqlValue: 'b.user_sex = false', icon: 'i-heroicons-funnel' },
+  { label: 'Consiliario', value: 5, sqlValue: 'a.es_consiliario = true', icon: 'i-heroicons-funnel' },
 ]
 
 export const sort_options = [
-  { label: 'Apellidos', value: 1, sqlValue: 'b.user_lastname', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Nombres', value: 2, sqlValue: 'b.user_name', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'Nombre', value: 1, sqlValue: 'user_full_name', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Estado', value: 2, sqlValue: 'a.is_active', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Código', value: 4, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' },
 ]
