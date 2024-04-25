@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { type type_sys_profiles } from '@/types/server/sys_profiles'
+import { type type_ens_members } from '@/types/server/ens_types'
 import { format, isToday } from 'date-fns'
 
 defineProps({
   rows: {
-    type: Array<type_sys_profiles>,
+    type: Array<type_ens_members>,
     required: false,
     default: () => []
   }
@@ -20,17 +20,24 @@ defineProps({
         class="flex justify-between gap-x-6 py-5">
         <div class="flex min-w-0 gap-x-4">
           <div class="pl-2">
-            <UAvatar size="xs">
-              {{ row.name_es[0] }}
+            <NuxtImg 
+              v-if="row.avatar_url && row.avatar_url.length > 0"
+              :src="row.avatar_url"
+              width="15"
+              height="15"
+              class="ml-2 mt-1 rounded" />
+            <UAvatar
+              v-else
+              size="xs">
+              {{ row.user_full_name[0] }}
             </UAvatar>
           </div>
           <div class="min-w-0 flex-auto">
             <p class="text-sm truncate font-semibold leading-6">
-              {{ row.name_es }}
+              {{ row.user_full_name }}
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
-              <!-- Usuarios: {{ row.user_count }} -->
-              Usuarios:
+              {{ row.email }}
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
               Creado: {{ isToday(new Date(row.created_at!)) ? format(new Date(row.created_at!), 'HH:mm') : format(new Date(row.created_at!), 'dd MMM') }}
@@ -49,7 +56,7 @@ defineProps({
           icon="i-heroicons-pencil-square"
           variant="link"
           color="gray"
-          @click="navigateTo(`/ens/equipos/${row.id}`)" />
+          @click="navigateTo(`/ens/equipistas/${row.id}`)" />
       </li>
     </ul>
   </div>

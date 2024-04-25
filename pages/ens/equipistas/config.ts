@@ -6,47 +6,7 @@ export const module = 'equipo'
 export const columns = [
   {
     key: 'name_es',
-    label: 'Perfil',
-    sortable: false
-  },
-  {
-    key: 'user_count',
-    label: '# Equipistas',
-    sortable: false
-  },
-  {
-    key: 'nivel_0',
-    label: 'Ciudad',
-    sortable: false
-  },
-  {
-    key: 'nivel_1',
-    label: 'Sector',
-    sortable: false
-  },
-  {
-    key: 'nivel_2',
-    label: 'Provincia',
-    sortable: false
-  },
-  {
-    key: 'nivel_3',
-    label: 'Región',
-    sortable: false
-  },
-  {
-    key: 'nivel_4',
-    label: 'País',
-    sortable: false
-  },
-  {
-    key: 'nivel_5',
-    label: 'Super Región',
-    sortable: false
-  },
-  {
-    key: 'nivel_6',
-    label: 'Zona',
+    label: 'Nombres',
     sortable: false
   },
   {

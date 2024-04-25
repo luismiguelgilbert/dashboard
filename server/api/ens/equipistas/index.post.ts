@@ -3,13 +3,13 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils'
 import { filter_payload } from '@/types/server/filter_payload'
-import { filter_options, sort_options, sys_profiles, type type_sys_profiles } from '@/types/server/sys_profiles'
+import { filter_options, sort_options, ens_members, type type_ens_members } from '@/types/server/ens_types'
 import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.ROLES_READ);
+    await hasUserPermission(userSessionId, PermissionsList.ENSMEMBERS_READ);
 
     const filter = await readValidatedBody(event, body => filter_payload.parse(body))
     const sortById = Number(filter.sortBy)
@@ -31,20 +31,23 @@ export default defineEventHandler( async (event) => {
 
     const text = `
       SELECT
-          a.id
-        , INITCAP(a.name_es) as name_es
-        , a.is_active
-        , INITCAP(a.nivel_0) as nivel_0
-        , INITCAP(a.nivel_1) as nivel_1
-        , INITCAP(a.nivel_2) as nivel_2
-        , INITCAP(a.nivel_3) as nivel_3
-        , INITCAP(a.nivel_4) as nivel_4
-        , INITCAP(a.nivel_5) as nivel_5
-        , INITCAP(a.nivel_6) as nivel_6
+        a.id
+        ,INITCAP(concat(b.user_name, ' ', b.user_lastname)) as user_full_name
+        ,bb.email
+        ,b.user_sex
+        ,b.avatar_url
+        ,INITCAP(concat(c.user_name, ' ', c.user_lastname)) as partner_full_name
+        ,a.fecha_matrimonio
+        ,a.fecha_nacimiento
+        ,a.is_active
+        ,a.es_consiliario
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
         , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
         , count(*) OVER() AS row_count
-      FROM ens_teams a
+      from ens_members a
+      left join sys_users b on a.id = b.id
+      left join auth.users bb on bb.id = b.id
+      left join sys_users c on a.partner_id = c.id
       WHERE 1 = 1 
       ${filterBy}
       ${filterSearchString}
@@ -52,9 +55,8 @@ export default defineEventHandler( async (event) => {
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    const data = await serverDB.query(text)
-    // const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows)
-    const result = data.rows;
+    const data = await serverDB.query(text);
+    const result: type_ens_members[] = ens_members.array().parse(data.rows)
     
     return result
   } catch(err: NuxtError | any) {

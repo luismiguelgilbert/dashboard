@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { actions, module, title } from './config'
-import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles'
+import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types'
 import indexTable from './indexTable.vue'
 import indexList from './indexList.vue'
 
@@ -8,11 +8,10 @@ useHead({ title })
 
 const { state } = useEnsEquipos();
 const { sessionData } = useUserSession();
-// const rows = ref<type_sys_profiles[]>([]);
-const rows = ref([]);
+const rows = ref<type_ens_members[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload })
+const { data, error, pending } = await useFetch<type_ens_members[]>('/api/ens/equipistas', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 </script>
 
