@@ -3,6 +3,9 @@ import fs from 'fs';
 import { useNuxt } from 'nuxt/kit';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  experimental: {
+    componentIslands: true,
+  },
   extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: [
     '@nuxt/ui',

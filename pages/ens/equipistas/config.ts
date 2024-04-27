@@ -23,21 +23,29 @@ export const columns = [
 export const actions: DropdownItemExtended[][] = [
   [
     {
-      id: PermissionsList.ROLES_CREATE,
+      id: PermissionsList.ENSMEMBERS_CREATE,
       isMainAction: true,
       disabled: false,
       label: 'Nuevo perfil',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/roles/create') }  
+      click: () => { navigateTo('/ens/equipistas/create') }  
     },
     {
-      id: PermissionsList.ROLES_EXPORT,
+      id: PermissionsList.ENSMEMBERS_EXPORT,
       isMainAction: false,
       disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
       click: async () => { downloadFile() }
     },
+    {
+      id: PermissionsList.ENSMEMBERS_CREATE,
+      isMainAction: false,
+      disabled: false,
+      label: 'Carga en lote',
+      icon: 'i-heroicons-pencil-square-20-solid',
+      click: () => { navigateTo('/ens/equipistas/create-batch') }
+    }
   ],
 ];
 //Functions

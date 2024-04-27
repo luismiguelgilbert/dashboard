@@ -33,12 +33,12 @@ defineProps({
           size="xs">
           {{ row.user_full_name[0] }}
         </UAvatar>
-        <div class="text-base font-semibold dark:text-white text-black">
+        <div class="text-base font-bold dark:text-white text-black">
           {{ `${row.user_full_name}` }}
           <font-awesome-icon v-if="!row.es_consiliario && row.user_sex" icon="fa-solid fa-person" class="text-emerald-500" />
           <font-awesome-icon v-if="!row.es_consiliario && !row.user_sex" icon="fa-solid fa-person-dress" class="text-rose-500" />
           <font-awesome-icon v-if="row.es_consiliario" icon="fa-solid fa-person-praying" />
-          <p class="font-light">{{ row.email }}</p>
+          <p class="font-thin text-base">{{ row.email }}</p>
         </div>
       </div>
     </template>
