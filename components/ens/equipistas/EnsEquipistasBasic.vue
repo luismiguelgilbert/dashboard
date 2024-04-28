@@ -10,7 +10,7 @@ const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5'
 const partnerAvatar = computed(() => state.value.data.partner_id && state.value.equipistas.find(equipista => equipista.id === state.value.data.partner_id)?.avatar_url);
 
 //LOOKUP DATA
-const { data } = await useFetch<type_ens_members_lookup[]>('/api/lookups/ens_members');
+const { data } = useFetch<type_ens_members_lookup[]>('/api/lookups/ens_members');
 state.value.equipistas = data.value ?? [];
 </script>
 

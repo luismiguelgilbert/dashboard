@@ -31,10 +31,10 @@ state.value.isLoading = false;
 // state.value.userCompanies = companiesData.value?.map(company => company.id.toString()) ?? [];
 
 if (route.params.id) {
-  const { data } = await useFetch<type_ens_members_form[]>(`/api/ens/equipistas/${route.params.id}`);
+  const { data } = useFetch<type_ens_members_form[]>(`/api/ens/equipistas/${route.params.id}`);
   state.value.data = data.value?.[0]!;
 
-  const { data: dataTeams } = await useFetch<type_ens_members_teams[]>(`/api/ens/equipistas/${route.params.id}/teams`);
+  const { data: dataTeams } = useFetch<type_ens_members_teams[]>(`/api/ens/equipistas/${route.params.id}/teams`);
   state.value.data_teams = dataTeams.value ?? [];
 }
 
