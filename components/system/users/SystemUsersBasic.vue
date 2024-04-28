@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { colors, darkColors } from '@/components/home/config';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
-import { type type_sys_companies } from '@/types/server/sys_companies';
 
 defineProps({
   isEditing: {

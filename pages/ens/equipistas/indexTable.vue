@@ -60,7 +60,7 @@ defineProps({
         icon="i-heroicons-pencil-square"
         variant="link"
         color="gray"
-        @click="navigateTo(`/security/roles/${row.id}`)" />
+        @click="navigateTo(`/ens/equipistas/${row.id}`)" />
     </template>
   </UTable>
 </template>

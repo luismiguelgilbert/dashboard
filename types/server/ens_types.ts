@@ -17,6 +17,30 @@ export const ens_members = z.object({
 });
 export type type_ens_members = z.infer<typeof ens_members>;
 
+export const ens_members_lookup = z.object({
+  id: z.coerce.string(),
+  user_full_name: z.coerce.string(),
+  es_consiliario: z.coerce.boolean(),
+  avatar_url: z.coerce.string().optional().nullable(),
+  user_sex: z.coerce.boolean(),
+  email: z.coerce.string(),
+});
+export type type_ens_members_lookup = z.infer<typeof ens_members_lookup>;
+
+export const ens_members_form = z.object({
+  id: z.coerce.string(),
+  user_full_name: z.coerce.string(),
+  es_consiliario: z.coerce.boolean(),
+  avatar_url: z.coerce.string().optional().nullable(),
+  user_sex: z.coerce.boolean(),
+  email: z.coerce.string(),
+  partner_id: z.coerce.string(),
+  fecha_matrimonio: z.coerce.date().nullable().optional(),
+  fecha_nacimiento: z.coerce.date().nullable().optional(),
+  is_active: z.coerce.boolean(),
+});
+export type type_ens_members_form = z.infer<typeof ens_members_form>;
+
 export const ens_teams = z.object({
   id: z.coerce.string(),
   name_es: z.coerce.string(),
@@ -27,14 +51,40 @@ export const ens_teams = z.object({
 export type type_ens_teams = z.infer<typeof ens_teams>;
 
 export const ens_members_teams = z.object({
+  id: z.coerce.string(),
   user_id: z.coerce.string(),
   team_id: z.coerce.string(),
+  team_name_es: z.coerce.string(),
   fecha_pilotaje: z.coerce.date().nullable().optional(),
   fecha_alianza: z.coerce.date().nullable().optional(),
   fecha_salida: z.coerce.date().nullable().optional(),
-  row_count: z.coerce.number().optional().nullable().default(0),
 });
 export type type_ens_members_teams = z.infer<typeof ens_members_teams>;
+
+export const ens_members_services = z.object({
+  id: z.coerce.string(),
+  user_id: z.coerce.string(),
+  service_id: z.coerce.string(),
+  date_start: z.coerce.date().nullable().optional(),
+  date_stop: z.coerce.date().nullable().optional(),
+});
+export type type_ens_members_services = z.infer<typeof ens_members_services>;
+
+export const ens_services_lookup = z.object({
+  id: z.coerce.string(),
+  name_es: z.coerce.string(),
+  is_active: z.coerce.boolean(),
+  row_count: z.coerce.number().optional().nullable().default(0),
+});
+export type type_ens_services_lookup = z.infer<typeof ens_services_lookup>;
+
+export const ens_teams_lookup = z.object({
+  id: z.coerce.string(),
+  name_es: z.coerce.string(),
+  is_active: z.coerce.boolean(),
+  row_count: z.coerce.number().optional().nullable().default(0),
+});
+export type type_ens_teams_lookup = z.infer<typeof ens_teams_lookup>;
 
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },

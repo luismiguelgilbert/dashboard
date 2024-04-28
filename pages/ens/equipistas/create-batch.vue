@@ -270,7 +270,7 @@ onChange(async (files) => {
                     readonly
                     icon="i-heroicons-envelope" />
                 </div>
-                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
+                <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
                   <p class="text-gray-900 dark:text-white place-content-center">Email de cónyuge</p>
                   <USelectMenu
                     v-model="mapping.email"
