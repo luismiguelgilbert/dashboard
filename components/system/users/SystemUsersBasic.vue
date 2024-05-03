@@ -31,7 +31,7 @@ const toggleCompany = (selectedCompanyId: any) => {
   }
 };
 //LOOKUP DATA
-const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
+const { data: profileOptionsData } = await useLazyFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
 state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disabled: !p.is_active })) ?? [];
 </script>
 

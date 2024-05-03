@@ -38,6 +38,7 @@ const showInvalidFormData = () => {
 
 const save = async () => {
   state.value.isLoading = true;
+  state.value.userData.should_validate = true;
   let newUserId = null;
   const isDataValid = await validateUserData();
   //Upload Data
