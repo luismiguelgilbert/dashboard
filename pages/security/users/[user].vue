@@ -1,54 +1,53 @@
 <script setup lang="ts">
-// import type { Form } from '#ui/types'
-import {
-  // ens_members_form,
-  // ens_members_teams,
-  // type type_ens_members_lookup,
-  type type_ens_members_form,
-  type type_ens_members_teams,
-} from '~/types/server/ens_types';
+import type { Form } from '#ui/types'
+import { type type_sys_companies } from '~/types/server/sys_companies';
+import { userDataForm, type type_sys_users, type type_userDataForm } from '~/types/server/sys_users';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
-import Teams from './components/Teams.vue';
+import Companies from './components/Companies.vue';
 
-const { state, resetData, validateData } = useEnsEquipistasForm();
+const { state, resetUserData, validateUserData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
-
 const toast = useToast();
 const route = useRoute();
 
 const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Equipista', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'teams', slot: 'teams', label: 'Equipos y Servicios', icon: 'i-heroicons-users', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'companies', slot: 'companies', label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
-const tab = ref<'basic'|'teams'>('basic');
-const canSave = hasSessionPermission(PermissionsList.ENSMEMBERS_EDIT, sessionData.value.userMenuData!);
+const tab = ref<'basic'|'companies'>('basic');
+const mainForm = ref<Form<type_userDataForm>>();
+const canSave = hasSessionPermission(PermissionsList.USERS_EDIT, sessionData.value.userMenuData!);
 state.value.isLoading = false;
+const systemUsersBasic = ref<InstanceType<typeof Basic>>();
 
 const cancel = async () => {
   state.value.isLoading = true;
-  await navigateTo('/ens/equipistas');
+  await navigateTo('/security/users');
 };
 
-const { data, pending } = await useLazyFetch<type_ens_members_form[]>(`/api/ens/equipistas/${route.params.equipista}`);
+const { data, pending } = await useLazyFetch<type_sys_users[]>(`/api/users/${route.params.user}`);
 state.value.data = data.value?.[0]!;
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0] } });
 
-const { data: dataTeams, pending: pendingTeams } = await useLazyFetch<type_ens_members_teams[]>(`/api/ens/equipistas/${route.params.equipista}/teams`);
-state.value.data_teams = dataTeams.value ?? [];
-watch(dataTeams, (newData) => { if (newData?.length) { state.value.data_teams = newData } });
+const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch<type_sys_companies[]>(`/api/users/${route.params.user}/companies`);
+state.value.userCompanies = dataCompanies.value?.map(company => company.id.toString()) ?? [];
+watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()) } });
 
 const save = async () => {
-//   state.value.isLoading = true;
-//   const isDataValid = await validateData();
+  // state.value.isLoading = true;
+  // state.value.userData.should_validate = true;
+
+  // const isDataValid = await validateUserData();
+  // console.log({isDataValid});
   
-  //Upload Data
+  // //Upload Data
   // if (isDataValid) {
   //   const { error } = await useFetch(`/api/users/${route.params.id}`, {
   //     method: 'PATCH',
   //     body: {
-  //       userData: state.value.data,
-  //       userCompanies: state.value.,
+  //       userData: state.value.userData,
+  //       userCompanies: state.value.userCompanies,
   //     },
   //   });
   //   if (error.value) {
@@ -95,12 +94,28 @@ const save = async () => {
   //   showInvalidFormData();
   // }
 };
+
+// resetUserData();
+
+// const showInvalidFormData = () => {
+//   toast.add({
+//     title: 'Datos incompletos',
+//     description: 'Por favor, complete los campos requeridos',
+//     icon: 'i-heroicons-no-symbol',
+//     color: 'rose',
+//     timeout: 2000,
+//   });
+//   state.value.isLoading = false;
+//   mainForm.value?.validate();
+// }
+
+
 </script>
 
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Editar Equipista">
+      <UDashboardNavbar title="Editar Usuario">
         <template #right>
           <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
             <span class="hidden sm:block">Regresar</span>
@@ -109,13 +124,13 @@ const save = async () => {
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <!-- <UForm ref="mainForm" :state="state.data" :schema="ens_members_form"> -->
+        <!-- <UForm ref="mainForm" :state="state.userData" :schema="userDataForm"> -->
           <BTabs v-model="tab" :items="tabs">
             <template #basic>
-              <Basic :loading="pending" />
+              <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
             </template>
-            <template #teams>
-              <Teams :loading="pendingTeams"/>
+            <template #companies>
+              <Companies :loading="pendingCompanies" />
             </template>
           </BTabs>
         <!-- </UForm> -->

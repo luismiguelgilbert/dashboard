@@ -5,7 +5,9 @@ import { type type_sys_companies } from '@/types/server/sys_companies';
 export const useSecurityUsersForm = () => {
   const state = useState('useSecurityUsersForm', () => { return {
     isLoading: false as boolean,
-    userData: {} as type_userDataForm,
+    // userData: {} as type_userDataForm,
+    // userData: userDataForm.parse({}),
+    data: userDataForm.parse({}),
     userCompanies: [] as String[],
     avatar: null as File|null,
     profileOptions: [] as type_sys_profiles[],
@@ -13,30 +15,21 @@ export const useSecurityUsersForm = () => {
   }});
 
   const resetUserData = () => { 
-    state.value.userData = {
-      ...state.value.userData,
-      id: '',
-      user_name: '',
-      user_lastname: '',
-      user_sex: false,
-      avatar_url: '',
-      email: '',
-      sys_profile_id: -1,
-      dark_enabled: true,
-      default_dark_color: 'zinc',
-      default_color: 'indigo',
-      prefered_company_id: '',
-    };
+    state.value.data = userDataForm.parse({});
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];
   };
 
   const validateUserData = async () => {
-    const isUserDataValid = await  userDataForm.safeParse(state.value.userData);
-    const isCompaniesDataValid = state.value.userCompanies.length > 0;
-
-    return isUserDataValid.success && isCompaniesDataValid;
+    try {
+      const isUserDataValid = userDataForm.safeParse(state.value.data);
+      const isCompaniesDataValid = state.value.userCompanies.length > 0;
+  
+      return isUserDataValid.success && isCompaniesDataValid;
+    } catch (error) {
+      return false;
+    }
   };
 
   return { state, resetUserData, validateUserData };
