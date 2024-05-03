@@ -27,7 +27,7 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
 
 
 const { data, error } = await useFetch('/api/system/userData')
-if (error.value) { navigateTo('/auth/login') }
+if (error.value) { await navigateTo('/auth/login') }
 if (!error.value && data.value) {
   sessionData.value.userData = data.value.userData;
   sessionData.value.userCompanies = data.value.userCompanies;
@@ -70,7 +70,9 @@ if (!error.value && data.value) {
     </UDashboardPanel>
 
     <suspense>
-      <slot />
+        <slot />
+      <!-- <NuxtPage /> -->
+      <!-- <Nuxt /> -->
     </suspense>
   </UDashboardLayout>
 </template>

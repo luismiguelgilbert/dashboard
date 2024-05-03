@@ -26,7 +26,7 @@ export const actions: DropdownItemExtended[][] = [
       id: PermissionsList.ENSMEMBERS_CREATE,
       isMainAction: true,
       disabled: false,
-      label: 'Nuevo perfil',
+      label: 'Nuevo equipista',
       icon: 'i-heroicons-plus',
       click: () => { navigateTo('/ens/equipistas/create') }  
     },
@@ -64,7 +64,7 @@ const downloadFile = async() => {
         const url = window.URL.createObjectURL(data.value);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Perfiles.xls');
+        link.setAttribute('download', 'ENS.xls');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

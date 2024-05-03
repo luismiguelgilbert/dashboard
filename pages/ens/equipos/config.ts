@@ -6,7 +6,7 @@ export const module = 'equipo'
 export const columns = [
   {
     key: 'name_es',
-    label: 'Perfil',
+    label: 'Equipo',
     sortable: false
   },
   {
@@ -63,15 +63,15 @@ export const columns = [
 export const actions: DropdownItemExtended[][] = [
   [
     {
-      id: PermissionsList.ROLES_CREATE,
+      id: PermissionsList.ENSTEAMS_CREATE,
       isMainAction: true,
       disabled: false,
-      label: 'Nuevo perfil',
+      label: 'Nuevo equipo',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/roles/create') }  
+      click: () => { navigateTo('/ens/equipos/create') }  
     },
     {
-      id: PermissionsList.ROLES_EXPORT,
+      id: PermissionsList.ENSTEAMS_EXPORT,
       isMainAction: false,
       disabled: false,
       label: 'Descargar',
@@ -96,7 +96,7 @@ const downloadFile = async() => {
         const url = window.URL.createObjectURL(data.value);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Perfiles.xls');
+        link.setAttribute('download', 'Equipos.xls');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

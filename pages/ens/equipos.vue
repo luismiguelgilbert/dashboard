@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { actions, module, title } from './config'
-import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types'
-import indexTable from './indexTable.vue'
-import indexList from './indexList.vue'
+import { actions, module, title } from './equipos/config';
+import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types';
+import indexTable from './equipos/indexTable.vue';
+import indexList from './equipos/indexList.vue';
 
-useHead({ title })
-
-const { state } = useEnsEquipos();
+const route = useRoute();
+useHead({ title });
+const { state } = useEnsEquipistas();
 const { sessionData } = useUserSession();
-const rows = ref<type_ens_members[]>([]);
-const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
-
-const { data, error, pending } = await useFetch<type_ens_members[]>('/api/ens/equipistas', { method: 'post', body: state.value.filterPayload })
+const rows = ref<Array<type_ens_members>>([]);
+// console.log({route})
+// console.log(route.matched.length)
+const { data, error, pending } = await useFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
+
+const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 </script>
 
 <template>
-  <UDashboardPage>
+  <UDashboardPage v-if="route.matched.length === 1">
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -51,12 +53,13 @@ if (!error.value && data.value) { rows.value = data.value }
       <UDashboardPanelContent class="p-0">
         <indexList v-if="data" :rows="data" />
         <indexTable v-if="data" :rows="data" />
-        <IndexPagination
-          v-model:pageSize="state.filterPayload.pageSize"
-          v-model:page="state.filterPayload.page"
-          :pending="pending"
-          :total-rows="totalRows" />
       </UDashboardPanelContent>
+      <IndexPagination
+        v-model:pageSize="state.filterPayload.pageSize"
+        v-model:page="state.filterPayload.page"
+        :pending="pending"
+        :total-rows="totalRows" />
     </UDashboardPanel>
   </UDashboardPage>
+  <NuxtPage v-else />
 </template>

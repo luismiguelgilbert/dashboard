@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { actions, module, title } from './config'
-import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles'
-import indexTable from './indexTable.vue'
-import indexList from './indexList.vue'
+import { actions, module, title } from './equipistas/config';
+import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types';
+import indexTable from './equipistas/indexTable.vue';
+import indexList from './equipistas/indexList.vue';
 
-useHead({ title })
-
-const { state } = useEnsEquipos();
+const route = useRoute();
+useHead({ title });
+const { state } = useEnsEquipistas();
 const { sessionData } = useUserSession();
-// const rows = ref<type_sys_profiles[]>([]);
-const rows = ref([]);
-const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
-
-const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload })
+const rows = ref<Array<type_ens_members>>([]);
+// console.log({route})
+// console.log(route.matched.length)
+const { data, error, pending } = await useFetch<type_ens_members[]>('/api/ens/equipistas', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
+
+const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 </script>
 
 <template>
-  <UDashboardPage>
+  <UDashboardPage v-if="route.matched.length === 1">
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -60,4 +61,5 @@ if (!error.value && data.value) { rows.value = data.value }
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
+  <NuxtPage v-else />
 </template>

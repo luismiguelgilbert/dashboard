@@ -80,6 +80,22 @@ export default defineNuxtConfig({
           });
         });
       }
-    }
-  }
+    },
+    "pages:extend" (pages) {
+      function removePagesMatching (pattern: RegExp, pages: NuxtPage[] = []) {
+        const pagesToRemove = []
+        for (const page of pages) {
+          if(page.file.includes('/components/')) {
+            pagesToRemove.push(page)
+          } else if (page.children) {
+            removePagesMatching(pattern, page.children)
+          }
+        }
+        for (const page of pagesToRemove) {
+          pages.splice(pages.indexOf(page), 1)
+        }
+      }
+      removePagesMatching(/\/components\//g, pages);
+    },
+  },
 })

@@ -83,7 +83,7 @@ const onSubmit = async (data: any) => {
     error && (loginError.value = error)
     if (!error) {
       await generateSBcookies()
-      navigateTo('/auth/confirm')
+      await navigateTo('/auth/confirm')
     } else {
       loading.value = false
     }

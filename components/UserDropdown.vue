@@ -23,7 +23,7 @@ const logout = async () => {
   document.cookie.split(';').forEach((c) => {
     document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
   });
-  navigateTo('/auth/login')
+  await navigateTo('/auth/login')
   //Reset state
   sessionData.value.userData = null;
   sessionData.value.userCompanies = null;
