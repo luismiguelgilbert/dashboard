@@ -11,7 +11,7 @@ const { sessionData } = useUserSession();
 const rows = ref<Array<type_ens_members>>([]);
 // console.log({route})
 // console.log(route.matched.length)
-const { data, error, pending } = await useFetch<type_ens_members[]>('/api/ens/equipistas', { method: 'post', body: state.value.filterPayload })
+const { data, error, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipistas', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );

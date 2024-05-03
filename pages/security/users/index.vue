@@ -11,7 +11,7 @@ const { sessionData } = useUserSession();
 const rows = ref<type_sys_users[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload })
+const { data, error, pending } = await useLazyFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 </script>
 
