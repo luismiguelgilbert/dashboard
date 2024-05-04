@@ -35,8 +35,9 @@ const toggleCompany = (selectedCompanyId: any) => {
   }
 };
 //LOOKUP DATA
-const { data: profileOptionsData } = await useLazyFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
+const { data: profileOptionsData, pending: pendingProfiles } = await useLazyFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
 state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disabled: !p.is_active })) ?? [];
+watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.profileOptions = newData } });
 </script>
 
 <template>
@@ -52,10 +53,9 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Correo electrónico (requerido en el inicio de sesión).
         </p>
       </div>
-      <UFormGroup name="email">
+      <UFormGroup size="xl" name="email" >
         <UInput
           v-model:model-value="state.data.email"
-          size="xl"
           placeholder="Email del Usuario"
           icon="i-heroicons-envelope"
           error
@@ -73,11 +73,10 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Nombres del usuario.
         </p>
       </div>
-      <UFormGroup name="user_name">
+      <UFormGroup size="xl" name="user_name">
         <UInput
           v-model:model-value="state.data.user_name"
           required
-          size="xl"
           placeholder="Nombres del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
@@ -93,11 +92,10 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Apellidos del usuarios.
         </p>
       </div>
-      <UFormGroup name="user_lastname">
+      <UFormGroup size="xl" name="user_lastname">
         <UInput
           v-model:model-value="state.data.user_lastname"
           required
-          size="xl"
           placeholder="Apellidos del Usuario"
           icon="i-heroicons-user"
           :ui="inputUI"
@@ -113,7 +111,7 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Sexo del usuario.
         </p>
       </div>
-      <UFormGroup name="user_sex">
+      <UFormGroup size="xl" name="user_sex">
         <UToggle
           v-model="state.data.user_sex"
           :disabled="state.isLoading" />
@@ -129,14 +127,13 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Define acceso a funcionalidades.
         </p>
       </div>
-      <UFormGroup name="sys_profile_id">
+      <UFormGroup size="xl" name="sys_profile_id">
         <USelectMenu
           v-model="state.data.sys_profile_id"
           searchable
-          :loading="state.isLoading"
+          :loading="pendingProfiles"
           searchable-placeholder="Buscar rol..."
           placeholder="Seleccionar rol..."
-          size="xl"
           icon="i-heroicons-user-circle"
           value-attribute="id"
           option-attribute="name_es"
@@ -152,14 +149,13 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Organización seleccionada al iniciar sesión.
         </p>
       </div>
-      <UFormGroup name="prefered_company_id">
+      <UFormGroup size="xl" name="prefered_company_id">
         <USelectMenu
           v-model="state.data.prefered_company_id"
           searchable
           :loading="state.isLoading"
           searchable-placeholder="Buscar organización..."
           placeholder="Seleccionar organización..."
-          size="xl"
           icon="i-heroicons-building-office-2"
           value-attribute="id"
           option-attribute="name_es_short"
@@ -176,7 +172,7 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Foto del usuario (1MB max).
         </p>
       </div>
-      <UFormGroup name="sys_profile_id">
+      <UFormGroup size="xl" name="sys_profile_id">
         <div class="flex items-center">
           <UAvatar :src="state.data.avatar_url!" :alt="state.data.user_lastname" size="lg" />
           <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
@@ -193,7 +189,7 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Utilizar fondo oscuro.
         </p>
       </div>
-      <UFormGroup name="dark_enabled">
+      <UFormGroup size="xl" name="dark_enabled">
         <UToggle
           v-model="state.data.dark_enabled"
           on-icon="i-heroicons-moon"
@@ -211,7 +207,7 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Al activar el fondo oscuro, se usará el tono seleccionado.
         </p>
       </div>
-      <UFormGroup name="default_dark_color">
+      <UFormGroup size="xl" name="default_dark_color">
         <USelectMenu
           v-model="state.data.default_dark_color"
           size="xl"
@@ -229,7 +225,7 @@ state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disable
           Color de acentuación preferido.
         </p>
       </div>
-      <UFormGroup name="default_dark_color">
+      <UFormGroup size="xl" name="default_dark_color">
         <USelectMenu
           v-model="state.data.default_color"
           size="xl"

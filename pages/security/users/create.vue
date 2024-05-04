@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
-import type { SystemUsersBasic } from '#build/components';
 import { userDataForm, type type_userDataForm, type type_userMenuData } from '@/types/server/sys_users';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import Basic from './components/Basic.vue';
+import Companies from './components/Companies.vue';
 
 const { state, resetUserData, validateUserData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
@@ -16,7 +17,7 @@ const tab = ref<'basic'|'companies'>('basic');
 const mainForm = ref<Form<type_userDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.USERS_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemUsersBasic = ref<InstanceType<typeof SystemUsersBasic>>();
+const systemUsersBasic = ref<InstanceType<typeof Basic>>();
 resetUserData();
 
 const cancel = async () => {
@@ -109,13 +110,13 @@ const save = async () => {
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <UForm ref="mainForm" :state="state.userData" :schema="userDataForm">
+        <UForm ref="mainForm" :state="state.data" :schema="userDataForm">
           <BTabs v-model="tab" :items="tabs">
             <template #basic>
-                <SystemUsersBasic ref="systemUsersBasic" :is-editing="false" />
+                <Basic ref="systemUsersBasic" :is-editing="false" />
             </template>
             <template #companies>
-                <SystemUsersCompanies />
+                <Companies />
             </template>
           </BTabs>
         </UForm>

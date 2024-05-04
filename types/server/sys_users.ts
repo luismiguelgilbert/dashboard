@@ -1,4 +1,4 @@
-import { unknown, z } from 'zod'
+import { ZodUndefined, unknown, z } from 'zod'
 
 export const sys_users = z.object({
   id: z.coerce.string(),
@@ -83,9 +83,10 @@ export const UseUserSession = z.object({
 export const userDataForm = z.object({
   // should_validate: z.coerce.boolean().default(false),
   id: z.coerce.string().optional(),
-  user_name: z.coerce.string().default(''),
+  user_name: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
   user_lastname: z.coerce.string().default(''),
-  email: z.coerce.string().default(''),
+  email: z.coerce.string().min(3, { message: 'Debe ser un correo electrónico válido.' }).default('a@mail.com'),
+  // email: z.coerce.string().default('').min(1, { message: 'Debe incluir 1 o más caracteres.' }),
   user_sex: z.coerce.boolean(),
   avatar_url: z.coerce.string().optional().nullable(),
   // sys_profile_id: z.coerce.number().positive({ message: 'Debe seleccionar un Perfil.' }),
@@ -95,7 +96,7 @@ export const userDataForm = z.object({
   default_dark_color: z.coerce.string(),
   prefered_company_id: z.coerce.string().min(1, { message: 'Debe seleccionar una Organización.' }),
 })
-  // .refine(data => data.email.length > 0, { message: 'Debe ser un correo electrónico válido.', path: ['email']})
+  // .refine(data => !data.email || data.email.length > 1, { message: 'Debe ser un correo electrónico válido.', path: ['email']})
   // .refine(data => !data.should_validate || emailRegex.test(data.email) , { message: 'Debe ser un correo electrónico válido.', path: ['email']})
   // .refine(data => !data.should_validate || data.user_name.length > 2, { message: 'Debe incluir 3 o más caracteres.', path: ['user_name']})
   // .refine(data => !data.should_validate || data.user_lastname.length > 2, { message: 'Debe incluir 3 o más caracteres.', path: ['user_lastname']})

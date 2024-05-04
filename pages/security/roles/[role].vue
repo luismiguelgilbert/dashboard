@@ -13,8 +13,8 @@ const toast = useToast();
 const route = useRoute();
 
 const tabs = [
-  { value: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'users',label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'users', slot: 'users', label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();

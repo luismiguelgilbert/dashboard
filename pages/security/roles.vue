@@ -16,7 +16,7 @@ if (!error.value && data.value) { rows.value = data.value }
 </script>
 
 <template>
-  <UDashboardPage  v-if="route.matched.length === 1">
+  <UDashboardPage v-if="route.matched.length === 1">
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>

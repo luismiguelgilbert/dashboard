@@ -113,7 +113,7 @@ const save = async () => {
 </script>
 
 <template>
-  <UDashboardPage>
+  <UDashboardPage class="w-dvw">
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Usuario">
         <template #right>
@@ -124,15 +124,14 @@ const save = async () => {
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-          <BTabs v-model="tab" :items="tabs">
-            <template #basic>
-              <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
-            </template>
-            <template #companies>
-              <Companies :loading="pendingCompanies" />
-            </template>
-          </BTabs>
-        <!-- </UForm> -->
+        <BTabs v-model="tab" :items="tabs">
+          <template #basic>
+            <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
+          </template>
+          <template #companies>
+            <Companies :loading="pendingCompanies" />
+          </template>
+        </BTabs>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

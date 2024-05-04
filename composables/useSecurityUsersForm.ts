@@ -8,6 +8,7 @@ export const useSecurityUsersForm = () => {
     // userData: {} as type_userDataForm,
     // userData: userDataForm.parse({}),
     data: userDataForm.parse({}),
+    // data: {} as type_userDataForm,
     userCompanies: [] as String[],
     avatar: null as File|null,
     profileOptions: [] as type_sys_profiles[],

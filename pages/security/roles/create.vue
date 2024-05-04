@@ -9,7 +9,7 @@ const { sessionData } = useUserSession();
 const toast = useToast();
 
 const tabs = [
-  { value: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'basic', slot: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
 ];
 const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();
