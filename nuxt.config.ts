@@ -13,7 +13,8 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@vueuse/nuxt',
     '@nuxtjs/supabase',
-    '@nuxt/image'
+    '@nuxt/image',
+    'nuxt-clarity-analytics',
   ],
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   ui: {
