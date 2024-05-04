@@ -4,14 +4,14 @@ import { type type_userDataForm } from '@/types/server/sys_users';
 export const useSecurityCompaniesForm = () => {
   const state = useState('useSecurityCompaniesForm', () => { return {
     isLoading: false as boolean,
-    companyData: {} as type_companyDataForm,
+    data: {} as type_companyDataForm,
     companyUsers: [] as type_userDataForm[],
     avatar: null as File|null,
   }});
 
   const resetCompanyData = () => { 
-    state.value.companyData = {
-      ...state.value.companyData,
+    state.value.data = {
+      ...state.value.data,
       id: '',
       company_number: '',
       name_es: '',
@@ -26,7 +26,7 @@ export const useSecurityCompaniesForm = () => {
   };
 
   const validateCompanyData = async () => {
-    const isUserDataValid = await companyDataForm.safeParse(state.value.companyData);
+    const isUserDataValid = await companyDataForm.safeParse(state.value.data);
 
     return isUserDataValid.success;
   };
