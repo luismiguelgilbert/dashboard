@@ -8,7 +8,7 @@ import { companyBody } from "@/types/server/sys_companies";
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => companyBody.parse(body))
+    const payload = await readValidatedBody(event, body => companyBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.COMPANIES_CREATE);
 
     //Data sanitization

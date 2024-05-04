@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { object, string, array, number, type InferType } from 'yup';
 
-export const filter_payload = z.object({
-  sys_company_id: z.string().optional(),
-  pageSize: z.coerce.number().default(50),
-  filterBy: z.array(z.coerce.number()).default([]),
-  sortBy: z.coerce.number().default(1),
-  page: z.coerce.number().default(1),
-  searchString: z.string().default(''),
+export const filter_payload = object({
+  sys_company_id: string().optional(),
+  pageSize: number().default(50),
+  filterBy: array(number()).default([]),
+  sortBy: number().default(1),
+  page: number().default(1),
+  searchString: string().default(''),
 });
-export type type_filter_payload = z.infer<typeof filter_payload>;
+export type type_filter_payload = InferType<typeof filter_payload>;

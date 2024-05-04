@@ -1,40 +1,40 @@
-import { z } from 'zod'
+import { object, string, boolean, number, date, type InferType } from 'yup';
 
-export const traselec = z.object({
-  id: z.coerce.string(),
-  name: z.string(),
-  internal_code: z.string(),
-  is_active: z.boolean().default(true),
-  row_count: z.coerce.number().optional().nullable().default(0),
+export const traselec = object({
+  id: string(),
+  name: string(),
+  internal_code: string(),
+  is_active: boolean().default(true),
+  row_count: number().optional().nullable().default(0),
 });
-export type type_traselec = z.infer<typeof traselec>;
+export type type_traselec = InferType<typeof traselec>;
 
-export const traselec_prj_master = z.object({
-  project_id: z.coerce.number(),
-  project_name: z.string(),
-  partner_name: z.string(),
-  code: z.string().optional().nullable(),
-  comments: z.string().optional().nullable(),
+export const traselec_prj_master = object({
+  project_id: number(),
+  project_name: string(),
+  partner_name: string(),
+  code: string().optional().nullable(),
+  comments: string().optional().nullable(),
 })
-export type type_traselec_prj_master = z.infer<typeof traselec_prj_master>
+export type type_traselec_prj_master = InferType<typeof traselec_prj_master>
 
-export const traselec_prj_master_budgets = z.object({
-  project_id: z.coerce.number(),
-  code: z.string().nullable().optional(),
-  name: z.string().nullable().optional(),
-  path: z.string().optional().nullable(),
+export const traselec_prj_master_budgets = object({
+  project_id: number(),
+  code: string().nullable().optional(),
+  name: string().nullable().optional(),
+  path: string().optional().nullable(),
 })
-export type type_traselec_prj_master_budgets = z.infer<typeof traselec_prj_master_budgets>
+export type type_traselec_prj_master_budgets = InferType<typeof traselec_prj_master_budgets>
 
-export const traselec_prj_master_budget_inv = z.object({
-  inv_id: z.coerce.number(),
-  inv_code: z.string().nullable().optional(),
-  inv_name: z.string().nullable().optional(),
-  inv_budget_qty: z.coerce.number(),
-  inv_uom_name: z.string().optional().nullable(),
-  inv_real_qty: z.coerce.number(),
+export const traselec_prj_master_budget_inv = object({
+  inv_id: number(),
+  inv_code: string().nullable().optional(),
+  inv_name: string().nullable().optional(),
+  inv_budget_qty: number(),
+  inv_uom_name: string().optional().nullable(),
+  inv_real_qty: number(),
 })
-export type type_traselec_prj_master_budget_inv = z.infer<typeof traselec_prj_master_budget_inv>
+export type type_traselec_prj_master_budget_inv = InferType<typeof traselec_prj_master_budget_inv>
 
 export const status_options = [
   { label: 'Items Activos', value: 1, sqlValue: 1, icon: 'i-heroicons-funnel' },
