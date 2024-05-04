@@ -3,8 +3,9 @@ import type { Form } from '#ui/types'
 import { type type_profile_sys_links } from '~/types/server/sys_links';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
 import { type type_userDataForm } from '@/types/server/sys_users';
-import type { SystemRolesBasic } from '#build/components';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
 const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
 const { sessionData } = useUserSession();
@@ -19,17 +20,29 @@ const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.ROLES_EDIT, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemRolesBasic = ref<InstanceType<typeof SystemRolesBasic>>();
+const systemRolesBasic = ref<InstanceType<typeof Basic>>();
 resetProfileData();
 
-if (route.params.id) {
-  const { data } = await useFetch<type_profileDataForm[]>(`/api/roles/${route.params.id}`);
+
+  const { data, pending } = await useLazyFetch<type_profileDataForm[]>(`/api/roles/${route.params.role}`);
   state.value.profileData = data.value?.[0]!;
-  const { data: profileLinks } = await useFetch<type_profile_sys_links[]>(`/api/roles/${route.params.id}/links`);
-  state.value.profileLinks = profileLinks.value?.map(link => link.sys_link_id) ?? [];
-  const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/roles/${route.params.id}/users`);
-  state.value.profileUsers = profileUsers.value ?? [];
-}
+  watch(data, (newData) => { if (newData?.length) { state.value.profileData = newData[0] } });
+
+  const { data: dataLinks, pending: pendingLinks } = await useLazyFetch<type_profile_sys_links[]>(`/api/roles/${route.params.role}/links`);
+  state.value.profileLinks = dataLinks.value?.map(link => link.sys_link_id) ?? [];
+  watch(dataLinks, (newData) => { if (newData?.length) { state.value.profileLinks = newData.map(link => link.sys_link_id) ?? []} });
+
+  const { data: dataUsers, pending: pendingUsers } = await useLazyFetch<type_userDataForm[]>(`/api/roles/${route.params.role}/users`);
+  state.value.profileUsers = dataUsers.value ?? [];
+  watch(dataUsers, (newData) => { if (newData?.length) { state.value.profileUsers = newData ?? []} });
+
+  // const { data } = await useFetch<type_profileDataForm[]>(`/api/roles/${route.params.id}`);
+  // state.value.profileData = data.value?.[0]!;
+  // const { data: profileLinks } = await useFetch<type_profile_sys_links[]>(`/api/roles/${route.params.id}/links`);
+  // state.value.profileLinks = profileLinks.value?.map(link => link.sys_link_id) ?? [];
+  // const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/roles/${route.params.id}/users`);
+  // state.value.profileUsers = profileUsers.value ?? [];
+
 
 const cancel = async () => {
   state.value.isLoading = true;
@@ -93,12 +106,16 @@ const save = async () => {
           <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs v-model="tab" :items="tabs"/>
-      <UDashboardPanelContent>
-        <UForm ref="mainForm" :state="state.profileData" :schema="profileDataForm">
-          <SystemRolesBasic v-if="tab === 'basic'" ref="systemRolesBasic" :is-editing="true" />
-          <SystemRolesUsers v-if="tab === 'users'" />
-        </UForm>
+      <UDashboardPanelContent class="p-0">
+        <!-- <UForm ref="mainForm" :state="state.profileData" :schema="profileDataForm"> -->
+        <BTabs v-model="tab" :items="tabs">
+          <template #basic>
+            <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
+          </template>
+          <template #users>
+            <Users :loading="pendingUsers" />
+          </template>
+        </BTabs>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { actions, module, title } from './config'
+import { actions, module, title } from './roles/config'
 import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles'
-import indexTable from './indexTable.vue'
-import indexList from './indexList.vue'
+import indexTable from './roles/indexTable.vue'
+import indexList from './roles/indexList.vue'
 
 useHead({ title })
-
+const route = useRoute();
 const { state } = useSecurityRoles();
 const { sessionData } = useUserSession();
 const rows = ref<type_sys_profiles[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 
-const { data, error, pending } = await useFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.value.filterPayload })
+const { data, error, pending } = await useLazyFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 </script>
 
 <template>
-  <UDashboardPage>
+  <UDashboardPage  v-if="route.matched.length === 1">
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -59,4 +59,5 @@ if (!error.value && data.value) { rows.value = data.value }
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
+  <NuxtPage v-else />
 </template>

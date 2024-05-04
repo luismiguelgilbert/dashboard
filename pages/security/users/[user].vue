@@ -124,7 +124,6 @@ const save = async () => {
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <!-- <UForm ref="mainForm" :state="state.userData" :schema="userDataForm"> -->
           <BTabs v-model="tab" :items="tabs">
             <template #basic>
               <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
