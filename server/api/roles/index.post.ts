@@ -1,3 +1,4 @@
+import { array } from 'yup';
 import serverDB from '@/server/utils/db'
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
@@ -7,7 +8,7 @@ import { filter_options, sort_options, sys_profiles, type type_sys_profiles } fr
 import type { NuxtError } from '#app';
 
 export default defineEventHandler( async (event) => {
-  try{
+  try {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.ROLES_READ);
 
@@ -53,10 +54,8 @@ export default defineEventHandler( async (event) => {
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    const data = await serverDB.query(text)
-    const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows)
-    
-    return result
+    const data = await serverDB.query(text);
+    return array(sys_profiles).cast(data.rows);
   } catch(err: NuxtError | any) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

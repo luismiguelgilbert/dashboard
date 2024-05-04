@@ -18,7 +18,6 @@ export default defineEventHandler( async (event) => {
       WHERE a.id = '${id}'
     `;
     const data = await serverDB.query(text);
-    // const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows);
     const result = data.rows;
     
     return result;

@@ -8,7 +8,7 @@ export default defineEventHandler( async (event) => {
   try{
     const id = getRouterParam(event, 'id')
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => userBody.parse(body))
+    const payload = await readValidatedBody(event, body => userBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.USERS_EDIT);
 
     //UserData sanitization
@@ -50,7 +50,7 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlSysCompaniesDelete);
 
     let sqlCompaniesInsert = `insert into sys_companies_users (sys_company_id, user_id) values `;
-    payload.userCompanies.forEach((company) => {
+    payload.userCompanies?.forEach((company) => {
       sqlCompaniesInsert += `('${company}', '${id}'),`;
     });
     sqlCompaniesInsert = sqlCompaniesInsert.replace(/\,$/, '');

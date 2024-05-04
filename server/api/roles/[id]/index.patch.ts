@@ -9,7 +9,7 @@ export default defineEventHandler( async (event) => {
   try {
     const id = getRouterParam(event, 'id')
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.parse(body))
+    const payload = await readValidatedBody(event, body => profileBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.ROLES_EDIT);
 
     //Database actions
@@ -34,7 +34,7 @@ export default defineEventHandler( async (event) => {
 
     //Add new links for specific profile
     let sqlSysProfilesInsert = `insert into sys_profiles_links (sys_profile_id, sys_link_id) values `;
-    payload.profileLinks.forEach((link) => {
+    payload.profileLinks?.forEach((link) => {
       sqlSysProfilesInsert += `(${Number(id)}, '${link}'),`;
     });
     sqlSysProfilesInsert = sqlSysProfilesInsert.replace(/\,$/, '');

@@ -8,7 +8,7 @@ import { profileBody } from "@/types/server/sys_profiles";
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.parse(body))
+    const payload = await readValidatedBody(event, body => profileBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.ROLES_CREATE);
 
     //Database actions
@@ -25,7 +25,7 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlProfilesDelete);
 
     let sqlLinksInsert = `insert into sys_profiles_links (sys_profile_id,	sys_link_id) values `;
-    payload.profileLinks.forEach((link) => {
+    payload.profileLinks?.forEach((link) => {
       sqlLinksInsert += `('${id}', '${link}'),`;
     });
     sqlLinksInsert = sqlLinksInsert.replace(/\,$/, '');

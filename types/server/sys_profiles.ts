@@ -1,25 +1,23 @@
-import { z } from 'zod'
+import { object, array, string, boolean, number, date, type InferType } from 'yup';
 
-export const sys_profiles = z.object({
-  id: z.coerce.number().default(0),
-  name_es: z.string()
-    .min(3, { message: 'Nombre debe incluir 3 o más caracteres.' })
-    .default(''),
-  is_active: z.boolean().default(true),
-  created_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-  updated_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-  user_count: z.coerce.number().optional().nullable().default(0),
-  row_count: z.coerce.number().optional().nullable().default(0),
+export const sys_profiles = object({
+  id: number().default(0),
+  name_es: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  is_active: boolean().default(true),
+  created_at: date(),
+  updated_at: date(),
+  user_count: number().optional().nullable(),
+  row_count: number().optional().nullable(),
 })
-export type type_sys_profiles = z.infer<typeof sys_profiles>
+export type type_sys_profiles = InferType<typeof sys_profiles>
 
-export const sys_profiles_lookup = z.object({
-  id: z.coerce.number().default(0),
-  name_es: z.string().default(''),
-  is_disabled: z.boolean().default(true)
+export const sys_profiles_lookup = object({
+  id: number(),
+  name_es: string(),
+  is_disabled: boolean().default(true)
 })
 
-export type type_sys_profiles_lookup = z.infer<typeof sys_profiles_lookup>
+export type type_sys_profiles_lookup = InferType<typeof sys_profiles_lookup>
 
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
@@ -33,17 +31,17 @@ export const sort_options = [
   { label: 'Código', value: 4, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' },
 ]
 
-export const profileDataForm = z.object({
-  id: z.coerce.string().optional(),
-  name_es: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
-  is_active: z.coerce.boolean(),
+export const profileDataForm = object({
+  id: string().optional(),
+  name_es: string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
+  is_active: boolean(),
 });
 
-export type type_profileDataForm = z.infer<typeof profileDataForm>;
+export type type_profileDataForm = InferType<typeof profileDataForm>;
 
-export const profileLinksForm = z.array(z.coerce.string());
+export const profileLinksForm = array(string());
 
-export const profileBody = z.object({
+export const profileBody = object({
   profileData: profileDataForm,
   profileLinks: profileLinksForm,
 });

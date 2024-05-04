@@ -1,3 +1,4 @@
+import { array } from 'yup';
 import serverDB from '@/server/utils/db'
 import { userData, userCompanies, userMenuData } from '@/types/server/sys_users';
 
@@ -42,8 +43,9 @@ export default defineEventHandler( async (event) => {
       left join user_company e on e.user_id = a.id
       WHERE a.id = '${id}'`;
     const userSessionDataResultset = await serverDB.query(sqlUserSessionDataRows);
-    const userSessionDataRows = userData.array().parse(userSessionDataResultset.rows);
-    if (!(userSessionDataRows.length === 1 && userSessionDataRows[0].id === id)) {
+    const userSessionDataRows = array(userData).cast(userSessionDataResultset.rows);
+
+    if (!(userSessionDataRows?.length === 1 && userSessionDataRows[0].id === id)) {
       throw createError({ statusCode: 500, message: 'Usuario no encontrado', })
     }
 
@@ -60,8 +62,8 @@ export default defineEventHandler( async (event) => {
       where a.user_id = '${id}'
       order by b.name_es_short`
     const userCompaniesResultset = await serverDB.query(sqlUserCompaniesRows);
-    const userCompaniesRows = userCompanies.array().parse(userCompaniesResultset.rows);
-    if (!(userCompaniesRows.length > 0 && userCompaniesRows.some(company => company.is_active))) {
+    const userCompaniesRows = array(userCompanies).cast(userCompaniesResultset.rows);
+    if (!(userCompaniesRows && userCompaniesRows.length > 0 && userCompaniesRows?.some(company => company.is_active))) {
       throw createError({ statusCode: 500, message: 'Usuario no tiene una organización activa', })
     }
 
@@ -101,7 +103,7 @@ export default defineEventHandler( async (event) => {
         )
       order by 3`
     const userMenuResultset = await serverDB.query(sqlUserMenu);
-    const userMenuRows = userMenuData.array().parse(userMenuResultset.rows);
+    const userMenuRows = array(userMenuData).cast(userMenuResultset.rows);
 
     return {
       userData: userSessionDataRows[0],

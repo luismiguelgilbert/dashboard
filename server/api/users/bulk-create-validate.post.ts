@@ -9,7 +9,7 @@ import { bulkUsers } from "@/types/server/sys_users";
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => bulkUsers.parse(body))
+    const payload = await readValidatedBody(event, body => bulkUsers.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     const email_field = payload.mapping.email;
@@ -30,7 +30,7 @@ export default defineEventHandler( async (event) => {
       user_lastname: z.coerce.string().min(3, { message: 'Apellido debe incluir 3 o más caracteres.' }),
       user_sex: z.coerce.boolean(),
     });
-    payload.users.forEach((row: any, index) => {
+    payload.users?.forEach((row: any, index) => {
       let errors = [];
 
       //1) Validate if data has the correct schema
@@ -45,7 +45,7 @@ export default defineEventHandler( async (event) => {
       };
       //2) Check if email is duplicated on same file (compares if mail is the same in a different row)
       const currentRowEmail = row[email_field].toLowerCase();
-      const isDuplicate = payload.users.some((item: any, idx) => item[email_field].toLowerCase() === currentRowEmail && index !== idx);
+      const isDuplicate = payload.users?.some((item: any, idx) => item[email_field].toLowerCase() === currentRowEmail && index !== idx);
       if (isDuplicate) {
         errors.push({
           code: "duplicated_email",

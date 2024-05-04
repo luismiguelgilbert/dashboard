@@ -1,4 +1,5 @@
 import serverDB from '@/server/utils/db'
+import { array } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils'
@@ -55,10 +56,8 @@ export default defineEventHandler( async (event) => {
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    const data = await serverDB.query(text)
-    const result: type_sys_users[] = sys_users.array().parse(data.rows)
-    
-    return result
+    const data = await serverDB.query(text);
+    return array(sys_users).cast(data.rows);
   } catch(err: NuxtError | any) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

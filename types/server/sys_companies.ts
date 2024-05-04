@@ -1,19 +1,19 @@
-import { z } from 'zod'
+import { object, array, string, boolean, number, date, type InferType } from 'yup';
 
-export const sys_companies = z.object({
-  id: z.coerce.string(),
-  company_number: z.coerce.string().min(3, { message: 'RUC debe incluir 3 o más caracteres.' }).max(13, { message: 'RUC debe incluir máximo 13 caracteres.' }),
-  name_es: z.coerce.string().min(3, { message: 'Razón Social debe incluir 3 o más caracteres.' }),
-  name_es_short: z.coerce.string().min(3, { message: 'Nombre debe incluir 3 o más caracteres.' }),
-  billing_phone: z.coerce.string().optional().default(''),
-  billing_address: z.coerce.string().optional().default(''),
-  is_active: z.coerce.boolean().default(true),
-  avatar_url: z.coerce.string().optional().nullable(),
-  created_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-  updated_at: z.coerce.string().optional().nullable().default(new Date().toISOString()),
-  row_count: z.coerce.number().optional().nullable().default(0),
+export const sys_companies = object({
+  id: string(),
+  company_number: string().min(3, 'RUC debe incluir 3 o más caracteres.').max(13, 'RUC debe incluir máximo 13 caracteres.'),
+  name_es: string().min(3, 'Razón Social debe incluir 3 o más caracteres.'),
+  name_es_short: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  billing_phone: string().optional().nullable().default(''),
+  billing_address: string().optional().nullable().default(''),
+  is_active: boolean().default(true),
+  avatar_url: string().optional().nullable(),
+  created_at: string().optional().nullable().default(new Date().toISOString()),
+  updated_at: string().optional().nullable().default(new Date().toISOString()),
+  row_count: number().optional().nullable().default(0),
 })
-export type type_sys_companies = z.infer<typeof sys_companies>
+export type type_sys_companies = InferType<typeof sys_companies>
 
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
@@ -26,22 +26,22 @@ export const sort_options = [
   { label: 'RUC', value: 3, sqlValue: 'a.company_number', icon: 'i-heroicons-bars-arrow-down' }
 ]
 
-export const companyDataForm = z.object({
-  id: z.coerce.string().optional().nullable(),
-  company_number: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }).max(13, { message: 'RUC debe incluir máximo 13 caracteres.' }),
-  name_es: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
-  name_es_short: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
-  is_active: z.coerce.boolean(),
-  billing_phone: z.coerce.string().optional(),
-  billing_address: z.coerce.string().optional(),
-  avatar_url: z.coerce.string().optional().nullable(),
+export const companyDataForm = object({
+  id: string().optional().nullable(),
+  company_number: string().min(3, 'Debe incluir 3 o más caracteres.').max(13, 'RUC debe incluir máximo 13 caracteres.'),
+  name_es: string().min(3, 'Debe incluir 3 o más caracteres.'),
+  name_es_short: string().min(3, 'Debe incluir 3 o más caracteres.'),
+  is_active: boolean(),
+  billing_phone: string().optional(),
+  billing_address: string().optional(),
+  avatar_url: string().optional().nullable(),
 });
 
-export type type_companyDataForm = z.infer<typeof companyDataForm>
+export type type_companyDataForm = InferType<typeof companyDataForm>
 
-export const companyBody = z.object({
+export const companyBody = object({
   companyData: companyDataForm,
   // userCompanies: userCompaniesForm,
 });
 
-export type type_companyBody = z.infer<typeof companyBody>
+export type type_companyBody = InferType<typeof companyBody>

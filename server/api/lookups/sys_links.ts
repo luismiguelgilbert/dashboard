@@ -1,5 +1,6 @@
 import serverDB from '@/server/utils/db';
-import { type type_sys_links } from '@/types/server/sys_links';
+import { array } from 'yup';
+import { sys_links } from '@/types/server/sys_links';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -26,9 +27,7 @@ export default defineEventHandler( async (event) => {
       order by a.id
     `;
     const data = await serverDB.query(text);
-    const result: type_sys_links[] = data.rows;
-    
-    return result;
+    return array(sys_links).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

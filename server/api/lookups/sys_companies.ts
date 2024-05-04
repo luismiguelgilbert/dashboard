@@ -1,4 +1,5 @@
 import serverDB from '@/server/utils/db';
+import { array } from 'yup';
 import { sys_companies, type type_sys_companies } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
@@ -19,9 +20,7 @@ export default defineEventHandler( async (event) => {
     order by a.name_es
     `;
     const data = await serverDB.query(text);
-    const result: type_sys_companies[] = sys_companies.array().parse(data.rows);
-    
-    return result;
+    return array(sys_companies).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
