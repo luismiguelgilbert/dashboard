@@ -1,5 +1,4 @@
 import serverDB from '@/server/utils/db';
-import { z } from 'zod'
 import { serverSupabaseServiceRole } from '#supabase/server';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
@@ -10,7 +9,7 @@ import { bulkUsers } from "@/types/server/sys_users";
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => bulkUsers.parse(body))
+    const payload = await readValidatedBody(event, body => bulkUsers.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     const email_field = payload.mapping.email;
@@ -26,7 +25,7 @@ export default defineEventHandler( async (event) => {
     const supabaseService = await serverSupabaseServiceRole(event);
     
     //Validations
-    for (const row of payload.users) {
+    for (const row of payload.users?) {
       const { data, error } = await supabaseService.auth.signUp({
         email: row[email_field].replaceAll("'", ''),
         password: process.env.NEWUSERSDEFAULTPWD!,

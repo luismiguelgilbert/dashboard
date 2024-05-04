@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { object, array, string, boolean, number, date, type InferType } from 'yup';
 import { type UseUserSession } from '@/types/server/sys_users';
 
 export const useUserSession = () => {
-  const sessionData = useState<z.infer<typeof UseUserSession>>('sessionData', () => { return {
+  const sessionData = useState<InferType<typeof UseUserSession>>('sessionData', () => { return {
     userData: null,
     userCompanies: null,
     userCompany: null,

@@ -1,5 +1,5 @@
 import serverDB from '@/server/utils/db';
-import { z } from 'zod'
+import { object, array, string, boolean, number, date, type InferType } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import type { NuxtError } from '#app';
@@ -24,23 +24,23 @@ export default defineEventHandler( async (event) => {
     
     //Validations
     let rowWithErros: any[] = [];
-    const userValidationSchema = z.object({
-      email: z.coerce.string().email({ message: 'Correo Electrónico no es válido.' }),
-      user_name: z.coerce.string().min(3, { message: 'Nombre debe incluir 3 o más caracteres.' }),
-      user_lastname: z.coerce.string().min(3, { message: 'Apellido debe incluir 3 o más caracteres.' }),
-      user_sex: z.coerce.boolean(),
+    const userValidationSchema = object({
+      email: string().email('Correo Electrónico no es válido.'),
+      user_name: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+      user_lastname: string().min(3, 'Apellido debe incluir 3 o más caracteres.'),
+      user_sex: boolean(),
     });
     payload.users?.forEach((row: any, index) => {
       let errors = [];
 
       //1) Validate if data has the correct schema
-      const validationError = userValidationSchema.safeParse({
+      const validationError = userValidationSchema.validateSync({
         email: row[email_field],
         user_name: row[user_name_field],
         user_lastname: row[user_lastname_field],
         user_sex: row[user_sex_field],
       });
-      if (!validationError.success) {
+      if (!validationError) {
         errors.push(...validationError.error.issues);
       };
       //2) Check if email is duplicated on same file (compares if mail is the same in a different row)
