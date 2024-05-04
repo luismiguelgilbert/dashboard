@@ -1,4 +1,5 @@
-import { ZodUndefined, unknown, z } from 'zod'
+import { z } from 'zod'
+import { object, array, string, boolean, number, date, type InferType } from 'yup';
 
 export const sys_users = z.object({
   id: z.coerce.string(),
@@ -80,34 +81,26 @@ export const UseUserSession = z.object({
 
 // const emailRegex = /\S+@\S+\.\S+/;
 
-export const userDataForm = z.object({
-  // should_validate: z.coerce.boolean().default(false),
-  id: z.coerce.string().optional(),
-  user_name: z.coerce.string().min(3, { message: 'Debe incluir 3 o más caracteres.' }),
-  user_lastname: z.coerce.string().default(''),
-  email: z.coerce.string().min(3, { message: 'Debe ser un correo electrónico válido.' }).default('a@mail.com'),
-  // email: z.coerce.string().default('').min(1, { message: 'Debe incluir 1 o más caracteres.' }),
-  user_sex: z.coerce.boolean(),
-  avatar_url: z.coerce.string().optional().nullable(),
-  // sys_profile_id: z.coerce.number().positive({ message: 'Debe seleccionar un Perfil.' }),
-  sys_profile_id: z.coerce.number().nullable().optional(),
-  dark_enabled: z.coerce.boolean(),
-  default_color: z.coerce.string(),
-  default_dark_color: z.coerce.string(),
-  prefered_company_id: z.coerce.string().min(1, { message: 'Debe seleccionar una Organización.' }),
-})
-  // .refine(data => !data.email || data.email.length > 1, { message: 'Debe ser un correo electrónico válido.', path: ['email']})
-  // .refine(data => !data.should_validate || emailRegex.test(data.email) , { message: 'Debe ser un correo electrónico válido.', path: ['email']})
-  // .refine(data => !data.should_validate || data.user_name.length > 2, { message: 'Debe incluir 3 o más caracteres.', path: ['user_name']})
-  // .refine(data => !data.should_validate || data.user_lastname.length > 2, { message: 'Debe incluir 3 o más caracteres.', path: ['user_lastname']})
+export const userDataForm = object({
+  id: string(),
+  user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  user_lastname: string().required('Apellido es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  email: string().email().required('Email es requerido.'),
+  user_sex: boolean(),
+  avatar_url: string(),
+  sys_profile_id: number().required('Debe seleccionar un Perfil.'),
+  dark_enabled: boolean(),
+  default_color: string(),
+  default_dark_color: string(),
+  prefered_company_id: string().min(1, 'Debe seleccionar una Organización.'),
+});
+export type type_userDataForm = InferType<typeof userDataForm>;
 
-export type type_userDataForm = z.infer<typeof userDataForm>;
+export const userCompaniesForm = array(string());
 
-export const userCompaniesForm = z.array(z.coerce.string());
+export type type_userCompaniesForm = InferType<typeof userCompaniesForm>;
 
-export type type_userCompaniesForm = z.infer<typeof userCompaniesForm>;
-
-export const userBody = z.object({
+export const userBody = object({
   userData: userDataForm,
   userCompanies: userCompaniesForm,
 });

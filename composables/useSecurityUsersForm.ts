@@ -7,8 +7,10 @@ export const useSecurityUsersForm = () => {
     isLoading: false as boolean,
     // userData: {} as type_userDataForm,
     // userData: userDataForm.parse({}),
-    data: userDataForm.parse({}),
-    // data: {} as type_userDataForm,
+    // data: {
+    //   user_name: undefined,
+    // } as type_userDataForm,
+    data: {} as type_userDataFormYup,
     userCompanies: [] as String[],
     avatar: null as File|null,
     profileOptions: [] as type_sys_profiles[],
@@ -16,7 +18,7 @@ export const useSecurityUsersForm = () => {
   }});
 
   const resetUserData = () => { 
-    state.value.data = userDataForm.parse({});
+    // state.value.data = type_userDataFormYup.parse({});
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];

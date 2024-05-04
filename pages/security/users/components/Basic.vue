@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { colors, darkColors } from '@/components/home/config';
+import { userDataForm, type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 
 const props = defineProps({
@@ -43,6 +44,7 @@ watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.prof
 <template>
   <SkeletonHeader v-if="props.loading" />
   <div v-else>
+    <UForm :schema="userDataForm" :state="state.data">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
       <div class="col-span-1 sm:col-span-2 pt-1" />
       <div>
@@ -53,7 +55,7 @@ watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.prof
           Correo electrónico (requerido en el inicio de sesión).
         </p>
       </div>
-      <UFormGroup size="xl" name="email" >
+      <UFormGroup size="xl" name="email">
         <UInput
           v-model:model-value="state.data.email"
           placeholder="Email del Usuario"
@@ -172,7 +174,7 @@ watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.prof
           Foto del usuario (1MB max).
         </p>
       </div>
-      <UFormGroup size="xl" name="sys_profile_id">
+      <UFormGroup size="xl" name="avatar_url">
         <div class="flex items-center">
           <UAvatar :src="state.data.avatar_url!" :alt="state.data.user_lastname" size="lg" />
           <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
@@ -256,5 +258,6 @@ watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.prof
         :loading="state.isLoading" />
     </div>
     <br /> <br />
+    </UForm>
   </div>
 </template>
