@@ -1,5 +1,6 @@
 import serverDB from '@/server/utils/db';
-// import { sys_profiles, type type_sys_profiles } from '@/types/server/sys_profiles'
+import { array } from 'yup';
+import { sys_profiles } from '@/types/server/sys_profiles'
 
 export default defineEventHandler( async (event) => {
   try{
@@ -18,10 +19,7 @@ export default defineEventHandler( async (event) => {
       WHERE a.id = '${id}'
     `;
     const data = await serverDB.query(text);
-    // const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows);
-    const result = data.rows;
-    
-    return result;
+    return array(sys_profiles).cast(data.rows);
   }catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

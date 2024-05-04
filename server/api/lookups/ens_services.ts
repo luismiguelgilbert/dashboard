@@ -1,5 +1,6 @@
 import serverDB from '@/server/utils/db';
-import { ens_services_lookup, type type_ens_services_lookup } from '@/types/server/ens_types';
+import { array } from 'yup';
+import { ens_services_lookup } from '@/types/server/ens_types';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -10,9 +11,7 @@ export default defineEventHandler( async (event) => {
     from ens_services a
     order by name_es`;
     const data = await serverDB.query(text);
-    const result: type_ens_services_lookup[] = ens_services_lookup.array().parse(data.rows);
-    
-    return result;
+    return array(ens_services_lookup).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

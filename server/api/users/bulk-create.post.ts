@@ -25,45 +25,46 @@ export default defineEventHandler( async (event) => {
     const supabaseService = await serverSupabaseServiceRole(event);
     
     //Validations
-    for (const row of payload.users?) {
-      const { data, error } = await supabaseService.auth.signUp({
-        email: row[email_field].replaceAll("'", ''),
-        password: process.env.NEWUSERSDEFAULTPWD!,
-        options: {
-          data: {
-            user_name: row[user_name_field],
-            user_lastname: row[user_lastname_field],
-            avatar_url: ''
+    if (payload.users) {
+      for (const row of payload.users) {
+        const { data, error } = await supabaseService.auth.signUp({
+          email: row[email_field].replaceAll("'", ''),
+          password: process.env.NEWUSERSDEFAULTPWD!,
+          options: {
+            data: {
+              user_name: row[user_name_field],
+              user_lastname: row[user_lastname_field],
+              avatar_url: ''
+            }
           }
+        });
+        if (error) {
+          invalidUsers.push(row);
+        } else {
+          validUsers.push(row);
+          
+          //Insert user data
+          data.user?.id
+          const sqlInsertUserData = `insert into public.sys_users 
+          (id, user_name, user_lastname, user_sex, avatar_url, dark_enabled, default_color, default_dark_color, updated_by)
+          values 
+          ('${data.user?.id}', '${row[user_name_field]}', '${row[user_lastname_field]}', ${row[user_sex_field]}, '', false, 'indigo', 'slate', '${userSessionId}');`;
+          await serverDB.query(sqlInsertUserData);
+  
+          //Insert user profile
+          let sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id) values (${sys_profile_id}, '${data.user?.id}');`;
+          await serverDB.query(sqlProfileInsert);
+  
+          //Insert user company
+          let sqlCompaniesInsert = `insert into sys_companies_users (sys_company_id, user_id, is_default) values ('${prefered_company_id}', '${data.user?.id}', true)`;
+          await serverDB.query(sqlCompaniesInsert);
         }
-      });
-      if (error) {
-        invalidUsers.push(row);
-      } else {
-        validUsers.push(row);
-        
-        //Insert user data
-        data.user?.id
-        const sqlInsertUserData = `insert into public.sys_users 
-        (id, user_name, user_lastname, user_sex, avatar_url, dark_enabled, default_color, default_dark_color, updated_by)
-        values 
-        ('${data.user?.id}', '${row[user_name_field]}', '${row[user_lastname_field]}', ${row[user_sex_field]}, '', false, 'indigo', 'slate', '${userSessionId}');`;
-        await serverDB.query(sqlInsertUserData);
-
-        //Insert user profile
-        let sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id) values (${sys_profile_id}, '${data.user?.id}');`;
-        await serverDB.query(sqlProfileInsert);
-
-        //Insert user company
-        let sqlCompaniesInsert = `insert into sys_companies_users (sys_company_id, user_id, is_default) values ('${prefered_company_id}', '${data.user?.id}', true)`;
-        await serverDB.query(sqlCompaniesInsert);
       }
+      return {
+        validUsers,
+        invalidUsers
+      };
     }
-
-    return {
-      validUsers,
-      invalidUsers
-    };
   } catch(err: NuxtError | any) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);

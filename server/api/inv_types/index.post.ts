@@ -11,7 +11,7 @@ export default defineEventHandler( async (event) => {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.INVTYPES_READ);
 
-    const filter = await readValidatedBody(event, body => filter_payload.parse(body))
+    const filter = await readValidatedBody(event, body => filter_payload.cast(body))
     const sys_company_id = filter.sys_company_id;
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
@@ -45,11 +45,8 @@ export default defineEventHandler( async (event) => {
       OFFSET ${offset}
       LIMIT ${pageSize}
     `
-    // const result: type_sys_profiles[] = sys_profiles.array().parse(data.rows)
     const data = await serverDB.query(text)
-    const result = data.rows;
-    
-    return result
+    return data.rows;
   } catch(err: NuxtError | any) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

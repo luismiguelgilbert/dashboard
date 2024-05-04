@@ -1,5 +1,6 @@
 import serverDB from '@/server/utils/db';
-import { ens_members_teams, type type_ens_members_teams } from '@/types/server/ens_types';
+import { array } from 'yup';
+import { ens_members_teams } from '@/types/server/ens_types';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -17,9 +18,7 @@ export default defineEventHandler( async (event) => {
       WHERE a.user_id = '${id}'
     `;
     const data = await serverDB.query(text);
-    const result: type_ens_members_teams[] = ens_members_teams.array().parse(data.rows);
-    
-    return result;
+    return array(ens_members_teams).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

@@ -12,7 +12,7 @@ export default defineEventHandler( async (event) => {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.USERS_READ);
 
-    const filter = await readValidatedBody(event, body => filter_payload.parse(body))
+    const filter = await readValidatedBody(event, body => filter_payload.cast(body))
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
     const page = Number(filter.page)

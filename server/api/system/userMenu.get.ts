@@ -1,4 +1,5 @@
-import serverDB from '@/server/utils/db'
+import serverDB from '@/server/utils/db';
+import { array } from 'yup';
 import { sp_system_menu } from '@/types/server/sp_system_menu'
 
 export default defineEventHandler( async (event) => {
@@ -43,10 +44,10 @@ export default defineEventHandler( async (event) => {
     UNION
       SELECT '-1' as id, '0' as parent, 0 as position, '/' as link, 'Inicio' as name_es, 'i-heroicons-home' as icon, 'Dashboard inicial' as comment_es, false as requires_company
     */
-    const values = [event.context.user.id]
-    const menu_data = await serverDB.query(text, values)
+    const values = [event.context.user.id];
+    const menu_data = await serverDB.query(text, values);
  
-    return sp_system_menu.array().parse(menu_data.rows)
+    return array(sp_system_menu).cast(menu_data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`)
     throw createError({

@@ -9,7 +9,7 @@ export default defineEventHandler( async (event) => {
   try {
     const id = getRouterParam(event, 'id')
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => companyBody.parse(body))
+    const payload = await readValidatedBody(event, body => companyBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.COMPANIES_EDIT);
 
     //Data sanitization

@@ -1,4 +1,5 @@
 import serverDB from '@/server/utils/db'
+import { array } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils'
@@ -11,7 +12,7 @@ export default defineEventHandler( async (event) => {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.ENSMEMBERS_READ);
 
-    const filter = await readValidatedBody(event, body => filter_payload.parse(body))
+    const filter = await readValidatedBody(event, body => filter_payload.cast(body))
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
     const page = Number(filter.page)
@@ -56,9 +57,7 @@ export default defineEventHandler( async (event) => {
       LIMIT ${pageSize}
     `
     const data = await serverDB.query(text);
-    const result: type_ens_members[] = ens_members.array().parse(data.rows)
-    
-    return result
+    return array(ens_members).cast(data.rows);
   } catch(err: NuxtError | any) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

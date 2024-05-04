@@ -5,12 +5,7 @@ import { type type_sys_companies } from '@/types/server/sys_companies';
 export const useSecurityUsersForm = () => {
   const state = useState('useSecurityUsersForm', () => { return {
     isLoading: false as boolean,
-    // userData: {} as type_userDataForm,
-    // userData: userDataForm.parse({}),
-    // data: {
-    //   user_name: undefined,
-    // } as type_userDataForm,
-    data: {} as type_userDataFormYup,
+    data: {} as type_userDataForm,
     userCompanies: [] as String[],
     avatar: null as File|null,
     profileOptions: [] as type_sys_profiles[],
@@ -18,7 +13,6 @@ export const useSecurityUsersForm = () => {
   }});
 
   const resetUserData = () => { 
-    // state.value.data = type_userDataFormYup.parse({});
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];
@@ -26,10 +20,10 @@ export const useSecurityUsersForm = () => {
 
   const validateUserData = async () => {
     try {
-      const isUserDataValid = userDataForm.safeParse(state.value.data);
+      const isUserDataValid = await userDataForm.isValid(state.value.data);
       const isCompaniesDataValid = state.value.userCompanies.length > 0;
   
-      return isUserDataValid.success && isCompaniesDataValid;
+      return isUserDataValid && isCompaniesDataValid;
     } catch (error) {
       return false;
     }
