@@ -25,8 +25,8 @@ const addTeamDateStop = ref(null);
 const addTeamDisabled = computed(() => !addTeamId.value || !addTeamDateStart.value );
 
 //LOOKUP DATA
-const { data: dataTeams } = useFetch<type_ens_teams_lookup[]>('/api/lookups/ens_teams');
-const { data: dataServices } = useFetch<type_ens_services_lookup[]>('/api/lookups/ens_services');
+const { data: dataTeams } = useFetch('/api/lookups/ens_teams');
+const { data: dataServices } = useFetch('/api/lookups/ens_services');
 state.value.teams = dataTeams.value ?? [];
 state.value.services = dataServices.value ?? [];
 

@@ -79,8 +79,8 @@ const errorStats = computed(() => {
   ];
 });
 //ACTIONS
-const { data: profileOptionsData } = await useFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
-const { data: companyOptionsData } = await useFetch<type_sys_companies[]>('/api/lookups/sys_companies');
+const { data: profileOptionsData } = await useFetch('/api/lookups/sys_profiles');
+const { data: companyOptionsData } = await useFetch('/api/lookups/sys_companies');
 profileOptions.value = profileOptionsData.value ?? [];
 companyOptions.value = companyOptionsData.value ?? [];
 

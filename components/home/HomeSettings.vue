@@ -25,7 +25,7 @@ const toggleTheme = async () => {
     sessionData.value.userData.dark_enabled = !sessionData.value.userData?.dark_enabled;
     colorMode.preference = sessionData.value.userData?.dark_enabled ? 'dark' : 'light';
     isUpdating.value = true;
-    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/preferences`, {
+    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { dark_enabled: sessionData.value.userData.dark_enabled },
     })
@@ -38,7 +38,7 @@ const setDarkColor = async () => {
   if (sessionData.value.userData) {
     appConfig.ui.gray = sessionData.value.userData?.default_dark_color;
     isUpdating.value = true
-    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/preferences`, {
+    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { default_dark_color: sessionData.value.userData.default_dark_color },
     })
@@ -53,7 +53,7 @@ const setColor = async () => {
   
     isUpdating.value = true
     hasError.value = false
-    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/preferences`, {
+    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { default_color: sessionData.value.userData.default_color },
     })
@@ -66,7 +66,7 @@ const setPreferedCompany = async () => {
   if (sessionData.value.userData) {
     isUpdating.value = true
     hasError.value = false
-    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/preferences`, {
+    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { prefered_company_id: sessionData.value.userData.prefered_company_id },
     })
@@ -85,7 +85,7 @@ const onFileChange = async (e: Event) => {
 
     const body = new FormData();
     body.append('file', input.files[0]);
-    const { error } = await useFetch(`/api/users/${sessionData.value.userData.id}/avatar`, {
+    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/avatar`, {
       method: 'PATCH',
       body,
     });

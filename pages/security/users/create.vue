@@ -5,7 +5,7 @@ import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
 
-const { state, resetUserData, validateUserData } = useSecurityUsersForm();
+const { state, resetState, validateUserData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
 const toast = useToast();
 
@@ -18,7 +18,7 @@ const mainForm = ref<Form<type_userDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.USERS_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof Basic>>();
-resetUserData();
+resetState();
 
 const cancel = async () => {
   state.value.isLoading = true;
@@ -67,7 +67,7 @@ const save = async () => {
     if (state.value.avatar && newUserId) {
       const body = new FormData();
       body.append('file', state.value.avatar);
-      const { error: avatarError } = await useFetch(`/api/users/${newUserId}/avatar`, {
+      const { error: avatarError } = await useFetch(`/api/users/:${newUserId}/avatar`, {
         method: 'PATCH',
         body,
       });

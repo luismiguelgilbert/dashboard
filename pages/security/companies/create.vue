@@ -64,7 +64,7 @@ const save = async () => {
     if (state.value.avatar && newId) {
       const body = new FormData();
       body.append('file', state.value.avatar);
-      const { error: avatarError } = await useFetch(`/api/companies/${newId}/avatar`, {
+      const { error: avatarError } = await useFetch(`/api/companies/:${newId}/avatar`, {
         method: 'PATCH',
         body,
       });

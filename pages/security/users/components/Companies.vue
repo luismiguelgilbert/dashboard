@@ -37,6 +37,7 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
 //LOOKUP DATA
 const { data: companyOptionsData } = await useLazyFetch<type_sys_companies[]>('/api/lookups/sys_companies');
 state.value.companyOptions = companyOptionsData.value ?? [];
+watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.companyOptions = newData } });
 </script>
 
 <template>

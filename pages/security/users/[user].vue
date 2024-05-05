@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
-import { type type_sys_companies } from '~/types/server/sys_companies';
-import { userDataForm, type type_sys_users, type type_userDataForm } from '~/types/server/sys_users';
+import { userDataForm, type type_userDataForm } from '~/types/server/sys_users';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
 
-const { state, resetUserData, validateUserData } = useSecurityUsersForm();
+const { state, resetState, validateUserData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
 const toast = useToast();
 const route = useRoute();
+resetState();
 
 const tabs = [
   { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
@@ -26,11 +26,11 @@ const cancel = async () => {
   await navigateTo('/security/users');
 };
 
-const { data, pending } = await useLazyFetch<type_sys_users[]>(`/api/users/${route.params.user}`);
+const { data, pending } = await useLazyFetch(`/api/users/:${route.params.user}`);
 state.value.data = data.value?.[0]!;
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0] } });
 
-const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch<type_sys_companies[]>(`/api/users/${route.params.user}/companies`);
+const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch(`/api/users/:${route.params.user}/companies`);
 state.value.userCompanies = dataCompanies.value?.map(company => company.id.toString()) ?? [];
 watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()) } });
 
@@ -94,8 +94,6 @@ const save = async () => {
   //   showInvalidFormData();
   // }
 };
-
-// resetUserData();
 
 // const showInvalidFormData = () => {
 //   toast.add({

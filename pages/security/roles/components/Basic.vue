@@ -19,7 +19,7 @@ const toggleLink = (selectedLink: type_sys_links): void => {
 
 //LOOKUP DATA
 if (!state.value.syslinksOptions.length) {
-  const { data: syslinksOptions } = await useFetch<type_sys_links[]>('/api/lookups/sys_links');
+  const { data: syslinksOptions } = await useFetch('/api/lookups/sys_links');
   state.value.syslinksOptions = syslinksOptions.value ?? [];
 };
 </script>

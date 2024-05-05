@@ -1,9 +1,9 @@
 import { object, array, string, boolean, number, date, type InferType } from 'yup';
 
 export const sys_companies = object({
-  id: string(),
-  company_number: string().min(3, 'RUC debe incluir 3 o más caracteres.').max(13, 'RUC debe incluir máximo 13 caracteres.'),
-  name_es: string().min(3, 'Razón Social debe incluir 3 o más caracteres.'),
+  id: string().required(),
+  company_number: string().required().min(3, 'RUC debe incluir 3 o más caracteres.').max(13, 'RUC debe incluir máximo 13 caracteres.'),
+  name_es: string().required().min(3, 'Razón Social debe incluir 3 o más caracteres.'),
   name_es_short: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
   billing_phone: string().optional().nullable().default(''),
   billing_address: string().optional().nullable().default(''),

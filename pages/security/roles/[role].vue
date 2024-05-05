@@ -24,11 +24,11 @@ const systemRolesBasic = ref<InstanceType<typeof Basic>>();
 resetProfileData();
 
 
-  const { data, pending } = await useLazyFetch<type_profileDataForm[]>(`/api/roles/${route.params.role}`);
+  const { data, pending } = await useLazyFetch(`/api/roles/:${route.params.role}`);
   state.value.profileData = data.value?.[0]!;
   watch(data, (newData) => { if (newData?.length) { state.value.profileData = newData[0] } });
 
-  const { data: dataLinks, pending: pendingLinks } = await useLazyFetch<type_profile_sys_links[]>(`/api/roles/${route.params.role}/links`);
+  const { data: dataLinks, pending: pendingLinks } = await useLazyFetch(`/api/roles/:${route.params.role}/links`);
   state.value.profileLinks = dataLinks.value?.map(link => link.sys_link_id) ?? [];
   watch(dataLinks, (newData) => { if (newData?.length) { state.value.profileLinks = newData.map(link => link.sys_link_id) ?? []} });
 
@@ -65,7 +65,7 @@ const save = async () => {
   state.value.isLoading = true;
   const isDataValid = await validateProfileData();
   if (isDataValid) {
-    const { data, error } = await useFetch(`/api/roles/${route.params.id}`, {
+    const { data, error } = await useFetch(`/api/roles/:${route.params.id}`, {
       method: 'PATCH',
       body: {
         profileData: state.value.profileData,

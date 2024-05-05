@@ -12,7 +12,8 @@ export const useSecurityUsersForm = () => {
     companyOptions: [] as type_sys_companies[],
   }});
 
-  const resetUserData = () => { 
+  const resetState = () => { 
+    state.value.data = {} as type_userDataForm;
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];
@@ -29,5 +30,5 @@ export const useSecurityUsersForm = () => {
     }
   };
 
-  return { state, resetUserData, validateUserData };
+  return { state, resetState, validateUserData };
 };

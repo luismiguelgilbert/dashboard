@@ -27,8 +27,8 @@ let totalRows = 0;
 // console.log(router.currentRoute.value.query);
 // console.log(router.currentRoute.value.query)
 
-const { data, error, pending } = await useFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.filterPayload })
-totalRows = data.value[0].row_count ?? 0;
+const { data, error, pending } = await useFetch('/api/users', { method: 'post', body: state.filterPayload })
+totalRows = data.value?.[0].row_count ?? 0;
 </script>
 
 <template>
