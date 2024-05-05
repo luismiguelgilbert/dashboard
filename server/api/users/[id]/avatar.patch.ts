@@ -2,7 +2,7 @@ import serverDB from '@/server/utils/db';
 import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler( async (event) => {
-  const id = (event.context.params?.id);
+  const id = (event.context.params?.id)?.replaceAll(':','');
   const files = await readMultipartFormData(event);
   if (files && files.length > 0) {
     const fileExt = files[0].filename.split('.').pop();

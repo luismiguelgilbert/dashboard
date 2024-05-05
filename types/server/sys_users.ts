@@ -1,17 +1,13 @@
 import { object, array, string, boolean, number, date, type InferType } from 'yup';
 
 export const sys_users = object({
-  id: string(),
+  id: string().uuid(),
   user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
-  user_lastname: string().required('Apellido es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  user_lastname: string().required('Apellido es requerido.').min(3, 'Apellido debe incluir 3 o más caracteres.'),
   email: string().email().required('Email es requerido.'),
-  // user_name: string(),
-  // user_lastname: string(),
   user_sex: boolean(),
   avatar_url: string().optional().nullable(),
   website: string().optional().nullable(),
-  // email: string(),
-  // sys_profile_id: number(),
   sys_profile_id: number().required('Debe seleccionar un Perfil.'),
   sys_profile_name: string().optional().nullable(),
   dark_enabled: boolean(),
@@ -95,7 +91,7 @@ export const userDataForm = object({
 });
 export type type_userDataForm = InferType<typeof userDataForm>;
 
-export const userCompaniesForm = array(string());
+export const userCompaniesForm = array(string()).min(1, 'Debe seleccionar una Organización.');
 export type type_userCompaniesForm = InferType<typeof userCompaniesForm>;
 
 export const userBody = object({

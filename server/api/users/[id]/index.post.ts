@@ -9,7 +9,7 @@ import { userBody } from "@/types/server/sys_users";
 
 export default defineEventHandler( async (event) => {
   try {
-    const userSessionId = event.context.user.id;
+    const userSessionId = event.context.user.id?.replaceAll(':','');;
     const payload = await readValidatedBody(event, body => userBody.cast(body))
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 

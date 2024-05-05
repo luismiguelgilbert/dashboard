@@ -2,7 +2,7 @@ import serverDB from '@/server/utils/db'
 export default defineEventHandler( async (event) => {
   try{
     const payload = await readBody(event)
-    const id = (event.context.params?.id)
+    const id = (event.context.params?.id)?.replaceAll(':','');
     const dark_enabled = payload.dark_enabled ?? null
     const default_color = payload.default_color ? `'${payload.default_color}'` : null
     const default_dark_color = payload.default_dark_color ? `'${payload.default_dark_color}'` : null
