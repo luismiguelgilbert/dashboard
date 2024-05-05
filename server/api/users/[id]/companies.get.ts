@@ -4,7 +4,7 @@ import { sys_companies } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try{
-    const id = (event.context.params?.id);
+    const id = (event.context.params?.id)?.replaceAll(':','');
     const text = `SELECT
       b.id
       , b.company_number

@@ -4,7 +4,7 @@ import { sys_users, type type_sys_users } from '@/types/server/sys_users'
 
 export default defineEventHandler( async (event) => {
   try{
-    const id = (event.context.params?.id);
+    const id = (event.context.params?.id)?.replaceAll(':','');
     const text = `WITH user_company AS (
           select
           int1.id as user_id
