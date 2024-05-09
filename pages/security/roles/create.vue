@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
-import type { SystemRolesBasic } from '#build/components';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import Basic from './components/Basic.vue';
 
 const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
 const { sessionData } = useUserSession();
@@ -15,7 +15,7 @@ const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.ROLES_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemRolesBasicForm = ref<InstanceType<typeof SystemRolesBasic>>();
+const systemRolesBasicForm = ref<InstanceType<typeof Basic>>();
 resetProfileData();
 
 const cancel = async () => {

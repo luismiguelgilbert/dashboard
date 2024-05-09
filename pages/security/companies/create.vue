@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Form } from '#ui/types'
-import type { SystemCompaniesBasic } from '#build/components';
 import { companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import Basic from './components/Basic.vue'
 
 const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
 const { sessionData } = useUserSession();
@@ -15,7 +15,7 @@ const tab = ref<'basic'|'companies'>('basic');
 const mainForm = ref<Form<type_sys_companies>>();
 const canSave = hasSessionPermission(PermissionsList.COMPANIES_CREATE, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemCompaniesBasic = ref<InstanceType<typeof SystemCompaniesBasic>>();
+const systemCompaniesBasic = ref<InstanceType<typeof Basic>>();
 resetCompanyData();
 
 const cancel = async () => {

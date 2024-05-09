@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { actions, module, title } from './companies/config'
+import { actions, module, title } from './components/config'
 import { filter_options, sort_options, type type_sys_companies } from '@/types/server/sys_companies'
-import indexTable from './companies/indexTable.vue'
-import indexList from './companies/indexList.vue'
+import indexTable from './components/indexTable.vue'
+import indexList from './components/indexList.vue'
 
 useHead({ title })
 const route = useRoute();

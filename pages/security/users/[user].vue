@@ -6,6 +6,7 @@ import Companies from './components/Companies.vue';
 const { state, resetState, validateData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
 const route = useRoute();
+console.log({route});
 resetState();
 
 const tabs = [
@@ -96,7 +97,7 @@ const save = async () => {
 </script>
 
 <template>
-  <UDashboardPage class="w-dvw">
+  <UDashboardPage class="w-dvw" v-if="route.name === 'security-users-user'">
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Usuario">
         <template #right>
@@ -118,4 +119,5 @@ const save = async () => {
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
+  <NuxtPage v-else />
 </template>

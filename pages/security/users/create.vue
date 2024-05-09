@@ -6,6 +6,7 @@ import Companies from './components/Companies.vue';
 
 const { state, resetState, validateData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
+const route = useRoute();
 
 const tabs = [
   { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
@@ -113,4 +114,5 @@ const save = async () => {
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
+  <NuxtPage />
 </template>

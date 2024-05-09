@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { actions, module, title } from './users/config'
+import { actions, module, title } from './components/config'
 import { filter_options, sort_options, type type_sys_users } from '@/types/server/sys_users'
-import indexTable from './users/indexTable.vue'
-import indexList from './users/indexList.vue'
+import indexTable from './components/indexTable.vue'
+import indexList from './components/indexList.vue'
 
 useHead({ title })
-const route = useRoute();
 const { state } = useSecurityUsers();
 const { sessionData } = useUserSession();
 const rows = ref<type_sys_users[]>([]);
@@ -16,7 +15,7 @@ if (!error.value && data.value) { rows.value = data.value }
 </script>
 
 <template>
-  <UDashboardPage v-if="route.matched.length === 1">
+  <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -59,5 +58,4 @@ if (!error.value && data.value) { rows.value = data.value }
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
-  <NuxtPage v-else />
 </template>

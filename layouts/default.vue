@@ -6,6 +6,9 @@ const appConfig = useAppConfig()
 const { sessionData } = useUserSession();
 colorMode.preference = 'dark'
 
+const router = useRouter();
+console.log(router.getRoutes().sort((a, b) => a.path.localeCompare(b.path)))
+
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
   return sessionData.value?.userMenuData?.filter((menu) => !menu.parent)
     .map(menu => { 
@@ -13,6 +16,8 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
         .map(x => { return {
           label: x.name_es,
           to: x.link!,
+          // replace: true,
+          // external: true,
         }
       })
 
@@ -20,7 +25,7 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
         label: menu.name_es,
         icon: menu.icon!,
         to: menu.id === '0' ? '/' : undefined,
-        children: menu.id != '0' ? children : undefined
+        children: menu.id != '0' ? children : undefined,
       }
     }) ?? [];
 })
@@ -70,7 +75,7 @@ if (!error.value && data.value) {
     </UDashboardPanel>
 
     <suspense>
-        <slot />
+      <slot />
       <!-- <NuxtPage /> -->
       <!-- <Nuxt /> -->
     </suspense>
