@@ -6,18 +6,14 @@ const appConfig = useAppConfig()
 const { sessionData } = useUserSession();
 colorMode.preference = 'dark'
 
-const router = useRouter();
-console.log(router.getRoutes().sort((a, b) => a.path.localeCompare(b.path)))
-
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
   return sessionData.value?.userMenuData?.filter((menu) => !menu.parent)
     .map(menu => { 
       const children = sessionData.value?.userMenuData?.filter((child) => child.parent === menu.id)
         .map(x => { return {
-          label: x.name_es,
+          label: x.name_es!,
           to: x.link!,
-          // replace: true,
-          // external: true,
+          icon: '',
         }
       })
 
