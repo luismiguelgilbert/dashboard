@@ -24,8 +24,7 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
         children: menu.id != '0' ? children : undefined,
       }
     }) ?? [];
-})
-
+});
 
 const { data, error } = await useFetch('/api/system/userData')
 if (error.value) { await navigateTo('/auth/login') }

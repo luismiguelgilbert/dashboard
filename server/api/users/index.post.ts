@@ -11,7 +11,6 @@ export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.USERS_READ);
-
     const filter = await readValidatedBody(event, body => filter_payload.cast(body))
     const sortById = Number(filter.sortBy)
     const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
@@ -27,8 +26,8 @@ export default defineEventHandler( async (event) => {
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
     const search_string = sanitizeSQL(filter.searchString)
     const filterSearchString = search_string.length > 0
-      ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
-      : ''
+    ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
+    : ''
 
     const text = `
       select
