@@ -7,7 +7,7 @@ const { query } = router.currentRoute.value;
 const state = {
   isLoading: false,
   filterPayload: {
-    pageSize: 50,
+    pageSize: 25,
     filterBy: [],
     sortBy: 1,
     page: query.page ? parseInt(query.page as string) : 1,

@@ -7,11 +7,52 @@ import indexList from './components/indexList.vue'
 useHead({ title })
 const { state } = useSecurityUsers();
 const { sessionData } = useUserSession();
-const rows = ref<type_sys_users[]>([]);
+// const rows = ref<type_sys_users[]>([]);
+// const rows = ref([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
+// const totalRows = ref(0);
+// const from = computed(() => state.value.filterPayload.page * state.value.filterPayload.pageSize - state.value.filterPayload.pageSize + 1);
+// const to = computed(() => state.value.filterPayload.page * state.value.filterPayload.pageSize);
+
+
+// const client = useSupabaseClient();
+// // console.log({client})
+// const pending = ref(false);
+// const { data, refresh } = await useAsyncData('users', async () => {
+//   const { data, error, status, count } = await client
+//     .from('sys_users')
+//     // .select('*', { count: 'exact', head: false })
+//     .select('*', { count: 'exact' })
+//     // .select()
+//     // .select(`*, (count)`)
+//     .limit(25)
+//     // .range(0, 50);
+//     .range(from.value, to.value)
+//     .order("user_lastname", { ascending: true })
+
+    
+//     // .eq('name', 'My Restaurant Name')
+//     // .single()
+//     ;
+//   console.log({data});
+//   // console.log('count', {count});
+//   // console.log('error', {error});
+//   // console.log('status', {status});
+//   totalRows.value = count ?? 0;
+//   rows.value = data ?? [];
+//   // return data
+// })
+
+// watch(
+//   () => state.value.filterPayload.page,
+//   () => {
+//     console.log('refresh data');
+//     refresh();
+//   }
+// )
 
 const { data, error, pending } = await useLazyFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload })
-if (!error.value && data.value) { rows.value = data.value }
+// if (!error.value && data.value) { rows.value = data.value }
 </script>
 
 <template>

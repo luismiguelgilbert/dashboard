@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/supabase',
     '@nuxt/image',
-    'nuxt-clarity-analytics',
+    // 'nuxt-clarity-analytics',
   ],
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
   ui: {

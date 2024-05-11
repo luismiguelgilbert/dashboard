@@ -16,7 +16,7 @@ export const sys_users = object({
   prefered_company_id: string(),
   created_at: date(),
   updated_at: date(),
-  last_sign_in_at: date(),
+  last_sign_in_at: date().optional().nullable(),
   row_count: number(),
 });
 export type type_sys_users = InferType<typeof sys_users>;

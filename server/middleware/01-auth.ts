@@ -1,4 +1,4 @@
-import { serverSupabaseUser } from '#supabase/server';
+import jwt from 'jsonwebtoken';
 
 export default defineEventHandler(async (event) => {
   const requestedURL = await getRequestURL(event);
@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     && !unprotectedPaths.includes(requestedURL.pathname);
   
   if (isProtectedPath) {
-    const user = await serverSupabaseUser(event);
+    const sessionCookie = getCookie(event, 'sb-access-token') || '';
+    const user: jwt.JwtPayload = jwt.decode(sessionCookie) as jwt.JwtPayload;
   
     if (!user) {
       throw createError({
@@ -15,6 +16,7 @@ export default defineEventHandler(async (event) => {
         message: 'Unauthorized',
       })
     }
-    event.context.user = user;
+    user
+    event.context.user = {...user, id: user.sub};
   }
 })

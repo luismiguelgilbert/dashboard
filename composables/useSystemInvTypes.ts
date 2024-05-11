@@ -5,7 +5,7 @@ export const useSystemInvTypes = () => {
     isLoading: false,
     filterPayload: {
       sys_company_id: sessionData.value.userCompany,
-      pageSize: 50,
+      pageSize: 25,
       filterBy: [],
       sortBy: 1,
       page: 1,
