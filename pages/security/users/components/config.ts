@@ -22,7 +22,8 @@ export const columns = [
   {
     key: 'actions',
     label: '',
-    sortable: false
+    sortable: false,
+    class: 'w-1',
   },
 ];
 export const actions: DropdownItemExtended[][] = [

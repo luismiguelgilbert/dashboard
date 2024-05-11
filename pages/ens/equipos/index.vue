@@ -4,13 +4,10 @@ import { filter_options, sort_options, type type_ens_members } from '@/types/ser
 import indexTable from './components/indexTable.vue';
 import indexList from './components/indexList.vue';
 
-const route = useRoute();
 useHead({ title });
 const { state } = useEnsEquipistas();
 const { sessionData } = useUserSession();
 const rows = ref<Array<type_ens_members>>([]);
-// console.log({route})
-// console.log(route.matched.length)
 const { data, error, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload })
 if (!error.value && data.value) { rows.value = data.value }
 

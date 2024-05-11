@@ -18,7 +18,7 @@ defineProps({
     :columns="columns"
     :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
     sort-mode="manual"
-    class="w-full hidden sm:block">
+    class="w-full hidden sm:block h-dvh">
     <template #name_es-data="{ row }: { row: type_sys_profiles }">
       <div class="flex items-center gap-3">
         <UAvatar size="xs">
@@ -46,7 +46,8 @@ defineProps({
       <UButton
         icon="i-heroicons-pencil-square"
         variant="link"
-        color="gray"
+        size="xl"
+        class="text-primary-400 dark:text-primary-400"
         @click="navigateTo(`/ens/equipos/${row.id}`)" />
     </template>
   </UTable>
