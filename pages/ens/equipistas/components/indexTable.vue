@@ -3,12 +3,17 @@ import { columns } from './config'
 import { type type_ens_members } from '@/types/server/ens_types'
 import { format, isToday } from 'date-fns'
 
-defineProps({
+const props = defineProps({
   rows: {
     type: Array<type_ens_members>,
     required: false,
     default: () => []
-  }
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
 })
 </script>
 
@@ -17,6 +22,7 @@ defineProps({
     :rows="rows"
     :columns="columns"
     :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+    :loading="props.loading"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #name_es-data="{ row }: { row: type_ens_members }">

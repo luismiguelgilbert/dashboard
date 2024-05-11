@@ -3,12 +3,17 @@ import { columns } from './config'
 import { type type_sys_profiles } from '@/types/server/sys_profiles'
 import { format, isToday } from 'date-fns'
 
-defineProps({
+const props = defineProps({
   rows: {
     type: Array<type_sys_profiles>,
     required: false,
     default: () => []
-  }
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
 })
 </script>
 
@@ -17,12 +22,13 @@ defineProps({
     :rows="rows"
     :columns="columns"
     :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+    :loading="props.loading"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #name_es-data="{ row }: { row: type_sys_profiles }">
       <div class="flex items-center gap-3">
         <UAvatar size="xs">
-          {{ row.name_es[0] }}
+          {{ row.name_es?[0] }}
         </UAvatar>
         <div class="text-base font-semibold dark:text-white text-black">
           {{ `${row.name_es}` }}

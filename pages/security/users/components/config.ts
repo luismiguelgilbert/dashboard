@@ -17,7 +17,8 @@ export const columns = [
   {
     key: 'sys_profile_name',
     label: 'Perfil',
-    sortable: false
+    sortable: false,
+    class: 'w-1 max-w-1',
   },
   {
     key: 'actions',

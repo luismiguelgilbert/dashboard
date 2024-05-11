@@ -2,12 +2,17 @@
 import { columns } from './config';
 import { type type_sys_companies } from '@/types/server/sys_companies';
 
-defineProps({
+const props = defineProps({
   rows: {
     type: Array<type_sys_companies>,
     required: false,
     default: () => []
-  }
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
 });
 </script>
 
@@ -16,6 +21,7 @@ defineProps({
     :rows="rows"
     :columns="columns"
     :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
+    :loading="props.loading"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #id-data="{ row }: { row: type_sys_companies }">
