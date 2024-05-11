@@ -4,7 +4,8 @@ import { sys_companies } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try{
-    const id = (event.context.params?.id)?.replaceAll(':','');
+    event.context.params = useSanitizeParams(event.context.params);
+    const id = getRouterParam(event, 'id');
     const text = `SELECT
       b.id
       , b.company_number

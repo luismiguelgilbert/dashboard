@@ -126,5 +126,6 @@ export const sort_options = [
   { label: 'Apellidos', value: 1, sqlValue: 'b.user_lastname', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Nombres', value: 2, sqlValue: 'b.user_name', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Mail', value: 3, sqlValue: 'a.email', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Perfil', value: 4, sqlValue: 'd.name_es', icon: 'i-heroicons-bars-arrow-down' }
+  { label: 'Perfil', value: 4, sqlValue: 'd.name_es', icon: 'i-heroicons-bars-arrow-down' },
+  { label: 'Ult. Ingreso', value: 5, sqlValue: 'last_sign_in_at desc', icon: 'i-heroicons-bars-arrow-down' }
 ];

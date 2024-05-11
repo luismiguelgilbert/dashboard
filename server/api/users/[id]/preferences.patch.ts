@@ -1,6 +1,7 @@
 import serverDB from '@/server/utils/db';
 export default defineEventHandler( async (event) => {
   try{
+    event.context.params = useSanitizeParams(event.context.params);
     const payload = await readBody(event);
     const id = (event.context.params?.id)?.replaceAll(':','');
     const dark_enabled = payload.dark_enabled ?? null;

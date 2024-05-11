@@ -1,3 +1,3 @@
 export default defineEventHandler((event) => {
-  console.log(`New request - ${event.node.req.method} : ${getRequestURL(event)} at ${new Date()}`);
+  console.log(`New ${event.node.req.method} request: ${event.path} at ${new Date()}`);
 });

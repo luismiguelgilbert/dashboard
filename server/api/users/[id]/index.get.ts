@@ -4,9 +4,8 @@ import { sys_users } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
   try{
-    console.log('GET id');
-    const id = (event.context.params?.id)?.replaceAll(':','');
-    console.log({id});
+    event.context.params = useSanitizeParams(event.context.params);
+    const id = (event.context.params?.id);
     const text = `WITH user_company AS (
           select
           int1.id as user_id

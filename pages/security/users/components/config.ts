@@ -18,7 +18,11 @@ export const columns = [
     key: 'sys_profile_name',
     label: 'Perfil',
     sortable: false,
-    class: 'w-1 max-w-1',
+  },
+  {
+    key: 'last_sign_in_at',
+    label: 'Ult. Ingreso',
+    sortable: false,
   },
   {
     key: 'actions',

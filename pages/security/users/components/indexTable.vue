@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { columns } from './config';
 import { type type_sys_users } from '@/types/server/sys_users';
+import { format, isToday } from 'date-fns';
 
 const props = defineProps({
   rows: {
@@ -40,8 +41,21 @@ const props = defineProps({
         </UAvatar>
         <div class="text-base font-semibold dark:text-white text-black">
           {{ `${row.user_name} ${row.user_lastname}` }}
+          <font-awesome-icon
+            v-if="row.user_sex"
+            icon="fa-solid fa-person"
+            class="text-emerald-500" />
+          <font-awesome-icon
+            v-if="!row.user_sex"
+            icon="fa-solid fa-person-dress"
+            class="text-rose-300" />
         </div>
       </div>
+    </template>
+    <template #last_sign_in_at-data="{ row }: { row: type_sys_users }">
+      {{ (row.last_sign_in_at) ? isToday(new Date(row.last_sign_in_at))
+        ? `Hoy ${format(new Date(row.last_sign_in_at), 'HH:mm')}`
+        : format(new Date(row.last_sign_in_at), 'dd MMM yyyy') : '' }}
     </template>
     <template #actions-data="{ row }: { row: type_sys_users }">
       <UButton
