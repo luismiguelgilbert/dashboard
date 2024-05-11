@@ -5,7 +5,6 @@ import indexTable from './components/indexTable.vue'
 import indexList from './components/indexList.vue'
 
 useHead({ title })
-const route = useRoute();
 const { state } = useSecurityCompanies();
 const { sessionData } = useUserSession();
 const rows = ref<type_sys_companies[]>([]);
@@ -16,7 +15,7 @@ if (!error.value && data.value) { rows.value = data.value }
 </script>
 
 <template>
-  <UDashboardPage v-if="route.matched.length === 1">
+  <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -59,5 +58,4 @@ if (!error.value && data.value) { rows.value = data.value }
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
-  <NuxtPage v-else />
 </template>
