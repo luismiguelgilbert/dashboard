@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { actions, module, title } from './equipos/config';
+import { actions, module, title } from './components/config';
 import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types';
-import indexTable from './equipos/indexTable.vue';
-import indexList from './equipos/indexList.vue';
+import indexTable from './components/indexTable.vue';
+import indexList from './components/indexList.vue';
 
 const route = useRoute();
 useHead({ title });
@@ -18,7 +18,7 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 </script>
 
 <template>
-  <UDashboardPage v-if="route.matched.length === 1">
+  <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar :title="title" :badge="totalRows">
         <template #right>
@@ -61,5 +61,4 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
         :total-rows="totalRows" />
     </UDashboardPanel>
   </UDashboardPage>
-  <NuxtPage v-else />
 </template>
