@@ -2,29 +2,29 @@ import serverDB from '@/server/utils/db';
 import Excel from 'exceljs';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { filter_payload } from '@/types/server/filter_payload'
-import { sanitizeSQL } from '@/utils/utils'
-import { filter_options, sort_options } from '@/types/server/sys_companies'
+import { filter_payload } from '@/types/server/filter_payload';
+import { sanitizeSQL } from '@/utils/utils';
+import { filter_options, sort_options } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.COMPANIES_EXPORT);
     
-    const filter = await readValidatedBody(event, body => filter_payload.cast(body))
-    const sortById = Number(filter.sortBy)
-    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
-    const filterConditions: Array<string> = []
+    const filter = await readValidatedBody(event, body => filter_payload.cast(body));
+    const sortById = Number(filter.sortBy);
+    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue;
+    const filterConditions: Array<string> = [];
     filter_options.forEach(x => {
       if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue)
+        filterConditions.push(x.sqlValue);
       }
-    })
-    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
-    const search_string = sanitizeSQL(filter.searchString)
+    });
+    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
+    const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
       ? ` and (a.name_es ILIKE '%${search_string}%' or a.name_es_short ILIKE '%${search_string}%' or a.company_number ILIKE '%${search_string}%' )`
-      : ''
+      : '';
 
     const text = `
       select
@@ -43,7 +43,7 @@ export default defineEventHandler( async (event) => {
       ${filterBy}
       ${filterSearchString}
       ORDER BY ${sortBy}
-    `
+    `;
     const data = await serverDB.query(text);
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Usuarios');
@@ -66,10 +66,10 @@ export default defineEventHandler( async (event) => {
 
     return await workbook.xlsx.writeBuffer();
   } catch(err) {
-    console.error(`Error at ${event.path}. ${err}`)
+    console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',
-    })
+    });
   }
 });

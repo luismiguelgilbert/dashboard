@@ -1,6 +1,6 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { sys_companies, type type_sys_companies } from '@/types/server/sys_companies';
+import { sys_companies } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try{

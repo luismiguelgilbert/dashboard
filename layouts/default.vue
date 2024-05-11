@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { DashboardSidebarLink } from '#ui-pro/types'
+import type { DashboardSidebarLink } from '#ui-pro/types';
 
-const colorMode = useColorMode()
-const appConfig = useAppConfig()
+const colorMode = useColorMode();
+const appConfig = useAppConfig();
 const { sessionData } = useUserSession();
-colorMode.preference = 'dark'
+colorMode.preference = 'dark';
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
   return sessionData.value?.userMenuData?.filter((menu) => !menu.parent)
@@ -14,20 +14,20 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
           label: x.name_es!,
           to: x.link!,
           icon: '',
-        }
-      })
+        };
+      });
 
       return {
         label: menu.name_es,
         icon: menu.icon!,
         to: menu.id === '0' ? '/' : undefined,
         children: menu.id != '0' ? children : undefined,
-      }
+      };
     }) ?? [];
 });
 
-const { data, error } = await useFetch('/api/system/userData')
-if (error.value) { await navigateTo('/auth/login') }
+const { data, error } = await useFetch('/api/system/userData');
+if (error.value) { await navigateTo('/auth/login'); }
 if (!error.value && data.value) {
   sessionData.value.userData = data.value.userData;
   sessionData.value.userCompanies = data.value.userCompanies;
@@ -41,7 +41,7 @@ if (!error.value && data.value) {
   if (defaultCompanyID) {
     sessionData.value.userCompany = defaultCompanyID;
   } else {
-    const firstActiveCompanyID = data.value.userCompanies?.find(c => c.is_active)?.id
+    const firstActiveCompanyID = data.value.userCompanies?.find(c => c.is_active)?.id;
     sessionData.value.userCompany = firstActiveCompanyID ?? null;
   }
 }
@@ -49,15 +49,19 @@ if (!error.value && data.value) {
 
 <template>
   <UDashboardLayout>
-    <UDashboardPanel :width="250" :resizable="{ min: 200, max: 300 }" collapsible>
-      <UDashboardNavbar class="!border-transparent" :ui="{ left: 'flex-1' }">
+    <UDashboardPanel
+      :width="250"
+      :resizable="{ min: 200, max: 300 }"
+      collapsible>
+      <UDashboardNavbar
+        class="!border-transparent"
+        :ui="{ left: 'flex-1' }">
         <template #left>
           <CompaniesDropdown />
         </template>
         <template #right>
           <UColorModeToggle />
         </template>
-
       </UDashboardNavbar>
 
       <UDashboardSidebar>

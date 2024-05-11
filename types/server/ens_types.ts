@@ -92,13 +92,13 @@ export const filter_options = [
   { label: 'Hombre', value: 3, sqlValue: 'b.user_sex = true', icon: 'i-heroicons-funnel' },
   { label: 'Mujer', value: 4, sqlValue: 'b.user_sex = false', icon: 'i-heroicons-funnel' },
   { label: 'Consiliario', value: 5, sqlValue: 'a.es_consiliario = true', icon: 'i-heroicons-funnel' },
-]
+];
 
 export const sort_options = [
   { label: 'Nombre', value: 1, sqlValue: 'user_full_name', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Estado', value: 2, sqlValue: 'a.is_active', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Código', value: 4, sqlValue: 'a.id', icon: 'i-heroicons-bars-arrow-down' },
-]
+];
 
 export const profileDataForm = object({
   id: string().optional(),

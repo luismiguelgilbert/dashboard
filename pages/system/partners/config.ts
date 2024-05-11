@@ -34,7 +34,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Nuevo usuario',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/users/create') }  
+      click: () => { navigateTo('/security/users/create'); }  
     },
     {
       id: PermissionsList.USERS_EXPORT,
@@ -42,7 +42,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
-      click: async () => { downloadFile() }
+      click: async () => { downloadFile(); }
     },
     {
       id: PermissionsList.USERS_CREATE,
@@ -50,7 +50,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Carga en lote',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => { console.info('Bulk upload!!') }
+      click: () => { console.info('Bulk upload!!'); }
     }
   ],
 ];
@@ -62,7 +62,7 @@ const downloadFile = async() => {
       const state = nuxtApp.payload.state.$suseSecurityUsers;
       state.isLoading = true;
       const { data, error } = await useFetch('/api/users/download', {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
         method: 'post', 
         body: state.filterPayload,
       });
@@ -78,6 +78,6 @@ const downloadFile = async() => {
       state.isLoading = false;
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };

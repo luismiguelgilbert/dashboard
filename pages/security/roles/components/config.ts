@@ -1,8 +1,8 @@
 import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 
-export const title = 'Perfiles'
-export const module = 'perfil'
+export const title = 'Perfiles';
+export const module = 'perfil';
 export const columns = [
   {
     key: 'name_es',
@@ -39,7 +39,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Nuevo perfil',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/roles/create') }  
+      click: () => { navigateTo('/security/roles/create'); }  
     },
     {
       id: PermissionsList.ROLES_EXPORT,
@@ -47,7 +47,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
-      click: async () => { downloadFile() }
+      click: async () => { downloadFile(); }
     },
   ],
 ];
@@ -59,7 +59,7 @@ const downloadFile = async() => {
       const state = nuxtApp.payload.state.$suseSecurityRoles;
       state.isLoading = true;
       const { data, error } = await useFetch('/api/roles/download', {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
         method: 'post', 
         body: state.filterPayload,
       });
@@ -75,6 +75,6 @@ const downloadFile = async() => {
       state.isLoading = false;
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };

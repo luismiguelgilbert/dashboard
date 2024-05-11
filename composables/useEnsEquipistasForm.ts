@@ -18,7 +18,7 @@ export const useEnsEquipistasForm = () => {
     teams: [] as type_ens_teams_lookup[],
     services: [] as type_ens_services_lookup[],
     avatar: null as File|null,
-  }});
+  };});
 
   const resetData = () => { 
     state.value.data = {

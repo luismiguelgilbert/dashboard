@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types'
+import type { Form } from '#ui/types';
 import { companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
 import { PermissionsList } from '~/types/client/permissionsEnum';
-import Basic from './components/Basic.vue'
+import Basic from './components/Basic.vue';
 
 const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
 const { sessionData } = useUserSession();
@@ -41,7 +41,7 @@ const save = async () => {
   const isDataValid = await validateCompanyData();
   //Upload Data
   if (isDataValid) {
-    const { data, error } = await useFetch(`/api/companies/0`, {
+    const { data, error } = await useFetch('/api/companies/0', {
       method: 'POST',
       body: {
         companyData: state.value.companyData,
@@ -100,16 +100,32 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Crear Organización">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs v-model="tab" :items="tabs" />
+      <BTabs
+        v-model="tab"
+        :items="tabs" />
       <UDashboardPanelContent>
-        <UForm ref="mainForm" :state="state.companyData" :schema="companyDataForm">
-          <SystemCompaniesBasic v-if="tab === 'basic'" ref="systemCompaniesBasic" :is-editing="false" />
+        <UForm
+          ref="mainForm"
+          :state="state.companyData"
+          :schema="companyDataForm">
+          <SystemCompaniesBasic
+            v-if="tab === 'basic'"
+            ref="systemCompaniesBasic"
+            :is-editing="false" />
           <!-- <SystemUsersCompanies v-if="tab === 'companies'" /> -->
         </UForm>
       </UDashboardPanelContent>

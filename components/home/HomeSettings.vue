@@ -28,22 +28,22 @@ const toggleTheme = async () => {
     const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { dark_enabled: sessionData.value.userData.dark_enabled },
-    })
-    isUpdating.value = false
-    if (error.value) { updateError() }
+    });
+    isUpdating.value = false;
+    if (error.value) { updateError(); }
   }
 };
 
 const setDarkColor = async () => {
   if (sessionData.value.userData) {
     appConfig.ui.gray = sessionData.value.userData?.default_dark_color;
-    isUpdating.value = true
+    isUpdating.value = true;
     const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { default_dark_color: sessionData.value.userData.default_dark_color },
-    })
-    isUpdating.value = false
-    if (error.value) { updateError() }
+    });
+    isUpdating.value = false;
+    if (error.value) { updateError(); }
   }
 };
 
@@ -51,27 +51,27 @@ const setColor = async () => {
   if (sessionData.value.userData) {
     appConfig.ui.primary = sessionData.value.userData.default_color;
   
-    isUpdating.value = true
-    hasError.value = false
+    isUpdating.value = true;
+    hasError.value = false;
     const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { default_color: sessionData.value.userData.default_color },
-    })
-    isUpdating.value = false
-    if (error.value) { updateError() }
+    });
+    isUpdating.value = false;
+    if (error.value) { updateError(); }
   }
 };
 
 const setPreferedCompany = async () => {
   if (sessionData.value.userData) {
-    isUpdating.value = true
-    hasError.value = false
+    isUpdating.value = true;
+    hasError.value = false;
     const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
       method: 'patch',
       body: { prefered_company_id: sessionData.value.userData.prefered_company_id },
-    })
-    isUpdating.value = false
-    if (error.value) { updateError() }
+    });
+    isUpdating.value = false;
+    if (error.value) { updateError(); }
   }
 };
 
@@ -79,8 +79,8 @@ const onFileChange = async (e: Event) => {
   if (sessionData.value.userData) {
     isUpdating.value = true;
     const input = e.target as HTMLInputElement;
-    if (!input.files?.length) { return }
-    if (input.files[0].size / 1024 / 1024 > 1) { return }
+    if (!input.files?.length) { return; }
+    if (input.files[0].size / 1024 / 1024 > 1) { return; }
     sessionData.value.userData.avatar_url = URL.createObjectURL(input.files[0]);
 
     const body = new FormData();
@@ -89,12 +89,12 @@ const onFileChange = async (e: Event) => {
       method: 'PATCH',
       body,
     });
-    isUpdating.value = false
-    if (error.value) { updateError() }
+    isUpdating.value = false;
+    if (error.value) { updateError(); }
   }
 };
 
-const onFileClick = () => { fileRef.value?.input.click() };
+const onFileClick = () => { fileRef.value?.input.click(); };
 </script>
 
 <template>
@@ -132,9 +132,22 @@ const onFileClick = () => { fileRef.value?.input.click() };
     </div>
     <UFormGroup name="sys_profile_id">
       <div class="flex items-center">
-        <UAvatar :src="sessionData.userData?.avatar_url!" :alt="sessionData.userData?.avatar_url" size="lg" />
-        <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
-        <UInput ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange" />
+        <UAvatar
+          :src="sessionData.userData?.avatar_url!"
+          :alt="sessionData.userData?.avatar_url"
+          size="lg" />
+        <UButton
+          label="Seleccionar"
+          color="white"
+          size="md"
+          class="ml-5"
+          @click="onFileClick" />
+        <UInput
+          ref="fileRef"
+          type="file"
+          class="hidden"
+          accept=".jpg, .jpeg, .png, .gif"
+          @change="onFileChange" />
       </div>
     </UFormGroup>
 

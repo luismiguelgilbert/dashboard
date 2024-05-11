@@ -7,7 +7,7 @@ export const useSecurityCompaniesForm = () => {
     data: {} as type_companyDataForm,
     companyUsers: [] as type_userDataForm[],
     avatar: null as File|null,
-  }});
+  };});
 
   const resetCompanyData = () => { 
     state.value.data = {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-const { sessionData } = useUserSession()
+const { sessionData } = useUserSession();
 
 const companyName = computed(() => {
-  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.name_es_short ?? '...'
-})
+  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.name_es_short ?? '...';
+});
 
 const companyAvatar = computed(() => {
-  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.avatar_url ?? null
-})
+  return sessionData.value?.userCompanies?.find(company => company.id === sessionData.value.userCompany)?.avatar_url ?? null;
+});
 
 </script>
 

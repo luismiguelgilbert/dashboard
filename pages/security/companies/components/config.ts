@@ -39,7 +39,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Nuevo registro',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/companies/create') }  
+      click: () => { navigateTo('/security/companies/create'); }  
     },
     {
       id: PermissionsList.COMPANIES_EXPORT,
@@ -47,7 +47,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Descargar',
       icon: 'i-heroicons-document-arrow-down',
-      click: async () => { downloadFile() }
+      click: async () => { downloadFile(); }
     },
     
   ],
@@ -60,7 +60,7 @@ const downloadFile = async() => {
       const state = nuxtApp.payload.state.$suseSecurityCompanies;
       state.isLoading = true;
       const { data, error } = await useFetch('/api/companies/download', {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
         method: 'post', 
         body: state.filterPayload,
       });
@@ -76,6 +76,6 @@ const downloadFile = async() => {
       state.isLoading = false;
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };

@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import {
-  type type_ens_members_lookup,
-  type type_ens_teams_lookup,
-  type type_ens_services_lookup,
-} from '@/types/server/ens_types';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale'
+import { es } from 'date-fns/locale';
 
 const props = defineProps({
   loading: {
@@ -43,7 +38,7 @@ const addTeam = () => {
   user_id: '',
 });
   isTeamsOpen.value = false;
-}
+};
 </script>
 
 <template>
@@ -58,11 +53,18 @@ const addTeam = () => {
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Equipo base del equipista.
         </p>
-        <UButton class="mt-3" color="white" label="Agregar equipo" trailing-icon="i-heroicons-plus-circle" @click="isTeamsOpen = true" />
+        <UButton
+          class="mt-3"
+          color="white"
+          label="Agregar equipo"
+          trailing-icon="i-heroicons-plus-circle"
+          @click="isTeamsOpen = true" />
   
         <UModal v-model="isTeamsOpen">
           <div class="p-4">
-            <UFormGroup label="Equipo" required>
+            <UFormGroup
+              label="Equipo"
+              required>
               <USelectMenu
                 v-model="addTeamId"
                 searchable-placeholder="Buscar equipo..."
@@ -75,8 +77,13 @@ const addTeam = () => {
                 :options="state.teams" />
             </UFormGroup>
             
-            <UFormGroup label="Fecha de Acogida" class="mt-3" required>
-              <UPopover :popper="{ placement: 'bottom-start' }" class="w-full">
+            <UFormGroup
+              label="Fecha de Acogida"
+              class="mt-3"
+              required>
+              <UPopover
+                :popper="{ placement: 'bottom-start' }"
+                class="w-full">
                 <UInput
                   :value="addTeamDateStart ? format(addTeamDateStart, 'd MMM, yyy', { locale: es }) : undefined"
                   class="w-full"
@@ -88,13 +95,20 @@ const addTeam = () => {
                   icon="i-heroicons-calendar-days"
                   :ui="inputUI" />
                 <template #panel="{ close }">
-                  <DatePicker v-model="addTeamDateStart" is-required @close="close" />
+                  <DatePicker
+                    v-model="addTeamDateStart"
+                    is-required
+                    @close="close" />
                 </template>
               </UPopover>
             </UFormGroup>
   
-            <UFormGroup label="Inicio de Pilotaje" class="mt-3">
-              <UPopover :popper="{ placement: 'bottom-start' }" class="w-full">
+            <UFormGroup
+              label="Inicio de Pilotaje"
+              class="mt-3">
+              <UPopover
+                :popper="{ placement: 'bottom-start' }"
+                class="w-full">
                 <UInput
                   :value="addTeamDatePilotaje ? format(addTeamDatePilotaje, 'd MMM, yyy', { locale: es }) : undefined"
                   class="w-full"
@@ -106,13 +120,20 @@ const addTeam = () => {
                   icon="i-heroicons-calendar-days"
                   :ui="inputUI" />
                 <template #panel="{ close }">
-                  <DatePicker v-model="addTeamDatePilotaje" is-required @close="close" />
+                  <DatePicker
+                    v-model="addTeamDatePilotaje"
+                    is-required
+                    @close="close" />
                 </template>
               </UPopover>
             </UFormGroup>
   
-            <UFormGroup label="Fecha de Salida del equipo" class="mt-3">
-              <UPopover :popper="{ placement: 'bottom-start' }" class="w-full">
+            <UFormGroup
+              label="Fecha de Salida del equipo"
+              class="mt-3">
+              <UPopover
+                :popper="{ placement: 'bottom-start' }"
+                class="w-full">
                 <UInput
                   :value="addTeamDateStop ? format(addTeamDateStop, 'd MMM, yyy', { locale: es }) : undefined"
                   class="w-full"
@@ -124,19 +145,32 @@ const addTeam = () => {
                   icon="i-heroicons-calendar-days"
                   :ui="inputUI" />
                 <template #panel="{ close }">
-                  <DatePicker v-model="addTeamDateStop" is-required @close="close" />
+                  <DatePicker
+                    v-model="addTeamDateStop"
+                    is-required
+                    @close="close" />
                 </template>
               </UPopover>
             </UFormGroup>
   
   
-            <UButton block class="mt-3" color="primary" label="Agregar" @click="addTeam" :disabled="addTeamDisabled" />
+            <UButton
+              block
+              class="mt-3"
+              color="primary"
+              label="Agregar"
+              :disabled="addTeamDisabled"
+              @click="addTeam" />
           </div>
         </UModal>
       </div>
   
-      <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="mt-2 sm:mt-0">
-        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
+      <UCard
+        :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+        class="mt-2 sm:mt-0">
+        <ul
+          role="list"
+          class="divide-y divide-gray-200 dark:divide-gray-800">
           <li
             v-for="(team, index) in state.data_teams"
             :key="index"
@@ -146,14 +180,20 @@ const addTeam = () => {
                 <p class="text-gray-900 dark:text-white font-medium truncate">
                   {{ team.team_name_es }}
                 </p>
-                <p v-if="team.fecha_alianza" class="text-gray-500 dark:text-gray-400 truncate">
-                  Fecha de acogida: {{ format(team.fecha_alianza, 'd MMM, yyy', { locale: es })}}
+                <p
+                  v-if="team.fecha_alianza"
+                  class="text-gray-500 dark:text-gray-400 truncate">
+                  Fecha de acogida: {{ format(team.fecha_alianza, 'd MMM, yyy', { locale: es }) }}
                 </p>
-                <p v-if="team.fecha_pilotaje" class="text-gray-500 dark:text-gray-400 truncate">
-                  Inicio de pilotaje: {{ format(team.fecha_pilotaje, 'd MMM, yyy', { locale: es })}}
+                <p
+                  v-if="team.fecha_pilotaje"
+                  class="text-gray-500 dark:text-gray-400 truncate">
+                  Inicio de pilotaje: {{ format(team.fecha_pilotaje, 'd MMM, yyy', { locale: es }) }}
                 </p>
-                <p v-if="team.fecha_salida" class="text-gray-500 dark:text-gray-400 truncate">
-                  Fecha de salida: {{ format(team.fecha_salida, 'd MMM, yyy', { locale: es })}}
+                <p
+                  v-if="team.fecha_salida"
+                  class="text-gray-500 dark:text-gray-400 truncate">
+                  Fecha de salida: {{ format(team.fecha_salida, 'd MMM, yyy', { locale: es }) }}
                 </p>
               </div>
             </div>
@@ -169,14 +209,18 @@ const addTeam = () => {
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
           Servicios que ha brindado el equipista.
         </p>
-        <UButton class="mt-3" color="white" label="Agregar Servicio" trailing-icon="i-heroicons-plus-circle" @click="isTeamsOpen = true" />
+        <UButton
+          class="mt-3"
+          color="white"
+          label="Agregar Servicio"
+          trailing-icon="i-heroicons-plus-circle"
+          @click="isTeamsOpen = true" />
       </div>
       <UCard
-          :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
-          class="min-w-0"
-        >
+        :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+        class="min-w-0"
+      >
       </UCard>
-  
     </div>
     <br /> <br />
   </div>

@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { type type_sys_users } from '@/types/server/sys_users';
-
 defineProps({
   rows: {
-    // type: Array<type_sys_users>,
     type: Array<any>,
     required: false,
     default: () => []
   }
-})
+});
 </script>
 
 <template>
   <div class="w-full block sm:hidden">
-    <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
+    <ul
+      role="list"
+      class="divide-y divide-gray-200 dark:divide-gray-800">
       <li
         v-for="(row, index) in rows"
         :key="index"

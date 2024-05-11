@@ -1,4 +1,4 @@
-import { object, array, string, boolean, number, date, type InferType } from 'yup';
+import { object, string, boolean, number, type InferType } from 'yup';
 
 export const sys_companies = object({
   id: string().required(),
@@ -12,19 +12,19 @@ export const sys_companies = object({
   created_at: string().optional().nullable().default(new Date().toISOString()),
   updated_at: string().optional().nullable().default(new Date().toISOString()),
   row_count: number().optional().nullable().default(0),
-})
+});
 export type type_sys_companies = InferType<typeof sys_companies>
 
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },
   { label: 'Inactivos', value: 2, sqlValue: 'a.is_active = false', icon: 'i-heroicons-funnel' },
-]
+];
 
 export const sort_options = [
   { label: 'Nombre', value: 1, sqlValue: 'a.name_es_short', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'Razón Social', value: 2, sqlValue: 'a.name_es', icon: 'i-heroicons-bars-arrow-down' },
   { label: 'RUC', value: 3, sqlValue: 'a.company_number', icon: 'i-heroicons-bars-arrow-down' }
-]
+];
 
 export const companyDataForm = object({
   id: string().optional().nullable(),

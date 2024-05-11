@@ -1,16 +1,14 @@
 import serverDB from '@/server/utils/db';
-import { array } from 'yup';
 import { serverSupabaseServiceRole } from '#supabase/server';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import type { NuxtError } from '#app';
 
-import { userBody } from "@/types/server/sys_users";
+import { userBody } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
   try {
-    const userSessionId = event.context.user.id?.replaceAll(':','');;
-    const payload = await readValidatedBody(event, body => userBody.cast(body))
+    const userSessionId = event.context.user.id?.replaceAll(':','');
+    const payload = await readValidatedBody(event, body => userBody.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     //UserData sanitization
@@ -28,7 +26,7 @@ export default defineEventHandler( async (event) => {
     //Create User on Supabase
     const supabaseService = await serverSupabaseServiceRole(event);
     const { data, error } = await supabaseService.auth.signUp({
-      email: email.replaceAll("'", ''),
+      email: email.replaceAll('\'', ''),
       password: process.env.NEWUSERSDEFAULTPWD!,
       options: {
         data: {
@@ -73,18 +71,18 @@ export default defineEventHandler( async (event) => {
     const sqlProfilesDelete = `delete from sys_profiles_users WHERE user_id = '${id}'`;
     await serverDB.query(sqlProfilesDelete);
     
-    let sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id) values (${sys_profile_id}, '${id}')`;
+    const sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id) values (${sys_profile_id}, '${id}')`;
     await serverDB.query(sqlProfileInsert);
 
     //Update Companies
     const sqlSysCompaniesDelete = `delete from sys_companies_users WHERE user_id = '${id}'`;
     await serverDB.query(sqlSysCompaniesDelete);
 
-    let sqlCompaniesInsert = `insert into sys_companies_users (sys_company_id, user_id) values `;
+    let sqlCompaniesInsert = 'insert into sys_companies_users (sys_company_id, user_id) values ';
     payload.userCompanies?.forEach((company) => {
       sqlCompaniesInsert += `('${company}', '${id}'),`;
     });
-    sqlCompaniesInsert = sqlCompaniesInsert.replace(/\,$/, '');
+    sqlCompaniesInsert = sqlCompaniesInsert.replace(/,$/, '');
     await serverDB.query(sqlCompaniesInsert);
 
     const sqlUpdateDefaultCompany = `update sys_companies_users 
@@ -95,7 +93,7 @@ export default defineEventHandler( async (event) => {
     
     await serverDB.query('COMMIT');
     return { id: id };
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

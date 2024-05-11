@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { columns } from './config'
-import { type type_sys_profiles } from '@/types/server/sys_profiles'
-import { format, isToday } from 'date-fns'
+import { columns } from './config';
+import { type type_sys_profiles } from '@/types/server/sys_profiles';
+import { format, isToday } from 'date-fns';
 
 const props = defineProps({
   rows: {
@@ -14,7 +14,7 @@ const props = defineProps({
     required: false,
     default: false
   },
-})
+});
 </script>
 
 <template>
@@ -27,8 +27,10 @@ const props = defineProps({
     class="w-full hidden sm:block h-dvh">
     <template #name_es-data="{ row }: { row: type_sys_profiles }">
       <div class="flex items-center gap-3">
-        <UAvatar size="xs">
-          {{ row.name_es?[0] }}
+        <UAvatar
+          v-if="row.name_es"
+          size="xs">
+          {{ row.name_es[0] }}
         </UAvatar>
         <div class="text-base font-semibold dark:text-white text-black">
           {{ `${row.name_es}` }}

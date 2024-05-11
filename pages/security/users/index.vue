@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { actions, module, title } from './components/config'
-import { filter_options, sort_options, type type_sys_users } from '@/types/server/sys_users'
-import indexTable from './components/indexTable.vue'
-import indexList from './components/indexList.vue'
+import { actions, module, title } from './components/config';
+import { filter_options, sort_options, type type_sys_users } from '@/types/server/sys_users';
+import indexTable from './components/indexTable.vue';
+import indexList from './components/indexList.vue';
 
-useHead({ title })
+useHead({ title });
 const { state } = useSecurityUsers();
 const { sessionData } = useUserSession();
 // const rows = ref<type_sys_users[]>([]);
@@ -51,13 +51,15 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 //   }
 // )
 
-const { data, error, pending } = await useLazyFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload })
+const { data, pending } = await useLazyFetch<type_sys_users[]>('/api/users', { method: 'post', body: state.value.filterPayload });
 </script>
 
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar :title="title" :badge="totalRows">
+      <UDashboardNavbar
+        :title="title"
+        :badge="totalRows">
         <template #right>
           <div class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5">
             <IndexSearchDesktop
@@ -86,10 +88,19 @@ const { data, error, pending } = await useLazyFetch<type_sys_users[]>('/api/user
           :filter-options="filter_options"
           :sort-options="sort_options" />
       </UDashboardToolbar>
-      <UProgress class="block sm:hidden" size="2xs" :value="!pending ? 0: undefined" :animation="pending ? 'carousel': undefined" />
+      <UProgress
+        class="block sm:hidden"
+        size="2xs"
+        :value="!pending ? 0: undefined"
+        :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
-        <indexList v-if="data" :rows="data" />
-        <indexTable v-if="data" :rows="data" :loading="pending" />
+        <indexList
+          v-if="data"
+          :rows="data" />
+        <indexTable
+          v-if="data"
+          :rows="data"
+          :loading="pending" />
         <IndexPagination
           v-model:pageSize="state.filterPayload.pageSize"
           v-model:page="state.filterPayload.page"

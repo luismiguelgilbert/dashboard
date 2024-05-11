@@ -8,7 +8,7 @@ export const useSecurityCompanies = () => {
       page: 1,
       searchString: ''
     }
-  }});
+  };});
 
   return { state };
 };

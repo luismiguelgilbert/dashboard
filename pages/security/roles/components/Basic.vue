@@ -21,7 +21,7 @@ const toggleLink = (selectedLink: type_sys_links): void => {
 if (!state.value.syslinksOptions.length) {
   const { data: syslinksOptions } = await useFetch('/api/lookups/sys_links');
   state.value.syslinksOptions = syslinksOptions.value ?? [];
-};
+}
 </script>
 
 <template>
@@ -59,7 +59,9 @@ if (!state.value.syslinksOptions.length) {
       <UToggle
         v-model="state.profileData.is_active"
         :disabled="state.isLoading" />
-      <span class="ml-5" style="vertical-align: text-bottom;">{{ state.profileData.is_active ? 'Activo' : 'Inactivo' }}</span>
+      <span
+        class="ml-5"
+        style="vertical-align: text-bottom;">{{ state.profileData.is_active ? 'Activo' : 'Inactivo' }}</span>
     </UFormGroup>
 
     <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -71,9 +73,16 @@ if (!state.value.syslinksOptions.length) {
         Lista de funcionalides permitidas.
       </p>
     </div>
-    <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
-      <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
-        <li v-for="(syslink, index) in state.syslinksOptions" :key="index" class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
+    <UCard
+      :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+      class="min-w-0">
+      <ul
+        role="list"
+        class="divide-y divide-gray-200 dark:divide-gray-800">
+        <li
+          v-for="(syslink, index) in state.syslinksOptions"
+          :key="index"
+          class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
           <div class="flex items-center gap-3 min-w-0">
             <div class="text-sm min-w-0">
               <p class="text-gray-900 dark:text-white font-medium truncate">
@@ -94,7 +103,6 @@ if (!state.value.syslinksOptions.length) {
         </li>
       </ul>
     </UCard>
-    
+    <br /> <br />
   </div>
-  <br /> <br />
 </template>

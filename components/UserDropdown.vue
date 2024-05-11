@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { sessionData } = useUserSession()
-const supabase = useSupabaseClient()
+const { sessionData } = useUserSession();
+const supabase = useSupabaseClient();
 
 const items = computed(() => [
   [
@@ -16,31 +16,48 @@ const items = computed(() => [
       click: () => logout()
     }
   ]
-])
+]);
 
 const logout = async () => {
-  await supabase.auth.signOut()
+  await supabase.auth.signOut();
   document.cookie.split(';').forEach((c) => {
     document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
   });
-  await navigateTo('/auth/login')
+  await navigateTo('/auth/login');
   //Reset state
   sessionData.value.userData = null;
   sessionData.value.userCompanies = null;
   sessionData.value.userMenuData = null;
-}
+};
 </script>
 
 <template>
-  <UDropdown mode="hover" :items="items" :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }" :popper="{ strategy: 'absolute', placement: 'top' }" class="w-full">
+  <UDropdown
+    mode="hover"
+    :items="items"
+    :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }"
+    :popper="{ strategy: 'absolute', placement: 'top' }"
+    class="w-full">
     <template #default="{ open }">
-      <UButton color="gray" variant="ghost" class="w-full" :label="sessionData.userData?.user_name" :class="[open && 'bg-gray-50 dark:bg-gray-800']">
+      <UButton
+        color="gray"
+        variant="ghost"
+        class="w-full"
+        :label="sessionData.userData?.user_name"
+        :class="[open && 'bg-gray-50 dark:bg-gray-800']">
         <template #leading>
-          <NuxtImg v-if="sessionData.userData?.avatar_url" :src="sessionData.userData.avatar_url" width="15" height="15" class="rounded" />
+          <NuxtImg
+            v-if="sessionData.userData?.avatar_url"
+            :src="sessionData.userData.avatar_url"
+            width="15"
+            height="15"
+            class="rounded" />
         </template>
 
         <template #trailing>
-          <UIcon name="i-heroicons-ellipsis-vertical" class="w-5 h-5 ml-auto" />
+          <UIcon
+            name="i-heroicons-ellipsis-vertical"
+            class="w-5 h-5 ml-auto" />
         </template>
       </UButton>
     </template>

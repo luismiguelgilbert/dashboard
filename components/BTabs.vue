@@ -14,12 +14,12 @@ const props = defineProps({
     type: Array<bTabItem>,
     default: () => []
   },
-})
-const innerValue = defineModel<string | number>() // default modelValue
+});
+const innerValue = defineModel<string | number>(); // default modelValue
 
 const tabClick = (tab: bTabItem) => {
-  innerValue.value = tab.value
-}
+  innerValue.value = tab.value;
+};
 </script>
 
 <template>

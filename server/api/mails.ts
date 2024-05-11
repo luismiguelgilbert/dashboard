@@ -1,4 +1,4 @@
-import { sub } from 'date-fns'
+import { sub } from 'date-fns';
 
 const mails = [{
   id: 1,
@@ -202,8 +202,8 @@ const mails = [{
   subject: 'Car Service Reminder',
   body: 'Just a reminder that your car is due for service next week. Regular maintenance is important to ensure your vehicle\'s longevity and performance. I\'ve included the details of the service center and the recommended services in this email. Feel free to contact them directly to schedule an appointment.',
   date: sub(new Date(), { months: 2 }).toISOString()
-}]
+}];
 
 export default eventHandler(async () => {
-  return mails
-})
+  return mails;
+});

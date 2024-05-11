@@ -8,7 +8,7 @@ export const useEnsEquipistas = () => {
       page: 1,
       searchString: ''
     }
-  }});
+  };});
 
   return { state };
 };

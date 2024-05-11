@@ -1,4 +1,4 @@
-import { object, array, string, boolean, number, type InferType } from 'yup';
+import { object, string, boolean, number, type InferType } from 'yup';
 
 export const sys_links = object({
   id: string().nullable(),
@@ -14,7 +14,7 @@ export const sys_links = object({
   requires_company: boolean().default(false),
   path: string().optional().nullable(),
   sort_path: string().optional().nullable(),
-})
+});
 export type type_sys_links = InferType<typeof sys_links>
 
 export const profile_sys_links = object({

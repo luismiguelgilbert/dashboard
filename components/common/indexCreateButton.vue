@@ -19,7 +19,9 @@ const nonMainActions = [props.actions[0].filter(x => !x.isMainAction)];
 </script>
 
 <template>
-  <UButtonGroup size="sm" orientation="horizontal">
+  <UButtonGroup
+    size="sm"
+    orientation="horizontal">
     <UButton
       v-if="mainAction"
       color="white"
@@ -27,14 +29,18 @@ const nonMainActions = [props.actions[0].filter(x => !x.isMainAction)];
       :loading="isLoading"
       :disabled="mainAction.disabled"
       @click="mainAction.click">
-      <template #leading v-if="!isLoading">
+      <template
+        v-if="!isLoading"
+        #leading>
         <i :class="`${mainAction.icon} hidden sm:block`" />
       </template>
     </UButton>
     <UDropdown
       :items="nonMainActions"
-      :popper="{ placement: 'bottom-start' }" >
-      <UButton color="gray" trailing-icon="i-heroicons-chevron-down-20-solid" />
+      :popper="{ placement: 'bottom-start' }">
+      <UButton
+        color="gray"
+        trailing-icon="i-heroicons-chevron-down-20-solid" />
     </UDropdown>
   </UButtonGroup>
 </template>

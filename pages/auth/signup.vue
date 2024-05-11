@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { FormGroupSize } from '#ui/types'
+import type { FormGroupSize } from '#ui/types';
 definePageMeta({
   layout: 'auth'
-})
+});
 
 useSeoMeta({
   title: 'Sign up'
-})
+});
 
 const sizeXL: FormGroupSize = 'xl';
 const fields = [
@@ -31,17 +31,17 @@ const fields = [
     placeholder: 'Ingrese sus apellidos',
     size: sizeXL,
   },
-]
+];
 
 const validate = (state: any) => {
-  const errors = []
-  if (!state.email) errors.push({ path: 'email', message: 'Email is required' })
-  if (!state.password) errors.push({ path: 'password', message: 'Password is required' })
-  return errors
-}
+  const errors = [];
+  if (!state.email) errors.push({ path: 'email', message: 'Email is required' });
+  if (!state.password) errors.push({ path: 'password', message: 'Password is required' });
+  return errors;
+};
 
 function onSubmit (data: any) {
-  console.info('Submitted', data)
+  console.info('Submitted', data);
 }
 </script>
 
@@ -58,7 +58,9 @@ function onSubmit (data: any) {
         @submit="onSubmit"
       >
         <template #email-hint>
-          <NuxtLink to="/auth/login" class="text-primary font-medium">
+          <NuxtLink
+            to="/auth/login"
+            class="text-primary font-medium">
             Regresar al inicio de sesión
           </NuxtLink>
         </template>

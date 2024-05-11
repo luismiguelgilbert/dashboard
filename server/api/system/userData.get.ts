@@ -1,5 +1,5 @@
 import { array } from 'yup';
-import serverDB from '@/server/utils/db'
+import serverDB from '@/server/utils/db';
 import { userData, userCompanies, userMenuData } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
@@ -46,7 +46,7 @@ export default defineEventHandler( async (event) => {
     const userSessionDataRows = array(userData).cast(userSessionDataResultset.rows);
 
     if (!(userSessionDataRows?.length === 1 && userSessionDataRows[0].id === id)) {
-      throw createError({ statusCode: 500, message: 'Usuario no encontrado', })
+      throw createError({ statusCode: 500, message: 'Usuario no encontrado', });
     }
 
     //Get User Companies
@@ -60,11 +60,11 @@ export default defineEventHandler( async (event) => {
       from sys_companies_users a
       inner join sys_companies b on a.sys_company_id = b.id
       where a.user_id = '${id}'
-      order by b.name_es_short`
+      order by b.name_es_short`;
     const userCompaniesResultset = await serverDB.query(sqlUserCompaniesRows);
     const userCompaniesRows = array(userCompanies).cast(userCompaniesResultset.rows);
     if (!(userCompaniesRows && userCompaniesRows.length > 0 && userCompaniesRows?.some(company => company.is_active))) {
-      throw createError({ statusCode: 500, message: 'Usuario no tiene una organización activa', })
+      throw createError({ statusCode: 500, message: 'Usuario no tiene una organización activa', });
     }
 
     //Get User MenuData
@@ -101,7 +101,7 @@ export default defineEventHandler( async (event) => {
           inner join sys_links d on c.sys_link_id = d.id
           where a.user_id = '${id}'
         )
-      order by 3`
+      order by 3`;
     const userMenuResultset = await serverDB.query(sqlUserMenu);
     const userMenuRows = array(userMenuData).cast(userMenuResultset.rows);
 
@@ -109,12 +109,12 @@ export default defineEventHandler( async (event) => {
       userData: userSessionDataRows[0],
       userCompanies: userCompaniesRows,
       userMenu: userMenuRows,
-    }
+    };
   } catch(err) {
-    console.error(`Error at ${event.path}. ${err}`)
+    console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',
-    })
+    });
   }
-})
+});

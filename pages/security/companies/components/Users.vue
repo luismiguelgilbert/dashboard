@@ -13,9 +13,16 @@ const { state } = useSecurityCompaniesForm();
       </p>
     </div>
   
-    <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
-      <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
-        <li v-for="(user, index) in state.companyUsers" :key="index" class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
+    <UCard
+      :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+      class="min-w-0">
+      <ul
+        role="list"
+        class="divide-y divide-gray-200 dark:divide-gray-800">
+        <li
+          v-for="(user, index) in state.companyUsers"
+          :key="index"
+          class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
           <div class="flex items-center gap-3 min-w-0">
             <div class="text-sm min-w-0">
               <div class="flex items-center gap-3">

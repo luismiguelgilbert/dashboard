@@ -1,15 +1,14 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import type { NuxtError } from '#app';
 
-import { profileBody } from "@/types/server/sys_profiles";
+import { profileBody } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try {
-    const id = getRouterParam(event, 'id')
+    const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.cast(body))
+    const payload = await readValidatedBody(event, body => profileBody.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.ROLES_EDIT);
 
     //Database actions
@@ -33,16 +32,16 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlSysProfilesDelete);
 
     //Add new links for specific profile
-    let sqlSysProfilesInsert = `insert into sys_profiles_links (sys_profile_id, sys_link_id) values `;
+    let sqlSysProfilesInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values ';
     payload.profileLinks?.forEach((link) => {
       sqlSysProfilesInsert += `(${Number(id)}, '${link}'),`;
     });
-    sqlSysProfilesInsert = sqlSysProfilesInsert.replace(/\,$/, '');
+    sqlSysProfilesInsert = sqlSysProfilesInsert.replace(/,$/, '');
     await serverDB.query(sqlSysProfilesInsert);
     
     await serverDB.query('COMMIT');
     return { id: id };
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

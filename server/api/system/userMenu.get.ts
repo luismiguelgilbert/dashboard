@@ -1,6 +1,6 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { sp_system_menu } from '@/types/server/sp_system_menu'
+import { sp_system_menu } from '@/types/server/sp_system_menu';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -37,7 +37,7 @@ export default defineEventHandler( async (event) => {
         inner join sys_links d on c.sys_link_id = d.id
         where a.user_id = $1
       )
-    order by 3`
+    order by 3`;
     /*
     UNION
       SELECT '0' as id, NULL as parent, 0 as position, null as link, 'Inicio' as name_es, 'i-heroicons-home' as icon, 'Dashboard inicial' as comment_es, false as requires_company
@@ -49,10 +49,10 @@ export default defineEventHandler( async (event) => {
  
     return array(sp_system_menu).cast(menu_data.rows);
   } catch(err) {
-    console.error(`Error at ${event.path}. ${err}`)
+    console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: 500,
       statusMessage: 'Unhandled exception',
-    })
+    });
   }
-})
+});

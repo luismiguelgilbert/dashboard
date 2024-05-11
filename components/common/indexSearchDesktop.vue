@@ -20,8 +20,8 @@ defineProps({
 });
 
 defineShortcuts({
-  '/': () => { input.value?.input?.focus() }
-})
+  '/': () => { input.value?.input?.focus(); }
+});
 const searchString = defineModel<string>('searchString', { default: '' });
 const page = defineModel<number>('page', { default: 1 });
 const filterBy = defineModel<number[]>('filterBy', { default: [] });

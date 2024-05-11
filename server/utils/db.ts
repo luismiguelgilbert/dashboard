@@ -1,4 +1,4 @@
-import pg from 'pg'
+import pg from 'pg';
 
 const serverDB = new pg.Pool({
   host: process.env.DATABASE_HOST,
@@ -6,6 +6,6 @@ const serverDB = new pg.Pool({
   database: process.env.DATABASE_NAME,
   user: process.env.DATABASE_USER,
   password: process.env.DATABASE_PWD,
-})
+});
 
-export default serverDB
+export default serverDB;

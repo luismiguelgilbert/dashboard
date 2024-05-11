@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { userDataForm, type type_userDataForm, type type_userMenuData } from '@/types/server/sys_users';
+import { userDataForm } from '@/types/server/sys_users';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
 
 const { state, resetState, validateData } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
-const route = useRoute();
 
 const tabs = [
   { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
@@ -94,25 +93,40 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Crear Usuario">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <UForm ref="mainForm" :state="state.data" :schema="userDataForm">
-          <BTabs v-model="tab" :items="tabs">
+        <UForm
+          ref="mainForm"
+          :state="state.data"
+          :schema="userDataForm">
+          <BTabs
+            v-model="tab"
+            :items="tabs">
             <template #basic>
-                <Basic ref="systemUsersBasic" :is-editing="false" :saving="isSaving" />
+              <Basic
+                ref="systemUsersBasic"
+                :is-editing="false"
+                :saving="isSaving" />
             </template>
             <template #companies>
-                <Companies :saving="isSaving" />
+              <Companies :saving="isSaving" />
             </template>
           </BTabs>
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
-  <NuxtPage />
 </template>

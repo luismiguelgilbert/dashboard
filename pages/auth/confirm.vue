@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const user = useSupabaseUser()
+const user = useSupabaseUser();
 
 watch(user, () => {
   if (user.value) {
-    return navigateTo('/')
+    return navigateTo('/');
   }
-}, { immediate: true })
+}, { immediate: true });
 </script>
 
 <template>

@@ -14,9 +14,9 @@ export default defineEventHandler(async (event) => {
       throw createError({
         statusCode: 401,
         message: 'Unauthorized',
-      })
+      });
     }
-    user
+    user;
     event.context.user = {...user, id: user.sub};
   }
-})
+});

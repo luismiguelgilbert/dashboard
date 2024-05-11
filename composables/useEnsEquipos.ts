@@ -8,7 +8,7 @@ export const useEnsEquipos = () => {
       page: 1,
       searchString: ''
     }
-  }});
+  };});
 
   return { state };
 };

@@ -26,11 +26,11 @@ const cancel = async () => {
 
 const { data, pending } = await useLazyFetch(`/api/users/:${route.params.user}`);
 state.value.data = data.value?.[0]!;
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0] } });
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch(`/api/users/:${route.params.user}/companies`);
 state.value.userCompanies = dataCompanies.value?.map(company => company.id.toString()) ?? [];
-watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()) } });
+watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()); } });
 
 const save = async () => {
   isSaving.value = true;
@@ -97,23 +97,41 @@ const save = async () => {
 </script>
 
 <template>
-  <UDashboardPage class="w-dvw" v-if="route.name === 'security-users-user'">
+  <UDashboardPage
+    v-if="route.name === 'security-users-user'"
+    class="w-dvw">
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Usuario">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading || pending" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading || pending"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || pending || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || pending || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <BTabs v-model="tab" :items="tabs">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
           <template #basic>
-            <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" :saving="isSaving" />
+            <Basic
+              ref="systemUsersBasic"
+              :is-editing="true"
+              :loading="pending"
+              :saving="isSaving" />
           </template>
           <template #companies>
-            <Companies :loading="pendingCompanies" :saving="isSaving" />
+            <Companies
+              :loading="pendingCompanies"
+              :saving="isSaving" />
           </template>
         </BTabs>
       </UDashboardPanelContent>

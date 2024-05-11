@@ -1,28 +1,15 @@
 <script setup lang="ts">
 import Excel from 'exceljs';
-// import { type type_sys_profiles } from '@/types/server/sys_profiles';
-// import { type type_sys_companies } from '@/types/server/sys_companies';
-
-//REF PROPS
-// type column = {
-//   index: number,
-//   key: string,
-//   label: string,
-//   sortable: boolean
-// }
 const rows = ref<any[]>([]);
 const columns = ref<column[]>([]);
 const pageCount = 50;
 const page = ref(1);
 const errorPage = ref(1);
-const validPage = ref(1);
 const tab = ref('file');
 const isLoading = ref(false);
 const isValidated = ref(false);
 const errors = ref<any[]>([]);
 const accordionKey = ref(1);
-// const profileOptions = ref<type_sys_profiles[]>([]);
-// const companyOptions = ref<type_sys_companies[]>([]);
 const mapping = ref({
   email: null,
   user_name: null,
@@ -52,18 +39,17 @@ const totalRows = computed(() => rows.value.length);
 // const companyOptionsFormatted = computed(() => companyOptions.value.map(p => ({ ...p, disabled: !p.is_active })));
 
 const computeRows = computed(() => {
-  return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+  return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount);
 });
-const computedErrorRows = computed(() => {
-  return errors.value.filter(x => x.errors.length > 0).slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount)
-});
+// const computedErrorRows = computed(() => {
+//   return errors.value.filter(x => x.errors.length > 0).slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount);
+// });
 // const totalErrorRows = computed(() => errors.value.filter(x => x.errors.length > 0).length);
 // const computedValidRows = computed(() => {
 //   return errors.value.filter(x => x.errors.length <= 0).slice((validPage.value - 1) * pageCount, (validPage.value) * pageCount)
 // });
 // const totalValidRows = computed(() => errors.value.filter(x => x.errors.length <= 0).length);
 
-const isValidateDisabled = computed(() => isLoading.value || rows.value.length === 0 || !mapping.value.email || !mapping.value.user_name || !mapping.value.user_lastname || !mapping.value.user_sex || !mapping.value.sys_profile_id || !mapping.value.prefered_company_id);
 // const errorColumns = computed(() => {
 //   return [
 //     ...columns.value,
@@ -96,7 +82,8 @@ const mappingPreview = (field: string | null) => {
   }
 };
 
-const { files, open, reset, onChange } = useFileDialog({
+// const { files, open, reset, onChange } = useFileDialog({
+const { open, reset, onChange } = useFileDialog({
   accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel',
   directory: false, // Select directories instead of files if set true
 });
@@ -120,7 +107,7 @@ onChange(async (files) => {
       columns.value = [];
       errors.value = [];
       errorPage.value = 1;
-      validationTab.value = "results";
+      validationTab.value = 'results';
 
       //Read XLS file
       const workbook = new Excel.Workbook();
@@ -142,7 +129,7 @@ onChange(async (files) => {
       firstWorksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) return;
         if (row.hasValues){
-          let obj: any = {};
+          const obj: any = {};
           row.eachCell((cell, colNumber) => {
             const key = columns.value[colNumber - 1].key;
             obj[key] = cell.text.trim();
@@ -193,9 +180,16 @@ onChange(async (files) => {
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Cargar Equipistas" :badge="rows.length">
+      <UDashboardNavbar
+        title="Cargar Equipistas"
+        :badge="rows.length">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :loading="isLoading" :disabled="isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :loading="isLoading"
+            :disabled="isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
         </template>
@@ -210,30 +204,40 @@ onChange(async (files) => {
           class="my-3 px-3"
           size="xl">
           <template #file>
-            <div class="grid place-content-center" style="height: calc(100dvh - 330px);">
-              <UButton color="gray" icon="i-heroicons-folder-open" :disabled="isLoading" @click="open">
+            <div
+              class="grid place-content-center"
+              style="height: calc(100dvh - 330px);">
+              <UButton
+                color="gray"
+                icon="i-heroicons-folder-open"
+                :disabled="isLoading"
+                @click="open">
                 <span class="hidden sm:block">Cargar</span>
               </UButton>
             </div>
           </template>
           <template #table>
-            <div class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
+            <div
+              class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5"
+              style="height: calc(100dvh - 330px);">
               <UTable
                 :rows="computeRows"
                 :columns="columns"
                 :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
                 style="height: calc(100dvh - 390px);"
-                sort-mode="manual"/>
-              <UDivider/>
+                sort-mode="manual" />
+              <UDivider />
               <UPagination
                 v-model="page"
                 :page-count="pageCount"
                 :total="totalRows"
-                class="place-content-end p-2"/>
+                class="place-content-end p-2" />
             </div>
           </template>
           <template #mapping>
-            <div class="overflow-y-scroll px-5" style="height: calc(100dvh - 330px);">
+            <div
+              class="overflow-y-scroll px-5"
+              style="height: calc(100dvh - 330px);">
               <UCard class="mt-2">
                 <template #header>
                   <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
@@ -249,7 +253,9 @@ onChange(async (files) => {
                   </div>
                 </template>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
-                  <p class="text-gray-900 dark:text-white place-content-center">Email equipista</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Email equipista
+                  </p>
                   <USelectMenu
                     v-model="mapping.email"
                     class="col-span-2"
@@ -271,7 +277,9 @@ onChange(async (files) => {
                     icon="i-heroicons-envelope" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Email de cónyuge</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Email de cónyuge
+                  </p>
                   <USelectMenu
                     v-model="mapping.email"
                     class="col-span-2"
@@ -293,7 +301,9 @@ onChange(async (files) => {
                     icon="i-heroicons-envelope" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Fecha Matrimonio</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Fecha Matrimonio
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_name"
                     class="col-span-2"
@@ -315,7 +325,9 @@ onChange(async (files) => {
                     icon="i-heroicons-calendar" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Equipo base</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Equipo base
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_sex"
                     searchable
@@ -337,7 +349,9 @@ onChange(async (files) => {
                     icon="i-heroicons-users" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Fecha de Pilotaje</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Fecha de Pilotaje
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_lastname"
                     searchable
@@ -359,7 +373,9 @@ onChange(async (files) => {
                     icon="i-heroicons-calendar" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Fecha de Alianza</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Fecha de Alianza
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_lastname"
                     searchable
@@ -381,7 +397,9 @@ onChange(async (files) => {
                     icon="i-heroicons-calendar" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Número celular</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Número celular
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_lastname"
                     searchable

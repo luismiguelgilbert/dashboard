@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { sub, format, isSameDay, type Duration } from 'date-fns'
-import type { Range } from '~/types'
+import { sub, format, isSameDay, type Duration } from 'date-fns';
+import type { Range } from '~/types';
 
 const ranges = [
   { label: 'Last 7 days', duration: { days: 7 } },
@@ -9,26 +9,30 @@ const ranges = [
   { label: 'Last 3 months', duration: { months: 3 } },
   { label: 'Last 6 months', duration: { months: 6 } },
   { label: 'Last year', duration: { years: 1 } }
-]
+];
 
 const selected = defineModel({
   type: Object as PropType<Range>,
   required: true
-})
+});
 
 function isRangeSelected (duration: Duration) {
-  return isSameDay(selected.value.start, sub(new Date(), duration)) && isSameDay(selected.value.end, new Date())
+  return isSameDay(selected.value.start, sub(new Date(), duration)) && isSameDay(selected.value.end, new Date());
 }
 
 function selectRange (duration: Duration) {
-  selected.value = { start: sub(new Date(), duration), end: new Date() }
+  selected.value = { start: sub(new Date(), duration), end: new Date() };
 }
 </script>
 
 <template>
   <UPopover :popper="{ placement: 'bottom-start' }">
     <template #default="{ open }">
-      <UButton color="gray" variant="ghost" :class="[open && 'bg-gray-50 dark:bg-gray-800']" trailing-icon="i-heroicons-chevron-down-20-solid">
+      <UButton
+        color="gray"
+        variant="ghost"
+        :class="[open && 'bg-gray-50 dark:bg-gray-800']"
+        trailing-icon="i-heroicons-chevron-down-20-solid">
         {{ format(selected.start, 'd MMM, yyy') }} - {{ format(selected.end, 'd MMM, yyy') }}
       </UButton>
     </template>
@@ -48,7 +52,9 @@ function selectRange (duration: Duration) {
           />
         </div>
 
-        <DatePicker v-model="selected" @close="close" />
+        <DatePicker
+          v-model="selected"
+          @close="close" />
       </div>
     </template>
   </UPopover>

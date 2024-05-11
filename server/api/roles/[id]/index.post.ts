@@ -1,14 +1,13 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import type { NuxtError } from '#app';
 
-import { profileBody } from "@/types/server/sys_profiles";
+import { profileBody } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.cast(body))
+    const payload = await readValidatedBody(event, body => profileBody.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.ROLES_CREATE);
 
     //Database actions
@@ -24,16 +23,16 @@ export default defineEventHandler( async (event) => {
     const sqlProfilesDelete = `delete from sys_profiles_links WHERE sys_profile_id = '${id}'`;
     await serverDB.query(sqlProfilesDelete);
 
-    let sqlLinksInsert = `insert into sys_profiles_links (sys_profile_id,	sys_link_id) values `;
+    let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id,	sys_link_id) values ';
     payload.profileLinks?.forEach((link) => {
       sqlLinksInsert += `('${id}', '${link}'),`;
     });
-    sqlLinksInsert = sqlLinksInsert.replace(/\,$/, '');
+    sqlLinksInsert = sqlLinksInsert.replace(/,$/, '');
     await serverDB.query(sqlLinksInsert);
     
     await serverDB.query('COMMIT');
     return { id: id };
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

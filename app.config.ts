@@ -11,4 +11,4 @@ export default defineAppConfig({
       dynamic: true,
     },
   }
-})
+});

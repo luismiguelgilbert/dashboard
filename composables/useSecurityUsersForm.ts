@@ -12,7 +12,7 @@ export const useSecurityUsersForm = () => {
     avatar: null as File|null,
     profileOptions: [] as type_sys_profiles[],
     companyOptions: [] as type_sys_companies[],
-  }});
+  };});
 
   const resetState = () => { 
     state.value.data = {} as type_userDataForm;
@@ -33,7 +33,7 @@ export const useSecurityUsersForm = () => {
     } catch (error) {
       state.value.isLoading = false;
       if (error instanceof ValidationError) {
-        let description = error.errors.map(m => `${m}<br />`).join('');
+        const description = error.errors.map(m => `${m}<br />`).join('');
         toast.add({
           title: 'Datos incompletos',
           description,
@@ -44,7 +44,7 @@ export const useSecurityUsersForm = () => {
           },
           timeout: 1250 * error.errors.length,
         });
-      };
+      }
       return false;
     }
   };

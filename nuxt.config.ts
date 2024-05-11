@@ -65,7 +65,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' }
   },
   hooks: {
-    "build:before": () => {
+    'build:before': () => {
       const nuxtInstance = useNuxt();
       if (!nuxtInstance.options.dev) {
         console.log('Start build process for BITT!!!!...');
@@ -74,7 +74,7 @@ export default defineNuxtConfig({
           if (err) {
             return console.log(err);
           }
-          var result = data.replace(/await validateLicense/g, '//await validateLicense');
+          const result = data.replace(/await validateLicense/g, '//await validateLicense');
         
           fs.writeFile(someFile, result, 'utf8', function (err) {
             if (err) return console.log(err);
@@ -82,21 +82,21 @@ export default defineNuxtConfig({
         });
       }
     },
-    "pages:extend" (pages) {
+    'pages:extend' (pages) {
       function removePagesMatching (pattern: RegExp, pages: NuxtPage[] = []) {
-        const pagesToRemove = []
+        const pagesToRemove = [];
         for (const page of pages) {
           if(page.file.includes('/components/')) {
-            pagesToRemove.push(page)
+            pagesToRemove.push(page);
           } else if (page.children) {
-            removePagesMatching(pattern, page.children)
+            removePagesMatching(pattern, page.children);
           }
         }
         for (const page of pagesToRemove) {
-          pages.splice(pages.indexOf(page), 1)
+          pages.splice(pages.indexOf(page), 1);
         }
       }
       removePagesMatching(/\/components\//g, pages);
     },
   },
-})
+});

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { type type_sys_companies } from '@/types/server/sys_companies';
-
 const props = defineProps({
   loading: {
     type: Boolean,
@@ -11,7 +9,7 @@ const props = defineProps({
     required: false,
     default: false,
   }
-})
+});
 
 const { state } = useSecurityCompaniesForm();
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
@@ -19,13 +17,13 @@ const fileRef = ref<{ input: HTMLInputElement }>();
 
 const onFileChange = (e: Event) => {
   const input = e.target as HTMLInputElement;
-  if (!input.files?.length) { return }
-  if (input.files[0].size / 1024 / 1024 > 1) { return }
+  if (!input.files?.length) { return; }
+  if (input.files[0].size / 1024 / 1024 > 1) { return; }
   state.value.avatar = input.files[0];
   state.value.data.avatar_url = URL.createObjectURL(input.files[0]);
 };
 
-const onFileClick = () => { fileRef.value?.input.click() };
+const onFileClick = () => { fileRef.value?.input.click(); };
 
 </script>
 
@@ -107,7 +105,9 @@ const onFileClick = () => { fileRef.value?.input.click() };
         <UToggle
           v-model="state.data.is_active"
           :disabled="state.isLoading" />
-        <span class="ml-5" style="vertical-align: text-bottom;">{{ state.data.is_active ? 'Activo' : 'Inactivo' }}</span>
+        <span
+          class="ml-5"
+          style="vertical-align: text-bottom;">{{ state.data.is_active ? 'Activo' : 'Inactivo' }}</span>
       </UFormGroup>
       
       
@@ -122,9 +122,22 @@ const onFileClick = () => { fileRef.value?.input.click() };
       </div>
       <UFormGroup name="avatar_url">
         <div class="flex items-center">
-          <UAvatar :src="state.data.avatar_url!" :alt="state.data.name_es" size="lg" />
-          <UButton label="Seleccionar" color="white" size="md" @click="onFileClick" class="ml-5" />
-          <UInput ref="fileRef" type="file" class="hidden" accept=".jpg, .jpeg, .png, .gif" @change="onFileChange" />
+          <UAvatar
+            :src="state.data.avatar_url!"
+            :alt="state.data.name_es"
+            size="lg" />
+          <UButton
+            label="Seleccionar"
+            color="white"
+            size="md"
+            class="ml-5"
+            @click="onFileClick" />
+          <UInput
+            ref="fileRef"
+            type="file"
+            class="hidden"
+            accept=".jpg, .jpeg, .png, .gif"
+            @change="onFileChange" />
         </div>
       </UFormGroup>
   
@@ -168,7 +181,9 @@ const onFileClick = () => { fileRef.value?.input.click() };
           :loading="state.isLoading" />
       </UFormGroup>
       
-      <UDivider v-if="isEditing" class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
+      <UDivider
+        v-if="isEditing"
+        class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
       <div v-if="isEditing">
         <p class="text-gray-900 dark:text-white font-semibold">
           Código:

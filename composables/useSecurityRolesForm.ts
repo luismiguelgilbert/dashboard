@@ -9,7 +9,7 @@ export const useSecurityRolesForm = () => {
     profileLinks: [] as string[],
     profileUsers: [] as type_userDataForm[],
     syslinksOptions: [] as type_sys_links[],
-  }});
+  };});
 
   const resetProfileData = () => { 
     state.value.profileData = {

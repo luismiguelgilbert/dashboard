@@ -1,4 +1,4 @@
-import { sub } from 'date-fns'
+import { sub } from 'date-fns';
 
 const notifications = [{
   id: 1,
@@ -249,8 +249,8 @@ const notifications = [{
   },
   body: 'subscribed to your email list',
   date: sub(new Date(), { days: 22 }).toISOString()
-}]
+}];
 
 export default eventHandler(async () => {
-  return notifications
-})
+  return notifications;
+});

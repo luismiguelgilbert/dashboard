@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types'
-import { type type_profile_sys_links } from '~/types/server/sys_links';
-import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
+import type { Form } from '#ui/types';
+import { type type_profileDataForm } from '@/types/server/sys_profiles';
 import { type type_userDataForm } from '@/types/server/sys_users';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
@@ -20,21 +19,21 @@ const tab = ref<'basic'|'users'>('basic');
 const mainForm = ref<Form<type_profileDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.ROLES_EDIT, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemRolesBasic = ref<InstanceType<typeof Basic>>();
+// const systemRolesBasic = ref<InstanceType<typeof Basic>>();
 resetProfileData();
 
 
   const { data, pending } = await useLazyFetch(`/api/roles/:${route.params.role}`);
   state.value.profileData = data.value?.[0]!;
-  watch(data, (newData) => { if (newData?.length) { state.value.profileData = newData[0] } });
+  watch(data, (newData) => { if (newData?.length) { state.value.profileData = newData[0]; } });
 
-  const { data: dataLinks, pending: pendingLinks } = await useLazyFetch(`/api/roles/:${route.params.role}/links`);
+  const { data: dataLinks } = await useLazyFetch(`/api/roles/:${route.params.role}/links`);
   state.value.profileLinks = dataLinks.value?.map(link => link.sys_link_id) ?? [];
-  watch(dataLinks, (newData) => { if (newData?.length) { state.value.profileLinks = newData.map(link => link.sys_link_id) ?? []} });
+  watch(dataLinks, (newData) => { if (newData?.length) { state.value.profileLinks = newData.map(link => link.sys_link_id) ?? [];} });
 
   const { data: dataUsers, pending: pendingUsers } = await useLazyFetch<type_userDataForm[]>(`/api/roles/${route.params.role}/users`);
   state.value.profileUsers = dataUsers.value ?? [];
-  watch(dataUsers, (newData) => { if (newData?.length) { state.value.profileUsers = newData ?? []} });
+  watch(dataUsers, (newData) => { if (newData?.length) { state.value.profileUsers = newData ?? [];} });
 
   // const { data } = await useFetch<type_profileDataForm[]>(`/api/roles/${route.params.id}`);
   // state.value.profileData = data.value?.[0]!;
@@ -59,13 +58,13 @@ const showInvalidFormData = () => {
   });
   state.value.isLoading = false;
   mainForm.value?.validate();
-}
+};
 
 const save = async () => {
   state.value.isLoading = true;
   const isDataValid = await validateProfileData();
   if (isDataValid) {
-    const { data, error } = await useFetch(`/api/roles/:${route.params.id}`, {
+    const { error } = await useFetch(`/api/roles/:${route.params.id}`, {
       method: 'PATCH',
       body: {
         profileData: state.value.profileData,
@@ -100,17 +99,30 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Perfil">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
         <!-- <UForm ref="mainForm" :state="state.profileData" :schema="profileDataForm"> -->
-        <BTabs v-model="tab" :items="tabs">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
           <template #basic>
-            <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
+            <Basic
+              ref="systemUsersBasic"
+              :is-editing="true"
+              :loading="pending" />
           </template>
           <template #users>
             <Users :loading="pendingUsers" />

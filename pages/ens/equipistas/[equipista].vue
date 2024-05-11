@@ -1,9 +1,5 @@
 <script setup lang="ts">
-// import type { Form } from '#ui/types'
 import {
-  // ens_members_form,
-  // ens_members_teams,
-  // type type_ens_members_lookup,
   type type_ens_members_form,
   type type_ens_members_teams,
 } from '~/types/server/ens_types';
@@ -11,10 +7,9 @@ import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Teams from './components/Teams.vue';
 
-const { state, resetData, validateData } = useEnsEquipistasForm();
+const { state } = useEnsEquipistasForm();
 const { sessionData } = useUserSession();
 
-const toast = useToast();
 const route = useRoute();
 
 const tabs = [
@@ -32,11 +27,11 @@ const cancel = async () => {
 
 const { data, pending } = await useLazyFetch<type_ens_members_form[]>(`/api/ens/equipistas/${route.params.equipista}`);
 state.value.data = data.value?.[0]!;
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0] } });
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 const { data: dataTeams, pending: pendingTeams } = await useLazyFetch<type_ens_members_teams[]>(`/api/ens/equipistas/${route.params.equipista}/teams`);
 state.value.data_teams = dataTeams.value ?? [];
-watch(dataTeams, (newData) => { if (newData?.length) { state.value.data_teams = newData } });
+watch(dataTeams, (newData) => { if (newData?.length) { state.value.data_teams = newData; } });
 
 const save = async () => {
 //   state.value.isLoading = true;
@@ -102,22 +97,32 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Equipista">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
         <!-- <UForm ref="mainForm" :state="state.data" :schema="ens_members_form"> -->
-          <BTabs v-model="tab" :items="tabs">
-            <template #basic>
-              <Basic :loading="pending" />
-            </template>
-            <template #teams>
-              <Teams :loading="pendingTeams"/>
-            </template>
-          </BTabs>
+        <BTabs
+          v-model="tab"
+          :items="tabs">
+          <template #basic>
+            <Basic :loading="pending" />
+          </template>
+          <template #teams>
+            <Teams :loading="pendingTeams" />
+          </template>
+        </BTabs>
         <!-- </UForm> -->
       </UDashboardPanelContent>
     </UDashboardPanel>

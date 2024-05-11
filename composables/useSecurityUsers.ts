@@ -8,7 +8,7 @@ export const useSecurityUsers = () => {
       page: 1,
       searchString: ''
     }
-  }});
+  };});
 
   return { state };
 };

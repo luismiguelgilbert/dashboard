@@ -6,14 +6,14 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-})
+});
 
 const { state } = useSecurityUsersForm();
 const toast = useToast();
 
 const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
   return state.value.userCompanies.some(company => company === selectedCompany.id);
-}
+};
 
 const toggleCompany = (selectedCompany: type_sys_companies): void => {
   const isCompanyFound = state.value.userCompanies.some(company => company === selectedCompany.id);
@@ -33,11 +33,11 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
   } else {
     state.value.userCompanies.push(selectedCompany.id);
   }
-}
+};
 //LOOKUP DATA
 const { data: companyOptionsData } = await useLazyFetch<type_sys_companies[]>('/api/lookups/sys_companies');
 state.value.companyOptions = companyOptionsData.value ?? [];
-watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.companyOptions = newData } });
+watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.companyOptions = newData; } });
 </script>
 
 <template>
@@ -54,14 +54,23 @@ watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.comp
         </p>
       </div>
 
-      <UCard :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }" class="min-w-0">
-        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-800">
-          <li v-for="(company, index) in state.companyOptions" :key="index" class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
+      <UCard
+        :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
+        class="min-w-0">
+        <ul
+          role="list"
+          class="divide-y divide-gray-200 dark:divide-gray-800">
+          <li
+            v-for="(company, index) in state.companyOptions"
+            :key="index"
+            class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
             <div class="flex items-center gap-3 min-w-0">
               <div class="text-sm min-w-0">
                 <p class="text-gray-900 dark:text-white font-medium truncate">
                   {{ company.name_es_short }}
-                  <b v-if="!company.is_active" class="text-red-500 italic">Desactivada</b>
+                  <b
+                    v-if="!company.is_active"
+                    class="text-red-500 italic">Desactivada</b>
                 </p>
                 <p class="text-gray-500 dark:text-gray-400 truncate">
                   {{ company.name_es }}

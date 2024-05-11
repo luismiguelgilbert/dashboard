@@ -4,4 +4,4 @@ export interface DropdownItemExtended extends DropdownItem {
   id: string,
   disabled: boolean,
   isMainAction: boolean,
-};
+}

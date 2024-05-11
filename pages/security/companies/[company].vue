@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types'
-import { companyDataForm, type type_companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
-import { type type_userDataForm } from '@/types/server/sys_users';
+// import type { Form } from '#ui/types';
+// import { type type_companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Users from './components/Users.vue';
 
-const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
+const { state } = useSecurityCompaniesForm();
 const { sessionData } = useUserSession();
-const toast = useToast();
 const route = useRoute();
 
 const tabs = [
@@ -16,15 +14,15 @@ const tabs = [
   { value: 'users',label: 'Usuarios', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 const tab = ref<'basic'|'users'>('basic');
-const mainForm = ref<Form<type_companyDataForm>>();
+// const mainForm = ref<Form<type_companyDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.COMPANIES_EDIT, sessionData.value.userMenuData!);
 state.value.isLoading = false;
-const systemCompaniesBasic = ref<InstanceType<typeof Basic>>();
+// const systemCompaniesBasic = ref<InstanceType<typeof Basic>>();
 // resetCompanyData();
 
 const { data, pending } = await useLazyFetch<type_sys_companies[]>(`/api/companies/${route.params.company}`);
 state.value.data = data.value?.[0]!;
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0] } });
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 // const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch<type_userDataForm[]>(`/api/companies/${route.params.company}/users`);
 // state.value.userCompanies = dataCompanies.value;
@@ -43,21 +41,21 @@ const cancel = async () => {
   await navigateTo('/security/companies');
 };
 
-const showInvalidFormData = () => {
-  toast.add({
-    title: 'Datos incompletos',
-    description: 'Por favor, complete los campos requeridos',
-    icon: 'i-heroicons-no-symbol',
-    color: 'rose',
-    timeout: 2000,
-  });
-  state.value.isLoading = false;
-  mainForm.value?.validate();
-}
+// const showInvalidFormData = () => {
+//   toast.add({
+//     title: 'Datos incompletos',
+//     description: 'Por favor, complete los campos requeridos',
+//     icon: 'i-heroicons-no-symbol',
+//     color: 'rose',
+//     timeout: 2000,
+//   });
+//   state.value.isLoading = false;
+//   mainForm.value?.validate();
+// };
 
 const save = async () => {
   state.value.isLoading = true;
-  const isDataValid = await validateCompanyData();
+  // const isDataValid = await validateCompanyData();
   
   //Upload Data
   // if (isDataValid) {
@@ -119,16 +117,29 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Editar Organización">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">
-        <BTabs v-model="tab" :items="tabs">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
           <template #basic>
-            <Basic ref="systemUsersBasic" :is-editing="true" :loading="pending" />
+            <Basic
+              ref="systemUsersBasic"
+              :is-editing="true"
+              :loading="pending" />
           </template>
           <template #users>
             <Users />

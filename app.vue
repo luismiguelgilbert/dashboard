@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
+const colorMode = useColorMode();
 
-const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
+const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white');
 
 useHead({
   meta: [
@@ -15,20 +15,15 @@ useHead({
   htmlAttrs: {
     lang: 'en'
   }
-})
-
-const title = 'Framework - Powered by BITT'
-const description = 'Framework es una plataforma para administrar organizaciones.'
+});
 
 useSeoMeta({
-  title,
-  description,
-  ogTitle: title,
-  ogDescription: description,
+  title: 'Framework - Powered by BITT',
+  description: 'Framework es una plataforma para administrar organizaciones.',
   // ogImage: 'https://dashboard-template.nuxt.dev/social-card.png',
   // twitterImage: 'https://dashboard-template.nuxt.dev/social-card.png',
   // twitterCard: 'summary_large_image'
-})
+});
 </script>
 
 <template>

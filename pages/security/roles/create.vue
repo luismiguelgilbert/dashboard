@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types'
+import type { Form } from '#ui/types';
 import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
@@ -33,13 +33,13 @@ const showInvalidFormData = () => {
   });
   state.value.isLoading = false;
   mainForm.value?.validate();
-}
+};
 
 const save = async () => {
   state.value.isLoading = true;
   const isDataValid = await validateProfileData();
   if (isDataValid) {
-    const { data, error } = await useFetch(`/api/roles/0`, {
+    const { error } = await useFetch('/api/roles/0', {
       method: 'POST',
       body: {
         profileData: state.value.profileData,
@@ -76,16 +76,31 @@ const save = async () => {
     <UDashboardPanel grow>
       <UDashboardNavbar title="Crear Perfil">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :disabled="state.isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :disabled="state.isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
-          <UButton label="Guardar" icon="i-heroicons-check-circle" :disabled="state.isLoading || !canSave" @click="save" />
+          <UButton
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isLoading || !canSave"
+            @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs v-model="tab" :items="tabs" />
+      <BTabs
+        v-model="tab"
+        :items="tabs" />
       <UDashboardPanelContent>
-        <UForm ref="mainForm" :state="state.profileData" :schema="profileDataForm">
-          <SystemRolesBasic v-show="tab === 'basic'" ref="systemRolesBasicForm" />
+        <UForm
+          ref="mainForm"
+          :state="state.profileData"
+          :schema="profileDataForm">
+          <SystemRolesBasic
+            v-show="tab === 'basic'"
+            ref="systemRolesBasicForm" />
         </UForm>
       </UDashboardPanelContent>
     </UDashboardPanel>

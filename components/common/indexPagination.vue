@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { pageSizeOptions } from './config'
+import { pageSizeOptions } from './config';
 
 defineProps({
   pending: {
@@ -8,7 +8,7 @@ defineProps({
     default: false
   },
   totalRows: {
-    // type: BooleanSchema<boolean | undefined, Maybe<AnyObject>, undefined, "">,
+    type: Number,
     required: false,
     default: 0
   },

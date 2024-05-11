@@ -8,8 +8,8 @@ useHead({ title });
 const { state } = useEnsEquipistas();
 const { sessionData } = useUserSession();
 const rows = ref<Array<type_ens_members>>([]);
-const { data, error, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload })
-if (!error.value && data.value) { rows.value = data.value }
+const { data, error, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
+if (!error.value && data.value) { rows.value = data.value; }
 
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 </script>
@@ -17,7 +17,9 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar :title="title" :badge="totalRows">
+      <UDashboardNavbar
+        :title="title"
+        :badge="totalRows">
         <template #right>
           <div class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5">
             <IndexSearchDesktop
@@ -46,10 +48,18 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
           :filter-options="filter_options"
           :sort-options="sort_options" />
       </UDashboardToolbar>
-      <UProgress class="block sm:hidden" size="2xs" :value="!pending ? 0: undefined" :animation="pending ? 'carousel': undefined" />
+      <UProgress
+        class="block sm:hidden"
+        size="2xs"
+        :value="!pending ? 0: undefined"
+        :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
-        <indexList v-if="data" :rows="data" />
-        <indexTable v-if="data" :rows="data" />
+        <indexList
+          v-if="data"
+          :rows="data" />
+        <indexTable
+          v-if="data"
+          :rows="data" />
       </UDashboardPanelContent>
       <IndexPagination
         v-model:pageSize="state.filterPayload.pageSize"

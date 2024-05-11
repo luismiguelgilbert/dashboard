@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type type_ens_members_lookup } from '@/types/server/ens_types';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale'
+import { es } from 'date-fns/locale';
 
 const props = defineProps({
   loading: {
@@ -30,13 +30,22 @@ state.value.equipistas = data.value ?? [];
       :description="state.data.email"
       icon="i-heroicons-chart-bar">
       <template #icon>
-        <UAvatar :src="state.data.avatar_url!" :alt="state.data.user_full_name" size="lg" />
+        <UAvatar
+          :src="state.data.avatar_url!"
+          :alt="state.data.user_full_name"
+          size="lg" />
       </template>
       <template #title>
         <div class="text-base font-bold dark:text-white text-black">
           {{ `${state.data.user_full_name}` }}
-          <font-awesome-icon v-if="state.data.user_sex" icon="fa-solid fa-person" class="text-emerald-500" />
-          <font-awesome-icon v-if="!state.data.user_sex" icon="fa-solid fa-person-dress" class="text-rose-500" />
+          <font-awesome-icon
+            v-if="state.data.user_sex"
+            icon="fa-solid fa-person"
+            class="text-emerald-500" />
+          <font-awesome-icon
+            v-if="!state.data.user_sex"
+            icon="fa-solid fa-person-dress"
+            class="text-rose-500" />
         </div>
       </template>
     </UDashboardCard>
@@ -63,12 +72,24 @@ state.value.equipistas = data.value ?? [];
           option-attribute="user_full_name"
           :options="state.equipistas">
           <template #leading>
-            <UAvatar v-if="partnerAvatar" :src="partnerAvatar" size="2xs" />
-            <UIcon v-else name="i-heroicons-user-circle" class="w-5 h-5" />
+            <UAvatar
+              v-if="partnerAvatar"
+              :src="partnerAvatar"
+              size="2xs" />
+            <UIcon
+              v-else
+              name="i-heroicons-user-circle"
+              class="w-5 h-5" />
           </template>
           <template #option="{ option: person }">
-            <UAvatar v-if="person.avatar_url" :src="person.avatar_url" size="2xs" />
-            <UIcon v-else name="i-heroicons-user-circle" class="w-5 h-5" />
+            <UAvatar
+              v-if="person.avatar_url"
+              :src="person.avatar_url"
+              size="2xs" />
+            <UIcon
+              v-else
+              name="i-heroicons-user-circle"
+              class="w-5 h-5" />
             <span>{{ person.user_full_name }}</span>
           </template>
         </USelectMenu>
@@ -83,7 +104,9 @@ state.value.equipistas = data.value ?? [];
           Fecha de Matrimonio.
         </p>
       </div>
-      <UPopover :popper="{ placement: 'bottom-start' }" class="w-full">
+      <UPopover
+        :popper="{ placement: 'bottom-start' }"
+        class="w-full">
         <UInput
           :value="state.data.fecha_matrimonio ? format(state.data.fecha_matrimonio, 'd MMM, yyy', { locale: es }) : undefined"
           class="w-full"
@@ -96,7 +119,10 @@ state.value.equipistas = data.value ?? [];
           :ui="inputUI"
           :loading="state.isLoading" />
         <template #panel="{ close }">
-          <DatePicker v-model="state.data.fecha_matrimonio" is-required @close="close" />
+          <DatePicker
+            v-model="state.data.fecha_matrimonio"
+            is-required
+            @close="close" />
         </template>
       </UPopover>
 
@@ -109,7 +135,9 @@ state.value.equipistas = data.value ?? [];
           Fecha de Nacimiento.
         </p>
       </div>
-      <UPopover :popper="{ placement: 'bottom-start' }" class="w-full">
+      <UPopover
+        :popper="{ placement: 'bottom-start' }"
+        class="w-full">
         <UInput
           :value="state.data.fecha_nacimiento ? format(state.data.fecha_nacimiento, 'd MMM, yyy', { locale: es }) : undefined"
           class="w-full"
@@ -122,7 +150,10 @@ state.value.equipistas = data.value ?? [];
           :ui="inputUI"
           :loading="state.isLoading" />
         <template #panel="{ close }">
-          <DatePicker v-model="state.data.fecha_nacimiento" is-required @close="close" />
+          <DatePicker
+            v-model="state.data.fecha_nacimiento"
+            is-required
+            @close="close" />
         </template>
       </UPopover>
 
@@ -139,9 +170,10 @@ state.value.equipistas = data.value ?? [];
         <UToggle
           v-model="state.data.is_active"
           :disabled="state.isLoading" />
-        <span class="ml-5" style="vertical-align: text-bottom;">{{ state.data.is_active ? 'Activo' : 'Inactivo' }}</span>
+        <span
+          class="ml-5"
+          style="vertical-align: text-bottom;">{{ state.data.is_active ? 'Activo' : 'Inactivo' }}</span>
       </UFormGroup>
-
     </div>
     <br /> <br />
   </div>

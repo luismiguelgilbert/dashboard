@@ -1,4 +1,4 @@
-import type { User, UserStatus } from '~/types'
+import type { User, UserStatus } from '~/types';
 
 const users: User[] = [{
   id: 1,
@@ -180,35 +180,35 @@ const users: User[] = [{
   },
   status: 'subscribed',
   location: 'London, UK'
-}]
+}];
 
 export default eventHandler(async (event) => {
-  const { q, statuses, locations, sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' }
+  const { q, statuses, locations, sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' };
 
   await new Promise(function (resolve) {
-    setTimeout(resolve, 1000)
-  })
+    setTimeout(resolve, 1000);
+  });
 
   return users.filter((user) => {
-    if (!q) return true
+    if (!q) return true;
 
-    return user.name.search(new RegExp(q, 'i')) !== -1 || user.email.search(new RegExp(q, 'i')) !== -1
+    return user.name.search(new RegExp(q, 'i')) !== -1 || user.email.search(new RegExp(q, 'i')) !== -1;
   }).filter((user) => {
-    if (!statuses?.length) return true
+    if (!statuses?.length) return true;
 
-    return statuses.includes(user.status)
+    return statuses.includes(user.status);
   }).filter((user) => {
-    if (!locations?.length) return true
+    if (!locations?.length) return true;
 
-    return locations.includes(user.location)
+    return locations.includes(user.location);
   }).sort((a, b) => {
-    if (!sort) return 0
+    if (!sort) return 0;
 
-    const aValue = a[sort]
-    const bValue = b[sort]
+    const aValue = a[sort];
+    const bValue = b[sort];
 
-    if (aValue < bValue) return order === 'asc' ? -1 : 1
-    if (aValue > bValue) return order === 'asc' ? 1 : -1
-    return 0
-  })
-})
+    if (aValue < bValue) return order === 'asc' ? -1 : 1;
+    if (aValue > bValue) return order === 'asc' ? 1 : -1;
+    return 0;
+  });
+});

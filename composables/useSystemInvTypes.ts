@@ -11,7 +11,7 @@ export const useSystemInvTypes = () => {
       page: 1,
       searchString: ''
     }
-  }});
+  };});
 
   return { state };
 };

@@ -1,34 +1,33 @@
-import serverDB from '@/server/utils/db'
+import serverDB from '@/server/utils/db';
 import { array } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { sanitizeSQL } from '@/utils/utils'
-import { filter_payload } from '@/types/server/filter_payload'
-import { filter_options, sort_options, sys_profiles, type type_sys_profiles } from '@/types/server/sys_profiles'
-import type { NuxtError } from '#app';
+import { sanitizeSQL } from '@/utils/utils';
+import { filter_payload } from '@/types/server/filter_payload';
+import { filter_options, sort_options, sys_profiles } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.ROLES_READ);
 
-    const filter = await readValidatedBody(event, body => filter_payload.cast(body))
-    const sortById = Number(filter.sortBy)
-    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue
-    const page = Number(filter.page)
-    const pageSize = Number(filter.pageSize)
-    const offset = pageSize * (page - 1)
-    const filterConditions: Array<string> = []
+    const filter = await readValidatedBody(event, body => filter_payload.cast(body));
+    const sortById = Number(filter.sortBy);
+    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue;
+    const page = Number(filter.page);
+    const pageSize = Number(filter.pageSize);
+    const offset = pageSize * (page - 1);
+    const filterConditions: Array<string> = [];
     filter_options.forEach(x => {
       if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue)
+        filterConditions.push(x.sqlValue);
       }
-    })
-    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : ''
-    const search_string = sanitizeSQL(filter.searchString)
+    });
+    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
+    const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
       ? ` and (a.name_es ILIKE '%${search_string}%' )` 
-      : ''
+      : '';
 
     const text = `WITH users_by_profile AS (
         select
@@ -53,14 +52,14 @@ export default defineEventHandler( async (event) => {
       ORDER BY ${sortBy}
       OFFSET ${offset}
       LIMIT ${pageSize}
-    `
+    `;
     const data = await serverDB.query(text);
     return array(sys_profiles).cast(data.rows);
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: err.statusCode ?? 500,
       statusMessage: `${err ?? 'Unhandled exception'}`,
     });
   }
-})
+});

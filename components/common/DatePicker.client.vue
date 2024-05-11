@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { DatePicker as VCalendarDatePicker } from 'v-calendar'
+import { DatePicker as VCalendarDatePicker } from 'v-calendar';
 // @ts-ignore
-import type { DatePickerDate, DatePickerRangeObject } from 'v-calendar/dist/types/src/use/datePicker'
-import 'v-calendar/dist/style.css'
+import type { DatePickerDate, DatePickerRangeObject } from 'v-calendar/dist/types/src/use/datePicker';
+import 'v-calendar/dist/style.css';
 
 defineOptions({
   inheritAttrs: false
-})
+});
 
 const props = defineProps({
   modelValue: {
     type: [Date, Object] as PropType<DatePickerDate | DatePickerRangeObject | null>,
     default: null
   }
-})
+});
 
-const emit = defineEmits(['update:model-value', 'close'])
+const emit = defineEmits(['update:model-value', 'close']);
 
 const date = computed({
   get: () => props.modelValue,
   set: (value) => {
-    emit('update:model-value', value)
-    emit('close')
+    emit('update:model-value', value);
+    emit('close');
   }
-})
+});
 
 const attrs = {
   transparent: true,
@@ -31,12 +31,19 @@ const attrs = {
   color: 'primary',
   'is-dark': { selector: 'html', darkClass: 'dark' },
   'first-day-of-week': 2
-}
+};
 </script>
 
 <template>
-  <VCalendarDatePicker v-if="date && (date as DatePickerRangeObject)?.start && (date as DatePickerRangeObject)?.end" v-model.range="date" :columns="2" v-bind="{ ...attrs, ...$attrs }" />
-  <VCalendarDatePicker v-else v-model="date" v-bind="{ ...attrs, ...$attrs }" />
+  <VCalendarDatePicker
+    v-if="date && (date as DatePickerRangeObject)?.start && (date as DatePickerRangeObject)?.end"
+    v-model.range="date"
+    :columns="2"
+    v-bind="{ ...attrs, ...$attrs }" />
+  <VCalendarDatePicker
+    v-else
+    v-model="date"
+    v-bind="{ ...attrs, ...$attrs }" />
 </template>
 
 <style>

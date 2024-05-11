@@ -1,15 +1,14 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import type { NuxtError } from '#app';
 
-import { companyBody } from "@/types/server/sys_companies";
+import { companyBody } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try {
-    const id = getRouterParam(event, 'id')
+    const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => companyBody.cast(body))
+    const payload = await readValidatedBody(event, body => companyBody.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.COMPANIES_EDIT);
 
     //Data sanitization
@@ -38,7 +37,7 @@ export default defineEventHandler( async (event) => {
     
     await serverDB.query('COMMIT');
     return { id: id };
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

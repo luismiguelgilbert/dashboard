@@ -52,14 +52,14 @@ const profileOptionsFormatted = computed(() => profileOptions.value.map(p => ({ 
 const companyOptionsFormatted = computed(() => companyOptions.value.map(p => ({ ...p, disabled: !p.is_active })));
 
 const computeRows = computed(() => {
-  return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+  return rows.value.slice((page.value - 1) * pageCount, (page.value) * pageCount);
 });
 const computedErrorRows = computed(() => {
-  return errors.value.filter(x => x.errors.length > 0).slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount)
+  return errors.value.filter(x => x.errors.length > 0).slice((errorPage.value - 1) * pageCount, (errorPage.value) * pageCount);
 });
 const totalErrorRows = computed(() => errors.value.filter(x => x.errors.length > 0).length);
 const computedValidRows = computed(() => {
-  return errors.value.filter(x => x.errors.length <= 0).slice((validPage.value - 1) * pageCount, (validPage.value) * pageCount)
+  return errors.value.filter(x => x.errors.length <= 0).slice((validPage.value - 1) * pageCount, (validPage.value) * pageCount);
 });
 const totalValidRows = computed(() => errors.value.filter(x => x.errors.length <= 0).length);
 
@@ -73,9 +73,9 @@ const errorColumns = computed(() => {
 const errorStats = computed(() => {
   const invalidRows = errors.value.filter(x => x.errors?.length > 0);
   return [
-    { label: 'Total de registros', value: rows.value.length, icon: "i-heroicons-chart-bar" },
-    { label: 'Registros válidos', value: (rows.value.length - invalidRows.length), icon: "i-heroicons-check-circle" },
-    { label: 'Registros con errores', value: invalidRows.length, icon: "i-heroicons-exclamation-triangle" },
+    { label: 'Total de registros', value: rows.value.length, icon: 'i-heroicons-chart-bar' },
+    { label: 'Registros válidos', value: (rows.value.length - invalidRows.length), icon: 'i-heroicons-check-circle' },
+    { label: 'Registros con errores', value: invalidRows.length, icon: 'i-heroicons-exclamation-triangle' },
   ];
 });
 //ACTIONS
@@ -96,7 +96,7 @@ const mappingPreview = (field: string | null) => {
   }
 };
 
-const { files, open, reset, onChange } = useFileDialog({
+const { open, reset, onChange } = useFileDialog({
   accept: '.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel',
   directory: false, // Select directories instead of files if set true
 });
@@ -120,7 +120,7 @@ onChange(async (files) => {
       columns.value = [];
       errors.value = [];
       errorPage.value = 1;
-      validationTab.value = "results";
+      validationTab.value = 'results';
 
       //Read XLS file
       const workbook = new Excel.Workbook();
@@ -142,7 +142,7 @@ onChange(async (files) => {
       firstWorksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1) return;
         if (row.hasValues){
-          let obj: any = {};
+          const obj: any = {};
           row.eachCell((cell, colNumber) => {
             const key = columns.value[colNumber - 1].key;
             obj[key] = cell.text.trim();
@@ -163,7 +163,7 @@ onChange(async (files) => {
 
 const validateData = async () => {
   isLoading.value = true;
-  const { error, data } = await useFetch(`/api/users/bulk-create-validate`, {
+  const { error, data } = await useFetch('/api/users/bulk-create-validate', {
     method: 'POST',
     body: {
       mapping: mapping.value,
@@ -179,7 +179,7 @@ const validateData = async () => {
 
 const createUsers = async () => {
   isLoading.value = true;
-  await useFetch(`/api/users/bulk-create`, {
+  await useFetch('/api/users/bulk-create', {
     method: 'POST',
     body: {
       mapping: mapping.value,
@@ -193,9 +193,16 @@ const createUsers = async () => {
 <template>
   <UDashboardPage>
     <UDashboardPanel grow>
-      <UDashboardNavbar title="Cargar Usuarios" :badge="rows.length">
+      <UDashboardNavbar
+        title="Cargar Usuarios"
+        :badge="rows.length">
         <template #right>
-          <UButton color="gray" icon="i-heroicons-arrow-left-circle" :loading="isLoading" :disabled="isLoading" @click="cancel">
+          <UButton
+            color="gray"
+            icon="i-heroicons-arrow-left-circle"
+            :loading="isLoading"
+            :disabled="isLoading"
+            @click="cancel">
             <span class="hidden sm:block">Regresar</span>
           </UButton>
         </template>
@@ -210,30 +217,40 @@ const createUsers = async () => {
           class="my-3 px-3"
           size="xl">
           <template #file>
-            <div class="grid place-content-center" style="height: calc(100dvh - 330px);">
-              <UButton color="gray" icon="i-heroicons-folder-open" :disabled="isLoading" @click="open">
+            <div
+              class="grid place-content-center"
+              style="height: calc(100dvh - 330px);">
+              <UButton
+                color="gray"
+                icon="i-heroicons-folder-open"
+                :disabled="isLoading"
+                @click="open">
                 <span class="hidden sm:block">Cargar</span>
               </UButton>
             </div>
           </template>
           <template #table>
-            <div class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
+            <div
+              class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5"
+              style="height: calc(100dvh - 330px);">
               <UTable
                 :rows="computeRows"
                 :columns="columns"
                 :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
                 style="height: calc(100dvh - 390px);"
-                sort-mode="manual"/>
-              <UDivider/>
+                sort-mode="manual" />
+              <UDivider />
               <UPagination
                 v-model="page"
                 :page-count="pageCount"
                 :total="totalRows"
-                class="place-content-end p-2"/>
+                class="place-content-end p-2" />
             </div>
           </template>
           <template #mapping>
-            <div class="overflow-y-scroll px-5" style="height: calc(100dvh - 330px);">
+            <div
+              class="overflow-y-scroll px-5"
+              style="height: calc(100dvh - 330px);">
               <UCard class="mt-2">
                 <template #header>
                   <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
@@ -249,7 +266,9 @@ const createUsers = async () => {
                   </div>
                 </template>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4">
-                  <p class="text-gray-900 dark:text-white place-content-center">Email</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Email
+                  </p>
                   <USelectMenu
                     v-model="mapping.email"
                     class="col-span-2"
@@ -271,7 +290,9 @@ const createUsers = async () => {
                     icon="i-heroicons-envelope" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Nombres</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Nombres
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_name"
                     class="col-span-2"
@@ -293,7 +314,9 @@ const createUsers = async () => {
                     icon="i-heroicons-user" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Apellidos</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Apellidos
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_lastname"
                     searchable
@@ -315,7 +338,9 @@ const createUsers = async () => {
                     icon="i-heroicons-user" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Sexo</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Sexo
+                  </p>
                   <USelectMenu
                     v-model="mapping.user_sex"
                     searchable
@@ -337,7 +362,9 @@ const createUsers = async () => {
                     icon="i-heroicons-user" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Perfil</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Perfil
+                  </p>
                   <USelectMenu
                     v-model="mapping.sys_profile_id"
                     class="col-span-5"
@@ -351,7 +378,9 @@ const createUsers = async () => {
                     :options="profileOptionsFormatted" />
                 </div>
                 <div class="grid grid-cols-6 gap-1 sm:gap-5 px-2 sm:px-4 pt-2">
-                  <p class="text-gray-900 dark:text-white place-content-center">Organización</p>
+                  <p class="text-gray-900 dark:text-white place-content-center">
+                    Organización
+                  </p>
                   <USelectMenu
                     v-model="mapping.prefered_company_id"
                     class="col-span-5"
@@ -368,16 +397,30 @@ const createUsers = async () => {
             </div>
           </template>
           <template #validate>
-            <div v-if="!isValidated" class="grid place-content-center" style="height: calc(100dvh - 330px);">
-              <UButton  color="gray" icon="i-heroicons-shield-check" :disabled="isValidateDisabled" :loading="isLoading" @click="validateData">
+            <div
+              v-if="!isValidated"
+              class="grid place-content-center"
+              style="height: calc(100dvh - 330px);">
+              <UButton
+                color="gray"
+                icon="i-heroicons-shield-check"
+                :disabled="isValidateDisabled"
+                :loading="isLoading"
+                @click="validateData">
                 <span class="hidden sm:block">Validar</span>
               </UButton>
             </div>
-            <div v-if="isValidated" class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5" style="height: calc(100dvh - 330px);">
-              <BTabs v-model="validationTab" :items="validationTabs">
+            <div
+              v-if="isValidated"
+              class="border-2 border-grey-100 dark:border-primary-900 rounded-md mx-5"
+              style="height: calc(100dvh - 330px);">
+              <BTabs
+                v-model="validationTab"
+                :items="validationTabs">
                 <template #results>
                   <UDashboardCard
-                    v-for="(stat) in errorStats"
+                    v-for="(stat, index) in errorStats"
+                    :key="index"
                     class="rounded-none"
                     :title="stat.label"
                     :description="`Se encontraron ${stat.value} registros`"
@@ -393,17 +436,19 @@ const createUsers = async () => {
                     style="height: calc(100dvh - 430px);"
                     sort-mode="manual">
                     <template #errors-data="{ row }">
-                      <li v-for="error in row.errors">
+                      <li
+                        v-for="(error, index) in row.errors"
+                        :key="index">
                         <span class="text-red-500">{{ error.message }}</span>
                       </li>
                     </template>
                   </UTable>
-                  <UDivider/>
+                  <UDivider />
                   <UPagination
                     v-model="errorPage"
                     :page-count="pageCount"
                     :total="totalErrorRows"
-                    class="place-content-end p-2"/>
+                    class="place-content-end p-2" />
                 </template>
                 <template #valid>
                   <UTable
@@ -413,12 +458,12 @@ const createUsers = async () => {
                     style="height: calc(100dvh - 430px);"
                     sort-mode="manual">
                   </UTable>
-                  <UDivider/>
+                  <UDivider />
                   <UPagination
                     v-model="validPage"
                     :page-count="pageCount"
                     :total="totalValidRows"
-                    class="place-content-end p-2"/>
+                    class="place-content-end p-2" />
                 </template>
               </BTabs>
             </div>

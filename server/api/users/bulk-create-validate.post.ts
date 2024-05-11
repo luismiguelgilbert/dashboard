@@ -1,29 +1,28 @@
 import serverDB from '@/server/utils/db';
-import { object, array, string, boolean, number, date, type InferType } from 'yup';
+import { object, string, boolean } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import type { NuxtError } from '#app';
 
-import { bulkUsers } from "@/types/server/sys_users";
+import { bulkUsers } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => bulkUsers.cast(body))
+    const payload = await readValidatedBody(event, body => bulkUsers.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     const email_field = payload.mapping.email;
     const user_name_field = payload.mapping.user_name;
     const user_lastname_field = payload.mapping.user_lastname;
     const user_sex_field = payload.mapping.user_sex;
-    const sys_profile_id_field = payload.mapping.sys_profile_id;
-    const prefered_company_id_field = payload.mapping.prefered_company_id;
+    // const sys_profile_id_field = payload.mapping.sys_profile_id;
+    // const prefered_company_id_field = payload.mapping.prefered_company_id;
 
     //Get existing emails
-    const { rows } = await serverDB.query('select email from auth.users order by email')
+    const { rows } = await serverDB.query('select email from auth.users order by email');
     
     //Validations
-    let rowWithErros: any[] = [];
+    const rowWithErros: any[] = [];
     const userValidationSchema = object({
       email: string().email('Correo Electrónico no es válido.'),
       user_name: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
@@ -31,7 +30,7 @@ export default defineEventHandler( async (event) => {
       user_sex: boolean(),
     });
     payload.users?.forEach((row: any, index) => {
-      let errors = [];
+      const errors = [];
 
       //1) Validate if data has the correct schema
       const validationError = userValidationSchema.validateSync({
@@ -42,34 +41,34 @@ export default defineEventHandler( async (event) => {
       });
       if (!validationError) {
         errors.push(...validationError.error.issues);
-      };
+      }
       //2) Check if email is duplicated on same file (compares if mail is the same in a different row)
       const currentRowEmail = row[email_field].toLowerCase();
       const isDuplicate = payload.users?.some((item: any, idx) => item[email_field].toLowerCase() === currentRowEmail && index !== idx);
       if (isDuplicate) {
         errors.push({
-          code: "duplicated_email",
-          message: "Correo Electrónico duplicado.",
+          code: 'duplicated_email',
+          message: 'Correo Electrónico duplicado.',
         });
       }
       //3) Check if email already created in the Users table
       const isUser = rows.some((item: any) => item.email === currentRowEmail);
       if (isUser) {
         errors.push({
-          code: "existing_user",
-          message: "Correo Electrónico ya existe.",
+          code: 'existing_user',
+          message: 'Correo Electrónico ya existe.',
         });
       }
 
       rowWithErros.push({...row, errors});
     });
     return rowWithErros;
-  } catch(err: NuxtError | any) {
+  } catch(err) {
     await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({
       statusCode: err.statusCode ?? 500,
       statusMessage: `${err ?? 'Unhandled exception'}`,
     });
-  };
+  }
 });

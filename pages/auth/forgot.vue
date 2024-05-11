@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { FormError, FormGroupSize } from '#ui/types'
+import type { FormError, FormGroupSize } from '#ui/types';
 
-useHead({ title: 'BITT - Ingreso' })
+useHead({ title: 'BITT - Ingreso' });
 
 definePageMeta({
   layout: 'auth',
-})
+});
 
-const loading = ref<boolean>(false)
+const loading = ref<boolean>(false);
 
 const sizeXL: FormGroupSize = 'xl';
 const fields = [
@@ -19,18 +19,18 @@ const fields = [
     color: 'gray',
     size: sizeXL,
   }
-]
+];
 
 const validate = (state: any) => {
-  const errors: FormError[] = []
-  if (!state.email) errors.push({ path: 'email', message: 'Email es obligatorio' })
-  return errors
-}
+  const errors: FormError[] = [];
+  if (!state.email) errors.push({ path: 'email', message: 'Email es obligatorio' });
+  return errors;
+};
 
 const onSubmit = async (data: any) => {
-  console.info('onSubmit')
-  console.info(data)
-}
+  console.info('onSubmit');
+  console.info(data);
+};
 </script>
 
 <template>
@@ -48,7 +48,9 @@ const onSubmit = async (data: any) => {
         @submit="onSubmit"
       >
         <template #email-hint>
-          <NuxtLink to="/auth/login" class="text-primary font-medium">
+          <NuxtLink
+            to="/auth/login"
+            class="text-primary font-medium">
             Regresar al inicio de sesión
           </NuxtLink>
         </template>
