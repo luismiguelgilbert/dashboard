@@ -18,12 +18,14 @@ const props = defineProps({
 </script>
 
 <template>
+  <!-- :loading="props.loading" -->
   <UTable
     :rows="props.rows"
     :columns="columns"
-    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-    :progress="{color: 'primary', animation: 'carousel'}"
-    :loading="props.loading"
+    :ui="{ 
+      th: { base: 'sticky top-0 z-10 bg-white dark:bg-gray-900' },
+      divide: 'divide-gray-200 dark:divide-gray-800',
+    }"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #id-data="{ row }: { row: type_sys_users }">
@@ -58,12 +60,16 @@ const props = defineProps({
         : format(new Date(row.last_sign_in_at), 'dd MMM yyyy') : '' }}
     </template>
     <template #actions-data="{ row }: { row: type_sys_users }">
+      <!-- icon="i-heroicons-pencil-square" -->
       <UButton
-        icon="i-heroicons-pencil-square"
         variant="link"
         size="xl"
         class="text-primary-400 dark:text-primary-400"
-        @click="navigateTo(`/security/users/${row.id}`)" />
+        @click="navigateTo(`/security/users/${row.id}`)">
+        <font-awesome-icon
+          icon="fa-solid fa-square-pen"
+          size="lg" />
+      </UButton>
     </template>
   </UTable>
 </template>

@@ -2,7 +2,7 @@ import { ValidationError } from 'yup';
 import { userDataForm, type type_userDataForm, userCompaniesForm, type type_userCompaniesForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
-const toast = useToast();
+// const toast = useToast();
 
 export const useSecurityUsersForm = () => {
   const state = useState('useSecurityUsersForm', () => { return {
@@ -33,17 +33,17 @@ export const useSecurityUsersForm = () => {
     } catch (error) {
       state.value.isLoading = false;
       if (error instanceof ValidationError) {
-        const description = error.errors.map(m => `${m}<br />`).join('');
-        toast.add({
-          title: 'Datos incompletos',
-          description,
-          icon: 'i-heroicons-no-symbol',
-          color: 'rose',
-          ui: {
-            background: 'bg-red-100',
-          },
-          timeout: 1250 * error.errors.length,
-        });
+        // const description = error.errors.map(m => `${m}<br />`).join('');
+        // toast.add({
+        //   title: 'Datos incompletos',
+        //   description,
+        //   icon: 'i-heroicons-no-symbol',
+        //   color: 'rose',
+        //   ui: {
+        //     background: 'bg-red-100',
+        //   },
+        //   timeout: 1250 * error.errors.length,
+        // });
       }
       return false;
     }
