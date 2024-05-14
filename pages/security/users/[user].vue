@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
@@ -8,12 +9,7 @@ const { sessionData } = useUserSession();
 const route = useRoute();
 resetState();
 
-const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies', slot: 'companies', label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
-];
 const tab = ref<'basic'|'companies'>('basic');
-const isSaving = ref(false);
 const canSave = hasSessionPermission(PermissionsList.USERS_EDIT, sessionData.value.userMenuData!);
 state.value.isLoading = false;
 const systemUsersBasic = ref<InstanceType<typeof Basic>>();
@@ -32,9 +28,8 @@ state.value.userCompanies = dataCompanies.value?.map(company => company.id.toStr
 watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()); } });
 
 const save = async () => {
-  isSaving.value = true;
-  const isDataValid = await validateData();
-  if (isDataValid) {
+  const validationResult = await validateData();
+  if (validationResult.isDataValid) {
     // state.value.isLoading = true;
     // state.value.userData.should_validate = true;
     
@@ -90,7 +85,20 @@ const save = async () => {
     // } else {
     //   showInvalidFormData();
     // }
+    useToast().add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      timeout: 1500,
+    });
+    return;
   }
+  useToast().add({
+    title: 'Datos incompletos',
+    description: validationResult.error?.errors.map(m => `${m}<br />`).join(''),
+    icon: 'i-heroicons-exclamation-triangle',
+    color: 'rose',
+    timeout: 2000,
+  });
 };
 
 </script>
@@ -122,13 +130,12 @@ const save = async () => {
             <Basic
               ref="systemUsersBasic"
               :is-editing="true"
-              :loading="pending"
-              :saving="isSaving" />
+              :saving="state.isSaving"
+              :loading="pending" />
           </template>
           <template #companies>
             <Companies
-              :loading="pendingCompanies"
-              :saving="isSaving" />
+              :loading="pendingCompanies" />
           </template>
         </BTabs>
       </UDashboardPanelContent>

@@ -2,11 +2,11 @@ import { ValidationError } from 'yup';
 import { userDataForm, type type_userDataForm, userCompaniesForm, type type_userCompaniesForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
-// const toast = useToast();
 
 export const useSecurityUsersForm = () => {
   const state = useState('useSecurityUsersForm', () => { return {
     isLoading: false as boolean,
+    isSaving: false as boolean,
     data: {} as type_userDataForm,
     userCompanies: [] as type_userCompaniesForm,
     avatar: null as File|null,
@@ -21,31 +21,20 @@ export const useSecurityUsersForm = () => {
     state.value.profileOptions = [];
   };
 
-  const validateData = async () => {
+  const validateData = async (): Promise<{ isDataValid: boolean; error?: ValidationError | undefined; }> => {
     try {
       state.value.isLoading = true;
       await userDataForm.validate(state.value.data, { strict: true, abortEarly: false });
       await userCompaniesForm.validate(state.value.userCompanies, { strict: true, abortEarly: false });
-  
-      // return isUserDataValid && isCompaniesDataValid;
       state.value.isLoading = false;
-      return true;
+
+      return { isDataValid: true };
     } catch (error) {
       state.value.isLoading = false;
       if (error instanceof ValidationError) {
-        // const description = error.errors.map(m => `${m}<br />`).join('');
-        // toast.add({
-        //   title: 'Datos incompletos',
-        //   description,
-        //   icon: 'i-heroicons-no-symbol',
-        //   color: 'rose',
-        //   ui: {
-        //     background: 'bg-red-100',
-        //   },
-        //   timeout: 1250 * error.errors.length,
-        // });
+        return { isDataValid: false, error };
       }
-      return false;
+      return { isDataValid: false };
     }
   };
 

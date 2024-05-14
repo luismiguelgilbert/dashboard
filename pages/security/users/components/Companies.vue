@@ -12,15 +12,15 @@ const { state } = useSecurityUsersForm();
 const toast = useToast();
 
 const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
-  return state.value.userCompanies.some(company => company === selectedCompany.id);
+  return Boolean(state.value.userCompanies?.some(company => company === selectedCompany.id));
 };
 
 const toggleCompany = (selectedCompany: type_sys_companies): void => {
-  const isCompanyFound = state.value.userCompanies.some(company => company === selectedCompany.id);
+  const isCompanyFound = state.value.userCompanies?.some(company => company === selectedCompany.id);
   const isPreferredCompany = state.value.data.prefered_company_id === selectedCompany.id;
   if (isCompanyFound) {
     if (!isPreferredCompany) {
-      state.value.userCompanies = state.value.userCompanies.filter(company => company !== selectedCompany.id);
+      state.value.userCompanies = state.value.userCompanies?.filter(company => company !== selectedCompany.id);
     } else {
       toast.add({
         title: 'Organización preferida',
@@ -31,7 +31,9 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
       });
     }
   } else {
-    state.value.userCompanies.push(selectedCompany.id);
+    if (state.value.userCompanies) {
+      state.value.userCompanies.push(selectedCompany.id);
+    }
   }
 };
 //LOOKUP DATA

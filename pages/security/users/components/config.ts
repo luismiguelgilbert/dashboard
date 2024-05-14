@@ -59,6 +59,10 @@ export const actions: DropdownItemExtended[][] = [
     }
   ],
 ];
+export const tabs = [
+  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'companies', slot: 'companies', label: 'Compañías', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+];
 //Functions
 const downloadFile = async() => {
   try {

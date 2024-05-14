@@ -18,7 +18,7 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
       });
 
       return {
-        label: menu.name_es,
+        label: menu.name_es!,
         icon: menu.icon!,
         to: menu.id === '0' ? '/' : undefined,
         children: menu.id != '0' ? children : undefined,
@@ -34,8 +34,8 @@ if (!error.value && data.value) {
   sessionData.value.userMenuData = data.value.userMenu;
   //Preset colors:
   colorMode.preference = sessionData.value.userData.dark_enabled ? 'dark' : 'light';
-  appConfig.ui.primary = sessionData.value.userData.default_color;
-  appConfig.ui.gray = sessionData.value.userData.default_dark_color;
+  appConfig.ui.primary = sessionData.value.userData.default_color!;
+  appConfig.ui.gray = sessionData.value.userData.default_dark_color!;
   //Select default Company
   const defaultCompanyID = data.value.userCompanies?.find((company) => company.is_default)?.id;
   if (defaultCompanyID) {
@@ -74,8 +74,8 @@ if (!error.value && data.value) {
     </UDashboardPanel>
 
     <suspense>
-      <slot />
-      <!-- <NuxtPage /> -->
+      <NuxtPage />
+      <!-- <slot /> -->
       <!-- <Nuxt /> -->
     </suspense>
   </UDashboardLayout>

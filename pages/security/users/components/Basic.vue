@@ -35,8 +35,8 @@ const onFileChange = (e: Event) => {
 const onFileClick = () => { fileRef.value?.input.click(); };
 
 const toggleCompany = (selectedCompanyId: any) => {
-  const isCompanyFound = state.value.userCompanies.some(company => company === selectedCompanyId);
-  if (!isCompanyFound) {
+  const isCompanyFound = state.value.userCompanies?.some(company => company === selectedCompanyId);
+  if (!isCompanyFound && state.value.userCompanies) {
     state.value.userCompanies.push(selectedCompanyId);
   }
 };
@@ -45,7 +45,7 @@ const { data: profileOptionsData, pending: pendingProfiles } = await useLazyFetc
 state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disabled: !p.is_active })) ?? [];
 watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.profileOptions = newData; } });
 
-watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate(); }});
+watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate(); } });
 </script>
 
 <template>
@@ -155,6 +155,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           <USelectMenu
             v-model="state.data.sys_profile_id"
             searchable
+            required
             :loading="pendingProfiles"
             searchable-placeholder="Buscar rol..."
             placeholder="Seleccionar rol..."
