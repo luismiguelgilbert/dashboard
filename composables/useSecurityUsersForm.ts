@@ -1,5 +1,5 @@
 import { type type_userCompaniesForm } from '@/types/server/sys_users';
-import { type type_userPayload } from '@/types/server/sys_users';
+import { type type_userPayload, type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import { type type_sys_companies } from '@/types/server/sys_companies';
 
@@ -15,7 +15,10 @@ export const useSecurityUsersForm = () => {
   };});
 
   const resetState = () => { 
-    state.value.data = {} as type_userPayload;
+    state.value.data = {
+      userData: {} as type_userDataForm,
+      userCompanies: [],
+    };
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];

@@ -48,17 +48,6 @@ const save = async () => {
         method: 'PATCH',
         body,
       });
-      if (avatarError.value) {
-        useToast().add({
-          title: 'Error al guardar avatar',
-          description: avatarError.value?.message,
-          icon: 'i-heroicons-exclamation-triangle',
-          color: 'rose',
-          timeout: 0,
-        });
-        state.value.isLoading = false;
-        return;
-      }
     }
     //Notify and Redirect
     useToast().add({
@@ -73,11 +62,11 @@ const save = async () => {
       errorMessage = error.message;
     }
     useToast().add({
-      title: 'Datos incompletos',
+      title: 'Error',
       description: errorMessage,
       icon: 'i-heroicons-exclamation-triangle',
       color: 'rose',
-      timeout: 2000,
+      timeout: 5000,
     });
   } finally {
     state.value.isSaving = false;
