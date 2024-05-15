@@ -42,7 +42,9 @@ watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.comp
 
 <template>
   <SkeletonHeader v-if="props.loading" />
-  <div v-else>
+  <div
+    v-else
+    class="pl-6 pr-6 md:pl-2 md:pr-4 pt-4 md:pt-0">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4">
       <div class="col-span-1 sm:col-span-2 pt-1" />
       <div>
@@ -88,5 +90,6 @@ watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.comp
         </ul>
       </UCard>
     </div>
+    <br /> <br />
   </div>
 </template>

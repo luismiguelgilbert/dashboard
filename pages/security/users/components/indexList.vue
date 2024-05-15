@@ -46,11 +46,14 @@ defineProps({
           </div>
         </div>
         <UButton
-          class="ml-2"
-          icon="i-heroicons-pencil-square"
           variant="link"
-          color="gray"
-          @click="navigateTo(`/security/users/${row.id}`)" />
+          size="xl"
+          class="ml-2 mr-2 text-primary-400 dark:text-primary-400"
+          @click="navigateTo(`/security/users/${row.id}`)">
+          <font-awesome-icon
+            icon="fa-solid fa-square-pen"
+            size="lg" />
+        </UButton>
       </li>
     </ul>
   </div>

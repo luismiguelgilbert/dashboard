@@ -47,11 +47,6 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
           :filter-options="filter_options"
           :sort-options="sort_options" />
       </UDashboardToolbar>
-      <UProgress
-        class="block sm:hidden"
-        size="2xs"
-        :value="!pending ? 0: undefined"
-        :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
         <indexList
           v-if="data"

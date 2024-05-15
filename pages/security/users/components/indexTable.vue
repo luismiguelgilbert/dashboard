@@ -60,7 +60,6 @@ const props = defineProps({
         : format(new Date(row.last_sign_in_at), 'dd MMM yyyy') : '' }}
     </template>
     <template #actions-data="{ row }: { row: type_sys_users }">
-      <!-- icon="i-heroicons-pencil-square" -->
       <UButton
         variant="link"
         size="xl"

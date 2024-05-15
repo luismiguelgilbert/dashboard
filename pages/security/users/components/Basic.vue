@@ -53,6 +53,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
   <div v-else>
     <UForm
       ref="form"
+      class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
       :schema="userDataForm"
       :state="state.data.userData">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
