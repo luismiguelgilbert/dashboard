@@ -80,10 +80,12 @@ export const userDataForm = object({
   id: string(),
   user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
   user_lastname: string().required('Apellido es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
-  email: string().email().required('Email es requerido.'),
   user_sex: boolean(),
   avatar_url: string().optional().nullable(),
+  website: string().optional().nullable(),
+  email: string().email().required('Email es requerido.'),
   sys_profile_id: number().required('Debe seleccionar un Perfil.'),
+  sys_profile_name: string().optional().nullable(),
   dark_enabled: boolean(),
   default_color: string(),
   default_dark_color: string(),
@@ -91,13 +93,14 @@ export const userDataForm = object({
 });
 export type type_userDataForm = InferType<typeof userDataForm>;
 
-export const userCompaniesForm = array(string()).min(1, 'Debe seleccionar una Organización.');
+export const userCompaniesForm = array(string()).min(1, 'Debe seleccionar una Organización.').required('Debe seleccionar una Organización.');
 export type type_userCompaniesForm = InferType<typeof userCompaniesForm>;
 
-export const userBody = object({
+export const userPayload = object({
   userData: userDataForm,
   userCompanies: userCompaniesForm,
 });
+export type type_userPayload = InferType<typeof userPayload>;
 
 export type type_userBody = {
   userData: type_userDataForm,

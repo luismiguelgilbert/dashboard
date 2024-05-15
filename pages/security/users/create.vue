@@ -4,7 +4,7 @@ import { PermissionsList } from '~/types/client/permissionsEnum';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
 
-const { state, resetState, validateData } = useSecurityUsersForm();
+const { state, resetState } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
 
 const tab = ref<'basic'|'companies'>('basic');
@@ -20,8 +20,7 @@ const cancel = async () => {
 
 const save = async () => {
   state.value.isSaving = true;
-  const validationResult = await validateData();
-  if (validationResult.isDataValid) {
+  // if (validationResult.isDataValid) {
   // state.value.isLoading = true;
   // state.value.userData.should_validate = true;
   // let newUserId = null;
@@ -79,20 +78,21 @@ const save = async () => {
   // } else {
   //   showInvalidFormData();
   // }
-    useToast().add({
-      title: 'Datos guardados correctamente',
-      icon: 'i-heroicons-check-circle',
-      timeout: 1500,
-    });
-    return;
-  }
-  useToast().add({
-    title: 'Datos incompletos',
-    description: validationResult.error?.errors.map(m => `${m}<br />`).join(''),
-    icon: 'i-heroicons-check-circle',
-    color: 'rose',
-    timeout: 1250 * (validationResult.error?.errors?.length ?? 1),
-  });
+  //   useToast().add({
+  //     title: 'Datos guardados correctamente',
+  //     icon: 'i-heroicons-check-circle',
+  //     timeout: 1500,
+  //   });
+  //   return;
+  // }
+  // state.value.isSaving = false;
+  // useToast().add({
+  //   title: 'Datos incompletos',
+  //   description: validationResult.error?.errors.map(m => `${m}<br />`).join(''),
+  //   icon: 'i-heroicons-check-circle',
+  //   color: 'rose',
+  //   timeout: 1250 * (validationResult.error?.errors?.length ?? 1),
+  // });
 };
 </script>
 

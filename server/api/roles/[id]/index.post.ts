@@ -25,9 +25,9 @@ export default defineEventHandler( async (event) => {
 
     let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id,	sys_link_id) values ';
     payload.profileLinks?.forEach((link) => {
-      sqlLinksInsert += `('${id}', '${link}'),`;
+      sqlLinksInsert += `('${id}', '${link}') `;
     });
-    sqlLinksInsert = sqlLinksInsert.replace(/,$/, '');
+    sqlLinksInsert = sqlLinksInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlLinksInsert);
     
     await serverDB.query('COMMIT');

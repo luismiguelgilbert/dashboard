@@ -3,13 +3,13 @@ import { serverSupabaseServiceRole } from '#supabase/server';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 
-import { userBody } from '@/types/server/sys_users';
+import { userPayload } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
   try {
     event.context.params = useSanitizeParams(event.context.params);
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => userBody.cast(body));
+    const payload = await readValidatedBody(event, body => userPayload.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
 
     //UserData sanitization
@@ -81,9 +81,9 @@ export default defineEventHandler( async (event) => {
 
     let sqlCompaniesInsert = 'insert into sys_companies_users (sys_company_id, user_id) values ';
     payload.userCompanies?.forEach((company) => {
-      sqlCompaniesInsert += `('${company}', '${id}'),`;
+      sqlCompaniesInsert += `('${company}', '${id}') `;
     });
-    sqlCompaniesInsert = sqlCompaniesInsert.replace(/,$/, '');
+    sqlCompaniesInsert = sqlCompaniesInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlCompaniesInsert);
 
     const sqlUpdateDefaultCompany = `update sys_companies_users 

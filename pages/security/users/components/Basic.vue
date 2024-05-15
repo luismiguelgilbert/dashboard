@@ -29,7 +29,7 @@ const onFileChange = (e: Event) => {
   if (!input.files?.length) { return; }
   if (input.files[0].size / 1024 / 1024 > 1) { return; }
   state.value.avatar = input.files[0];
-  state.value.data.avatar_url = URL.createObjectURL(input.files[0]);
+  state.value.data.userData.avatar_url = URL.createObjectURL(input.files[0]);
 };
 
 const onFileClick = () => { fileRef.value?.input.click(); };
@@ -54,7 +54,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
     <UForm
       ref="form"
       :schema="userDataForm"
-      :state="state.data">
+      :state="state.data.userData">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
         <div class="col-span-1 sm:col-span-2 pt-1" />
         <div>
@@ -69,7 +69,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="email">
           <UInput
-            v-model:model-value="state.data.email"
+            v-model:model-value="state.data.userData.email"
             placeholder="Email del Usuario"
             icon="i-heroicons-envelope"
             error
@@ -91,7 +91,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="user_name">
           <UInput
-            v-model:model-value="state.data.user_name"
+            v-model:model-value="state.data.userData.user_name"
             required
             placeholder="Nombres del Usuario"
             icon="i-heroicons-user"
@@ -112,7 +112,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="user_lastname">
           <UInput
-            v-model:model-value="state.data.user_lastname"
+            v-model:model-value="state.data.userData.user_lastname"
             required
             placeholder="Apellidos del Usuario"
             icon="i-heroicons-user"
@@ -133,11 +133,11 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="user_sex">
           <UToggle
-            v-model="state.data.user_sex"
+            v-model="state.data.userData.user_sex"
             :disabled="state.isLoading" />
           <span
             class="ml-5"
-            style="vertical-align: text-bottom;">{{ state.data.user_sex ? 'Hombre' : 'Mujer' }}</span>
+            style="vertical-align: text-bottom;">{{ state.data.userData.user_sex ? 'Hombre' : 'Mujer' }}</span>
         </UFormGroup>
         
         <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -153,7 +153,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="sys_profile_id">
           <USelectMenu
-            v-model="state.data.sys_profile_id"
+            v-model="state.data.userData.sys_profile_id"
             searchable
             required
             :loading="pendingProfiles"
@@ -178,7 +178,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="prefered_company_id">
           <USelectMenu
-            v-model="state.data.prefered_company_id"
+            v-model="state.data.userData.prefered_company_id"
             searchable
             :loading="state.isLoading"
             searchable-placeholder="Buscar organización..."
@@ -204,8 +204,8 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           name="avatar_url">
           <div class="flex items-center">
             <UAvatar
-              :src="state.data.avatar_url!"
-              :alt="state.data.user_lastname"
+              :src="state.data.userData.avatar_url!"
+              :alt="state.data.userData.user_lastname"
               size="lg" />
             <UButton
               label="Seleccionar"
@@ -235,13 +235,13 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="dark_enabled">
           <UToggle
-            v-model="state.data.dark_enabled"
+            v-model="state.data.userData.dark_enabled"
             on-icon="i-heroicons-moon"
             off-icon="i-heroicons-sun"
             :disabled="state.isLoading" />
           <span
             class="ml-5"
-            style="vertical-align: text-bottom;">{{ state.data.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
+            style="vertical-align: text-bottom;">{{ state.data.userData.dark_enabled ? 'Oscuro' : 'Claro' }}</span>
         </UFormGroup>
         
         <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
@@ -257,7 +257,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="default_dark_color">
           <USelectMenu
-            v-model="state.data.default_dark_color"
+            v-model="state.data.userData.default_dark_color"
             size="xl"
             icon="i-heroicons-moon"
             :options="darkColors"
@@ -277,7 +277,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           size="xl"
           name="default_dark_color">
           <USelectMenu
-            v-model="state.data.default_color"
+            v-model="state.data.userData.default_color"
             size="xl"
             icon="i-heroicons-swatch"
             :options="colors"
@@ -297,7 +297,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
         </div>
         <UInput
           v-if="isEditing"
-          v-model:model-value="state.data.id"
+          v-model:model-value="state.data.userData.id"
           required
           label="Código"
           size="xl"

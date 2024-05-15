@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import { userPayload } from '@/types/server/sys_users';
 import Basic from './components/Basic.vue';
 import Companies from './components/Companies.vue';
 
-const { state, resetState, validateData } = useSecurityUsersForm();
+const { state, resetState } = useSecurityUsersForm();
 const { sessionData } = useUserSession();
 const route = useRoute();
 resetState();
@@ -20,87 +21,70 @@ const cancel = async () => {
 };
 
 const { data, pending } = await useLazyFetch(`/api/users/:${route.params.user}`);
-state.value.data = data.value?.[0]!;
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
+state.value.data.userData = data.value?.[0]!;
+watch(data, (newData) => { if (newData?.length) { state.value.data.userData = newData[0]; } });
 
 const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch(`/api/users/:${route.params.user}/companies`);
-state.value.userCompanies = dataCompanies.value?.map(company => company.id.toString()) ?? [];
-watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()); } });
+state.value.data.userCompanies = dataCompanies.value?.map(company => company.id.toString()) ?? [];
+watch(dataCompanies, (newData) => { if (newData?.length) { state.value.data.userCompanies = newData.map(company => company.id.toString()); } });
 
 const save = async () => {
-  const validationResult = await validateData();
-  if (validationResult.isDataValid) {
-    // state.value.isLoading = true;
-    // state.value.userData.should_validate = true;
-    
-    // //Upload Data
-    // if (isDataValid) {
-    //   const { error } = await useFetch(`/api/users/${route.params.id}`, {
-    //     method: 'PATCH',
-    //     body: {
-    //       userData: state.value.userData,
-    //       userCompanies: state.value.userCompanies,
-    //     },
-    //   });
-    //   if (error.value) {
-    //     toast.add({
-    //       title: 'Error al guardar',
-    //       description: error.value?.message,
-    //       icon: 'i-heroicons-exclamation-triangle',
-    //       color: 'rose',
-    //       timeout: 0,
-    //     });
-    //     state.value.isLoading = false;
-    //     return;
-    //   }
-    //   //Upload Avatar
-    //   if (state.value.avatar) {
-    //     const body = new FormData();
-    //     body.append('file', state.value.avatar);
-    //     const { error: avatarError } = await useFetch(`/api/users/${route.params.id}/avatar`, {
-    //       method: 'PATCH',
-    //       body,
-    //     });
-    //     if (avatarError.value) {
-    //       toast.add({
-    //         title: 'Error al guardar avatar',
-    //         description: avatarError.value?.message,
-    //         icon: 'i-heroicons-exclamation-triangle',
-    //         color: 'rose',
-    //         timeout: 0,
-    //       });
-    //       state.value.isLoading = false;
-    //       return;
-    //     }
-    //   }
-  
-    //   toast.add({
-    //     title: 'Datos guardados correctamente',
-    //     icon: 'i-heroicons-check-circle',
-    //     color: 'primary',
-    //     timeout: 2000,
-    //   });
-    //   await navigateTo('/security/users');
-    //   state.value.isLoading = false;
-    // } else {
-    //   showInvalidFormData();
-    // }
+  const { start, finish } = useLoadingIndicator();
+  try {
+    start();
+    state.value.isLoading = true;
+    state.value.isSaving = true;
+    await userPayload.validate(state.value.data);
+    //Update User
+    await $fetch(`/api/users/:${route.params.user}`, {
+      method: 'patch',
+      body: state.value.data,
+    });  
+    //Upload Avatar
+    if (state.value.avatar) {
+      const body = new FormData();
+      body.append('file', state.value.avatar);
+      await $fetch(`/api/users/:${route.params.id}/avatar`, {
+        method: 'PATCH',
+        body,
+      });
+      if (avatarError.value) {
+        useToast().add({
+          title: 'Error al guardar avatar',
+          description: avatarError.value?.message,
+          icon: 'i-heroicons-exclamation-triangle',
+          color: 'rose',
+          timeout: 0,
+        });
+        state.value.isLoading = false;
+        return;
+      }
+    }
+    //Notify and Redirect
     useToast().add({
       title: 'Datos guardados correctamente',
       icon: 'i-heroicons-check-circle',
       timeout: 1500,
     });
-    return;
+    await navigateTo('/security/users');
+  } catch(error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Datos incompletos',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 2000,
+    });
+  } finally {
+    state.value.isSaving = false;
+    state.value.isLoading = false;
+    finish();
   }
-  useToast().add({
-    title: 'Datos incompletos',
-    description: validationResult.error?.errors.map(m => `${m}<br />`).join(''),
-    icon: 'i-heroicons-exclamation-triangle',
-    color: 'rose',
-    timeout: 2000,
-  });
 };
-
 </script>
 
 <template>

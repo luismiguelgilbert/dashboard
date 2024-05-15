@@ -12,15 +12,15 @@ const { state } = useSecurityUsersForm();
 const toast = useToast();
 
 const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
-  return Boolean(state.value.userCompanies?.some(company => company === selectedCompany.id));
+  return Boolean(state.value.data.userCompanies.some(company => company === selectedCompany.id));
 };
 
 const toggleCompany = (selectedCompany: type_sys_companies): void => {
-  const isCompanyFound = state.value.userCompanies?.some(company => company === selectedCompany.id);
-  const isPreferredCompany = state.value.data.prefered_company_id === selectedCompany.id;
+  const isCompanyFound = state.value.data.userCompanies?.some(company => company === selectedCompany.id);
+  const isPreferredCompany = state.value.data.userData.prefered_company_id === selectedCompany.id;
   if (isCompanyFound) {
     if (!isPreferredCompany) {
-      state.value.userCompanies = state.value.userCompanies?.filter(company => company !== selectedCompany.id);
+      state.value.data.userCompanies = state.value.data.userCompanies.filter(company => company !== selectedCompany.id);
     } else {
       toast.add({
         title: 'Organización preferida',
@@ -31,13 +31,11 @@ const toggleCompany = (selectedCompany: type_sys_companies): void => {
       });
     }
   } else {
-    if (state.value.userCompanies) {
-      state.value.userCompanies.push(selectedCompany.id);
-    }
+    state.value.data.userCompanies.push(selectedCompany.id);
   }
 };
 //LOOKUP DATA
-const { data: companyOptionsData } = await useLazyFetch<type_sys_companies[]>('/api/lookups/sys_companies');
+const { data: companyOptionsData } = await useLazyFetch('/api/lookups/sys_companies');
 state.value.companyOptions = companyOptionsData.value ?? [];
 watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.companyOptions = newData; } });
 </script>

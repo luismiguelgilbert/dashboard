@@ -1,14 +1,16 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { userBody } from '@/types/server/sys_users';
+import { userPayload } from '@/types/server/sys_users';
 
 export default defineEventHandler( async (event) => {
   try{
     event.context.params = useSanitizeParams(event.context.params);
     const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => userBody.cast(body));
+    const body = await readBody(event);
+    await userPayload.validate(body, { strict: true, abortEarly: false });
+    const payload = await userPayload.cast(body);
     await hasUserPermission(userSessionId, PermissionsList.USERS_EDIT);
 
     //UserData sanitization
@@ -37,7 +39,6 @@ export default defineEventHandler( async (event) => {
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
-
     //Update Profiles
     const sqlProfilesDelete = `delete from sys_profiles_users WHERE user_id = '${id}'`;
     await serverDB.query(sqlProfilesDelete);
@@ -48,12 +49,11 @@ export default defineEventHandler( async (event) => {
     //Update Companies
     const sqlSysCompaniesDelete = `delete from sys_companies_users WHERE user_id = '${id}'`;
     await serverDB.query(sqlSysCompaniesDelete);
-
     let sqlCompaniesInsert = 'insert into sys_companies_users (sys_company_id, user_id) values ';
     payload.userCompanies?.forEach((company) => {
-      sqlCompaniesInsert += `('${company}', '${id}'),`;
+      sqlCompaniesInsert += `('${company}', '${id}') `;
     });
-    sqlCompaniesInsert = sqlCompaniesInsert.replace(/,$/, '');
+    sqlCompaniesInsert = sqlCompaniesInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlCompaniesInsert);
 
     const sqlUpdateDefaultCompany = `update sys_companies_users 
@@ -65,11 +65,8 @@ export default defineEventHandler( async (event) => {
     await serverDB.query('COMMIT');
     return { id: id };
   } catch(err) {
-    await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });
