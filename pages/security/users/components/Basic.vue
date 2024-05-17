@@ -24,12 +24,11 @@ const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5'
 const fileRef = ref<{ input: HTMLInputElement }>();
 const form = ref();
 
-const onFileChange = (e: Event) => {
-  const input = e.target as HTMLInputElement;
-  if (!input.files?.length) { return; }
-  if (input.files[0].size / 1024 / 1024 > 1) { return; }
-  state.value.avatar = input.files[0];
-  state.value.data.userData.avatar_url = URL.createObjectURL(input.files[0]);
+const onFileChange = (e: FileList) => {
+  if (!e.length) { return; }
+  if (e[0].size / 1024 / 1024 > 1) { return; }
+  state.value.avatar = e[0];
+  state.value.data.userData.avatar_url = URL.createObjectURL(e[0]);
 };
 
 const onFileClick = () => { fileRef.value?.input.click(); };
@@ -43,7 +42,7 @@ const toggleCompany = (selectedCompanyId: any) => {
 //LOOKUP DATA
 const { data: profileOptionsData, pending: pendingProfiles } = await useLazyFetch<type_sys_profiles[]>('/api/lookups/sys_profiles');
 state.value.profileOptions = profileOptionsData.value?.map(p => ({ ...p, disabled: !p.is_active })) ?? [];
-watch(profileOptionsData, (newData) => { if (newData?.length) { state.value.profileOptions = newData; } });
+watch(profileOptionsData, (newData) => { state.value.profileOptions = newData?.map(p => ({ ...p, disabled: !p.is_active })) ?? []; });
 
 watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate(); } });
 </script>

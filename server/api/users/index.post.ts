@@ -31,9 +31,9 @@ export default defineEventHandler( async (event) => {
     const text = `
       select
       a.id,
-      INITCAP(b.user_name) as user_name,
-      INITCAP(b.user_lastname) as user_lastname,
-      b.user_sex,
+      COALESCE(INITCAP(b.user_name),'') as user_name,
+      COALESCE(INITCAP(b.user_lastname),'') as user_lastname,
+      COALESCE(b.user_sex, false) as user_sex,
       b.avatar_url,
       b.website,
       a.email,

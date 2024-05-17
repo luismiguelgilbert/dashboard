@@ -13,28 +13,17 @@ export default defineEventHandler( async (event) => {
     const payload = await userPayload.cast(body);
     await hasUserPermission(userSessionId, PermissionsList.USERS_EDIT);
 
-    //UserData sanitization
-    const user_name = payload.userData.user_name ? `'${payload.userData.user_name}'` : null;
-    const user_lastname = payload.userData.user_lastname ? `'${payload.userData.user_lastname}'` : null;
-    const user_sex = payload.userData.user_sex;
-    const avatar_url = payload.userData.avatar_url ? `'${payload.userData.avatar_url}'` : null;
-    const sys_profile_id = payload.userData.sys_profile_id ? `${payload.userData.sys_profile_id}` : null;
-    const dark_enabled = payload.userData.dark_enabled;
-    const default_color = payload.userData.default_color ? `'${payload.userData.default_color}'` : 'indigo';
-    const default_dark_color = payload.userData.default_dark_color ? `'${payload.userData.default_dark_color}'` : 'zinc';
-    const prefered_company_id = payload.userData.prefered_company_id ? `'${payload.userData.prefered_company_id}'` : null;
-
     //Process
     await serverDB.query('BEGIN');
     
+    //,avatar_url = COALESCE(${payload.userData.avatar_url?.replace(/(this)/gi, "'$1'") ?? null}, avatar_url)
     const sqlUpdateUserData = `update sys_users set
-       user_name = COALESCE(${user_name}, user_name)
-      ,user_lastname = COALESCE(${user_lastname}, user_lastname)
-      ,user_sex = COALESCE(${user_sex}, user_sex)
-      ,avatar_url = COALESCE(${avatar_url}, avatar_url)
-      ,dark_enabled = COALESCE(${dark_enabled}, dark_enabled)
-      ,default_color = COALESCE(${default_color}, default_color)
-      ,default_dark_color = COALESCE(${default_dark_color}, default_dark_color)
+       user_name = COALESCE('${payload.userData.user_name}', user_name)
+      ,user_lastname = COALESCE('${payload.userData.user_lastname}', user_lastname)
+      ,user_sex = COALESCE(${payload.userData.user_sex ?? false}, user_sex)
+      ,dark_enabled = COALESCE(${payload.userData.dark_enabled ?? false}, dark_enabled)
+      ,default_color = COALESCE('${payload.userData.default_color ?? 'indigo'}', default_color)
+      ,default_dark_color = COALESCE('${payload.userData.default_dark_color ?? 'zinc'}', default_dark_color)
       ,updated_at = now()
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
@@ -43,7 +32,8 @@ export default defineEventHandler( async (event) => {
     const sqlProfilesDelete = `delete from sys_profiles_users WHERE user_id = '${id}'`;
     await serverDB.query(sqlProfilesDelete);
 
-    const sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id) values (${sys_profile_id}, '${id}')`;
+    const sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id)
+      values (${payload.userData.sys_profile_id}, '${id}')`;
     await serverDB.query(sqlProfileInsert);
     
     //Update Companies
@@ -56,11 +46,13 @@ export default defineEventHandler( async (event) => {
     sqlCompaniesInsert = sqlCompaniesInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlCompaniesInsert);
 
-    const sqlUpdateDefaultCompany = `update sys_companies_users 
-      set is_default = true 
-      where user_id = '${id}'
-      and sys_company_id = ${prefered_company_id}`;
-    await serverDB.query(sqlUpdateDefaultCompany);
+    if (payload.userData.prefered_company_id) {
+      const sqlUpdateDefaultCompany = `update sys_companies_users 
+        set is_default = true 
+        where user_id = '${id}'
+        and sys_company_id = '${payload.userData.prefered_company_id}'`;
+      await serverDB.query(sqlUpdateDefaultCompany);
+    }
     
     await serverDB.query('COMMIT');
     return { id: id };

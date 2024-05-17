@@ -44,7 +44,7 @@ const save = async () => {
     if (state.value.avatar) {
       const body = new FormData();
       body.append('file', state.value.avatar);
-      await $fetch(`/api/users/:${route.params.id}/avatar`, {
+      await $fetch(`/api/users/:${route.params.user}/avatar`, {
         method: 'PATCH',
         body,
       });
