@@ -40,23 +40,26 @@ const props = defineProps({
     <template #is_active-data="{ row }: { row: type_sys_profiles }">
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"
-        :color="row.is_active ? 'green' : 'red'"
-        variant="subtle"
+        :color="row.is_active ? 'primary' : 'red'"
+        variant="soft"
         class="capitalize"
       />
     </template>
-    <template #updated_at-data="{ row }">
-      <div class="text-sm font-light dark:text-white text-black">
-        {{ isToday(new Date(row.updated_at!)) ? format(new Date(row.updated_at!), 'HH:mm') : format(new Date(row.updated_at!), 'dd MMM') }}
-      </div>
+    <template #updated_at-data="{ row }: { row: type_sys_profiles }">
+      {{ (row.updated_at) ? isToday(new Date(row.updated_at))
+        ? `Hoy ${format(new Date(row.updated_at), 'HH:mm')}`
+        : format(new Date(row.updated_at), 'dd MMM yyyy') : '' }}
     </template>
     <template #actions-data="{ row }: { row: type_sys_profiles }">
       <UButton
-        icon="i-heroicons-pencil-square"
         variant="link"
         size="xl"
         class="text-primary-400 dark:text-primary-400"
-        @click="navigateTo(`/security/roles/${row.id}`)" />
+        @click="navigateTo(`/security/roles/${row.id}`)">
+        <font-awesome-icon
+          icon="fa-solid fa-square-pen"
+          size="lg" />
+      </UButton>
     </template>
   </UTable>
 </template>

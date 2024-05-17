@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { actions, module, title } from './components/config';
-import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles';
+import { filter_options, sort_options } from '@/types/server/sys_profiles';
 import indexTable from './components/indexTable.vue';
 import indexList from './components/indexList.vue';
 
 useHead({ title });
 const { state } = useSecurityRoles();
 const { sessionData } = useUserSession();
-const rows = ref<type_sys_profiles[]>([]);
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
-
-const { data, error, pending } = await useLazyFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.value.filterPayload });
-if (!error.value && data.value) { rows.value = data.value; }
+const { data, pending } = await useLazyFetch('/api/roles', { method: 'post', body: state.value.filterPayload });
+const { start, finish } = useLoadingIndicator();
+watch( () => pending.value, () => { pending.value ? start() : finish(); });
 </script>
 
 <template>
@@ -48,11 +47,6 @@ if (!error.value && data.value) { rows.value = data.value; }
           :filter-options="filter_options"
           :sort-options="sort_options" />
       </UDashboardToolbar>
-      <UProgress
-        class="block sm:hidden"
-        size="2xs"
-        :value="!pending ? 0: undefined"
-        :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
         <indexList
           v-if="data"
