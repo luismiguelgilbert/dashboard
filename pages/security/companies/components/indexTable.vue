@@ -8,20 +8,17 @@ const props = defineProps({
     required: false,
     default: () => []
   },
-  loading: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
 });
 </script>
 
 <template>
   <UTable
-    :rows="rows"
+    :rows="props.rows"
     :columns="columns"
-    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-    :loading="props.loading"
+    :ui="{ 
+      th: { base: 'sticky top-0 z-10 bg-white dark:bg-gray-900' },
+      divide: 'divide-gray-200 dark:divide-gray-800',
+    }"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #id-data="{ row }: { row: type_sys_companies }">
@@ -33,7 +30,7 @@ const props = defineProps({
           height="15"
           class="ml-1 mt-1 rounded" />
         <UAvatar
-          v-else
+          v-else-if="row.name_es_short"
           size="xs">
           {{ row.name_es_short[0] }}
         </UAvatar>
@@ -45,18 +42,21 @@ const props = defineProps({
     <template #is_active-data="{ row }: { row: type_sys_companies }">
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"
-        :color="row.is_active ? 'green' : 'red'"
-        variant="subtle"
+        :color="row.is_active ? 'primary' : 'red'"
+        variant="soft"
         class="capitalize"
       />
     </template>
     <template #actions-data="{ row }: { row: type_sys_companies }">
       <UButton
-        icon="i-heroicons-pencil-square"
         variant="link"
         size="xl"
         class="text-primary-400 dark:text-primary-400"
-        @click="navigateTo(`/security/companies/${row.id}`)" />
+        @click="navigateTo(`/security/companies/${row.id}`)">
+        <font-awesome-icon
+          icon="fa-solid fa-square-pen"
+          size="lg" />
+      </UButton>
     </template>
   </UTable>
 </template>

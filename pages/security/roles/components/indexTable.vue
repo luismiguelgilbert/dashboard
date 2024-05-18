@@ -34,6 +34,11 @@ const props = defineProps({
         </div>
       </div>
     </template>
+    <template #user_count-data="{ row }: { row: type_sys_profiles }">
+      <div class="w-12 text-right">
+        {{ row.user_count }}
+      </div>
+    </template>
     <template #is_active-data="{ row }: { row: type_sys_profiles }">
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"

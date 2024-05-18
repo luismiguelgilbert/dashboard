@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { actions, module, title } from './components/config';
-import { filter_options, sort_options } from '@/types/server/sys_profiles';
-import { type type_sys_profiles } from '@/types/server/sys_profiles';
+import { filter_options, sort_options, type type_sys_profiles } from '@/types/server/sys_profiles';
 import indexTable from './components/indexTable.vue';
 import indexList from './components/indexList.vue';
 

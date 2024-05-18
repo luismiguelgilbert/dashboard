@@ -12,7 +12,8 @@ export const columns = [
   {
     key: 'user_count',
     label: '# Usuarios',
-    sortable: false
+    sortable: false,
+    class: 'whitespace-nowrap'
   },
   {
     key: 'is_active',
