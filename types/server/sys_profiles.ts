@@ -2,7 +2,7 @@ import { object, array, string, boolean, number, date, type InferType } from 'yu
 
 export const sys_profiles = object({
   id: number().default(0),
-  name_es: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  name_es: string().required().min(3, 'Nombre debe incluir 3 o más caracteres.'),
   is_active: boolean().default(true),
   created_at: date(),
   updated_at: date(),

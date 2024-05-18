@@ -5,20 +5,14 @@ import { format, isToday } from 'date-fns';
 
 const props = defineProps({
   rows: {
-    type: Array<type_sys_users>,
-    required: false,
-    default: () => []
-  },
-  loading: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
+  type: Array<type_sys_users>,
+  required: false,
+  default: () => []
+}
 });
 </script>
 
 <template>
-  <!-- :loading="props.loading" -->
   <UTable
     :rows="props.rows"
     :columns="columns"

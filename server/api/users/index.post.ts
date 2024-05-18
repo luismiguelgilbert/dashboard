@@ -55,7 +55,7 @@ export default defineEventHandler( async (event) => {
       LIMIT ${pageSize}
     `;
     const data = await serverDB.query(text);
-    return array(sys_users).cast(data.rows);
+    return await array(sys_users).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

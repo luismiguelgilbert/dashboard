@@ -8,21 +8,18 @@ const props = defineProps({
     type: Array<type_sys_profiles>,
     required: false,
     default: () => []
-  },
-  loading: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
+  }
 });
 </script>
 
 <template>
   <UTable
-    :rows="rows"
+    :rows="props.rows"
     :columns="columns"
-    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-    :loading="props.loading"
+    :ui="{ 
+      th: { base: 'sticky top-0 z-10 bg-white dark:bg-gray-900' },
+      divide: 'divide-gray-200 dark:divide-gray-800',
+    }"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
     <template #name_es-data="{ row }: { row: type_sys_profiles }">

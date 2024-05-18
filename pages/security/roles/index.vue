@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { actions, module, title } from './components/config';
 import { filter_options, sort_options } from '@/types/server/sys_profiles';
+import { type type_sys_profiles } from '@/types/server/sys_profiles';
 import indexTable from './components/indexTable.vue';
 import indexList from './components/indexList.vue';
 
@@ -8,7 +9,7 @@ useHead({ title });
 const { state } = useSecurityRoles();
 const { sessionData } = useUserSession();
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
-const { data, pending } = await useLazyFetch('/api/roles', { method: 'post', body: state.value.filterPayload });
+const { data, pending } = await useLazyFetch<type_sys_profiles[]>('/api/roles', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 </script>

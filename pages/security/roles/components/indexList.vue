@@ -30,27 +30,29 @@ defineProps({
             <p class="text-sm truncate font-semibold leading-6">
               {{ row.name_es }}
             </p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-gray-300">
               Usuarios: {{ row.user_count }}
             </p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-gray-300">
               Creado: {{ isToday(new Date(row.created_at!)) ? format(new Date(row.created_at!), 'HH:mm') : format(new Date(row.created_at!), 'dd MMM') }}
               / Actualizado: {{ isToday(new Date(row.updated_at!)) ? format(new Date(row.updated_at!), 'HH:mm') : format(new Date(row.updated_at!), 'dd MMM') }}
             </p>
             <UButton
               :label="row.is_active? 'activo' : 'inactivo'"
-              :color="row.is_active ? 'green' : 'red'"
+              :color="row.is_active ? 'primary' : 'red'"
               variant="link"
               class="capitalize p-0" />
           </div>
         </div>
-        
         <UButton
-          class="ml-2"
-          icon="i-heroicons-pencil-square"
           variant="link"
-          color="gray"
-          @click="navigateTo(`/security/roles/${row.id}`)" />
+          size="xl"
+          class="text-primary-400 dark:text-primary-400"
+          @click="navigateTo(`/security/roles/${row.id}`)">
+          <font-awesome-icon
+            icon="fa-solid fa-square-pen"
+            size="lg" />
+        </UButton>
       </li>
     </ul>
   </div>
