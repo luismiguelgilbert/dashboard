@@ -18,7 +18,7 @@ defineProps({
       <li
         v-for="(row, index) in rows"
         :key="index"
-        class="flex justify-between gap-x-6 py-5">
+        class="flex justify-between gap-x-6 py-2">
         <div class="flex min-w-0 gap-x-4">
           <div class="pl-2">
             <NuxtImg 
@@ -34,13 +34,13 @@ defineProps({
             </UAvatar>
           </div>
           <div class="min-w-0 flex-auto">
-            <p class="text-sm font-semibold leading-6">
+            <p class="text-sm font-semibold leading-6 text-gray-500 dark:text-gray-300">
               {{ row.user_name }} {{ row.user_lastname }}
             </p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+            <p class="mt-1 truncate text-sm leading-5 ">
               {{ row.email }}
             </p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500 dark:text-gray-300">
               {{ row.sys_profile_name }}
             </p>
           </div>
@@ -48,7 +48,7 @@ defineProps({
         <UButton
           variant="link"
           size="xl"
-          class="ml-2 mr-2 text-primary-400 dark:text-primary-400"
+          class="text-primary-400 dark:text-primary-400"
           @click="navigateTo(`/security/users/${row.id}`)">
           <font-awesome-icon
             icon="fa-solid fa-square-pen"

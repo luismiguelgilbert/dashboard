@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { colors, darkColors } from '@/components/home/config';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { userDataForm } from '@/types/server/sys_users';
 import { type type_sys_profiles } from '@/types/server/sys_profiles';
 
@@ -20,6 +21,8 @@ const props = defineProps({
 });
 
 const { state } = useSecurityUsersForm();
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
+const inputSize = computed(() => isMobile.value ? 'lg' : 'xl');
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const fileRef = ref<{ input: HTMLInputElement }>();
 const form = ref();
@@ -66,7 +69,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="email">
           <UInput
             v-model:model-value="state.data.userData.email"
@@ -88,7 +91,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="user_name">
           <UInput
             v-model:model-value="state.data.userData.user_name"
@@ -109,7 +112,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="user_lastname">
           <UInput
             v-model:model-value="state.data.userData.user_lastname"
@@ -130,7 +133,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="user_sex">
           <UToggle
             v-model="state.data.userData.user_sex"
@@ -150,7 +153,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="sys_profile_id">
           <USelectMenu
             v-model="state.data.userData.sys_profile_id"
@@ -175,7 +178,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="prefered_company_id">
           <USelectMenu
             v-model="state.data.userData.prefered_company_id"
@@ -200,7 +203,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="avatar_url">
           <div class="flex items-center">
             <UAvatar
@@ -232,7 +235,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="dark_enabled">
           <UToggle
             v-model="state.data.userData.dark_enabled"
@@ -254,11 +257,10 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="default_dark_color">
           <USelectMenu
             v-model="state.data.userData.default_dark_color"
-            size="xl"
             icon="i-heroicons-moon"
             :options="darkColors"
             :loading="state.isLoading" />
@@ -274,11 +276,10 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           </p>
         </div>
         <UFormGroup
-          size="xl"
+          :size="inputSize"
           name="default_dark_color">
           <USelectMenu
             v-model="state.data.userData.default_color"
-            size="xl"
             icon="i-heroicons-swatch"
             :options="colors"
             :loading="state.isLoading" />
@@ -300,7 +301,7 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
           v-model:model-value="state.data.userData.id"
           required
           label="Código"
-          size="xl"
+          :size="inputSize"
           readonly
           placeholder="ID del Usuario"
           icon="i-heroicons-circle-stack"
