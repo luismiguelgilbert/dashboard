@@ -1,13 +1,15 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-
-import { profileBody } from '@/types/server/sys_profiles';
+import { rolePayload } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try {
+    event.context.params = useSanitizeParams(event.context.params);
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.cast(body));
+    const body = await readBody(event);
+    await rolePayload.validate(body, { strict: true, abortEarly: false });
+    const payload = await rolePayload.cast(body);
     await hasUserPermission(userSessionId, PermissionsList.ROLES_CREATE);
 
     //Database actions
@@ -25,7 +27,7 @@ export default defineEventHandler( async (event) => {
 
     let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id,	sys_link_id) values ';
     payload.profileLinks?.forEach((link) => {
-      sqlLinksInsert += `('${id}', '${link}') `;
+      sqlLinksInsert += `('${id}', '${link.sys_link_id}') `;
     });
     sqlLinksInsert = sqlLinksInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlLinksInsert);
@@ -33,11 +35,8 @@ export default defineEventHandler( async (event) => {
     await serverDB.query('COMMIT');
     return { id: id };
   } catch(err) {
-    await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

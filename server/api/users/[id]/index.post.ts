@@ -41,8 +41,6 @@ export default defineEventHandler( async (event) => {
     //Insert user data
     const sqlInsertUserData = `insert into public.sys_users (id, user_name, user_lastname, avatar_url, updated_by)
       values ('${id}', '${payload.userData.user_name}', '${payload.userData.user_lastname}', '', '${id}');`;
-    console.log('sqlInsertUserData');
-    console.log(sqlInsertUserData);
     await serverDB.query(sqlInsertUserData);
 
     //Update user data
@@ -56,8 +54,6 @@ export default defineEventHandler( async (event) => {
       ,updated_at = now()
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
-    console.log('sqlUpdateUserData');
-    console.log(sqlUpdateUserData);
     await serverDB.query(sqlUpdateUserData);
 
     //Update Profiles

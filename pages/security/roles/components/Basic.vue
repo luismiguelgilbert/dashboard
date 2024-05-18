@@ -46,6 +46,8 @@ const toggleLink = (selectedLink: type_sys_links): void => {
 const { data, pending } = await useLazyFetch('/api/lookups/sys_links');
 state.value.syslinksOptions = data.value ?? [];
 watch(data, (newData) => { state.value.syslinksOptions = newData ?? []; });
+
+watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate(); } });
 </script>
 
 <template>

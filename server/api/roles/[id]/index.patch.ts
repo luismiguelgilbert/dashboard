@@ -1,14 +1,16 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-
-import { profileBody } from '@/types/server/sys_profiles';
+import { rolePayload } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try {
+    event.context.params = useSanitizeParams(event.context.params);
     const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => profileBody.cast(body));
+    const body = await readBody(event);
+    await rolePayload.validate(body, { strict: true, abortEarly: false });
+    const payload = await rolePayload.cast(body);
     await hasUserPermission(userSessionId, PermissionsList.ROLES_EDIT);
 
     //Database actions
@@ -34,19 +36,16 @@ export default defineEventHandler( async (event) => {
     //Add new links for specific profile
     let sqlSysProfilesInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values ';
     payload.profileLinks?.forEach((link) => {
-      sqlSysProfilesInsert += `(${Number(id)}, '${link}'),`;
+      sqlSysProfilesInsert += `(${Number(id)}, '${link.sys_link_id}') `;
     });
-    sqlSysProfilesInsert = sqlSysProfilesInsert.replace(/,$/, '');
+    sqlSysProfilesInsert = sqlSysProfilesInsert.replaceAll(') (', ') , (');
     await serverDB.query(sqlSysProfilesInsert);
     
     await serverDB.query('COMMIT');
     return { id: id };
   } catch(err) {
-    await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

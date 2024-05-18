@@ -1,72 +1,57 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types';
-import { profileDataForm, type type_profileDataForm } from '@/types/server/sys_profiles';
+import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import { rolePayload } from '@/types/server/sys_profiles';
 import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
-const { state, resetProfileData, validateProfileData } = useSecurityRolesForm();
+const { state, resetState } = useSecurityRolesForm();
 const { sessionData } = useUserSession();
-const toast = useToast();
+resetState();
 
-const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
-];
 const tab = ref<'basic'|'users'>('basic');
-const mainForm = ref<Form<type_profileDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.ROLES_CREATE, sessionData.value.userMenuData!);
-state.value.isLoading = false;
-const systemRolesBasicForm = ref<InstanceType<typeof Basic>>();
-resetProfileData();
 
 const cancel = async () => {
   state.value.isLoading = true;
   await navigateTo('/security/roles');
 };
 
-const showInvalidFormData = () => {
-  toast.add({
-    title: 'Datos incompletos',
-    description: 'Por favor, complete los campos requeridos',
-    icon: 'i-heroicons-no-symbol',
-    color: 'rose',
-    timeout: 2000,
-  });
-  state.value.isLoading = false;
-  mainForm.value?.validate();
-};
-
 const save = async () => {
-  state.value.isLoading = true;
-  const isDataValid = await validateProfileData();
-  if (isDataValid) {
-    const { error } = await useFetch('/api/roles/0', {
-      method: 'POST',
-      body: {
-        profileData: state.value.profileData,
-        profileLinks: state.value.profileLinks,
-      },
+  const { start, finish } = useLoadingIndicator();
+  try {
+    start();
+    state.value.isLoading = true;
+    state.value.isSaving = true;
+    await rolePayload.validate(state.value.data);
+    //Create Role
+    await $fetch('/api/roles/:0', {
+      method: 'post',
+      body: state.value.data,
     });
-    
-    if (error.value) {
-      toast.add({
-        title: 'Error al guardar',
-        description: error.value?.message,
-        icon: 'i-heroicons-exclamation-triangle',
-        color: 'rose',
-        timeout: 0,
-      });
-    }
-
-    toast.add({
+    //Notify and Redirect
+    useToast().add({
       title: 'Datos guardados correctamente',
       icon: 'i-heroicons-check-circle',
-      color: 'primary',
-      timeout: 2000,
+      timeout: 1500,
     });
     await navigateTo('/security/roles');
+  } catch (error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Error',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 5000,
+    });
+  } finally {
+    state.value.isSaving = false;
     state.value.isLoading = false;
-  } else {
-    showInvalidFormData();
+    finish();
   }
 };
 </script>
@@ -90,18 +75,19 @@ const save = async () => {
             @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs
-        v-model="tab"
-        :items="tabs" />
-      <UDashboardPanelContent>
-        <UForm
-          ref="mainForm"
-          :state="state.profileData"
-          :schema="profileDataForm">
-          <SystemRolesBasic
-            v-show="tab === 'basic'"
-            ref="systemRolesBasicForm" />
-        </UForm>
+      <UDashboardPanelContent class="p-0">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
+          <template #basic>
+            <Basic
+              ref="systemUsersBasic"
+              :saving="state.isSaving" />
+          </template>
+          <template #users>
+            <Users />
+          </template>
+        </BTabs>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
-// import { roleDataForm } from '@/types/server/sys_profiles';
+import { rolePayload } from '@/types/server/sys_profiles';
 import Basic from './components/Basic.vue';
 import Users from './components/Users.vue';
 
@@ -30,44 +30,42 @@ const { data: dataUsers, pending: pendingUsers } = await useLazyFetch(`/api/role
 state.value.profileUsers = dataUsers.value ?? [];
 watch(dataUsers, (newData) => { if (newData?.length) { state.value.profileUsers = newData ?? [];} });
 
-// const { data } = await useFetch<type_profileDataForm[]>(`/api/roles/${route.params.id}`);
-// state.value.profileData = data.value?.[0]!;
-// const { data: profileLinks } = await useFetch<type_profile_sys_links[]>(`/api/roles/${route.params.id}/links`);
-// state.value.profileLinks = profileLinks.value?.map(link => link.sys_link_id) ?? [];
-// const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/roles/${route.params.id}/users`);
-// state.value.profileUsers = profileUsers.value ?? [];
-
 const save = async () => {
-//   state.value.isLoading = true;
-//   const isDataValid = await validateProfileData();
-//   if (isDataValid) {
-//     const { error } = await useFetch(`/api/roles/:${route.params.id}`, {
-//       method: 'PATCH',
-//       body: {
-//         profileData: state.value.profileData,
-//         profileLinks: state.value.profileLinks,
-//       },
-//     });
-//     if (error.value) {
-//       toast.add({
-//         title: 'Error al guardar',
-//         description: error.value?.message,
-//         icon: 'i-heroicons-exclamation-triangle',
-//         color: 'rose',
-//         timeout: 0,
-//       });
-//     }
-//     toast.add({
-//       title: 'Datos guardados correctamente',
-//       icon: 'i-heroicons-check-circle',
-//       color: 'primary',
-//       timeout: 2000,
-//     });
-//     await navigateTo('/security/roles');
-//     state.value.isLoading = false;
-//   } else {
-//     showInvalidFormData();
-//   }
+  const { start, finish } = useLoadingIndicator();
+  try {
+    start();
+    state.value.isLoading = true;
+    state.value.isSaving = true;
+    await rolePayload.validate(state.value.data);
+    //Update Role
+    await $fetch(`/api/roles/:${route.params.role}`, {
+      method: 'patch',
+      body: state.value.data,
+    });
+    //Notify and Redirect
+    useToast().add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      timeout: 1500,
+    });
+    await navigateTo('/security/roles');
+  } catch (error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Error',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 5000,
+    });
+  } finally {
+    state.value.isSaving = false;
+    state.value.isLoading = false;
+    finish();
+  }
 };
 </script>
 
@@ -98,6 +96,7 @@ const save = async () => {
             <Basic
               ref="systemUsersBasic"
               :is-editing="true"
+              :saving="state.isSaving"
               :loading="pending"
               :loading-links="pendingLinks" />
           </template>

@@ -20,7 +20,7 @@ export type type_sys_profiles_lookup = InferType<typeof sys_profiles_lookup>
 
 export const roleDataForm = object({
   id: number().default(0),
-  name_es: string().required().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  name_es: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
   is_active: boolean().default(true),
 });
 export type type_roleDataForm = InferType<typeof roleDataForm>;
