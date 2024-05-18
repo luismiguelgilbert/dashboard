@@ -1,8 +1,10 @@
 import serverDB from '@/server/utils/db';
-// import { sys_profiles, type type_sys_profiles } from '@/types/server/sys_profiles'
+import { array } from 'yup';
+import { roleUser } from '@/types/server/sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try{
+    event.context.params = useSanitizeParams(event.context.params);
     const id = (event.context.params?.id);
     const text = `SELECT
       c.id
@@ -18,9 +20,7 @@ export default defineEventHandler( async (event) => {
       WHERE a.id = '${id}'
     `;
     const data = await serverDB.query(text);
-    const result = data.rows;
-    
-    return result;
+    return array(roleUser).cast(data.rows);
   }catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

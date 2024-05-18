@@ -16,8 +16,37 @@ export const sys_profiles_lookup = object({
   name_es: string(),
   is_disabled: boolean().default(true)
 });
-
 export type type_sys_profiles_lookup = InferType<typeof sys_profiles_lookup>
+
+export const roleDataForm = object({
+  id: number().default(0),
+  name_es: string().required().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  is_active: boolean().default(true),
+});
+export type type_roleDataForm = InferType<typeof roleDataForm>;
+
+export const roleLinks = object({
+  sys_link_id: string(),
+});
+
+export const roleLinksForm = array(roleLinks).min(1, 'Debe seleccionar un link.').required('Debe seleccionar un link');
+
+export const rolePayload = object({
+  profileData: roleDataForm,
+  profileLinks: roleLinksForm,
+});
+export type type_rolePayload = InferType<typeof rolePayload>;
+
+export const roleUser = object({
+  id: string(),
+  user_name: string(),
+  user_lastname: string(),
+  avatar_url: string().optional().nullable(),
+  user_sex: boolean(),
+  email: string().email(),
+});
+export const roleUsers = array(roleUser);
+export type type_roleUsers = InferType<typeof roleUsers>;
 
 export const filter_options = [
   { label: 'Activos', value: 1, sqlValue: 'a.is_active = true', icon: 'i-heroicons-funnel' },

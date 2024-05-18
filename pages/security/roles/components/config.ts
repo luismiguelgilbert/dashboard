@@ -51,6 +51,10 @@ export const actions: DropdownItemExtended[][] = [
     },
   ],
 ];
+export const tabs = [
+  { value: 'basic', slot: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
+  { value: 'users', slot: 'users', label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
+];
 //Functions
 const downloadFile = async() => {
   try {

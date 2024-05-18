@@ -22,6 +22,8 @@ export const useSecurityUsersForm = () => {
     state.value.avatar = null;
     state.value.userCompanies = [];
     state.value.profileOptions = [];
+    state.value.isLoading = false;
+    state.value.isSaving = false;
   };
 
   return { state, resetState };

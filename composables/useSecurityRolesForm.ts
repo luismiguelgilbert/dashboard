@@ -1,32 +1,26 @@
-import { profileDataForm,  type type_profileDataForm } from '@/types/server/sys_profiles';
-import { type type_userDataForm } from '@/types/server/sys_users';
+import { type type_rolePayload,  type type_roleDataForm, type type_roleUsers } from '@/types/server/sys_profiles';
+// import { type type_userDataForm } from '@/types/server/sys_users';
 import { type type_sys_links } from '@/types/server/sys_links';
 
 export const useSecurityRolesForm = () => {
   const state = useState('useSecurityRolesForm', () => { return {
     isLoading: false as boolean,
-    profileData: {} as type_profileDataForm,
-    profileLinks: [] as string[],
-    profileUsers: [] as type_userDataForm[],
+    isSaving: false as boolean,
+    data: {} as type_rolePayload,
+    profileUsers: [] as type_roleUsers,
     syslinksOptions: [] as type_sys_links[],
   };});
 
-  const resetProfileData = () => { 
-    state.value.profileData = {
-      ...state.value.profileData,
-      id: '',
-      name_es: '',
-      is_active: true,
+  const resetState = () => { 
+    state.value.data = {
+      profileData: {} as type_roleDataForm,
+      profileLinks: [],
     };
-    state.value.profileLinks = [];
+    state.value.isLoading = false;
+    state.value.isSaving = false;
+    state.value.syslinksOptions = [];
+    state.value.profileUsers = [];
   };
 
-  const validateProfileData = async () => {
-    const isProfileDataValid = await profileDataForm.safeParse(state.value.profileData);
-    const isLinksDataValid = state.value.profileLinks.length > 0;
-
-    return isProfileDataValid.success && isLinksDataValid;
-  };
-
-  return { state, resetProfileData, validateProfileData };
+  return { state, resetState };
 };

@@ -12,8 +12,6 @@ resetState();
 
 const tab = ref<'basic'|'companies'>('basic');
 const canSave = hasSessionPermission(PermissionsList.USERS_EDIT, sessionData.value.userMenuData!);
-state.value.isLoading = false;
-const systemUsersBasic = ref<InstanceType<typeof Basic>>();
 
 const cancel = async () => {
   state.value.isLoading = true;
@@ -101,7 +99,6 @@ const save = async () => {
           :items="tabs">
           <template #basic>
             <Basic
-              ref="systemUsersBasic"
               :is-editing="true"
               :saving="state.isSaving"
               :loading="pending" />
