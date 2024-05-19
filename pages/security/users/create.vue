@@ -26,6 +26,7 @@ const save = async () => {
     state.value.isLoading = true;
     state.value.isSaving = true;
     await userPayload.validate(state.value.data);
+    //Create User
     const data = await $fetch('/api/users/0', {
       method: 'post',
       body: state.value.data,

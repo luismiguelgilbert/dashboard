@@ -1,114 +1,76 @@
 <script setup lang="ts">
-// import type { Form } from '#ui/types';
-// import { type type_companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
+import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import { companyPayload } from '~/types/server/sys_companies';
 import Basic from './components/Basic.vue';
 import Users from './components/Users.vue';
 
-const { state } = useSecurityCompaniesForm();
+const { state, resetState } = useSecurityCompaniesForm();
 const { sessionData } = useUserSession();
 const route = useRoute();
+resetState();
 
-const tabs = [
-  { value: 'basic', label: 'Organización', icon: 'i-heroicons-user-group', defaultOpen: true },
-  { value: 'users',label: 'Usuarios', icon: 'i-heroicons-users', defaultOpen: false },
-];
 const tab = ref<'basic'|'users'>('basic');
-// const mainForm = ref<Form<type_companyDataForm>>();
 const canSave = hasSessionPermission(PermissionsList.COMPANIES_EDIT, sessionData.value.userMenuData!);
-state.value.isLoading = false;
-// const systemCompaniesBasic = ref<InstanceType<typeof Basic>>();
-// resetCompanyData();
-
-const { data, pending } = await useLazyFetch<type_sys_companies[]>(`/api/companies/${route.params.company}`);
-state.value.data = data.value?.[0]!;
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
-
-// const { data: dataCompanies, pending: pendingCompanies } = await useLazyFetch<type_userDataForm[]>(`/api/companies/${route.params.company}/users`);
-// state.value.userCompanies = dataCompanies.value;
-// watch(dataCompanies, (newData) => { if (newData?.length) { state.value.userCompanies = newData.map(company => company.id.toString()) } });
-
-
-if (route.params.id) {
-  // const { data } = await useFetch<type_sys_companies[]>(`/api/companies/${route.params.id}`);
-  // state.value.companyData = data.value?.[0]!;
-  // const { data: profileUsers } = await useFetch<type_userDataForm[]>(`/api/companies/${route.params.id}/users`);
-  // state.value.companyUsers = profileUsers.value ?? [];
-}
 
 const cancel = async () => {
   state.value.isLoading = true;
   await navigateTo('/security/companies');
 };
 
-// const showInvalidFormData = () => {
-//   toast.add({
-//     title: 'Datos incompletos',
-//     description: 'Por favor, complete los campos requeridos',
-//     icon: 'i-heroicons-no-symbol',
-//     color: 'rose',
-//     timeout: 2000,
-//   });
-//   state.value.isLoading = false;
-//   mainForm.value?.validate();
-// };
+const { data, pending } = await useLazyFetch(`/api/companies/:${route.params.company}`);
+state.value.data.companyData = data.value?.[0]!;
+watch(data, (newData) => { if (newData?.length) { state.value.data.companyData = newData[0]; } });
+
+const { data: dataUsers, pending: pendingUsers } = await useLazyFetch(`/api/companies/:${route.params.company}/users`);
+state.value.companyUsers = dataUsers.value ?? [];
+watch(dataUsers, (newData) => { if (newData?.length) { state.value.companyUsers = newData ?? []; } });
 
 const save = async () => {
-  state.value.isLoading = true;
-  // const isDataValid = await validateCompanyData();
-  
-  //Upload Data
-  // if (isDataValid) {
-  //   const { error } = await useFetch(`/api/companies/${route.params.id}`, {
-  //     method: 'PATCH',
-  //     body: {
-  //       companyData: state.value.companyData,
-  //       // userCompanies: state.value.userCompanies,
-  //     },
-  //   });
-  //   if (error.value) {
-  //     toast.add({
-  //       title: 'Error al guardar',
-  //       description: error.value?.message,
-  //       icon: 'i-heroicons-exclamation-triangle',
-  //       color: 'rose',
-  //       timeout: 0,
-  //     });
-  //     state.value.isLoading = false;
-  //     return;
-  //   }
-  //   //Upload Avatar
-  //   if (state.value.avatar) {
-  //     const body = new FormData();
-  //     body.append('file', state.value.avatar);
-  //     const { error: avatarError } = await useFetch(`/api/companies/${route.params.id}/avatar`, {
-  //       method: 'PATCH',
-  //       body,
-  //     });
-  //     if (avatarError.value) {
-  //       toast.add({
-  //         title: 'Error al guardar avatar',
-  //         description: avatarError.value?.message,
-  //         icon: 'i-heroicons-exclamation-triangle',
-  //         color: 'rose',
-  //         timeout: 0,
-  //       });
-  //       state.value.isLoading = false;
-  //       return;
-  //     }
-  //   }
-
-  //   toast.add({
-  //     title: 'Datos guardados correctamente',
-  //     icon: 'i-heroicons-check-circle',
-  //     color: 'primary',
-  //     timeout: 2000,
-  //   });
-  //   await navigateTo('/security/companies');
-  //   state.value.isLoading = false;
-  // } else {
-  //   showInvalidFormData();
-  // }
+  const { start, finish } = useLoadingIndicator();
+  try{
+    start();
+    state.value.isLoading = true;
+    state.value.isSaving = true;
+    await companyPayload.validate(state.value.data);
+    //Update Company
+    await $fetch(`/api/companies/:${route.params.company}`, {
+      method: 'patch',
+      body: state.value.data,
+    });
+    //Upload Avatar
+    if (state.value.avatar) {
+      const body = new FormData();
+      body.append('file', state.value.avatar);
+      await $fetch(`/api/companies/:${route.params.company}/avatar`, {
+        method: 'patch',
+        body,
+      });
+    }
+    //Notify and Redirect
+    useToast().add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      timeout: 1500,
+    });
+    await navigateTo('/security/companies');
+  } catch (error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Error',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 5000,
+    });
+  } finally {
+    state.value.isSaving = false;
+    state.value.isLoading = false;
+    finish();
+  }
 };
 </script>
 
@@ -137,12 +99,12 @@ const save = async () => {
           :items="tabs">
           <template #basic>
             <Basic
-              ref="systemUsersBasic"
               :is-editing="true"
+              :saving="state.isSaving"
               :loading="pending" />
           </template>
           <template #users>
-            <Users />
+            <Users :loading="pendingUsers" />
           </template>
         </BTabs>
       </UDashboardPanelContent>

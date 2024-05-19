@@ -20,6 +20,12 @@ export const columns = [
     sortable: false
   },
   {
+    key: 'user_count',
+    label: '# Usuarios',
+    sortable: false,
+    class: 'whitespace-nowrap'
+  },
+  {
     key: 'is_active',
     label: 'Estado',
     sortable: false
@@ -51,6 +57,10 @@ export const actions: DropdownItemExtended[][] = [
     },
     
   ],
+];
+export const tabs = [
+  { value: 'basic', slot: 'basic', label: 'Organización', icon: 'i-heroicons-user-group', defaultOpen: true },
+  { value: 'users', slot: 'users', label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 //Functions
 const downloadFile = async() => {

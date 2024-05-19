@@ -2,10 +2,11 @@ import serverDB from '@/server/utils/db';
 import { serverSupabaseClient } from '#supabase/server';
 
 export default defineEventHandler( async (event) => {
-  const id = (event.context.params?.id);
+  event.context.params = useSanitizeParams(event.context.params);
+  const id = getRouterParam(event, 'id');
   const files = await readMultipartFormData(event);
-  if (files && files.length > 0) {
-    const fileExt = files[0].filename.split('.').pop();
+  if (files && files[0]) {
+    const fileExt = files[0].filename?.split('.').pop();
     const newfilename = `${id}.${fileExt}`;
     const supabaseClient = await serverSupabaseClient(event);
     const { data: updloadedFileData, error: uploadError } = await supabaseClient.storage

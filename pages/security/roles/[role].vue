@@ -94,7 +94,6 @@ const save = async () => {
           :items="tabs">
           <template #basic>
             <Basic
-              ref="systemUsersBasic"
               :is-editing="true"
               :saving="state.isSaving"
               :loading="pending"

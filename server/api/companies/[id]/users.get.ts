@@ -1,9 +1,10 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { sys_profiles } from '@/types/server/sys_profiles';
+import { roleUser } from '@/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try{
+    event.context.params = useSanitizeParams(event.context.params);
     const id = (event.context.params?.id);
     const text = `SELECT
       c.id
@@ -17,9 +18,10 @@ export default defineEventHandler( async (event) => {
       inner join sys_users c on c.id = b.user_id
       inner join auth.users d on d.id = c.id
       WHERE a.id = '${id}'
+      order by c.user_lastname
     `;
     const data = await serverDB.query(text);
-    return array(sys_profiles).cast(data.rows);
+    return array(roleUser).cast(data.rows);
   }catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     throw createError({

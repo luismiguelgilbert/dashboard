@@ -75,7 +75,6 @@ watch(() => props.saving, (newValue) => { if (newValue) { form.value.validate();
             v-model:model-value="state.data.userData.email"
             placeholder="Email del Usuario"
             icon="i-heroicons-envelope"
-            error
             :disabled="isEditing"
             :ui="inputUI"
             :loading="state.isLoading" />

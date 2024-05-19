@@ -1,14 +1,16 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-
-import { companyBody } from '@/types/server/sys_companies';
+import { companyPayload } from '~/types/server/sys_companies';
 
 export default defineEventHandler( async (event) => {
   try {
+    event.context.params = useSanitizeParams(event.context.params);
     const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
-    const payload = await readValidatedBody(event, body => companyBody.cast(body));
+    const body = await readBody(event);
+    await companyPayload.validate(body, { strict: true, abortEarly: false });
+    const payload = await companyPayload.cast(body);
     await hasUserPermission(userSessionId, PermissionsList.COMPANIES_EDIT);
 
     //Data sanitization
@@ -38,11 +40,8 @@ export default defineEventHandler( async (event) => {
     await serverDB.query('COMMIT');
     return { id: id };
   } catch(err) {
-    await serverDB.query('ROLLBACK');
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

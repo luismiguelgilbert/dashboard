@@ -1,35 +1,23 @@
-import { companyDataForm, type type_companyDataForm } from '@/types/server/sys_companies';
-import { type type_userDataForm } from '@/types/server/sys_users';
+import { type type_companyDataForm, type type_companyPayload, type type_roleUsers } from '@/types/server/sys_companies';
 
 export const useSecurityCompaniesForm = () => {
   const state = useState('useSecurityCompaniesForm', () => { return {
     isLoading: false as boolean,
-    data: {} as type_companyDataForm,
-    companyUsers: [] as type_userDataForm[],
+    isSaving: false as boolean,
+    data: {} as type_companyPayload,
+    companyUsers: [] as type_roleUsers,
     avatar: null as File|null,
   };});
 
-  const resetCompanyData = () => { 
+  const resetState = () => { 
     state.value.data = {
-      ...state.value.data,
-      id: '',
-      company_number: '',
-      name_es: '',
-      name_es_short: '',
-      is_active: true,
-      avatar_url: '',
-      billing_address: '',
-      billing_phone: '',
+      companyData: {} as type_companyDataForm,
     };
-    state.value.avatar = null;
+    state.value.isLoading = false;
+    state.value.isSaving = false;
     state.value.companyUsers = [];
+    state.value.avatar = null;
   };
 
-  const validateCompanyData = async () => {
-    const isUserDataValid = await companyDataForm.safeParse(state.value.data);
-
-    return isUserDataValid.success;
-  };
-
-  return { state, resetCompanyData, validateCompanyData };
+  return { state, resetState };
 };

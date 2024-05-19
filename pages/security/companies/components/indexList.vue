@@ -18,7 +18,7 @@ defineProps({
       <li
         v-for="(row, index) in rows"
         :key="index"
-        class="flex justify-between gap-x-6 py-5">
+        class="flex justify-between gap-x-6 py-2">
         <div class="flex min-w-0 gap-x-4">
           <div class="pl-2">
             <NuxtImg 
@@ -28,7 +28,7 @@ defineProps({
               height="15"
               class="ml-2 mt-1 rounded" />
             <UAvatar
-              v-else
+              v-else-if="row.name_es_short"
               size="xs">
               {{ row.name_es_short[0] }}
             </UAvatar>
@@ -51,11 +51,14 @@ defineProps({
           </div>
         </div>
         <UButton
-          class="ml-2"
-          icon="i-heroicons-pencil-square"
           variant="link"
-          color="gray"
-          @click="navigateTo(`/security/companies/${row.id}`)" />
+          size="xl"
+          class="text-primary-400 dark:text-primary-400"
+          @click="navigateTo(`/security/companies/${row.id}`)">
+          <font-awesome-icon
+            icon="fa-solid fa-square-pen"
+            size="lg" />
+        </UButton>
       </li>
     </ul>
   </div>

@@ -29,7 +29,14 @@ export default defineEventHandler( async (event) => {
       ? ` and (a.name_es ILIKE '%${search_string}%' or a.name_es_short ILIKE '%${search_string}%' or a.company_number ILIKE '%${search_string}%' )` 
       : '';
 
-    const text = `SELECT 
+    const text = `WITH users_by_company AS (
+        select
+        int1.sys_company_id
+        , count(int1.sys_company_id) as user_count
+        from sys_companies_users int1
+        group by int1.sys_company_id
+      )
+      SELECT 
           a.id
         , a.company_number
         , INITCAP(a.name_es) as name_es
@@ -41,7 +48,9 @@ export default defineEventHandler( async (event) => {
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
         , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
         , count(*) OVER() AS row_count
+        , COALESCE(b.user_count,0) as user_count
       FROM sys_companies a
+      LEFT JOIN users_by_company b on a.id = b.sys_company_id
       WHERE 1 = 1
       ${filterBy}
       ${filterSearchString}

@@ -1,96 +1,66 @@
 <script setup lang="ts">
-import type { Form } from '#ui/types';
-import { companyDataForm, type type_sys_companies } from '~/types/server/sys_companies';
+import { tabs } from './components/config';
 import { PermissionsList } from '~/types/client/permissionsEnum';
+import { companyPayload } from '~/types/server/sys_companies';
 import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
-const { state, resetCompanyData, validateCompanyData } = useSecurityCompaniesForm();
+const { state, resetState } = useSecurityCompaniesForm();
 const { sessionData } = useUserSession();
-const toast = useToast();
+resetState();
 
-const tabs = [
-  { value: 'basic', label: 'Organización', icon: 'i-heroicons-user-group', defaultOpen: true },
-];
-const tab = ref<'basic'|'companies'>('basic');
-const mainForm = ref<Form<type_sys_companies>>();
+const tab = ref<'basic'|'users'>('basic');
 const canSave = hasSessionPermission(PermissionsList.COMPANIES_CREATE, sessionData.value.userMenuData!);
-state.value.isLoading = false;
-const systemCompaniesBasic = ref<InstanceType<typeof Basic>>();
-resetCompanyData();
 
 const cancel = async () => {
   state.value.isLoading = true;
   await navigateTo('/security/companies');
 };
 
-const showInvalidFormData = () => {
-  toast.add({
-    title: 'Datos incompletos',
-    description: 'Por favor, complete los campos requeridos',
-    icon: 'i-heroicons-no-symbol',
-    color: 'rose',
-    timeout: 2000,
-  });
-  state.value.isLoading = false;
-  mainForm.value?.validate();
-};
-
 const save = async () => {
-  state.value.isLoading = true;
-  let newId = null;
-  const isDataValid = await validateCompanyData();
-  //Upload Data
-  if (isDataValid) {
-    const { data, error } = await useFetch('/api/companies/0', {
-      method: 'POST',
-      body: {
-        companyData: state.value.companyData,
-        // userCompanies: state.value.userCompanies,
-      },
+  const { start, finish } = useLoadingIndicator();
+  try {
+    start();
+    state.value.isLoading = true;
+    state.value.isSaving = true;
+    await companyPayload.validate(state.value.data);
+    //Update Company
+    const data = await $fetch('/api/companies/0', {
+      method: 'post',
+      body: state.value.data,
     });
-    if (error.value) {
-      toast.add({
-        title: 'Error al guardar',
-        description: error.value?.message,
-        icon: 'i-heroicons-exclamation-triangle',
-        color: 'rose',
-        timeout: 0,
-      });
-      state.value.isLoading = false;
-      return;
-    }
-    newId = data.value?.id;
     //Upload Avatar
-    if (state.value.avatar && newId) {
+    if (state.value.avatar && data?.id) {
       const body = new FormData();
       body.append('file', state.value.avatar);
-      const { error: avatarError } = await useFetch(`/api/companies/:${newId}/avatar`, {
-        method: 'PATCH',
+      await $fetch(`/api/companies/:${data.id}/avatar`, {
+        method: 'patch',
         body,
       });
-      if (avatarError.value) {
-        toast.add({
-          title: 'Error al guardar avatar',
-          description: avatarError.value?.message,
-          icon: 'i-heroicons-exclamation-triangle',
-          color: 'rose',
-          timeout: 0,
-        });
-        state.value.isLoading = false;
-        return;
-      }
-
-      toast.add({
-        title: 'Datos guardados correctamente',
-        icon: 'i-heroicons-check-circle',
-        color: 'primary',
-        timeout: 2000,
-      });
-      await navigateTo('/security/companies');
-      state.value.isLoading = false;
     }
-  } else {
-    showInvalidFormData();
+    //Notify and Redirect
+    useToast().add({
+      title: 'Datos guardados correctamente',
+      icon: 'i-heroicons-check-circle',
+      timeout: 1500,
+    });
+    await navigateTo('/security/companies');
+  } catch (error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Error',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 5000,
+    });
+  } finally {
+    state.value.isSaving = false;
+    state.value.isLoading = false;
+    finish();
   }
 };
 </script>
@@ -114,20 +84,17 @@ const save = async () => {
             @click="save" />
         </template>
       </UDashboardNavbar>
-      <BTabs
-        v-model="tab"
-        :items="tabs" />
-      <UDashboardPanelContent>
-        <UForm
-          ref="mainForm"
-          :state="state.companyData"
-          :schema="companyDataForm">
-          <SystemCompaniesBasic
-            v-if="tab === 'basic'"
-            ref="systemCompaniesBasic"
-            :is-editing="false" />
-          <!-- <SystemUsersCompanies v-if="tab === 'companies'" /> -->
-        </UForm>
+      <UDashboardPanelContent class="p-0">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
+          <template #basic>
+            <Basic :saving="state.isSaving" />
+          </template>
+          <template #users>
+            <Users />
+          </template>
+        </BTabs>
       </UDashboardPanelContent>
     </UDashboardPanel>
   </UDashboardPage>
