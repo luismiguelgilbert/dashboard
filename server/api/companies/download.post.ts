@@ -52,7 +52,7 @@ export default defineEventHandler( async (event) => {
       { key: 'name_es_short', header: 'Organización', width: 25 },
       { key: 'company_number', header: 'RUC', width: 25 },
       { key: 'name_es', header: 'Razón Social', width: 25 },
-      { key: 'is_active', header: 'Activo?', width: 25 },
+      { key: 'is_active', header: 'Activo?', width: 10 },
       { key: 'billing_address', header: 'billing_address', width: 35 },
       { key: 'billing_phone', header: 'billing_phone', width: 25 },
       { key: 'created_at', header: 'Fecha_Creación', width: 25 },

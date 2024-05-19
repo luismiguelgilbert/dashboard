@@ -78,7 +78,7 @@ const downloadFile = async() => {
         const url = window.URL.createObjectURL(data.value);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'Organizaciones.xls');
+        link.setAttribute('download', 'Organizaciones.xlsx');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
