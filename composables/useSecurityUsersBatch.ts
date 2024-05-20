@@ -27,6 +27,9 @@ export const useSecurityUsersBatch = () => {
     resultsErrorPage: 1,
     resultsValid: [] as type_userValidationSchema[],
     resultsValidPage: 1,
+    uploadResultsTab: 'valid',
+    uploadResultsValid: [] as type_userValidationSchema[],
+    uploadResultsInvalid: [] as type_userValidationSchema[],
     page: 1,
     pageCount: 50,
   };});

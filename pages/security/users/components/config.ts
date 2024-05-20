@@ -74,6 +74,10 @@ export const batchValidationTabs = [
   { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
   { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
 ];
+export const uploadResultTabs = [
+  { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
+  { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
+];
 
 
 export const batchResultColumns = [

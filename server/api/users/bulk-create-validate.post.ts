@@ -2,9 +2,8 @@ import serverDB from '@/server/utils/db';
 import { array, object, string, ValidationError } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { bulkMapping, userValidationSchema } from '@/types/server/sys_users';
+import { bulkUsers, bulkMapping, userValidationSchema } from '@/types/server/sys_users';
 
-import { bulkUsers } from '@/types/server/sys_users';
 const emails = array(object({
   email: string().email(),
 }));

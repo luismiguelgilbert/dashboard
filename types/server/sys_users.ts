@@ -117,10 +117,10 @@ export const bulkMapping = object({
 });
 
 export const userValidationSchema = object({
-  email: string().email('Correo Electrónico no es válido.'),
-  user_name: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
-  user_lastname: string().min(3, 'Apellido debe incluir 3 o más caracteres.'),
-  user_sex: boolean(),
+  email: string().required().email('Correo Electrónico no es válido.'),
+  user_name: string().required().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  user_lastname: string().required().min(3, 'Apellido debe incluir 3 o más caracteres.'),
+  user_sex: boolean().default(false),
   errors: array(),
 });
 export type type_userValidationSchema = InferType<typeof userValidationSchema>;
@@ -129,6 +129,16 @@ export const bulkUsers = object({
   mapping: bulkMapping,
   users: array(),
 });
+
+export const bulkUsersUpload = object({
+  email: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_name: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_lastname: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_sex: boolean().default(false),
+  sys_profile_id: number().required().positive('Debe seleccionar un Perfil.'),
+  prefered_company_id: string().required().min(1, 'Debe seleccionar una Organización.'),
+});
+export type type_bulkUsersUpload = InferType<typeof bulkUsersUpload>;
 
 export const filter_options = [
   { label: 'Todos los Usuarios', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },

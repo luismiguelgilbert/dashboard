@@ -40,6 +40,8 @@ onChange(async (files) => {
       state.value.resultsErrorPage = 1;
       state.value.resultsValid = [];
       state.value.resultsValidPage = 1;
+      state.value.uploadResultsValid = [];
+      state.value.uploadResultsInvalid = [];
       state.value.tab = 'file';
 
       //Read XLS file
