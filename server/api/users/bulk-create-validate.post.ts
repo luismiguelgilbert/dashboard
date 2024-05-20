@@ -1,74 +1,63 @@
 import serverDB from '@/server/utils/db';
-import { object, string, boolean } from 'yup';
+import { array, object, string, ValidationError } from 'yup';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
+import { bulkMapping, userValidationSchema } from '@/types/server/sys_users';
 
 import { bulkUsers } from '@/types/server/sys_users';
+const emails = array(object({
+  email: string().email(),
+}));
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
     const payload = await readValidatedBody(event, body => bulkUsers.cast(body));
     await hasUserPermission(userSessionId, PermissionsList.USERS_CREATE);
-
-    const email_field = payload.mapping.email;
-    const user_name_field = payload.mapping.user_name;
-    const user_lastname_field = payload.mapping.user_lastname;
-    const user_sex_field = payload.mapping.user_sex;
-    // const sys_profile_id_field = payload.mapping.sys_profile_id;
-    // const prefered_company_id_field = payload.mapping.prefered_company_id;
+    
+    //Bulild mapping
+    await bulkMapping.validate(payload.mapping, { strict: true, abortEarly: true });
+    const mapping = await bulkMapping.cast(payload.mapping);
 
     //Get existing emails
-    const { rows } = await serverDB.query('select email from auth.users order by email');
-    
-    //Validations
-    const rowWithErros: any[] = [];
-    const userValidationSchema = object({
-      email: string().email('Correo Electrónico no es válido.'),
-      user_name: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
-      user_lastname: string().min(3, 'Apellido debe incluir 3 o más caracteres.'),
-      user_sex: boolean(),
-    });
-    payload.users?.forEach((row: any, index) => {
-      const errors = [];
+    const { rows } = await serverDB.query('select lower(email) as email from auth.users order by email');
+    const existingMails = await emails.cast(rows);
 
-      //1) Validate if data has the correct schema
-      const validationError = userValidationSchema.validateSync({
-        email: row[email_field],
-        user_name: row[user_name_field],
-        user_lastname: row[user_lastname_field],
-        user_sex: row[user_sex_field],
+    //Build New Data, Validate Schema, Validate Duplicated
+    const newUsers = array(userValidationSchema).cast([]);
+    payload.users?.forEach((row: any) => {
+      const newRow = userValidationSchema.cast({
+        email: row[mapping.email].trim().toLowerCase(),
+        user_name: row[mapping.user_name].trim().toLowerCase(),
+        user_lastname: row[mapping.user_lastname].trim().toLowerCase(),
+        user_sex: row[mapping.user_sex].trim().toLowerCase(),
+        errors: [],
       });
-      if (!validationError) {
-        errors.push(...validationError.error.issues);
+      //1) Validate Schema
+      try {
+        userValidationSchema.validateSync(newRow, { strict: true, abortEarly: false });
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          newRow.errors = err.errors;
+        }
       }
-      //2) Check if email is duplicated on same file (compares if mail is the same in a different row)
-      const currentRowEmail = row[email_field].toLowerCase();
-      const isDuplicate = payload.users?.some((item: any, idx) => item[email_field].toLowerCase() === currentRowEmail && index !== idx);
-      if (isDuplicate) {
-        errors.push({
-          code: 'duplicated_email',
-          message: 'Correo Electrónico duplicado.',
-        });
+      //2) Validate Duplicated
+      if (newUsers?.some((item) => item.email === newRow.email)) {
+        newRow.errors?.push('Correo Electrónico duplicado.');
+      } 
+      //3) Validate Existing Email on database
+      if (existingMails?.some((mail) => mail.email === newRow.email)) {
+        newRow.errors?.push('Correo Electrónico ya registrado.');
       }
-      //3) Check if email already created in the Users table
-      const isUser = rows.some((item: any) => item.email === currentRowEmail);
-      if (isUser) {
-        errors.push({
-          code: 'existing_user',
-          message: 'Correo Electrónico ya existe.',
-        });
-      }
-
-      rowWithErros.push({...row, errors});
+      
+      //Add record
+      newUsers?.push(newRow);
     });
-    return rowWithErros;
+    
+    return newUsers;
   } catch(err) {
+    console.error(`Error at ${event.path}`);
     await serverDB.query('ROLLBACK');
-    console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

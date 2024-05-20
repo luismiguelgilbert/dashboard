@@ -108,13 +108,22 @@ export type type_userBody = {
 };
 
 export const bulkMapping = object({
-  email: string().min(1,  'Debe incluir 1 o más caracteres.'),
-  user_name: string().min(1,  'Debe incluir 1 o más caracteres.'),
-  user_lastname: string().min(1,  'Debe incluir 1 o más caracteres.'),
-  user_sex: string().min(1,  'Debe incluir 1 o más caracteres.'),
-  sys_profile_id: number().positive( 'Debe seleccionar un Perfil.'),
-  prefered_company_id: string().min(1,  'Debe seleccionar una Organización.'),
+  email: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_name: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_lastname: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  user_sex: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
+  sys_profile_id: number().required().positive('Debe seleccionar un Perfil.'),
+  prefered_company_id: string().required().min(1, 'Debe seleccionar una Organización.'),
 });
+
+export const userValidationSchema = object({
+  email: string().email('Correo Electrónico no es válido.'),
+  user_name: string().min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  user_lastname: string().min(3, 'Apellido debe incluir 3 o más caracteres.'),
+  user_sex: boolean(),
+  errors: array(),
+});
+export type type_userValidationSchema = InferType<typeof userValidationSchema>;
 
 export const bulkUsers = object({
   mapping: bulkMapping,

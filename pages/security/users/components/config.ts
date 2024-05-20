@@ -63,6 +63,47 @@ export const tabs = [
   { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
   { value: 'companies', slot: 'companies', label: 'Organizaciones', icon: 'i-heroicons-building-office-2', defaultOpen: false },
 ];
+export const batchUploadTabs = [
+  { value: 'file', slot: 'file', label: '1. Cargar archivo', icon: 'i-heroicons-document-magnifying-glass', defaultOpen: true },
+  { value: 'mapping', slot: 'mapping', label: '2. Definiciones', icon: 'i-heroicons-adjustments-horizontal', defaultOpen: false },
+  { value: 'errors', slot: 'errors', label: '3. Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
+  { value: 'valid', slot: 'valid', label: '4. Cargar', icon: 'i-heroicons-check-badge', defaultOpen: false },
+];
+export const batchValidationTabs = [
+  { value: 'results', slot: 'results', label: 'Resultados', icon: 'i-heroicons-chart-bar', defaultOpen: true },
+  { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
+  { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
+];
+
+
+export const batchResultColumns = [
+  {
+    key: 'email',
+    label: 'Email',
+    sortable: false
+  },
+  {
+    key: 'user_name',
+    label: 'Nombres',
+    sortable: false
+  },
+  {
+    key: 'user_lastname',
+    label: 'Apellidos',
+    sortable: false,
+  },
+  {
+    key: 'user_sex',
+    label: 'Sexo',
+    sortable: false,
+  },
+  {
+    key: 'errors',
+    label: 'Errores',
+    sortable: false,
+    class: 'w-1',
+  },
+];
 //Functions
 const downloadFile = async() => {
   try {
