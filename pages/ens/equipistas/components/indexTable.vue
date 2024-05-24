@@ -72,11 +72,13 @@ const props = defineProps({
     </template>
     <template #actions-data="{ row }: { row: type_ens_members }">
       <UButton
-        icon="i-heroicons-pencil-square"
         variant="link"
         size="xl"
         class="text-primary-400 dark:text-primary-400"
         @click="navigateTo(`/ens/equipistas/${row.id}`)">
+        <font-awesome-icon
+          icon="fa-solid fa-square-pen"
+          size="lg" />
       </UButton>
     </template>
   </UTable>

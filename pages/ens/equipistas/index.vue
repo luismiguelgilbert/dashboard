@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { actions, module, title } from './components/config';
-import { filter_options, sort_options, type type_ens_members } from '@/types/server/ens_types';
+import { filter_options, teams_sort_options, type type_ens_members } from '@/types/server/ens_types';
 import indexTable from './components/indexTable.vue';
 import indexList from './components/indexList.vue';
 
@@ -30,7 +30,7 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
               class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
               :placeholder="`Buscar ${module}...`"
               :filter-options="filter_options"
-              :sort-options="sort_options" />
+              :sort-options="teams_sort_options" />
           </div>
           <IndexCreateButton
             :actions="validatePermissions(actions, sessionData.userMenuData)"
@@ -46,7 +46,7 @@ const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
           class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
           :placeholder="`Buscar ${module}...`"
           :filter-options="filter_options"
-          :sort-options="sort_options" />
+          :sort-options="teams_sort_options" />
       </UDashboardToolbar>
       <UProgress
         class="block sm:hidden"

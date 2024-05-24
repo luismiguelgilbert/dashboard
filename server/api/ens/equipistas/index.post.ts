@@ -4,7 +4,7 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { filter_options, sort_options, ens_members } from '@/types/server/ens_types';
+import { filter_options, member_sort_options, ens_members } from '@/types/server/ens_types';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -13,7 +13,7 @@ export default defineEventHandler( async (event) => {
 
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortById = Number(filter.sortBy);
-    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue;
+    const sortBy: string = member_sort_options.find(x => x.value === sortById)?.sqlValue ?? member_sort_options[0].sqlValue;
     const page = Number(filter.page);
     const pageSize = Number(filter.pageSize);
     const offset = pageSize * (page - 1);
@@ -59,9 +59,7 @@ export default defineEventHandler( async (event) => {
     return array(ens_members).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

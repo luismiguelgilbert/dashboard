@@ -57,9 +57,7 @@ export default defineEventHandler( async (event) => {
     return array(sys_profiles).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: err.statusCode ?? 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    await serverDB.query('ROLLBACK');
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { columns } from './config';
-import { type type_sys_profiles } from '@/types/server/sys_profiles';
+import { type type_ens_teams } from '@/types/server/ens_types';
 import { format, isToday } from 'date-fns';
 
 const props = defineProps({
   rows: {
-    type: Array<type_sys_profiles>,
+    type: Array<type_ens_teams>,
     required: false,
     default: () => []
   },
@@ -25,7 +25,7 @@ const props = defineProps({
     :loading="props.loading"
     sort-mode="manual"
     class="w-full hidden sm:block h-dvh">
-    <template #name_es-data="{ row }: { row: type_sys_profiles }">
+    <template #name_es-data="{ row }: { row: type_ens_teams }">
       <div class="flex items-center gap-3">
         <UAvatar
           v-if="row.name_es"
@@ -37,7 +37,7 @@ const props = defineProps({
         </div>
       </div>
     </template>
-    <template #is_active-data="{ row }: { row: type_sys_profiles }">
+    <template #is_active-data="{ row }: { row: type_ens_teams }">
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"
         :color="row.is_active ? 'green' : 'red'"
@@ -50,13 +50,16 @@ const props = defineProps({
         {{ isToday(new Date(row.updated_at!)) ? format(new Date(row.updated_at!), 'HH:mm') : format(new Date(row.updated_at!), 'dd MMM') }}
       </div>
     </template>
-    <template #actions-data="{ row }: { row: type_sys_profiles }">
+    <template #actions-data="{ row }: { row: type_ens_teams }">
       <UButton
-        icon="i-heroicons-pencil-square"
         variant="link"
         size="xl"
         class="text-primary-400 dark:text-primary-400"
-        @click="navigateTo(`/ens/equipos/${row.id}`)" />
+        @click="navigateTo(`/ens/equipos/${row.id}`)">
+        <font-awesome-icon
+          icon="fa-solid fa-square-pen"
+          size="lg" />
+      </UButton>
     </template>
   </UTable>
 </template>
