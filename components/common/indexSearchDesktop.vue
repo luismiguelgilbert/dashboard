@@ -60,6 +60,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
     :ui-menu="{ option: { base: 'capitalize' } }"
     @change="() => { page = 1 }" />
   <USelectMenu
+    v-if="sortOptions.length > 1" 
     v-model="sortBy"
     icon="i-heroicons-bars-arrow-down"
     value-attribute="value"

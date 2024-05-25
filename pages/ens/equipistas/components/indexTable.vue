@@ -60,7 +60,7 @@ const props = defineProps({
     <template #is_active-data="{ row }: { row: type_ens_members }">
       <UBadge
         :label="row.is_active? 'activo' : 'inactivo'"
-        :color="row.is_active ? 'green' : 'red'"
+        :color="row.is_active ? 'primary' : 'red'"
         variant="subtle"
         class="capitalize"
       />

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { columns } from './config';
 import { type type_ens_teams } from '@/types/server/ens_types';
-import { format, isToday } from 'date-fns';
 
-const props = defineProps({
+defineProps({
   rows: {
     type: Array<type_ens_teams>,
     required: false,
@@ -15,51 +13,44 @@ const props = defineProps({
     default: false
   },
 });
+
+const { state } = useEnsEquipos();
 </script>
 
 <template>
-  <UTable
-    :rows="rows"
-    :columns="columns"
-    :ui="{ divide: 'divide-gray-200 dark:divide-gray-800' }"
-    :loading="props.loading"
-    sort-mode="manual"
-    class="w-full hidden sm:block h-dvh">
-    <template #name_es-data="{ row }: { row: type_ens_teams }">
-      <div class="flex items-center gap-3">
-        <UAvatar
-          v-if="row.name_es"
-          size="xs">
-          {{ row.name_es[0] }}
-        </UAvatar>
-        <div class="text-base font-semibold dark:text-white text-black">
-          {{ `${row.name_es}` }}
+  <div>
+    <div
+      v-for="(team, index) in rows"
+      :key="index"
+      class="border-b"
+      @click="state.selectedTeam = team">
+      <div
+        class="p-4 text-sm cursor-pointer border-l-2"
+        :class="[
+          state.selectedTeam && state.selectedTeam.id === team.id
+            ? 'border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25' 
+            : 'border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'
+        ]">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">
+            {{ team.name_es }}
+          </div>
+          <UBadge
+            :label="team.is_active? 'activo' : 'inactivo'"
+            :color="team.is_active ? 'primary' : 'red'"
+            variant="subtle"
+            class="capitalize"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            {{ team.nivel_0 }}
+          </div>
+          <div class="font-light">
+            {{ team.nivel_1 }} - {{ team.nivel_2 }}
+          </div>
         </div>
       </div>
-    </template>
-    <template #is_active-data="{ row }: { row: type_ens_teams }">
-      <UBadge
-        :label="row.is_active? 'activo' : 'inactivo'"
-        :color="row.is_active ? 'green' : 'red'"
-        variant="subtle"
-        class="capitalize"
-      />
-    </template>
-    <template #updated_at-data="{ row }">
-      <div class="text-sm font-light dark:text-white text-black">
-        {{ isToday(new Date(row.updated_at!)) ? format(new Date(row.updated_at!), 'HH:mm') : format(new Date(row.updated_at!), 'dd MMM') }}
-      </div>
-    </template>
-    <template #actions-data="{ row }: { row: type_ens_teams }">
-      <UButton
-        variant="link"
-        size="xl"
-        class="text-primary-400 dark:text-primary-400"
-        @click="navigateTo(`/ens/equipos/${row.id}`)">
-        <font-awesome-icon
-          icon="fa-solid fa-square-pen"
-          size="lg" />
-      </UButton>
-    </template>
-  </UTable>
+    </div>
+  </div>
 </template>

@@ -32,6 +32,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@nuxt/devtools-edge": "^1.3.1-28608040.946f930",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/image": "1.1.0",
     "@nuxtjs/supabase": "^1.2.2",

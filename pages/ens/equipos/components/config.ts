@@ -12,7 +12,8 @@ export const columns = [
   {
     key: 'user_count',
     label: '# Equipistas',
-    sortable: false
+    sortable: false,
+    class: 'whitespace-nowrap'
   },
   {
     key: 'nivel_0',
@@ -20,33 +21,8 @@ export const columns = [
     sortable: false
   },
   {
-    key: 'nivel_1',
-    label: 'Sector',
-    sortable: false
-  },
-  {
-    key: 'nivel_2',
-    label: 'Provincia',
-    sortable: false
-  },
-  {
     key: 'nivel_3',
     label: 'Región',
-    sortable: false
-  },
-  {
-    key: 'nivel_4',
-    label: 'País',
-    sortable: false
-  },
-  {
-    key: 'nivel_5',
-    label: 'Super Región',
-    sortable: false
-  },
-  {
-    key: 'nivel_6',
-    label: 'Zona',
     sortable: false
   },
   {
@@ -80,6 +56,10 @@ export const actions: DropdownItemExtended[][] = [
       click: async () => { downloadFile(); }
     },
   ],
+];
+export const tabs = [
+  { value: 'basic', slot: 'basic', label: 'Equipo', icon: 'i-heroicons-user-group', defaultOpen: true },
+  { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-user-group', defaultOpen: false },
 ];
 //Functions
 const downloadFile = async() => {

@@ -2,10 +2,10 @@
 import { actions, module, title } from './components/config';
 import { filter_options, teams_sort_options, type type_ens_members } from '@/types/server/ens_types';
 import indexTable from './components/indexTable.vue';
-import indexList from './components/indexList.vue';
+import teamForm from './components/teamForm.vue';
 
 useHead({ title });
-const { state } = useEnsEquipistas();
+const { state } = useEnsEquipos();
 const { sessionData } = useUserSession();
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
 const { data, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
@@ -15,7 +15,7 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
 
 <template>
   <UDashboardPage>
-    <UDashboardPanel grow>
+    <UDashboardPanel>
       <UDashboardNavbar
         :title="title"
         :badge="totalRows">
@@ -27,9 +27,7 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
               v-model:filterBy="state.filterPayload.filterBy"
               v-model:sortBy="state.filterPayload.sortBy"
               class="hidden sm:flex items-stretch flex-shrink-0 gap-1.5"
-              :placeholder="`Buscar ${module}...`"
-              :filter-options="filter_options"
-              :sort-options="teams_sort_options" />
+              :placeholder="`Buscar ${module}...`" />
           </div>
           <IndexCreateButton
             :actions="validatePermissions(actions, sessionData.userMenuData)"
@@ -53,9 +51,9 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
         :value="!pending ? 0: undefined"
         :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
-        <indexList
+        <!-- <indexList
           v-if="data"
-          :rows="data" />
+          :rows="data" /> -->
         <indexTable
           v-if="data"
           :rows="data" />
@@ -65,6 +63,15 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
           :pending="pending"
           :total-rows="totalRows" />
       </UDashboardPanelContent>
+    </UDashboardPanel>
+    <UDashboardPanel
+      collapsible
+      grow
+      side="right"
+      class="overflow-scroll">
+      <template v-if="state.selectedTeam">
+        <teamForm />
+      </template>
     </UDashboardPanel>
   </UDashboardPage>
 </template>
