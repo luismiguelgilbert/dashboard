@@ -44,9 +44,9 @@ export type type_ens_members_form = InferType<typeof ens_members_form>;
 export const ens_teams = object({
   id: string(),
   is_active: boolean(),
-  name_es: string(),
-  nivel_0: string(),
-  nivel_1: string(),
+  name_es: string().required('El nombre es requerido.').min(3, 'Debe incluir 3 o más caracteres.'),
+  nivel_0: string().required('La ciudad es requerida.').min(3, 'Debe incluir 3 o más caracteres.'),
+  nivel_1: string().required('El sector es requerido.').min(3, 'Debe incluir 3 o más caracteres.'),
   nivel_2: string(),
   nivel_3: string(),
   nivel_4: string(),

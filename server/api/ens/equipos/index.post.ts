@@ -26,7 +26,7 @@ export default defineEventHandler( async (event) => {
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and (a.name_es ILIKE '%${search_string}%' )` 
+      ? ` and (a.name_es ILIKE '%${search_string}%' or a.nivel_0 ILIKE '%${search_string}%' or a.nivel_1 ILIKE '%${search_string}%' or a.nivel_2 ILIKE '%${search_string}%' or a.nivel_3 ILIKE '%${search_string}%' or a.nivel_4 ILIKE '%${search_string}%' or a.nivel_5 ILIKE '%${search_string}%' or a.nivel_6 ILIKE '%${search_string}%' )`
       : '';
 
     const text = `

@@ -22,8 +22,8 @@ const { state } = useEnsEquipos();
     <div
       v-for="(team, index) in rows"
       :key="index"
-      class="border-b"
-      @click="state.selectedTeam = team">
+      class="border-b dark:border-gray-800"
+      @click="state.selectedTeam = JSON.parse(JSON.stringify(team))">
       <div
         class="p-4 text-sm cursor-pointer border-l-2"
         :class="[

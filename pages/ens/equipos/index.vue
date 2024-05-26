@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { actions, module, title } from './components/config';
-import { filter_options, teams_sort_options, type type_ens_members } from '@/types/server/ens_types';
+import { filter_options, teams_sort_options, type type_ens_teams } from '@/types/server/ens_types';
 import indexTable from './components/indexTable.vue';
 import teamForm from './components/teamForm.vue';
 
@@ -8,9 +8,11 @@ useHead({ title });
 const { state } = useEnsEquipos();
 const { sessionData } = useUserSession();
 const totalRows = computed(() => data.value?.[0]?.row_count ?? 0 );
-const { data, pending } = await useLazyFetch<type_ens_members[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
+const { data, pending, refresh } = await useLazyFetch<type_ens_teams[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
+const isRightPanelOpen = ref(false);
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
+watch( () => state.value.selectedTeam, () => { isRightPanelOpen.value = true; });
 </script>
 
 <template>
@@ -51,9 +53,6 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
         :value="!pending ? 0: undefined"
         :animation="pending ? 'carousel': undefined" />
       <UDashboardPanelContent class="p-0">
-        <!-- <indexList
-          v-if="data"
-          :rows="data" /> -->
         <indexTable
           v-if="data"
           :rows="data" />
@@ -64,13 +63,16 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
           :total-rows="totalRows" />
       </UDashboardPanelContent>
     </UDashboardPanel>
+    
     <UDashboardPanel
+      v-model="isRightPanelOpen"
       collapsible
       grow
-      side="right"
-      class="overflow-scroll">
+      side="right">
       <template v-if="state.selectedTeam">
-        <teamForm />
+        <teamForm
+          class="overflow-y-scroll"
+          @data-saved="refresh" />
       </template>
     </UDashboardPanel>
   </UDashboardPage>

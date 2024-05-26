@@ -58,6 +58,7 @@ const tabClick = (tab: bTabItem) => {
   <div
     v-for="(item, index) of props.items"
     :key="index"
+    class="overflow-scroll"
     :class="{'hidden': innerValue !== item.slot}">
     <slot :name="item.slot">
     </slot>

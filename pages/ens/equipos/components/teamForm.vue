@@ -1,32 +1,84 @@
 <script setup lang="ts">
 import { tabs } from './config';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { ens_teams } from '~/types/server/ens_types';
 import teamFormUsers from './teamFormUsers.vue';
+
+const emits = defineEmits(['data-saved']);
 
 const { state } = useEnsEquipos();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
 const inputSize = computed(() => isMobile.value ? 'lg' : 'xl');
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const tab = ref('basic');
+const form = ref();
+
+const save = async () => {
+  const { start, finish } = useLoadingIndicator();
+  try {
+    await form.value.validate();
+    start();
+    state.value.isLoading = true;
+    await ens_teams.validate(state.value.selectedTeam);
+    //Update Team
+    if(state.value.selectedTeam?.id){
+      await $fetch(`/api/ens/equipos/:${state.value.selectedTeam.id}`, {
+        method: 'patch',
+        body: state.value.selectedTeam,
+      });
+      //Notify and Emit
+      useToast().add({
+        title: 'Datos guardados correctamente',
+        icon: 'i-heroicons-check-circle',
+        timeout: 1500,
+      });
+      emits('data-saved', state.value.selectedTeam);
+    }
+  } catch (error) {
+    let errorMessage = 'Error desconocido';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    useToast().add({
+      title: 'Error',
+      description: errorMessage,
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'rose',
+      timeout: 5000,
+    });
+
+  } finally {
+    state.value.isLoading = false;
+    finish();
+  }
+};
 </script>
 
 <template>
   <div>
-    <UDashboardNavbar title="Editar Equipo">
+    <UDashboardNavbar
+      title="Editar Equipo"
+      class="sticky top-0 z-10 bg-white dark:bg-gray-900">
+      <template #toggle>
+        <UDashboardNavbarToggle icon="i-heroicons-x-mark" />
+      </template>
       <template #right>
         <UButton
           label="Guardar"
-          icon="i-heroicons-check-circle" />
+          icon="i-heroicons-check-circle"
+          @click="save" />
       </template>
     </UDashboardNavbar>
     <BTabs
       v-model="tab"
-      :items="tabs">
+      :items="tabs"
+      class="sticky top-0 z-10 bg-white dark:bg-gray-900">
       <template #basic>
         <UForm
           v-if="state.selectedTeam"
           ref="form"
           class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
+          :schema="ens_teams"
           :state="state.selectedTeam">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
             <div class="col-span-1 sm:col-span-2 pt-1" />
@@ -86,7 +138,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_0"
                 required
                 placeholder="Ciudad a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-map"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -107,7 +159,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_1"
                 required
                 placeholder="Sector a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-map-pin"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -128,7 +180,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_2"
                 required
                 placeholder="Provincia a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-globe-americas"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -149,7 +201,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_3"
                 required
                 placeholder="Región a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-globe-asia-australia"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -170,7 +222,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_4"
                 required
                 placeholder="País a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-globe-europe-africa"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -191,7 +243,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_5"
                 required
                 placeholder="Super Región a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-globe-alt"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
@@ -212,7 +264,7 @@ const tab = ref('basic');
                 v-model:model-value="state.selectedTeam.nivel_6"
                 required
                 placeholder="Zona a la que pertenece el equipo"
-                icon="i-heroicons-building-storefront"
+                icon="i-heroicons-globe-alt"
                 :ui="inputUI"
                 :loading="state.isLoading" />
             </UFormGroup>
