@@ -17,6 +17,11 @@ watch( () => pending.value, () => { pending.value ? start() : finish(); });
 // watch( () => state.value.selectedTeam, () => { isRightPanelOpen.value = true; });
 
 const setNewRoute = async (team: type_ens_teams) => {
+  if (state.value.selectedId === team.id) {
+    state.value.selectedId = null;
+    router.push('/ens/equipos');
+    return;
+  }
   if (team.id) {
     state.value.selectedId = team.id;
     router.push(`/ens/equipos/equipo-${team.id}`);

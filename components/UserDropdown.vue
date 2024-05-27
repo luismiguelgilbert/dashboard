@@ -37,7 +37,7 @@ const logout = async () => {
     :items="items"
     :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }"
     :popper="{ strategy: 'absolute', placement: 'top' }"
-    class="w-full">
+    class="w-full bg-gray-100 dark:bg-gray-800 rounded-md">
     <template #default="{ open }">
       <UButton
         color="gray"
