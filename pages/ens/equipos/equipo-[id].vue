@@ -1,16 +1,21 @@
 <script setup lang="ts">
+import { type type_ens_teams } from '@/types/server/ens_types';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 import Users from './components/users.vue';
 
 const route = useRoute();
-const { state } = useEnsEquipos();
+const { state: dataList } = useEnsEquipos();
+const { state } = useEnsEquiposForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
-state.value.selectedId = String(route.params.id);
+dataList.value.selectedId = String(route.params.id);
 
-console.log('load team data here');
+const { data } = await useLazyFetch<type_ens_teams[]>(`/api/ens/equipos/:${route.params.id}`);
+if (data.value) { state.value.data = data.value[0]; }
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
+
 
 // const save = async () => {
 //   const { start, finish } = useLoadingIndicator();
