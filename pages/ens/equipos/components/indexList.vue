@@ -19,7 +19,7 @@ const { state } = useEnsEquipos();
 </script>
 
 <template>
-  <div class="overflow-scroll">
+  <div class="overflow-scroll sm:min-w-96">
     <div
       v-for="(team, index) in rows"
       :key="index"

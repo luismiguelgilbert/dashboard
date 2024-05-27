@@ -45,7 +45,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
         :ui="inputUI"
         autocomplete="off"
         placeholder="Buscar..."
-        class="z-10"
+        class="z-10 max-w-24 sm:max-w-full"
         @keydown.esc="$event.target.blur()"
         @input="updatePropSearchString" />
       <UDropdown
