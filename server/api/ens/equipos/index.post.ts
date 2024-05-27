@@ -14,6 +14,7 @@ export default defineEventHandler( async (event) => {
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortById = Number(filter.sortBy);
     const sortBy: string = teams_sort_options.find(x => x.value === sortById)?.sqlValue ?? teams_sort_options[0].sqlValue;
+    const sortByOrder = Boolean(filter.sortByOrder);
     const page = Number(filter.page);
     const pageSize = Number(filter.pageSize);
     const offset = pageSize * (page - 1);
@@ -48,7 +49,7 @@ export default defineEventHandler( async (event) => {
       WHERE 1 = 1 
       ${filterBy}
       ${filterSearchString}
-      ORDER BY ${sortBy}
+      ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
       OFFSET ${offset}
       LIMIT ${pageSize}
     `;

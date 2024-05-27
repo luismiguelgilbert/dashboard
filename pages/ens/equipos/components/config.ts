@@ -3,40 +3,6 @@ import { PermissionsList } from '~/types/client/permissionsEnum';
 
 export const title = 'Equipos';
 export const module = 'equipo';
-export const columns = [
-  {
-    key: 'name_es',
-    label: 'Equipo',
-    sortable: false
-  },
-  {
-    key: 'user_count',
-    label: '# Equipistas',
-    sortable: false,
-    class: 'whitespace-nowrap'
-  },
-  {
-    key: 'nivel_0',
-    label: 'Ciudad',
-    sortable: false
-  },
-  {
-    key: 'nivel_3',
-    label: 'Región',
-    sortable: false
-  },
-  {
-    key: 'is_active',
-    label: 'Estado',
-    sortable: false
-  },
-  {
-    key: 'actions',
-    label: '',
-    sortable: false,
-    class: 'w-1',
-  },
-];
 export const actions: DropdownItemExtended[][] = [
   [
     {
@@ -45,7 +11,7 @@ export const actions: DropdownItemExtended[][] = [
       disabled: false,
       label: 'Nuevo equipo',
       icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/ens/equipos/create'); }  
+      click: () => { navigateTo('/ens/equipos/equipo-new'); }  
     },
     {
       id: PermissionsList.ENSTEAMS_EXPORT,

@@ -75,8 +75,6 @@ if (!error.value && data.value) {
 
     <suspense>
       <NuxtPage />
-      <!-- <slot /> -->
-      <!-- <Nuxt /> -->
     </suspense>
   </UDashboardLayout>
 </template>

@@ -2,7 +2,6 @@
 import { tabs } from './config';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { ens_teams } from '~/types/server/ens_types';
-import teamFormUsers from './teamFormUsers.vue';
 
 const emits = defineEmits(['data-saved']);
 
@@ -272,9 +271,6 @@ const save = async () => {
             <br /><br />
           </div>
         </UForm>
-      </template>
-      <template #users>
-        <teamFormUsers />
       </template>
     </BTabs>
   </div>

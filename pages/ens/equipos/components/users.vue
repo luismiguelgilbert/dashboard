@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { type type_ens_members } from '@/types/server/ens_types';
-const { state } = useEnsEquipos();
-const teamMebers = ref<Array<type_ens_members>>([]);
-const isLoading = ref(false);
+// const { state } = useEnsEquipos();
+const route = useRoute();
+// const teamMebers = ref<Array<type_ens_members>>([]);
+// const isLoading = ref(false);
+// console.log()
 
-watch( () => state.value.selectedTeam, async () => { 
-  const { data, pending } = await useLazyFetch<type_ens_members[]>(`/api/ens/equipos/:${state.value.selectedTeam?.id}/members`);
-  teamMebers.value = data.value ?? [];
-  isLoading.value = pending.value;
-  watch(pending, (newData) => { isLoading.value = newData; });
-});
+// watch( () => state.value.selectedTeam, async () => { 
+  const { data, pending } = await useLazyFetch<type_ens_members[]>(`/api/ens/equipos/:${route.params.id}/members`);
+  // teamMebers.value = data.value ?? [];
+  // isLoading.value = pending.value;
+  // watch(pending, (newData) => { isLoading.value = newData; });
+// });
 </script>
 
 <template>
-  <SkeletonHeader v-if="isLoading" />
+  <SkeletonHeader v-if="pending" />
   <div
     v-else
     class="pl-6 pr-6 md:pl-2 md:pr-2 mt-4 md:mt-2">
@@ -22,11 +24,11 @@ watch( () => state.value.selectedTeam, async () => {
         :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
         class="min-w-0">
         <ul
-          v-if="teamMebers.length"
+          v-if="data?.length"
           role="list"
           class="divide-y divide-gray-200 dark:divide-gray-800">
           <li
-            v-for="(user, index) in teamMebers"
+            v-for="(user, index) in data"
             :key="index"
             class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
             <div class="flex items-center gap-3 min-w-0">

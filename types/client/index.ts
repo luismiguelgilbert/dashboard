@@ -2,7 +2,7 @@ import type { Avatar } from '#ui/types';
 
 export type FilterOption = {
   label: string,
-  value: string | number,
+  value: number,
   sqlValue: string,
   icon: string,
 };

@@ -19,7 +19,7 @@ const page = defineModel<number>('page', { default: 1 });
 </script>
 
 <template>
-  <div class="flex justify-center sm:justify-between px-3 py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
+  <div class="flex justify-center sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
     <USelectMenu
       v-model="pageSize"
       class="hidden lg:block"
