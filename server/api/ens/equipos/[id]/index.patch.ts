@@ -1,7 +1,7 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { ens_teams } from '@/types/server/ens_types';
+import { ens_teams } from '@/types/server/ens_teams';
 
 export default defineEventHandler( async (event) => {
   try {
