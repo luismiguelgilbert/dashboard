@@ -1,4 +1,4 @@
-// import { type type_ens_teams } from '~/types/server/ens_types';
+import { type type_filter_search_option } from '~/types/server/filter_search';
 
 export const useEnsEquipos = () => {
   const state = useState('useEnsEquipos', () => { return {
@@ -6,7 +6,7 @@ export const useEnsEquipos = () => {
     showFilterPanel: false,
     filterPayload: {
       pageSize: 25,
-      filterBy: [],
+      filterBy: [] as Array<type_filter_search_option>,
       sortBy: 1,
       sortByOrder: true,
       page: 1,
@@ -14,6 +14,7 @@ export const useEnsEquipos = () => {
     },
     selectedId: null as string | null,
   };});
+  const hasFilter = computed(() => state.value.filterPayload.filterBy.some(x => x.options && x.options?.length > 0));
 
-  return { state };
+  return { state, hasFilter };
 };

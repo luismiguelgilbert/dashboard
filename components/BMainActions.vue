@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
 import type { FilterOption } from '~/types/client/index'; 
+import type { type_filter_search, type_filter_search_option, type_filter_selections } from '~/types/server/filter_search'; 
 
 const props = defineProps({
   dropdownActions: {
@@ -12,14 +13,26 @@ const props = defineProps({
     type: Array as PropType<FilterOption[]>,
     required: false,
     default: () => []
+  },
+  filterOptions: {
+    type: Array as PropType<type_filter_search[]>,
+    required: false,
+    default: () => []
   }
 });
 
+//DEFINEMODELS
 const page = defineModel<number>('page', { default: 1 });
 const searchString = defineModel<string>('searchString', { default: '' });
 const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false });
 const sortDirection = defineModel<boolean>('sortDirection', { default: true });
 const sortOption = defineModel<number>('sortOption', { default: 1 });
+const filterOption = defineModel<Array<type_filter_search_option>>('filterOption', { default: [] });
+//REFS AND PROPS
+const listOfOptions = ref<Array<type_filter_search_option>>([]);
+const isLoading = ref<boolean>(false);
+const fieldLoading = ref<type_filter_search>();
+const tempKey = ref<number>(1);
 
 const extendedDropdownActions = computed(() => [...props.dropdownActions, [{
   label: 'Filtros y ordenamiento',
@@ -29,10 +42,55 @@ const extendedDropdownActions = computed(() => [...props.dropdownActions, [{
 }]]);
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 
+//ACTIONS
 const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
   page.value = 1;
   searchString.value = (inputEvent.target as HTMLInputElement).value ?? '';
 }, 1000);
+
+async function addOptions (filter: type_filter_search) {
+  const index = listOfOptions.value.findIndex(option => option.key === filter.key);
+  if (index === -1) {
+    isLoading.value = true;
+    fieldLoading.value = filter;
+    useFetch('/api/lookups/filter_search', {
+      method: 'post',
+      body: filter,
+      onResponse({ response }) {
+        if (response._data) {
+          listOfOptions.value.push({
+            key: filter.key,
+            options: response._data,
+          });
+        }
+        isLoading.value = false;
+      },
+    });
+  }
+}
+
+const selectedOption = (filter: type_filter_search) => {
+  return filterOption.value.find(option => option.key === filter.key)?.options;
+};
+
+const updateOption = (newVal: type_filter_selections, filter: type_filter_search) => {
+  const optionIndex = filterOption.value.findIndex(option => option.key === filter.key);
+  filterOption.value[optionIndex].options = newVal;
+  tempKey.value++;
+};
+
+const clearFilters = () => {
+  filterOption.value.forEach(filter => {
+    filter.options = [];
+  });
+};
+
+props.filterOptions.forEach(filter => {
+  const filterOptionIndex = filterOption.value.findIndex(option => option.key === filter.key);
+  if (filterOptionIndex === -1) {
+    filterOption.value.push({ key: filter.key, options: [] });
+  }
+});
 </script>
 
 <template>
@@ -49,6 +107,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
         @keydown.esc="$event.target.blur()"
         @input="updatePropSearchString" />
       <UDropdown
+        mode="hover"
         :items="extendedDropdownActions"
         :popper="{ placement: 'bottom-start' }">
         <UButton
@@ -56,10 +115,8 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
           trailing-icon="i-heroicons-chevron-down-20-solid" />
       </UDropdown>
     </UButtonGroup>
-
-    <USlideover
-      v-model="showFilterPanel"
-      prevent-close>
+    
+    <USlideover v-model="showFilterPanel">
       <UCard
         class="flex flex-col flex-1"
         :ui="{
@@ -82,6 +139,7 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
         </template>
 
         <div class="h-[calc(100dvh-365px)]">
+          <!-- Sort Section-->
           <div v-if="props.sortOptions.length > 0">
             <span>
               <div class="grid grid-cols-1 gap-1 sm:gap-5 px-1 sm:px-2 content-start">
@@ -121,33 +179,50 @@ const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
             <UDivider class="col-span-1 my-5" />
           </div>
   
-          <span>
-            <div class="grid grid-cols-1 gap-1 sm:gap-5 px-1 sm:px-2 content-start">
-              <p class="text-gray-900 dark:text-white font-light">
-                Filtrar:
-              </p>
-            </div>
-            <div class="grid grid-cols-1 mt-2 gap-5 px-4 content-start">
-              <UCheckbox
-                label="Activos"
-                :ui="{
-                  base: 'h-6 w-6',
-                  container: 'flex items-center h-6',
-                  label: 'text-md',
-                }"
-                :model-value="false" />
-              <UCheckbox
-                label="Inactivos"
-                :ui="{
-                  base: 'h-6 w-6',
-                  container: 'flex items-center h-6',
-                  label: 'text-md',
-                }"
-                :model-value="false" />
-            </div>
-          </span>
+          <!-- Filter Section-->
+          <div v-if="props.filterOptions.length > 0">
+            <span :key="tempKey">
+              <div class="grid grid-cols-1 gap-1 sm:gap-5 px-1 sm:px-2 content-start">
+                <div class="flex justify-center sm:justify-between">
+                  <p class="text-gray-900 dark:text-white font-light">
+                    Filtros:
+                  </p>
+                  <UButton
+                    icon="i-heroicons-backspace"
+                    class="mr-2"
+                    size="sm"
+                    color="primary"
+                    variant="soft"
+                    label="Limpiar filtros"
+                    @click="clearFilters" />
+                </div>
+                <div class="space-y-5 px-3 pt-3 sm:pt-0">
+                  <UFormGroup
+                    v-for="filter in props.filterOptions"
+                    :key="filter.key"
+                    :label="`${filter.label}:`"
+                    class="px-2">
+                    <!-- by="value" -->
+                    <USelectMenu
+                      :model-value="selectedOption(filter)"
+                      class="w-full"
+                      multiple
+                      searchable
+                      placeholder="Seleccionar..."
+                      option-attribute="label"
+                      value-attribute="value"
+                      :loading="isLoading && fieldLoading?.key === filter.key"
+                      :options="listOfOptions.find(field => field.key === filter.key)?.options"
+                      @focus="addOptions(filter)"
+                      @change="updateOption($event, filter)" />
+                  </UFormGroup>
+                </div>
+                <br />
+              </div>
+            </span>
+          </div>
         </div>
-
+        
         <template #footer>
           <UButton
             block

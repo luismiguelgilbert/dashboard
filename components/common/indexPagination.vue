@@ -7,6 +7,11 @@ defineProps({
     required: false,
     default: false
   },
+  hasFilter: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   totalRows: {
     type: Number,
     required: false,
@@ -27,10 +32,18 @@ const page = defineModel<number>('page', { default: 1 });
       value-attribute="value"
       :options="pageSizeOptions"
       @change="() => { page = 1 }" />
-    <UPagination
-      v-model="page"
-      :page-count="pageSize"
-      :total="totalRows"
-    />
+    <div class="flex">
+      <UButton
+        v-if="hasFilter"
+        icon="i-heroicons-funnel"
+        class="mr-2"
+        size="sm"
+        color="primary"
+        variant="soft" />
+      <UPagination
+        v-model="page"
+        :page-count="pageSize"
+        :total="totalRows" />
+    </div>
   </div>
 </template>

@@ -4,7 +4,8 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { filter_options, teams_sort_options, ens_teams } from '@/types/server/ens_types';
+import { teams_sort_options, ens_teams } from '@/types/server/ens_teams';
+import { FilterQueriesKeys } from '~/types/server/filter_search_queries';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -18,13 +19,40 @@ export default defineEventHandler( async (event) => {
     const page = Number(filter.page);
     const pageSize = Number(filter.pageSize);
     const offset = pageSize * (page - 1);
-    const filterConditions: Array<string> = [];
-    filter_options.forEach(x => {
-      if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue);
-      }
+    let filterQuery = '';
+    filter.filterBy
+      .filter(x =>  x.options && x.options.length > 0)
+      .forEach(userFilter => {
+        if (userFilter.key === FilterQueriesKeys.ENS_TEAM_ACTIVE) { 
+          filterQuery += ' AND a.is_active in (';
+          userFilter.options?.forEach(option => {
+            filterQuery += option;
+          });
+          filterQuery += ') ';
+        }
+        if (userFilter.key === FilterQueriesKeys.ENS_TEAM_NIVEL_0) { 
+          filterQuery += ' AND a.nivel_0 in (';
+          userFilter.options?.forEach(option => {
+            filterQuery += `'${option}',`;
+          });
+          filterQuery += ') ';
+        }
+        if (userFilter.key === FilterQueriesKeys.ENS_TEAM_NIVEL_1) { 
+          filterQuery += ' AND a.nivel_1 in (';
+          userFilter.options?.forEach(option => {
+            filterQuery += `'${option}',`;
+          });
+          filterQuery += ') ';
+        }
+        if (userFilter.key === FilterQueriesKeys.ENS_TEAM_NIVEL_2) { 
+          filterQuery += ' AND a.nivel_2 in (';
+          userFilter.options?.forEach(option => {
+            filterQuery += `'${option}',`;
+          });
+          filterQuery += ') ';
+        }
     });
-    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
+    filterQuery = filterQuery.replaceAll(',)', ')');    
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
       ? ` and (a.name_es ILIKE '%${search_string}%' or a.nivel_0 ILIKE '%${search_string}%' or a.nivel_1 ILIKE '%${search_string}%' or a.nivel_2 ILIKE '%${search_string}%' or a.nivel_3 ILIKE '%${search_string}%' or a.nivel_4 ILIKE '%${search_string}%' or a.nivel_5 ILIKE '%${search_string}%' or a.nivel_6 ILIKE '%${search_string}%' )`
@@ -47,12 +75,13 @@ export default defineEventHandler( async (event) => {
         , count(*) OVER() AS row_count
       FROM ens_teams a
       WHERE 1 = 1 
-      ${filterBy}
+      ${filterQuery}
       ${filterSearchString}
       ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
       OFFSET ${offset}
       LIMIT ${pageSize}
     `;
+    console.log(text);
     const data = await serverDB.query(text);
     return array(ens_teams).cast(data.rows);
   } catch(err) {

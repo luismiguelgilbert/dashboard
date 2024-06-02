@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type type_ens_teams } from '@/types/server/ens_types';
+import { type type_ens_teams } from '@/types/server/ens_teams';
 
 defineProps({
   rows: {
@@ -19,7 +19,7 @@ const { state } = useEnsEquipos();
 </script>
 
 <template>
-  <div class="overflow-scroll sm:min-w-96">
+  <div class="overflow-scroll h-full sm:min-w-[25rem]">
     <div
       v-for="(team, index) in rows"
       :key="index"
