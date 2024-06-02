@@ -1,17 +1,7 @@
 <script setup lang="ts">
-import { type type_ens_members } from '@/types/server/ens_types';
-// const { state } = useEnsEquipos();
 const route = useRoute();
-// const teamMebers = ref<Array<type_ens_members>>([]);
-// const isLoading = ref(false);
-// console.log()
 
-// watch( () => state.value.selectedTeam, async () => { 
-  const { data, pending } = await useLazyFetch<type_ens_members[]>(`/api/ens/equipos/:${route.params.id}/members`);
-  // teamMebers.value = data.value ?? [];
-  // isLoading.value = pending.value;
-  // watch(pending, (newData) => { isLoading.value = newData; });
-// });
+const { data, pending } = await useLazyFetch(`/api/ens/equipos/:${route.params.id}/members`);
 </script>
 
 <template>
@@ -37,15 +27,15 @@ const route = useRoute();
                   <NuxtImg 
                     v-if="user.avatar_url && user.avatar_url.length > 0"
                     :src="user.avatar_url"
-                    width="20"
-                    height="15"
+                    width="50"
+                    height="35"
                     class="mt-1 rounded" />
                   <UAvatar
                     v-else-if="user.user_full_name"
                     size="xs">
                     {{ user.user_full_name[0] }}
                   </UAvatar>
-                  <div class="text-base font-semibold dark:text-white text-black">
+                  <div class="text-base font-semibold dark:text-white text-black truncate">
                     {{ user.user_full_name }}
                     <p class="text-gray-500 dark:text-gray-400 truncate">
                       {{ user.email }}

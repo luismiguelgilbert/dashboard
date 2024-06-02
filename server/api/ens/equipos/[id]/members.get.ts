@@ -8,7 +8,7 @@ export default defineEventHandler( async (event) => {
     const id = getRouterParam(event, 'id');
     const text = `SELECT
       b.id
-      ,concat(c.user_name, c.user_lastname) as user_full_name
+      ,concat(c.user_name, ' ', c.user_lastname) as user_full_name
       ,d.email
       ,c.user_sex
       ,c.avatar_url
