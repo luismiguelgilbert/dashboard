@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { tabs } from './config';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-import { ens_teams } from '~/types/server/ens_types';
+import { ens_teams } from '~/types/server/ens_teams';
 
 const emits = defineEmits(['data-saved']);
 
