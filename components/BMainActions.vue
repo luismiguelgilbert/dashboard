@@ -76,10 +76,12 @@ const selectedOption = (filter: type_filter_search) => {
 const updateOption = (newVal: type_filter_selections, filter: type_filter_search) => {
   const optionIndex = filterOption.value.findIndex(option => option.key === filter.key);
   filterOption.value[optionIndex].options = newVal;
+  page.value = 1;
   tempKey.value++;
 };
 
 const clearFilters = () => {
+  page.value = 1;
   filterOption.value.forEach(filter => {
     filter.options = [];
   });
@@ -183,7 +185,7 @@ props.filterOptions.forEach(filter => {
           <div v-if="props.filterOptions.length > 0">
             <span :key="tempKey">
               <div class="grid grid-cols-1 gap-1 sm:gap-5 px-1 sm:px-2 content-start">
-                <div class="flex justify-center sm:justify-between">
+                <div class="flex w-full justify-between sm:justify-between">
                   <p class="text-gray-900 dark:text-white font-light">
                     Filtros:
                   </p>
@@ -213,8 +215,17 @@ props.filterOptions.forEach(filter => {
                       value-attribute="value"
                       :loading="isLoading && fieldLoading?.key === filter.key"
                       :options="listOfOptions.find(field => field.key === filter.key)?.options"
-                      @focus="addOptions(filter)"
-                      @change="updateOption($event, filter)" />
+                      @open="addOptions(filter)"
+                      @change="updateOption($event, filter)">
+                      <template #label>
+                        <span
+                          v-if="selectedOption(filter)?.length"
+                          class="font-bold text-primary-500">
+                          {{ `${selectedOption(filter)?.length} seleccionados` }}
+                        </span>
+                        <span v-else>Seleccionar..</span>
+                      </template>
+                    </USelectMenu>
                   </UFormGroup>
                 </div>
                 <br />

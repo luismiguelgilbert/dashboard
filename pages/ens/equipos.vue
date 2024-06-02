@@ -51,6 +51,7 @@ const setNewRoute = async (team: type_ens_teams) => {
         <IndexPagination
           v-model:pageSize="state.filterPayload.pageSize"
           v-model:page="state.filterPayload.page"
+          v-model:showFilterPanel="state.showFilterPanel"
           :has-filter="hasFilter"
           :pending="pending"
           :total-rows="totalRows" />

@@ -21,6 +21,7 @@ defineProps({
 
 const pageSize = defineModel<number>('pageSize', { default: 0 });
 const page = defineModel<number>('page', { default: 1 });
+const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false });
 </script>
 
 <template>
@@ -39,7 +40,8 @@ const page = defineModel<number>('page', { default: 1 });
         class="mr-2"
         size="sm"
         color="primary"
-        variant="soft" />
+        variant="soft"
+        @click="showFilterPanel = true" />
       <UPagination
         v-model="page"
         :page-count="pageSize"
