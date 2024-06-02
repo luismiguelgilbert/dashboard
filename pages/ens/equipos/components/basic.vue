@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
-import { ens_teams } from '~/types/server/ens_types';
+import { ens_teams } from '~/types/server/ens_teams';
 
 const { state } = useEnsEquiposForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');

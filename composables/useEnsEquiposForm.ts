@@ -1,4 +1,4 @@
-import { type type_ens_teams } from '@/types/server/ens_types';
+import { type type_ens_teams } from '@/types/server/ens_teams';
 
 export const useEnsEquiposForm = () => {
   const state = useState('useEnsEquiposForm', () => { return {

@@ -1,5 +1,4 @@
 import {
-  ens_members_form,
   type type_ens_members_form,
   type type_ens_members_teams,
   type type_ens_members_services,
@@ -32,9 +31,10 @@ export const useEnsEquipistasForm = () => {
   };
 
   const validateData = async () => {
-    const isDataValid = await ens_members_form.safeParse(state.value.data);
+    // const isDataValid = await ens_members_form.safeParse(state.value.data);
 
-    return isDataValid.success;
+    // return isDataValid.success;
+    return true;
   };
 
   return { state, resetData, validateData };

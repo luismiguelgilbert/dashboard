@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type type_ens_teams } from '@/types/server/ens_types';
+import { type type_ens_teams } from '@/types/server/ens_teams';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 import Users from './components/users.vue';

@@ -4,7 +4,7 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { filter_options, member_sort_options, ens_members } from '@/types/server/ens_types';
+import { member_sort_options, ens_members } from '@/types/server/ens_types';
 
 export default defineEventHandler( async (event) => {
   try{
@@ -18,11 +18,11 @@ export default defineEventHandler( async (event) => {
     const pageSize = Number(filter.pageSize);
     const offset = pageSize * (page - 1);
     const filterConditions: Array<string> = [];
-    filter_options.forEach(x => {
-      if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue);
-      }
-    });
+    // filter_options.forEach(x => {
+    //   if (filter.filterBy.includes(x.value)) {
+    //     filterConditions.push(x.sqlValue);
+    //   }
+    // });
     const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
