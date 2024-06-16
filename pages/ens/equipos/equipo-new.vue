@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import Basic from './components/basic.vue';
+const isRightPanelOpen = ref(true);
+// import Basic from './components/basic.vue';
 // const isRightPanelOpen = ref(true);
 // const tab = ref('basic');
 </script>
@@ -7,6 +8,7 @@ import Basic from './components/basic.vue';
 <template>
   <div>
     <UDashboardPanel
+      v-model="isRightPanelOpen"
       collapsible
       grow
       side="right">
@@ -22,7 +24,7 @@ import Basic from './components/basic.vue';
             icon="i-heroicons-plus-circle" />
         </template>
       </UDashboardNavbar>
-      <Basic />
+      <!-- <Basic /> -->
     </UDashboardPanel>
   </div>
 </template>
