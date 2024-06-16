@@ -1,4 +1,5 @@
 import { object, string, type InferType } from 'yup';
+import { FilterQueriesKeys } from '@/types/server/filter_keys';
 
 export const filter_query = object({
   key: string().required(),
@@ -7,12 +8,7 @@ export const filter_query = object({
 });
 export type type_filter_query = InferType<typeof filter_query>;
 
-export enum FilterQueriesKeys {
-  ENS_TEAM_ACTIVE = 'ens_team_is_active',
-  ENS_TEAM_NIVEL_0 = 'ens_team_nivel_0',
-  ENS_TEAM_NIVEL_1 = 'ens_team_nivel_1',
-  ENS_TEAM_NIVEL_2 = 'ens_team_nivel_2',
-}
+
 
 //Pending inject company on queries
 export const filter_queries: Array<type_filter_query> = [
