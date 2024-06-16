@@ -27,7 +27,6 @@ state.value.services = dataServices.value ?? [];
 
 //Actions
 const addTeam = () => {
-  // console.log('addTeam', addTeamId.value, addTeamDateStart.value, addTeamDatePilotaje.value, addTeamDateStop.value);
   state.value.data_teams.push({
   id: '',
   team_id: addTeamId.value,

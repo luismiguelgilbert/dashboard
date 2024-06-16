@@ -5,6 +5,7 @@ import type { type_filter_search_option } from '~/types/server/filter_search';
 const showFieldPanel = defineModel<boolean>('showFieldPanel');
 const currentFieldPanel = defineModel<type_filter_option>('currentFieldPanel');
 const filterSelection = defineModel<type_filter_selection>('filterSelection');
+const page = defineModel<number>('page', { default: 1 });
 
 const listOfOptions = ref<Array<type_filter_search_option>>([]);
 const isLoading = ref<boolean>(false);
@@ -69,6 +70,7 @@ const selectionChanged = (value: boolean, row: type_filter_object) => {
 const applyFilter = () => {
   filterSelection.value = _filterSelection.value;
   showFieldPanel.value = false;
+  page.value = 1;
 };
 const clearFilter = () => {
   const propertyName: string = currentFieldPanel.value?.key!;
