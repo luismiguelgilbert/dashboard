@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type type_ens_teams } from '@/types/server/ens_teams';
+import { type type_ens_teams } from '@/types/server/ens/ens_teams';
 
 defineProps({
   rows: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { actions, title } from './equipos/components/config';
-import { teams_sort_options, teams_filter_options, type type_ens_teams } from '@/types/server/ens_teams';
+import { sort_options, filter_options, type type_ens_teams } from '@/types/client/ens/ens_teams';
 import indexList from './equipos/components/indexList.vue';
 
 useHead({ title });
@@ -37,10 +37,10 @@ const setNewRoute = async (team: type_ens_teams) => {
             v-model:showFilterPanel="state.showFilterPanel"
             v-model:sortOption="state.filterPayload.sortBy"
             v-model:sortDirection="state.filterPayload.sortByOrder"
-            v-model:filterOption="state.filterPayload.filterBy"
+            v-model:filterSelection="state.filterPayload.filterSelection"
             :dropdown-actions="actions"
-            :sort-options="teams_sort_options"
-            :filter-options="teams_filter_options" />
+            :sort-options="sort_options"
+            :filter-options="filter_options" />
         </template>
       </UDashboardNavbar>
       <UDashboardPanelContent class="p-0">

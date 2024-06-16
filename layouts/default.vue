@@ -50,7 +50,8 @@ if (!error.value && data.value) {
 <template>
   <UDashboardLayout>
     <UDashboardPanel
-      :width="250"
+      class="bg-gray-50 dark:bg-gray-800"
+      :width="300"
       :resizable="{ min: 200, max: 300 }"
       collapsible>
       <UDashboardNavbar
@@ -65,7 +66,9 @@ if (!error.value && data.value) {
       </UDashboardNavbar>
 
       <UDashboardSidebar>
-        <UDashboardSidebarLinks :links="userMenu" />
+        <UDashboardSidebarLinks
+          :links="userMenu"
+          :ui="{ label: 'text-lg lg:text-sm truncate relative' }" />
         <UDivider class="sticky bottom-0" />
         <template #footer>
           <UserDropdown />

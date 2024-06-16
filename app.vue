@@ -28,7 +28,9 @@ useSeoMeta({
 
 <template>
   <div>
-    <NuxtLoadingIndicator :throttle="100" />
+    <NuxtLoadingIndicator
+      :throttle="100"
+      :height="7" />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
@@ -46,6 +48,10 @@ useSeoMeta({
 </template>
 
 <style>
+:deep(.nuxt-loader-bar) {
+  background-color: #111827;
+  height: 50px;
+}
 .page-enter-active,
 .page-leave-active {
   transition: all 0.4s;

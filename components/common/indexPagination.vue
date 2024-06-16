@@ -25,27 +25,26 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
 </script>
 
 <template>
-  <div class="flex justify-center sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
-    <USelectMenu
-      v-model="pageSize"
-      class="hidden lg:block"
-      icon="i-heroicons-circle-stack"
-      value-attribute="value"
-      :options="pageSizeOptions"
-      @change="() => { page = 1 }" />
-    <div class="flex">
+  <div class="flex justify-between sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
+    <div class="flex flex-row">
+      <USelectMenu
+        v-model="pageSize"
+        class="hidden lg:block"
+        icon="i-heroicons-circle-stack"
+        value-attribute="value"
+        :options="pageSizeOptions"
+        @change="() => { page = 1 }" />
       <UButton
-        v-if="hasFilter"
-        icon="i-heroicons-funnel"
         class="mr-2"
         size="sm"
-        color="primary"
-        variant="soft"
+        variant="link"
+        :icon="hasFilter ? 'i-heroicons-funnel-solid' : 'i-heroicons-funnel'"
+        :color="hasFilter ? 'primary' : 'gray'"
         @click="showFilterPanel = true" />
-      <UPagination
-        v-model="page"
-        :page-count="pageSize"
-        :total="totalRows" />
     </div>
+    <UPagination
+      v-model="page"
+      :page-count="pageSize"
+      :total="totalRows" />
   </div>
 </template>

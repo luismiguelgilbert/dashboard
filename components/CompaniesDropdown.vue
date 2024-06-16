@@ -14,12 +14,13 @@ const companyAvatar = computed(() => {
   <USelectMenu
     v-model="sessionData.userCompany" 
     :options="sessionData.userCompanies"
-    variant="none"
+    color="gray"
     option-attribute="name_es_short"
     value-attribute="id"
     placeholder="Organización">
     <UButton
       variant="ghost"
+      color="gray"
       class="flex-1 justify-between">
       {{ companyName }}
       <UIcon
