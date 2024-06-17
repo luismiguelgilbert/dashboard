@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type type_ens_teams } from '@/types/server/ens/ens_teams';
+import { ValidationError } from 'yup';
+import { ens_teams } from '@/types/server/ens/ens_teams';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 import Users from './components/users.vue';
@@ -10,53 +11,39 @@ const { state } = useEnsEquiposForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
+const validationErrors = ref<ValidationError>();
+const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
-const { data } = await useLazyFetch<type_ens_teams[]>(`/api/ens/equipos/:${route.params.id}`);
+const { data } = await useLazyFetch(`/api/ens/equipos/:${route.params.id}`);
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
-
-// const save = async () => {
-//   const { start, finish } = useLoadingIndicator();
-//   try {
-//     await form.value.validate();
-//     start();
-//     state.value.isLoading = true;
-//     await ens_teams.validate(state.value.selectedTeam);
-//     //Update Team
-//     if(state.value.selectedTeam?.id){
-//       await $fetch(`/api/ens/equipos/:${state.value.selectedTeam.id}`, {
-//         method: 'patch',
-//         body: state.value.selectedTeam,
-//       });
-//       //Notify and Emit
-//       useToast().add({
-//         title: 'Datos guardados correctamente',
-//         icon: 'i-heroicons-check-circle',
-//         timeout: 1500,
-//       });
-//       emits('data-saved', state.value.selectedTeam);
-//     }
-//   } catch (error) {
-//     let errorMessage = 'Error desconocido';
-//     if (error instanceof Error) {
-//       errorMessage = error.message;
-//     }
-//     useToast().add({
-//       title: 'Error',
-//       description: errorMessage,
-//       icon: 'i-heroicons-exclamation-triangle',
-//       color: 'rose',
-//       timeout: 5000,
-//     });
-
-//   } finally {
-//     state.value.isLoading = false;
-//     finish();
-//   }
-// };
-
+const save = async () => {
+  const { start, finish } = useLoadingIndicator();
+  try {
+    await ens_teams.validate(state.value.data, { abortEarly: false });
+    start();
+    state.value.isLoading = true;
+    if(state.value.data?.id){
+      await $fetch(`/api/ens/equipos/:${state.value.data.id}`, {
+        method: 'patch',
+        body: state.value.data,
+      });
+    }
+    validationErrors.value = undefined;
+    saved.value = true;
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      validationErrors.value = error;
+    } else {
+      validationErrors.value = new ValidationError('Algo salió mal');
+    }
+  } finally {
+    state.value.isLoading = false;
+    finish();
+  }
+};
 </script>
 
 <template>
@@ -75,9 +62,32 @@ watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0];
         <template #right>
           <UButton
             label="Guardar"
-            icon="i-heroicons-check-circle" />
+            icon="i-heroicons-check-circle"
+            @click="save" />
         </template>
       </UDashboardNavbar>
+      <div class="p-2">
+        <UAlert
+          v-if="validationErrors?.errors"
+          icon="i-heroicons-exclamation-triangle"
+          color="rose"
+          variant="soft"
+          title="Error">
+          <template #description>
+            <li
+              v-for="(error, index) in validationErrors.errors"
+              :key="index">
+              {{ error }} <br />
+            </li>
+          </template>
+        </UAlert>
+        <UAlert
+          v-if="saved"
+          icon="i-heroicons-check-circle"
+          color="green"
+          variant="soft"
+          title="Datos guardados" />
+      </div>
       <BTabs
         v-model="tab"
         :items="tabs"

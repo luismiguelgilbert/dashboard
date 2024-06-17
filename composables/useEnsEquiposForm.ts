@@ -4,11 +4,11 @@ export const useEnsEquiposForm = () => {
   const state = useState('useEnsEquiposForm', () => { return {
     isLoading: false as boolean,
     isSaving: false as boolean,
-    data: {} as type_ens_teams,
+    data: null as type_ens_teams | null,
   };});
 
   const resetState = () => { 
-    state.value.data = {} as type_ens_teams;
+    state.value.data = null,
     state.value.isLoading = false;
     state.value.isSaving = false;
   };
