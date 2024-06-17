@@ -33,7 +33,7 @@ const save = async () => {
     await ens_teams.validate(state.value.data, { abortEarly: false });
     start();
     state.value.isLoading = true;
-    const response: { id: string} = await $fetch('/api/ens/equipos/create', {
+    const response: { id: string } = await $fetch('/api/ens/equipos/create', {
       method: 'post',
       body: state.value.data,
     });
