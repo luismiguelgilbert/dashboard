@@ -1,8 +1,57 @@
 <script setup lang="ts">
+import { ValidationError } from 'yup';
+import { ens_teams } from '@/types/server/ens/ens_teams';
+import { tabs } from './components/config';
+import Basic from './components/basic.vue';
+
+const route = useRoute();
+const { state: dataList } = useEnsEquipos();
+const { state } = useEnsEquiposForm();
+
+const tab = ref('basic');
 const isRightPanelOpen = ref(true);
-// import Basic from './components/basic.vue';
-// const isRightPanelOpen = ref(true);
-// const tab = ref('basic');
+const validationErrors = ref<ValidationError>();
+const saved = ref(false);
+dataList.value.selectedId = String(route.params.id);
+
+state.value.data = ens_teams.cast({
+  id: '',
+  is_active: true,
+  name_es: '',
+  nivel_0: '',
+  nivel_1: '',
+  nivel_2: '',
+  nivel_3: '',
+  nivel_4: '',
+  nivel_5: '',
+  nivel_6: '',
+  created_at: new Date(),
+  updated_at: new Date(),
+});
+
+const save = async () => {
+  const { start, finish } = useLoadingIndicator();
+  try {
+    await ens_teams.validate(state.value.data, { abortEarly: false });
+    start();
+    state.value.isLoading = true;
+    await $fetch('/api/ens/equipos/create', {
+      method: 'post',
+      body: state.value.data,
+    });
+    validationErrors.value = undefined;
+    saved.value = true;
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      validationErrors.value = error;
+    } else {
+      validationErrors.value = new ValidationError('Algo salió mal');
+    }
+  } finally {
+    state.value.isLoading = false;
+    finish();
+  }
+};
 </script>
 
 <template>
@@ -20,11 +69,44 @@ const isRightPanelOpen = ref(true);
         </template>
         <template #right>
           <UButton
-            label="Crear"
-            icon="i-heroicons-plus-circle" />
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="state.isSaving"
+            @click="save" />
         </template>
       </UDashboardNavbar>
-      <!-- <Basic /> -->
+      <div
+        v-if="validationErrors?.errors || saved"
+        class="p-2">
+        <UAlert
+          v-if="validationErrors?.errors"
+          icon="i-heroicons-exclamation-triangle"
+          color="rose"
+          variant="soft"
+          title="Error">
+          <template #description>
+            <li
+              v-for="(error, index) in validationErrors.errors"
+              :key="index">
+              {{ error }} <br />
+            </li>
+          </template>
+        </UAlert>
+        <UAlert
+          v-if="saved"
+          icon="i-heroicons-check-circle"
+          color="green"
+          variant="soft"
+          title="Datos guardados" />
+      </div>
+      <BTabs
+        v-model="tab"
+        :items="tabs.filter(tab => tab.value !== 'users')"
+        class="sticky top-0 z-10 bg-white dark:bg-gray-900">
+        <template #basic>
+          <Basic />
+        </template>
+      </BTabs>
     </UDashboardPanel>
   </div>
 </template>
