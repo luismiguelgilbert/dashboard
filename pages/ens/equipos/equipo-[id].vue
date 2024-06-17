@@ -24,6 +24,7 @@ const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
     await ens_teams.validate(state.value.data, { abortEarly: false });
+    saved.value = false;
     start();
     state.value.isLoading = true;
     if(state.value.data?.id){

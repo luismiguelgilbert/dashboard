@@ -34,7 +34,8 @@ const save = async () => {
     await ens_teams.validate(state.value.data, { abortEarly: false });
     start();
     state.value.isLoading = true;
-    const response: type_ens_teams_created = await $fetch('/api/ens/equipos/create', {
+    let response: type_ens_teams_created = { id: '' };
+    response = await $fetch('/api/ens/equipos/create', {
       method: 'post',
       body: state.value.data,
     });
