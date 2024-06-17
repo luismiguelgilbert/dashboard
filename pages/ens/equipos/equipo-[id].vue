@@ -15,7 +15,8 @@ const validationErrors = ref<ValidationError>();
 const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
-const { data } = await useLazyFetch(`/api/ens/equipos/:${route.params.id}`);
+state.value.data = null;
+const { data, pending } = await useLazyFetch(`/api/ens/equipos/:${route.params.id}`);
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
@@ -63,10 +64,13 @@ const save = async () => {
           <UButton
             label="Guardar"
             icon="i-heroicons-check-circle"
+            :disabled="pending || state.isSaving"
             @click="save" />
         </template>
       </UDashboardNavbar>
-      <div class="p-2">
+      <div
+        v-if="validationErrors?.errors || saved"
+        class="p-2">
         <UAlert
           v-if="validationErrors?.errors"
           icon="i-heroicons-exclamation-triangle"
@@ -88,7 +92,11 @@ const save = async () => {
           variant="soft"
           title="Datos guardados" />
       </div>
+      <UProgress
+        v-if="pending"
+        animation="carousel" />
       <BTabs
+        v-if="!pending"
         v-model="tab"
         :items="tabs"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
