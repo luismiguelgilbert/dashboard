@@ -4,7 +4,6 @@ import { ens_teams } from '@/types/server/ens/ens_teams';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 
-const route = useRoute();
 const { state: dataList } = useEnsEquipos();
 const { state } = useEnsEquiposForm();
 
@@ -12,7 +11,6 @@ const tab = ref('basic');
 const isRightPanelOpen = ref(true);
 const validationErrors = ref<ValidationError>();
 const saved = ref(false);
-dataList.value.selectedId = String(route.params.id);
 
 state.value.data = ens_teams.cast({
   id: '',
@@ -35,12 +33,15 @@ const save = async () => {
     await ens_teams.validate(state.value.data, { abortEarly: false });
     start();
     state.value.isLoading = true;
-    await $fetch('/api/ens/equipos/create', {
+    const response: { id: string} = await $fetch('/api/ens/equipos/create', {
       method: 'post',
       body: state.value.data,
     });
     validationErrors.value = undefined;
     saved.value = true;
+    
+    dataList.value.selectedId = String(response.id);
+    await navigateTo(`/ens/equipos/equipo-${response.id}`);
   } catch (error) {
     if (error instanceof ValidationError) {
       validationErrors.value = error;
