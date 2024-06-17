@@ -3,7 +3,7 @@ import { FilterQueriesKeys } from '@/types/server/filter_keys';
 import { type type_filter_option, type type_sort_option } from '@/types/server/filter_payload';
 
 export const ens_teams = object({
-  id: string().optional(),
+  id: string(),
   is_active: boolean(),
   name_es: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
   nivel_0: string().required('Ciudad es requerida.').min(3, 'Ciudad debe incluir 3 o más caracteres.'),

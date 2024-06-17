@@ -1,4 +1,4 @@
-import { object, string, boolean, number, date, type InferType } from 'yup';
+import { object, string, boolean, number, type InferType } from 'yup';
 import { FilterQueriesKeys } from '@/types/server/filter_keys';
 import { type type_filter_option, type type_sort_option_client } from '@/types/client/filter_payload';
 
@@ -13,8 +13,8 @@ export const ens_teams = object({
   nivel_4: string(),
   nivel_5: string(),
   nivel_6: string(),
-  created_at: date(),
-  updated_at: date(),
+  created_at: string(),
+  updated_at: string(),
   row_count: number().optional().nullable().default(0),
 });
 export type type_ens_teams = InferType<typeof ens_teams>;

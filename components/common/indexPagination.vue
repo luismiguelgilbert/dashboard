@@ -18,6 +18,7 @@ defineProps({
     default: 0
   },
 });
+const emits = defineEmits(['refresh-clicked']);
 
 const pageSize = defineModel<number>('pageSize', { default: 0 });
 const page = defineModel<number>('page', { default: 1 });
@@ -35,12 +36,17 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
         :options="pageSizeOptions"
         @change="() => { page = 1 }" />
       <UButton
-        class="mr-2"
         size="sm"
         variant="link"
         :icon="hasFilter ? 'i-heroicons-funnel-solid' : 'i-heroicons-funnel'"
         :color="hasFilter ? 'primary' : 'gray'"
         @click="showFilterPanel = true" />
+      <UButton
+        size="sm"
+        variant="link"
+        icon="i-heroicons-arrow-path"
+        color="gray"
+        @click="emits('refresh-clicked')" />
     </div>
     <UPagination
       v-model="page"

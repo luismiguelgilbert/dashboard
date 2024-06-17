@@ -8,7 +8,7 @@ const { state, hasFilter } = useEnsEquipos();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'ens-equipos');
-const { data, pending } = await useLazyFetch<type_ens_teams[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
+const { data, pending, refresh } = await useLazyFetch<type_ens_teams[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 
@@ -55,7 +55,8 @@ const setNewRoute = async (team: type_ens_teams) => {
           v-model:showFilterPanel="state.showFilterPanel"
           :has-filter="hasFilter"
           :pending="pending"
-          :total-rows="totalRows" />
+          :total-rows="totalRows"
+          @refresh-clicked="refresh" />
       </UDashboardPanelContent>
     </UDashboardPanel>
     <div class="overflow-scroll w-full">

@@ -10,6 +10,7 @@ const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5'
 
 <template>
   <UForm
+    v-if="state.data"
     ref="form"
     class="pl-6 pr-6 md:pl-2 md:pr-2 pt-4 md:pt-0"
     :schema="ens_teams"
