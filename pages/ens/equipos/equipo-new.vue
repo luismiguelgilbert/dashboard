@@ -28,6 +28,11 @@ state.value.data = ens_teams.cast({
   updated_at: new Date(),
 });
 
+const cancel = async () => {
+  dataList.value.selectedId = null;
+  await navigateTo('/ens/equipos');
+};
+
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
@@ -72,8 +77,14 @@ const save = async () => {
         </template>
         <template #right>
           <UButton
-            label="Guardar"
-            icon="i-heroicons-check-circle"
+            label="Cancelar"
+            icon="i-heroicons-x-circle"
+            color="gray"
+            :disabled="state.isSaving"
+            @click="cancel" />
+          <UButton
+            label="Crear"
+            icon="i-heroicons-plus-circle"
             :disabled="state.isSaving"
             @click="save" />
         </template>

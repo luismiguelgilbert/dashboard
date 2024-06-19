@@ -20,6 +20,11 @@ const { data, pending } = await useLazyFetch(`/api/ens/equipos/:${route.params.i
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
+const cancel = async () => {
+  dataList.value.selectedId = null;
+  await navigateTo('/ens/equipos');
+};
+
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
@@ -62,6 +67,12 @@ const save = async () => {
           <UDashboardNavbarToggle icon="i-heroicons-x-mark" />
         </template>
         <template #right>
+          <UButton
+            label="Cancelar"
+            icon="i-heroicons-x-circle"
+            color="gray"
+            :disabled="pending || state.isSaving"
+            @click="cancel" />
           <UButton
             label="Guardar"
             icon="i-heroicons-check-circle"
