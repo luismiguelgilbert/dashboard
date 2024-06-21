@@ -1,5 +1,5 @@
 import { FilterQueriesKeys } from '@/types/server/filter_keys';
-import { type type_filter_selection } from '@/types/client/filter_payload';
+import { type type_filter_selection, type type_filter_payload } from '@/types/client/filter_payload';
 import { type type_ens_teams } from '@/types/server/ens/ens_teams';
 
 export const useEnsEquipos = () => {
@@ -13,7 +13,7 @@ export const useEnsEquipos = () => {
       sortByOrder: true,
       page: 1,
       searchString: ''
-    },
+    } as type_filter_payload,
     selectedId: null as string | null,
     selectedTeam: null as type_ens_teams | null,
   };});

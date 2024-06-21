@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { actions, title, sort_options, filter_options } from './equipos/components/config';
+import { useActions, title, sort_options, filter_options } from './equipos/components/config';
 import { type type_ens_teams } from '@/types/server/ens/ens_teams';
 import indexList from './equipos/components/indexList.vue';
 
 useHead({ title });
+const { sessionData } = useUserSession();
 const { state, hasFilter } = useEnsEquipos();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
@@ -32,7 +33,7 @@ const setNewRoute = async (team: type_ens_teams) => {
             v-model:sortOption="state.filterPayload.sortBy"
             v-model:sortDirection="state.filterPayload.sortByOrder"
             v-model:filterSelection="state.filterPayload.filterSelection"
-            :dropdown-actions="actions"
+            :dropdown-actions="useActions(state.filterPayload, sessionData.userMenuData!)"
             :sort-options="sort_options"
             :filter-options="filter_options" />
         </template>

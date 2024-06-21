@@ -23,3 +23,12 @@ export const sort_option_client = object({
   label: string().required(),
 });
 export type type_sort_option_client = InferType<typeof sort_option_client>;
+
+export type type_filter_payload = {
+  pageSize: number;
+  filterSelection: type_filter_selection;
+  sortBy: NonNullable<FilterQueriesKeys>;
+  sortByOrder: boolean;
+  page: number;
+  searchString: string;
+};

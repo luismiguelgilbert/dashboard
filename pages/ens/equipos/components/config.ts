@@ -1,30 +1,42 @@
 import type { DropdownItemExtended } from '@/types/client/DropdownItemExtended';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { FilterQueriesKeys } from '@/types/server/filter_keys';
-import { type type_filter_option, type type_sort_option_client } from '@/types/client/filter_payload';
+import { type type_userMenuData } from '~/types/server/sys_users';
+import { type type_filter_option, type type_filter_payload, type type_sort_option_client } from '@/types/client/filter_payload';
 
 export const title = 'Equipos';
 export const module = 'equipo';
-export const actions: DropdownItemExtended[][] = [
-  [
-    {
-      id: PermissionsList.ENSTEAMS_CREATE,
-      isMainAction: true,
-      disabled: false,
-      label: 'Nuevo equipo',
-      icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/ens/equipos/equipo-new'); }  
-    },
-    {
-      id: PermissionsList.ENSTEAMS_EXPORT,
-      isMainAction: false,
-      disabled: false,
-      label: 'Descargar',
-      icon: 'i-heroicons-document-arrow-down',
-      click: async () => { downloadFile(); }
-    },
-  ],
-];
+
+export const useActions = (filterPayload: type_filter_payload, permissions: type_userMenuData[] ): DropdownItemExtended[][] => {
+  const actions: DropdownItemExtended[][] = [];
+  actions[0] = [];
+  if (permissions.some(x => x.id === PermissionsList.ENSTEAMS_CREATE)) {
+    actions[0].push(
+      {
+        id: PermissionsList.ENSTEAMS_CREATE,
+        isMainAction: true,
+        disabled: false,
+        label: 'Nuevo equipo',
+        icon: 'i-heroicons-plus',
+        click: () => { navigateTo('/ens/equipos/equipo-new'); }  
+      },
+    );
+  }
+  if (permissions.some(x => x.id === PermissionsList.ENSTEAMS_EXPORT)) {
+    actions[0].push(
+      {
+        id: PermissionsList.ENSTEAMS_EXPORT,
+        isMainAction: false,
+        disabled: false,
+        label: 'Descargar',
+        icon: 'i-heroicons-document-arrow-down',
+        click: async () => { downloadFile(filterPayload); }
+      },
+    );
+  }
+  
+  return actions;
+};
 export const tabs = [
   { value: 'basic', slot: 'basic', label: 'Equipo', icon: 'i-heroicons-user-group', defaultOpen: true },
   { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-user-group', defaultOpen: false },
@@ -45,28 +57,19 @@ export const sort_options: Array<type_sort_option_client> = [
   { key: FilterQueriesKeys.ENS_TEAM_ID, label: 'Código' },
 ];
 //Functions
-const downloadFile = async() => {
+const downloadFile = async(filterPayload: type_filter_payload) => {
   try {
-    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityRoles) {
-      const nuxtApp = window.useNuxtApp();
-      const state = nuxtApp.payload.state.$suseSecurityRoles;
-      state.isLoading = true;
-      const { data, error } = await useFetch('/api/roles/download', {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        method: 'post', 
-        body: state.filterPayload,
-      });
-      if (!error.value && data.value) {
-        const url = window.URL.createObjectURL(data.value);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Equipos.xls');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      state.isLoading = false;
-    }
+    const response: Blob = await $fetch('/api/ens/equipos/download', {
+      method: 'post',
+      body: filterPayload,
+    });
+    const url = window.URL.createObjectURL(response);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Equipos.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   } catch (error) {
     console.error(error);
   }

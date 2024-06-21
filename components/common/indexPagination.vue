@@ -46,6 +46,7 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
         variant="link"
         icon="i-heroicons-arrow-path"
         color="gray"
+        :loading="pending"
         @click="emits('refresh-clicked')" />
     </div>
     <UPagination
