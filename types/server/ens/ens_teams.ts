@@ -19,6 +19,11 @@ export const ens_teams = object({
 });
 export type type_ens_teams = InferType<typeof ens_teams>;
 
+export const ens_teams_created = object({
+  id: string(),
+});
+export type type_ens_teams_created = InferType<typeof ens_teams_created>;
+
 export const filter_options: Array<type_filter_option> = [
   { key: FilterQueriesKeys.ENS_TEAM_ACTIVE, label: 'Estado', valueType: 'boolean', requiresOrganization: false, query: 'a.is_active' },
   { key: FilterQueriesKeys.ENS_TEAM_NAME, label: 'Nombre', valueType: 'string', requiresOrganization: false, query: 'a.name_es' },

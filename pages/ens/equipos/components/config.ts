@@ -1,5 +1,7 @@
-import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
-import { PermissionsList } from '~/types/client/permissionsEnum';
+import type { DropdownItemExtended } from '@/types/client/DropdownItemExtended';
+import { PermissionsList } from '@/types/client/permissionsEnum';
+import { FilterQueriesKeys } from '@/types/server/filter_keys';
+import { type type_filter_option, type type_sort_option_client } from '@/types/client/filter_payload';
 
 export const title = 'Equipos';
 export const module = 'equipo';
@@ -26,6 +28,21 @@ export const actions: DropdownItemExtended[][] = [
 export const tabs = [
   { value: 'basic', slot: 'basic', label: 'Equipo', icon: 'i-heroicons-user-group', defaultOpen: true },
   { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-user-group', defaultOpen: false },
+];
+export const filter_options: Array<type_filter_option> = [
+  { key: FilterQueriesKeys.ENS_TEAM_ACTIVE, label: 'Estado', valueType: 'boolean', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_active' },
+  { key: FilterQueriesKeys.ENS_TEAM_NAME, label: 'Nombre', valueType: 'string', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_name' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_0, label: 'Ciudad', valueType: 'string', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_nivel_0' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_1, label: 'Sector', valueType: 'string', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_nivel_1' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_2, label: 'Provincia', valueType: 'string', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_nivel_2' },
+];
+export const sort_options: Array<type_sort_option_client> = [
+  { key: FilterQueriesKeys.ENS_TEAM_ACTIVE, label: 'Estado' },
+  { key: FilterQueriesKeys.ENS_TEAM_NAME, label: 'Nombre' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_0, label: 'Ciudad' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_1, label: 'Sector' },
+  { key: FilterQueriesKeys.ENS_TEAM_NIVEL_2, label: 'Provincia' },
+  { key: FilterQueriesKeys.ENS_TEAM_ID, label: 'Código' },
 ];
 //Functions
 const downloadFile = async() => {

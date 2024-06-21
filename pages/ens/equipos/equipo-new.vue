@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ValidationError } from 'yup';
 import { ens_teams } from '@/types/server/ens/ens_teams';
-import { type type_ens_teams_created } from '@/types/client/ens/ens_teams';
+import { type type_ens_teams_created } from '@/types/server/ens/ens_teams';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 
@@ -73,12 +73,12 @@ const save = async () => {
         title="Crear Equipo"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
-          <UDashboardNavbarToggle icon="i-heroicons-x-mark" />
+          <span />
         </template>
         <template #right>
           <UButton
             label="Cancelar"
-            icon="i-heroicons-x-circle"
+            icon="i-heroicons-arrow-left-circle"
             color="gray"
             :disabled="state.isSaving"
             @click="cancel" />

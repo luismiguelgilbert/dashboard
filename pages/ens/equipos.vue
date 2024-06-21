@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { actions, title } from './equipos/components/config';
-import { sort_options, filter_options, type type_ens_teams } from '@/types/client/ens/ens_teams';
+import { actions, title, sort_options, filter_options } from './equipos/components/config';
+import { type type_ens_teams } from '@/types/server/ens/ens_teams';
 import indexList from './equipos/components/indexList.vue';
 
 useHead({ title });
@@ -8,7 +8,7 @@ const { state, hasFilter } = useEnsEquipos();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'ens-equipos');
-const { data, pending, refresh } = await useLazyFetch<type_ens_teams[]>('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
+const { data, pending, refresh } = await useLazyFetch('/api/ens/equipos', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 
@@ -41,7 +41,7 @@ const setNewRoute = async (team: type_ens_teams) => {
         <indexList
           v-if="data"
           :rows="data"
-          @row-click="(team: type_ens_teams) => setNewRoute(team)" />
+          @row-click="(row) => setNewRoute(row)" />
         <IndexPagination
           v-model:pageSize="state.filterPayload.pageSize"
           v-model:page="state.filterPayload.page"

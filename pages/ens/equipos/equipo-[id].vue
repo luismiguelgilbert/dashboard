@@ -64,12 +64,12 @@ const save = async () => {
         title="Editar Equipo"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
-          <UDashboardNavbarToggle icon="i-heroicons-x-mark" />
+          <span />
         </template>
         <template #right>
           <UButton
             label="Cancelar"
-            icon="i-heroicons-x-circle"
+            icon="i-heroicons-arrow-left-circle"
             color="gray"
             :disabled="pending || state.isSaving"
             @click="cancel" />
