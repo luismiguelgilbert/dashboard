@@ -38,6 +38,8 @@ export default defineEventHandler( async (event) => {
           int1.service_id
           , count(int1.user_id) as user_count
           from ens_members_services int1
+          where int1.date_start < now()
+          and (int1.date_stop is null or int1.date_stop > now())
           group by int1.service_id
       )
       SELECT

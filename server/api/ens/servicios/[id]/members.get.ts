@@ -20,12 +20,15 @@ export default defineEventHandler( async (event) => {
       ,b.created_at
       ,b.updated_at
       ,0 as row_count
-      from ens_members_teams a
+      from ens_members_services a
       inner join ens_members b on a.user_id = b.id
       inner join sys_users c on b.id = c.id
       inner join auth.users d on c.id = d.id
       left join sys_users e on e.id = b.partner_id
-      where a.team_id = '${id}'
+      where a.service_id = '${id}'
+      and a.date_start < now() 
+      and (a.date_stop is null or a.date_stop > now())
+      order by a.date_start desc
     `;
     const data = await serverDB.query(text);
     return array(ens_members).cast(data.rows);
