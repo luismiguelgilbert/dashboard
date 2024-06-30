@@ -1,7 +1,7 @@
 import serverDB from '@/server/utils/db';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { ens_teams } from '@/types/server/ens/ens_teams';
+import { ens_servicios } from '@/types/server/ens/ens_servicios';
 
 export default defineEventHandler( async (event) => {
   try {
@@ -9,26 +9,17 @@ export default defineEventHandler( async (event) => {
     const id = getRouterParam(event, 'id');
     const userSessionId = event.context.user.id;
     const body = await readBody(event);
-    const payload = await ens_teams.cast(body);
-    ens_teams.validate(body, { strict: false, abortEarly: false });
-    await hasUserPermission(userSessionId, PermissionsList.ENSTEAMS_EDIT);
+    const payload = await ens_servicios.cast(body);
+    ens_servicios.validate(body, { strict: false, abortEarly: false });
+    await hasUserPermission(userSessionId, PermissionsList.ENSSERVICIOS_EDIT);
 
     //Database actions
     await serverDB.query('BEGIN');
 
     //Update specific profile data
-    const sqlUpdateUserData = `update ens_teams set
+    const sqlUpdateUserData = `update ens_services set
        name_es = COALESCE('${payload.name_es}', name_es)
       ,is_active = COALESCE(${payload.is_active ?? false}, is_active)
-      ,nivel_0 = COALESCE('${payload.nivel_0}', nivel_0)
-      ,nivel_1 = COALESCE('${payload.nivel_1}', nivel_1)
-      ,nivel_2 = COALESCE('${payload.nivel_2}', nivel_2)
-      ,nivel_3 = COALESCE('${payload.nivel_3}', nivel_3)
-      ,nivel_4 = COALESCE('${payload.nivel_4}', nivel_4)
-      ,nivel_5 = COALESCE('${payload.nivel_5}', nivel_5)
-      ,nivel_6 = COALESCE('${payload.nivel_6}', nivel_6)
-      ,updated_at = now()
-      ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
     
