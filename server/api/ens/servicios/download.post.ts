@@ -1,17 +1,17 @@
 import serverDB from '@/server/utils/db';
-import { array } from 'yup';
+import Excel from 'exceljs';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
-import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { ens_teams, sort_options, filter_options } from '@/types/server/ens/ens_teams';
+import { sanitizeSQL } from '@/utils/utils';
+import { sort_options, filter_options } from '@/types/server/ens/ens_teams';
 import { type type_filter_selection } from '@/types/client/filter_payload';
 
 export default defineEventHandler( async (event) => {
-  try {
+  try{
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.ENSTEAMS_READ);
-
+    await hasUserPermission(userSessionId, PermissionsList.ENSTEAMS_EXPORT);
+    
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
     const sortByOrder = Boolean(filter.sortByOrder);
@@ -23,15 +23,12 @@ export default defineEventHandler( async (event) => {
       }
     });
     filterQueryString = filterQueryString.replaceAll('([', '(').replaceAll('])', ')').replaceAll('"', '\'');
-    
-    const page = Number(filter.page);
-    const pageSize = Number(filter.pageSize);
-    const offset = pageSize * (page - 1);
+
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
       ? ` and (a.name_es ILIKE '%${search_string}%' or a.nivel_0 ILIKE '%${search_string}%' or a.nivel_1 ILIKE '%${search_string}%' or a.nivel_2 ILIKE '%${search_string}%' or a.nivel_3 ILIKE '%${search_string}%' or a.nivel_4 ILIKE '%${search_string}%' or a.nivel_5 ILIKE '%${search_string}%' or a.nivel_6 ILIKE '%${search_string}%' )`
       : '';
-
+    
     const text = `
       SELECT
           a.id
@@ -52,14 +49,36 @@ export default defineEventHandler( async (event) => {
         ${filterQueryString}
         ${filterSearchString}
         ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
-        OFFSET ${offset}
-        LIMIT ${pageSize}
     `;
     const data = await serverDB.query(text);
-    return array(ens_teams).cast(data.rows);
+    const workbook = new Excel.Workbook();
+    const worksheet = await workbook.addWorksheet('Equipos');
+    const fileColumns = [
+      { key: 'id', header: 'Código', width: 10  },
+      { key: 'name_es', header: 'Equipo', width: 40 },
+      { key: 'is_active', header: 'Activo', width: 10 },
+      { key: 'nivel_0', header: 'Ciudad', width: 15 },
+      { key: 'nivel_1', header: 'Sector', width: 15 },
+      { key: 'nivel_2', header: 'Provincia', width: 15 },
+      { key: 'nivel_3', header: 'Región', width: 15 },
+      { key: 'nivel_4', header: 'País', width: 15 },
+      { key: 'nivel_5', header: 'Super Región', width: 25 },
+      { key: 'nivel_6', header: 'Zona', width: 15 },
+      { key: 'created_at', header: 'Fecha_Creación', width: 25 },
+      { key: 'updated_at', header: 'Fecha_Actualización', width: 25 },
+    ];
+    worksheet.columns = fileColumns;
+    worksheet.getRow(1).font = { size: 16, bold: true };
+    worksheet.views = [{state: 'frozen', ySplit: 1}];
+    worksheet.addRows(data.rows);
+    setHeader(event, 'Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+    return await workbook.xlsx.writeBuffer();
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
-    await serverDB.query('ROLLBACK');
-    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Unhandled exception',
+    });
   }
 });

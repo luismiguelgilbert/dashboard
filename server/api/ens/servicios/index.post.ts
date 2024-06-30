@@ -4,13 +4,13 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { ens_teams, sort_options, filter_options } from '@/types/server/ens/ens_teams';
+import { ens_servicios, sort_options, filter_options } from '@/types/server/ens/ens_servicios';
 import { type type_filter_selection } from '@/types/client/filter_payload';
 
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.ENSTEAMS_READ);
+    await hasUserPermission(userSessionId, PermissionsList.ENSSERVICIOS_READ);
 
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
@@ -29,25 +29,25 @@ export default defineEventHandler( async (event) => {
     const offset = pageSize * (page - 1);
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and (a.name_es ILIKE '%${search_string}%' or a.nivel_0 ILIKE '%${search_string}%' or a.nivel_1 ILIKE '%${search_string}%' or a.nivel_2 ILIKE '%${search_string}%' or a.nivel_3 ILIKE '%${search_string}%' or a.nivel_4 ILIKE '%${search_string}%' or a.nivel_5 ILIKE '%${search_string}%' or a.nivel_6 ILIKE '%${search_string}%' )`
+      ? ` and (a.name_es ILIKE '%${search_string}%' )`
       : '';
 
     const text = `
+      WITH users_by_service AS (
+          select
+          int1.service_id
+          , count(int1.user_id) as user_count
+          from ens_members_services int1
+          group by int1.service_id
+      )
       SELECT
           a.id
         , INITCAP(a.name_es) as name_es
         , a.is_active
-        , INITCAP(a.nivel_0) as nivel_0
-        , INITCAP(a.nivel_1) as nivel_1
-        , INITCAP(a.nivel_2) as nivel_2
-        , INITCAP(a.nivel_3) as nivel_3
-        , INITCAP(a.nivel_4) as nivel_4
-        , INITCAP(a.nivel_5) as nivel_5
-        , INITCAP(a.nivel_6) as nivel_6
-        , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
-        , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
+        , COALESCE(b.user_count, 0) as user_count
         , count(*) OVER() AS row_count
-      FROM ens_teams a
+      FROM ens_services a
+      LEFT JOIN users_by_service b on a.id = b.service_id
       WHERE 1 = 1 
         ${filterQueryString}
         ${filterSearchString}
@@ -56,7 +56,7 @@ export default defineEventHandler( async (event) => {
         LIMIT ${pageSize}
     `;
     const data = await serverDB.query(text);
-    return array(ens_teams).cast(data.rows);
+    return array(ens_servicios).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     await serverDB.query('ROLLBACK');
