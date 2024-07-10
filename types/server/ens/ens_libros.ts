@@ -7,6 +7,7 @@ export const ens_libros = object({
   is_active: boolean(),
   name_es: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
   comment_es: string(),
+  row_count: number().optional().nullable().default(0),
 });
 export type type_ens_libros = InferType<typeof ens_libros>;
 
