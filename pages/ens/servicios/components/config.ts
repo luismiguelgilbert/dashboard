@@ -38,7 +38,7 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
   return actions;
 };
 export const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Servicio', icon: 'i-heroicons-user-group', defaultOpen: true },
+  { value: 'basic', slot: 'basic', label: 'Servicio', icon: 'i-heroicons-lifebuoy', defaultOpen: true },
   { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-user-group', defaultOpen: false },
 ];
 export const filter_options: Array<type_filter_option> = [

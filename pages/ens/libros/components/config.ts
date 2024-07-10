@@ -38,7 +38,7 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
   return actions;
 };
 export const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Servicio', icon: 'i-heroicons-user-group', defaultOpen: true },
+  { value: 'basic', slot: 'basic', label: 'Libro', icon: 'i-heroicons-book-open', defaultOpen: true },
 ];
 export const filter_options: Array<type_filter_option> = [
   { key: FilterQueriesKeys.ENS_LIBROS_ACTIVE, label: 'Estado', valueType: 'boolean', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_libros_active' },

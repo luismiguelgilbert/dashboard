@@ -39,7 +39,7 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
 };
 export const tabs = [
   { value: 'basic', slot: 'basic', label: 'Equipo', icon: 'i-heroicons-user-group', defaultOpen: true },
-  { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-user-group', defaultOpen: false },
+  { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-users', defaultOpen: false },
 ];
 export const filter_options: Array<type_filter_option> = [
   { key: FilterQueriesKeys.ENS_TEAM_ACTIVE, label: 'Estado', valueType: 'boolean', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_active' },
