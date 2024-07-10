@@ -1,45 +1,36 @@
 <script setup lang="ts">
 import { ValidationError } from 'yup';
-import { ens_teams, type type_ens_teams_created } from '@/types/server/ens/ens_teams';
+import { ens_libros, type type_ens_libros_created } from '@/types/server/ens/ens_libros';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 
-const { state: dataList } = useEnsEquipos();
-const { state } = useEnsEquiposForm();
+const { state: dataList } = useEnsLibros();
+const { state } = useEnsLibrosForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
 const validationErrors = ref<ValidationError>();
 const saved = ref(false);
 
-state.value.data = ens_teams.cast({
+state.value.data = ens_libros.cast({
   id: '',
   is_active: true,
   name_es: '',
-  nivel_0: '',
-  nivel_1: '',
-  nivel_2: '',
-  nivel_3: '',
-  nivel_4: '',
-  nivel_5: '',
-  nivel_6: '',
-  created_at: new Date(),
-  updated_at: new Date(),
 });
 
 const cancel = async () => {
   dataList.value.selectedId = null;
-  await navigateTo('/ens/equipos');
+  await navigateTo('/ens/servicios');
 };
 
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
-    await ens_teams.validate(state.value.data, { abortEarly: false });
+    await ens_libros.validate(state.value.data, { abortEarly: false });
     start();
     state.value.isLoading = true;
-    let response: type_ens_teams_created = { id: '' };
-    response = await $fetch('/api/ens/equipos/create', {
+    let response: type_ens_libros_created = { id: '' };
+    response = await $fetch('/api/ens/libros/create', {
       method: 'post',
       body: state.value.data,
     });
@@ -47,7 +38,7 @@ const save = async () => {
     saved.value = true;
     
     dataList.value.selectedId = String(response.id);
-    await navigateTo(`/ens/equipos/equipo-${response.id}`);
+    await navigateTo(`/ens/libros/libro-${response.id}`);
   } catch (error) {
     if (error instanceof ValidationError) {
       validationErrors.value = error;
@@ -69,7 +60,7 @@ const save = async () => {
       grow
       side="right">
       <UDashboardNavbar
-        title="Crear Equipo"
+        title="Crear Libro"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
           <span />

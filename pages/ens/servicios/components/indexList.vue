@@ -31,7 +31,7 @@ const routerParamId = computed(() => route.params.id);
           ? 'p-4 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
           : 'p-4 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'">
         <div class="flex items-center justify-between">
-          <div class="font-semibold">
+          <div class="font-semibold max-w-52">
             {{ row.name_es }}
           </div>
           <UBadge

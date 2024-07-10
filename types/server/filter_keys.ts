@@ -8,4 +8,7 @@ export enum FilterQueriesKeys {
   ENS_SERVICIOS_ID = 'ens_servicios_id',
   ENS_SERVICIOS_NAME = 'ens_servicios_name',
   ENS_SERVICIOS_ACTIVE = 'ens_servicios_is_active',
+  ENS_LIBROS_ID = 'ens_libros_id',
+  ENS_LIBROS_NAME = 'ens_libros_name',
+  ENS_LIBROS_ACTIVE = 'ens_libros_is_active',
 }

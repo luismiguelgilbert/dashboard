@@ -1,53 +1,44 @@
 <script setup lang="ts">
 import { ValidationError } from 'yup';
-import { ens_teams, type type_ens_teams_created } from '@/types/server/ens/ens_teams';
+import { ens_libros } from '@/types/server/ens/ens_libros';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
 
-const { state: dataList } = useEnsEquipos();
-const { state } = useEnsEquiposForm();
+const route = useRoute();
+const { state: dataList } = useEnsLibros();
+const { state } = useEnsLibrosForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
 const validationErrors = ref<ValidationError>();
 const saved = ref(false);
+dataList.value.selectedId = String(route.params.id);
 
-state.value.data = ens_teams.cast({
-  id: '',
-  is_active: true,
-  name_es: '',
-  nivel_0: '',
-  nivel_1: '',
-  nivel_2: '',
-  nivel_3: '',
-  nivel_4: '',
-  nivel_5: '',
-  nivel_6: '',
-  created_at: new Date(),
-  updated_at: new Date(),
-});
+state.value.data = null;
+const { data, pending } = await useLazyFetch(`/api/ens/libros/:${route.params.id}`);
+if (data.value) { state.value.data = data.value[0]; }
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 const cancel = async () => {
   dataList.value.selectedId = null;
-  await navigateTo('/ens/equipos');
+  await navigateTo('/ens/libros');
 };
 
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
-    await ens_teams.validate(state.value.data, { abortEarly: false });
+    await ens_libros.validate(state.value.data, { abortEarly: false });
+    saved.value = false;
     start();
     state.value.isLoading = true;
-    let response: type_ens_teams_created = { id: '' };
-    response = await $fetch('/api/ens/equipos/create', {
-      method: 'post',
-      body: state.value.data,
-    });
+    if(state.value.data?.id){
+      await $fetch(`/api/ens/libros/:${state.value.data.id}`, {
+        method: 'patch',
+        body: state.value.data,
+      });
+    }
     validationErrors.value = undefined;
     saved.value = true;
-    
-    dataList.value.selectedId = String(response.id);
-    await navigateTo(`/ens/equipos/equipo-${response.id}`);
   } catch (error) {
     if (error instanceof ValidationError) {
       validationErrors.value = error;
@@ -69,7 +60,7 @@ const save = async () => {
       grow
       side="right">
       <UDashboardNavbar
-        title="Crear Equipo"
+        title="Editar Libro"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
           <span />
@@ -79,12 +70,12 @@ const save = async () => {
             label="Cancelar"
             icon="i-heroicons-arrow-left-circle"
             color="gray"
-            :disabled="state.isSaving"
+            :disabled="pending || state.isSaving"
             @click="cancel" />
           <UButton
-            label="Crear"
-            icon="i-heroicons-plus-circle"
-            :disabled="state.isSaving"
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="pending || state.isSaving"
             @click="save" />
         </template>
       </UDashboardNavbar>
@@ -112,9 +103,13 @@ const save = async () => {
           variant="soft"
           title="Datos guardados" />
       </div>
+      <UProgress
+        v-if="pending"
+        animation="carousel" />
       <BTabs
+        v-if="!pending"
         v-model="tab"
-        :items="tabs.filter(tab => tab.value !== 'users')"
+        :items="tabs"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #basic>
           <Basic />
