@@ -1,4 +1,4 @@
-import { object, string, boolean, type InferType } from 'yup';
+import { object, string, boolean, number, type InferType } from 'yup';
 import { FilterQueriesKeys } from '@/types/server/filter_keys';
 import { type type_filter_option, type type_sort_option } from '@/types/server/filter_payload';
 
