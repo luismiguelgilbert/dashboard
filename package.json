@@ -13,6 +13,9 @@
     "typecheck": "nuxt typecheck",
     "prepare": "husky"
   },
+  "engines": {
+    "node": "20"
+  },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.6",
