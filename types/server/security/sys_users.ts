@@ -25,7 +25,7 @@ export const sys_users = object({
     is_default: boolean(),
   }))
     .min(1, 'Debe seleccionar al menos una Organización.')
-    .test('default-exists', 'Debe seleccionar una Organización por defecto.', (companies) => companies && companies.some(company => company.is_default)),
+    .test('default-exists', 'Debe seleccionar una Organización por defecto.', (companies) => companies && companies?.some(company => company.is_default)),
 });
 export type type_sys_users = InferType<typeof sys_users>;
 
