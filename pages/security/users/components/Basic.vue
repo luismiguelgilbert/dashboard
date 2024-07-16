@@ -35,7 +35,6 @@ watch([state.value], ([newState]) => newState.isSaving && form.value?.validate()
     :schema="sys_users"
     :state="state.data">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
-      state: {{ state.isSaving }}
       <div class="col-span-1 sm:col-span-2 pt-1" />
       <div>
         <p class="text-gray-900 dark:text-white font-semibold">
