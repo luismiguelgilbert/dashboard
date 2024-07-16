@@ -31,7 +31,7 @@ const routerParamId = computed(() => route.params.id);
           ? 'p-4 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
           : 'p-4 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'">
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
+          <div class="flex min-w-0 items-center gap-3">
             <UAvatar
               v-if="row.avatar_url"
               :src="row.avatar_url"
@@ -50,13 +50,13 @@ const routerParamId = computed(() => route.params.id);
                 icon="fa-solid fa-venus"
                 class="text-rose-300" />
             </UAvatar>
-            <div class="text-base font-semibold">
-              <span class="max-w-10 dark:text-white text-black truncate">
+            <div class="min-w-0 flex-auto text-base font-semibold">
+              <p class="dark:text-white text-black truncate text-ellipsis">
                 {{ row.user_name }} {{ row.user_lastname }}
-              </span>
-              <div class="text-gray-500 dark:text-gray-400 truncate">
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
                 {{ row.email }}
-              </div>
+              </p>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { pageSizeOptions } from './config';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
 defineProps({
   pending: {
@@ -20,6 +21,7 @@ defineProps({
 });
 const emits = defineEmits(['refresh-clicked']);
 
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
 const pageSize = defineModel<number>('pageSize', { default: 0 });
 const page = defineModel<number>('page', { default: 1 });
 const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false });
@@ -51,6 +53,7 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
     </div>
     <UPagination
       v-model="page"
+      :size="isMobile ? 'xs' : 'md'"
       :max="4"
       :page-count="pageSize"
       :total="totalRows" />
