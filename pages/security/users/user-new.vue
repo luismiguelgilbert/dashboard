@@ -3,7 +3,7 @@ import { ValidationError } from 'yup';
 import { sys_users, type type_sys_users_created } from '@/types/server/security/sys_users';
 import { tabs } from './components/config';
 import Basic from './components/Basic.vue';
-import Companies from './components/companies.vue';
+import Companies from './components/Companies.vue';
 
 const { state: dataList } = useSecurityUsers();
 const { state } = useSecurityUsersForm();
