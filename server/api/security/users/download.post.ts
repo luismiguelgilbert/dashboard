@@ -4,28 +4,33 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { filter_payload } from '@/types/server/filter_payload';
 import { sanitizeSQL } from '@/utils/utils';
-import { filter_options, sort_options } from '@/types/server/sys_users';
+import { sort_options, filter_options } from '@/types/server/security/sys_users';
+import { type type_filter_selection } from '@/types/client/filter_payload';
 
 export default defineEventHandler( async (event) => {
   try{
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.USERS_EXPORT);
-    
+
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
-    const sortById = Number(filter.sortBy);
-    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue;
-    const filterConditions: Array<string> = [];
-    filter_options.forEach(x => {
-      if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue);
+    const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
+    const sortByOrder = Boolean(filter.sortByOrder);
+    console.log({sortBy});
+    console.log({sortByOrder});
+    const filterBy: type_filter_selection = filter.filterSelection;
+    let filterQueryString = '';
+    Object.keys(filterBy).forEach(key => {
+      if (filterBy[key].length > 0) {
+        filterQueryString += ` and ${filter_options.find(x => x.key == key)?.query} in (${JSON.stringify(filterBy[key]) })`;
       }
     });
-    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
+    filterQueryString = filterQueryString.replaceAll('([', '(').replaceAll('])', ')').replaceAll('"', '\'');
+
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
+      ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
       : '';
-
+    
     const text = `
       select
       a.id,
@@ -44,10 +49,11 @@ export default defineEventHandler( async (event) => {
       left join sys_profiles_users c on c.user_id = a.id
       left join sys_profiles d on c.sys_profile_id = d.id
       WHERE 1 = 1
-      ${filterBy}
-      ${filterSearchString}
-      ORDER BY ${sortBy}
+        ${filterQueryString}
+        ${filterSearchString}
+        ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
     `;
+    console.log(text);
     const data = await serverDB.query(text);
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Usuarios');

@@ -1,4 +1,5 @@
 import serverDB from '@/server/utils/db';
+
 export default defineEventHandler( async (event) => {
   try{
     event.context.params = useSanitizeParams(event.context.params);
@@ -32,10 +33,6 @@ export default defineEventHandler( async (event) => {
     return { message: `Usuario ${id} actualizado correctamente` };
   }catch(err) {
     await serverDB.query('ROLLBACK');
-    console.error(`Error at ${event.path}. ${err}`);
-    throw createError({
-      statusCode: 500,
-      statusMessage: `${err ?? 'Unhandled exception'}`,
-    });
+    throw createError({ statusCode: 500, statusMessage: String(err) ?? 'Unhandled exception' });
   }
 });

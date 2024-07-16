@@ -1,95 +1,110 @@
 <script setup lang="ts">
-import type { type_sys_companies } from '~/types/server/sys_companies';
-
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
-});
-
+import { type type_sys_companies } from '@/types/server/sys_companies';
 const { state } = useSecurityUsersForm();
-const toast = useToast();
 
-const isCompanySelected = (selectedCompany: type_sys_companies): boolean => {
-  return Boolean(state.value.data.userCompanies.some(company => company === selectedCompany.id));
-};
+const { data, pending } = await useLazyFetch('/api/lookups/sys_companies');
 
-const toggleCompany = (selectedCompany: type_sys_companies): void => {
-  const isCompanyFound = state.value.data.userCompanies?.some(company => company === selectedCompany.id);
-  const isPreferredCompany = state.value.data.userData.prefered_company_id === selectedCompany.id;
-  if (isCompanyFound) {
-    if (!isPreferredCompany) {
-      state.value.data.userCompanies = state.value.data.userCompanies.filter(company => company !== selectedCompany.id);
+const makeDefault = (company: type_sys_companies) => {
+  if (state.value.data) {
+    if (!state.value.data.sys_companies_users) {
+      state.value.data.sys_companies_users = [];
+    }
+    state.value.data.sys_companies_users = state.value.data.sys_companies_users.map(x => {return {...x, is_default: false};});
+
+    const isAdded = state.value.data.sys_companies_users.some(x => x.sys_company_id === company.id);
+    if (!isAdded) {
+      state.value.data.sys_companies_users.push({
+        sys_company_id: company.id,
+        is_default: true,
+      });
     } else {
-      toast.add({
-        title: 'Organización preferida',
-        description: 'No puede desactivar la Organización preferida del usuario.',
-        icon: 'i-heroicons-no-symbol',
-        color: 'rose',
-        timeout: 2000,
+      state.value.data.sys_companies_users = state.value.data.sys_companies_users.map(x => {
+        if (x.sys_company_id === company.id) {
+          x.is_default = true;
+        } else {
+          x.is_default = false;
+        }
+        return x;
       });
     }
-  } else {
-    state.value.data.userCompanies.push(selectedCompany.id);
   }
 };
-//LOOKUP DATA
-const { data: companyOptionsData } = await useLazyFetch('/api/lookups/sys_companies');
-state.value.companyOptions = companyOptionsData.value ?? [];
-watch(companyOptionsData, (newData) => { if (newData?.length) { state.value.companyOptions = newData ?? []; } });
+
+const toggleCompany = (company: type_sys_companies) => {
+  if (state.value.data) {
+    if (!state.value.data.sys_companies_users) {
+      state.value.data.sys_companies_users = [];
+    }
+    const isAdded = state.value.data.sys_companies_users.some(x => x.sys_company_id === company.id);
+    if (!isAdded) {
+      state.value.data.sys_companies_users.push({
+        sys_company_id: company.id,
+        is_default: state.value.data.sys_companies_users.length > 0 ? false : true,
+      });
+    } else {
+      state.value.data.sys_companies_users = state.value.data.sys_companies_users.filter(x => x.sys_company_id !== company.id);
+    }
+  }
+};
 </script>
 
 <template>
-  <SkeletonHeader v-if="props.loading" />
+  <SkeletonHeader v-if="pending" />
   <div
     v-else
-    class="pl-6 pr-6 md:pl-2 md:pr-4 pt-4 md:pt-0">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4">
-      <div class="col-span-1 sm:col-span-2 pt-1" />
-      <div>
-        <p class="text-gray-900 dark:text-white font-semibold">
-          Organizaciones:
-        </p>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Organizaciones a las que tiene acceso el usuario.
-        </p>
-      </div>
-
+    class="pl-6 pr-6 md:pl-2 md:pr-2 mt-4 md:mt-2">
+    <div class="grid px-2 sm:px-4 content-start">
       <UCard
         :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
-        class="min-w-0">
+        class="min-w-0 mt-2 overflow-x-hidden">
         <ul
+          v-if="data?.length"
           role="list"
           class="divide-y divide-gray-200 dark:divide-gray-800">
           <li
-            v-for="(company, index) in state.companyOptions"
+            v-for="(company, index) in data"
             :key="index"
-            class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="text-sm min-w-0">
-                <p class="text-gray-900 dark:text-white font-medium truncate">
+            class="flex w-full justify-around gap-3 py-3 px-4 sm:px-6">
+            <!--max-w-[65%]-->
+            <div class="min-w-[60%] sm:min-w-[70%] text-left">
+              <div class="flex">
+                <UAvatar 
+                  v-if="company.avatar_url && company.avatar_url.length > 0"
+                  :src="company.avatar_url"
+                  size="lg"
+                  class="mr-3 rounded" />
+                <UAvatar
+                  v-else-if="company.name_es_short"
+                  size="lg"
+                  class="mr-3">
+                  {{ company.name_es_short[0] }}
+                </UAvatar>
+                <div class="text-base font-semibold dark:text-white text-black truncate text-ellipsis">
                   {{ company.name_es_short }}
-                  <b
-                    v-if="!company.is_active"
-                    class="text-red-500 italic">Desactivada</b>
-                </p>
-                <p class="text-gray-500 dark:text-gray-400 truncate">
-                  {{ company.name_es }}
-                </p>
+                  <p class="text-gray-500 dark:text-gray-400 truncate">
+                    {{ company.name_es }}
+                  </p>
+                </div>
               </div>
             </div>
-    
-            <div class="flex items-center gap-3">
+            <span class="min-w-[40%] sm:min-w-[30%] text-center sm:text-right">
+              <UButton
+                icon="i-heroicons-check-circle"
+                size="sm"
+                :color="state.data?.sys_companies_users?.some(x => x.sys_company_id === company.id && x.is_default) ? 'primary' : 'gray'"
+                variant="solid"
+                label="Default"
+                class="pr-4 mr-3"
+                @click="makeDefault(company)" />
               <UToggle
-                :model-value="isCompanySelected(company)"
-                :disabled="state.isLoading"
-                @update:model-value="toggleCompany(company)" />
-            </div>
+                :model-value="state.data?.sys_companies_users?.some(x => x.sys_company_id === company.id)"
+                class="mt-4"
+                @click="toggleCompany(company)" />
+            </span>
           </li>
         </ul>
       </UCard>
+      <br /> <br />
     </div>
-    <br /> <br />
   </div>
 </template>

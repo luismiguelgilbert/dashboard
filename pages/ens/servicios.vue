@@ -4,14 +4,15 @@ import { type type_ens_servicios } from '@/types/server/ens/ens_servicios';
 import indexList from './servicios/components/indexList.vue';
 
 useHead({ title });
-const { sessionData } = useUserSession();
+const { sessionData, handleUnauthorized } = useUserSession();
 const { state, hasFilter } = useEnsServicios();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'ens-servicios');
-const { data, pending, refresh } = await useLazyFetch('/api/ens/servicios', { method: 'post', body: state.value.filterPayload });
+const { data, pending, refresh, error } = await useLazyFetch('/api/ens/servicios', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
+watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(); });
 
 const setNewRoute = async (team: type_ens_servicios) => {
   state.value.selectedId = team.id!;

@@ -1,4 +1,9 @@
 export enum FilterQueriesKeys {
+  SECURITY_USERS_ID = 'security_user_id',
+  SECURITY_USERS_SEX = 'security_user_sex',
+  SECURITY_USERS_PROFILE = 'security_user_profile',
+  SECURITY_USERS_NAME = 'security_user_name',
+  SECURITY_USERS_LASTNAME = 'security_user_lastname',
   ENS_TEAM_ID = 'ens_team_id',
   ENS_TEAM_NAME = 'ens_team_name',
   ENS_TEAM_ACTIVE = 'ens_team_is_active',

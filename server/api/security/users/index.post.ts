@@ -4,32 +4,35 @@ import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sanitizeSQL } from '@/utils/utils';
 import { filter_payload } from '@/types/server/filter_payload';
-import { filter_options, sort_options, sys_users } from '@/types/server/sys_users';
+import { sys_users, sort_options, filter_options } from '@/types/server/security/sys_users';
+import { type type_filter_selection } from '@/types/client/filter_payload';
 
 export default defineEventHandler( async (event) => {
-  try{
+  try {
     const userSessionId = event.context.user.id;
     await hasUserPermission(userSessionId, PermissionsList.USERS_READ);
+
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
-    const sortById = Number(filter.sortBy);
-    const sortBy: string = sort_options.find(x => x.value === sortById)?.sqlValue ?? sort_options[0].sqlValue;
+    const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
+    const sortByOrder = Boolean(filter.sortByOrder);
+    const filterBy: type_filter_selection = filter.filterSelection;
+    let filterQueryString = '';
+    Object.keys(filterBy).forEach(key => {
+      if (filterBy[key].length > 0) {
+        filterQueryString += ` and ${filter_options.find(x => x.key == key)?.query} in (${JSON.stringify(filterBy[key]) })`;
+      }
+    });
+    filterQueryString = filterQueryString.replaceAll('([', '(').replaceAll('])', ')').replaceAll('"', '\'');
+    
     const page = Number(filter.page);
     const pageSize = Number(filter.pageSize);
     const offset = pageSize * (page - 1);
-    const filterConditions: Array<string> = [];
-    filter_options.forEach(x => {
-      if (filter.filterBy.includes(x.value)) {
-        filterConditions.push(x.sqlValue);
-      }
-    });
-    const filterBy = filterConditions.length ? ` AND (${filterConditions.join(' or ')})` : '';
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-    ? ` and (b.user_name ILIKE '%${search_string}%' or b.user_lastname ILIKE '%${search_string}%' or a.email ILIKE '%${search_string}%' )` 
-    : '';
+      ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
+      : '';
 
-    const text = `
-      select
+    const text = `select
       a.id,
       COALESCE(INITCAP(b.user_name),'') as user_name,
       COALESCE(INITCAP(b.user_lastname),'') as user_lastname,
@@ -47,15 +50,15 @@ export default defineEventHandler( async (event) => {
       left join sys_users b on a.id = b.id
       left join sys_profiles_users c on c.user_id = a.id
       left join sys_profiles d on c.sys_profile_id = d.id
-      WHERE 1 = 1
-      ${filterBy}
-      ${filterSearchString}
-      ORDER BY ${sortBy}
-      OFFSET ${offset}
-      LIMIT ${pageSize}
+      WHERE 1 = 1 
+        ${filterQueryString}
+        ${filterSearchString}
+        ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
+        OFFSET ${offset}
+        LIMIT ${pageSize}
     `;
     const data = await serverDB.query(text);
-    return await array(sys_users).cast(data.rows);
+    return array(sys_users).cast(data.rows);
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);
     await serverDB.query('ROLLBACK');

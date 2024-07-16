@@ -13,6 +13,7 @@ export default defineEventHandler( async (event) => {
       , a.billing_phone
       , a.billing_address
       , a.is_active
+      , a.avatar_url
       , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
       , count(*) OVER() AS row_count

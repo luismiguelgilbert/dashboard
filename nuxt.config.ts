@@ -12,7 +12,6 @@ export default defineNuxtConfig({
     '@nuxtjs/fontaine',
     '@nuxtjs/google-fonts',
     '@vueuse/nuxt',
-    '@nuxtjs/supabase',
     '@nuxt/image',
     // 'nuxt-clarity-analytics',
   ],
@@ -24,19 +23,15 @@ export default defineNuxtConfig({
   build: {
     transpile: ['@fortawesome/vue-fontawesome']
   },
-  supabase: {
-    redirect: false,
-    // redirectOptions: {
-    //   login: '/auth/login',
-    //   callback: '/auth/confirm',
-    //   exclude: ['auth/login', 'auth/confirm'],
-    //   cookieRedirect: true,
-    // },
-    // cookieOptions: {
-    //   maxAge: 60 * 60 * 8,
-    //   sameSite: 'lax',
-    //   secure: true
-    // },
+  runtimeConfig: {
+    // Private keys are only available on the server
+    supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
+
+    // Public keys that are exposed to the client
+    public: {
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY
+    }
   },
   components: [
     {

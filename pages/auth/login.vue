@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { AuthError } from '@supabase/supabase-js';
 import type { FormError, FormGroupSize } from '#ui/types';
 
 useHead({ title: 'BITT - Ingreso' });
@@ -7,9 +6,7 @@ useHead({ title: 'BITT - Ingreso' });
 definePageMeta({
   layout: 'auth',
 });
-const supabase = useSupabaseClient();
 const loading = ref<boolean>(false);
-const loginError = ref<AuthError>(new AuthError('', 0));
 
 const sizeXL: FormGroupSize = 'xl';
 const fields = [
@@ -31,40 +28,6 @@ const fields = [
   }
 ];
 
-const generateSBcookies = () => {
-  try {
-    //Generate sb-access-token cookie from localStorage
-    Object.keys(localStorage).forEach((key) => {
-      if (key.includes('sb-') && key.includes('token')) {
-        const supabaseStorageData = JSON.parse(localStorage[key]);
-        const supabaseAccessToken = supabaseStorageData.access_token;
-        supabaseAccessToken && createCookie('sb-access-token', supabaseAccessToken, 1);
-      }
-    });
-    //Generate sb-refresh-token cookie from localStorage
-    Object.keys(localStorage).forEach((key) => {
-      if (key.includes('sb-') && key.includes('token')) {
-        const supabaseStorageData = JSON.parse(localStorage[key]);
-        const supabaseRefreshToken = supabaseStorageData.refresh_token;
-        supabaseRefreshToken && createCookie('sb-refresh-token', supabaseRefreshToken, 1);
-      }
-    });
-  } catch(error) {
-    loading.value = false;
-    console.error(error);
-  }
-};
-
-const createCookie = (name: string, value: string, days: number) => {
-  let expires = '';
-  if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
-    expires = `; expires=${date.toUTCString()}`;
-  }
-  document.cookie = `${name}=${value || ''}${expires}; path=/; samesite=strict;`; //";secure" breaks local development
-};
-
 const validate = (state: any) => {
   const errors: FormError[] = [];
   if (!state.email) errors.push({ path: 'email', message: 'Email es obligatorio' });
@@ -72,24 +35,28 @@ const validate = (state: any) => {
   return errors;
 };
 
-const onSubmit = async (data: any) => {
+const onSubmit = async (credentialData: any) => {
   try {
     loading.value = true;
     const credentials = ({
-      email: data.email,
-      password: data.password,
+      email: credentialData.email,
+      password: credentialData.password,
     });
-    const { error } = await supabase.auth.signInWithPassword(credentials);
-    error && (loginError.value = error);
-    if (!error) {
-      await generateSBcookies();
-      await navigateTo('/auth/confirm');
-    } else {
-      loading.value = false;
-    }
-  } catch(error) {
+    await $fetch('/api/system/login', {
+      method: 'post',
+      body: credentials,
+    });
+    loading.value = false;
+    await navigateTo('/');
+  } catch(error: any) {
     loading.value = false;
     console.error(error);
+    const toast = useToast();
+    toast.add({
+      title: 'Error al iniciar sesión',
+      color: 'rose',
+      description: `${error.message}`,
+    });
   }
 };
 </script>

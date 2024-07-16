@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Excel from 'exceljs';
-import { batchUploadTabs } from './components/config';
+import { batchUploadTabs } from './config';
 
-import BatchFileData from './components/BatchFileData.vue';
-import BatchMapping from './components/BatchMapping.vue';
-import BatchErrors from './components/BatchErrors.vue';
-import BatchUpload from './components/BatchUpload.vue';
+import BatchFileData from './BatchFileData.vue';
+import BatchMapping from './BatchMapping.vue';
+import BatchErrors from './BatchErrors.vue';
+import BatchUpload from './BatchUpload.vue';
 
 const { state } = useSecurityUsersBatch();
 

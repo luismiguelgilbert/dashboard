@@ -57,6 +57,7 @@ const save = async () => {
   <div>
     <UDashboardPanel
       v-model="isRightPanelOpen"
+      class="h-[calc(100dvh)]"
       collapsible
       grow
       side="right">

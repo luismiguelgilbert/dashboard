@@ -6,8 +6,6 @@ const appConfig = useAppConfig();
 const colorMode = useColorMode();
 const isUpdating = ref(false);
 const hasError = ref(false);
-
-// const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const fileRef = ref<{ input: HTMLInputElement }>();
 
 const updateError = () => {
@@ -21,76 +19,96 @@ const updateError = () => {
 };
 
 const toggleTheme = async () => {
-  if (sessionData.value.userData) {
-    sessionData.value.userData.dark_enabled = !sessionData.value.userData?.dark_enabled;
-    colorMode.preference = sessionData.value.userData?.dark_enabled ? 'dark' : 'light';
-    isUpdating.value = true;
-    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
-      method: 'patch',
-      body: { dark_enabled: sessionData.value.userData.dark_enabled },
-    });
-    isUpdating.value = false;
-    if (error.value) { updateError(); }
+  if (sessionData.value.userData?.id) {
+    try {
+      sessionData.value.userData.dark_enabled = !sessionData.value.userData?.dark_enabled;
+      colorMode.preference = sessionData.value.userData?.dark_enabled ? 'dark' : 'light';
+      isUpdating.value = true;
+      hasError.value = false;
+      await $fetch(`/api/security/users/:${sessionData.value.userData.id}/preferences`, {
+        method: 'post',
+        body: { dark_enabled: sessionData.value.userData.dark_enabled },
+      });
+      isUpdating.value = false;
+    } catch(error) {
+      isUpdating.value = false;
+      updateError();
+    }
   }
 };
 
 const setDarkColor = async () => {
-  if (sessionData.value.userData) {
-    appConfig.ui.gray = sessionData.value.userData?.default_dark_color;
-    isUpdating.value = true;
-    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
-      method: 'patch',
-      body: { default_dark_color: sessionData.value.userData.default_dark_color },
-    });
-    isUpdating.value = false;
-    if (error.value) { updateError(); }
+  if (sessionData.value.userData?.id) {
+    try{
+      appConfig.ui.gray = sessionData.value.userData?.default_dark_color ?? 'zinc';
+      isUpdating.value = true;
+      hasError.value = false;
+      await $fetch(`/api/security/users/:${sessionData.value.userData.id}/preferences`, {
+        method: 'post',
+        body: { default_dark_color: sessionData.value.userData.default_dark_color },
+      });
+      isUpdating.value = false;
+    } catch(error) {
+      isUpdating.value = false;
+      updateError();
+    }
   }
 };
 
 const setColor = async () => {
-  if (sessionData.value.userData) {
-    appConfig.ui.primary = sessionData.value.userData.default_color;
-  
-    isUpdating.value = true;
-    hasError.value = false;
-    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
-      method: 'patch',
-      body: { default_color: sessionData.value.userData.default_color },
-    });
-    isUpdating.value = false;
-    if (error.value) { updateError(); }
+  if (sessionData.value.userData?.id) {
+    try {
+      appConfig.ui.primary = sessionData.value.userData.default_color ?? 'indigo';
+      isUpdating.value = true;
+      hasError.value = false;
+      await $fetch(`/api/security/users/:${sessionData.value.userData.id}/preferences`, {
+        method: 'post',
+        body: { default_color: sessionData.value.userData.default_color },
+      });
+      isUpdating.value = false;
+    } catch(error) {
+      isUpdating.value = false;
+      updateError();
+    }
   }
 };
 
 const setPreferedCompany = async () => {
-  if (sessionData.value.userData) {
-    isUpdating.value = true;
-    hasError.value = false;
-    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/preferences`, {
-      method: 'patch',
-      body: { prefered_company_id: sessionData.value.userData.prefered_company_id },
-    });
-    isUpdating.value = false;
-    if (error.value) { updateError(); }
+  if (sessionData.value.userData?.id) {
+    try {
+      isUpdating.value = true;
+      hasError.value = false;
+      await $fetch(`/api/security/users/:${sessionData.value.userData.id}/preferences`, {
+        method: 'post',
+        body: { prefered_company_id: sessionData.value.userData.prefered_company_id },
+      });
+      isUpdating.value = false;
+    } catch(error) {
+      isUpdating.value = false;
+      updateError();
+    }
   }
 };
 
-const onFileChange = async (e: Event) => {
+const onFileChange = async (e: FileList) => {
   if (sessionData.value.userData) {
-    isUpdating.value = true;
-    const input = e.target as HTMLInputElement;
-    if (!input.files?.length) { return; }
-    if (input.files[0].size / 1024 / 1024 > 1) { return; }
-    sessionData.value.userData.avatar_url = URL.createObjectURL(input.files[0]);
-
-    const body = new FormData();
-    body.append('file', input.files[0]);
-    const { error } = await useFetch(`/api/users/:${sessionData.value.userData.id}/avatar`, {
-      method: 'PATCH',
-      body,
-    });
-    isUpdating.value = false;
-    if (error.value) { updateError(); }
+    try {
+      isUpdating.value = true;
+      if (!e.length) { return; }
+      if (e[0].size / 1024 / 1024 > 1) { return; }
+      sessionData.value.userData.avatar_url = URL.createObjectURL(e[0]);
+  
+      const body = new FormData();
+      body.append('file', e[0]);
+      await $fetch(`/api/security/users/:${sessionData.value.userData.id}/avatar`, {
+        method: 'patch',
+        body,
+      });
+      isUpdating.value = false;
+    } catch(error) {
+      isUpdating.value = false;
+      updateError();
+    }
   }
 };
 
@@ -114,7 +132,7 @@ const onFileClick = () => { fileRef.value?.input.click(); };
       v-model="sessionData.userData.prefered_company_id"
       size="xl"
       icon="i-heroicons-home-modern"
-      :options="sessionData.userCompanies"
+      :options="sessionData.userCompanies ?? []"
       :loading="isUpdating"
       option-attribute="name_es_short"
       value-attribute="id"
@@ -133,6 +151,7 @@ const onFileClick = () => { fileRef.value?.input.click(); };
     <UFormGroup name="sys_profile_id">
       <div class="flex items-center">
         <UAvatar
+          v-if="sessionData.userData?.avatar_url"
           :src="sessionData.userData?.avatar_url!"
           :alt="sessionData.userData?.avatar_url"
           size="lg" />

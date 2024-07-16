@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { useActions, title, sort_options, filter_options } from './libros/components/config';
-import { type type_ens_libros } from '@/types/server/ens/ens_libros';
-import indexList from './libros/components/indexList.vue';
+import { useActions, title, sort_options, filter_options } from './users/components/config';
+import { type type_sys_users } from '@/types/server/security/sys_users';
+import indexList from './users/components/indexList.vue';
 
 useHead({ title });
 const { sessionData, handleUnauthorized } = useUserSession();
-const { state, hasFilter } = useEnsLibros();
+const { state, hasFilter } = useSecurityUsers();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'ens-libros');
-const { data, pending, refresh, error } = await useLazyFetch('/api/ens/libros', { method: 'post', body: state.value.filterPayload });
+const { data, pending, refresh, error } = await useLazyFetch('/api/security/users', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(); });
 
-const setNewRoute = async (record: type_ens_libros) => {
+
+const setNewRoute = async (record: type_sys_users) => {
   state.value.selectedId = record.id!;
-  router.push(`/ens/libros/libro-${record.id}`);
+  router.push(`/security/users/user-${record.id}`);
 };
 </script>
 

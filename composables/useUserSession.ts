@@ -9,5 +9,14 @@ export const useUserSession = () => {
     userMenuData: null,
   };});
 
-  return { sessionData };
+  const handleUnauthorized = async() => {
+    useToast().add({
+      title: 'No encontramos una sesión activa.',
+      color: 'rose',
+      icon: 'i-heroicons-shield-exclamation',
+    });
+    navigateTo('/auth/login');
+  };
+
+  return { sessionData, handleUnauthorized };
 };

@@ -51,6 +51,7 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
     </div>
     <UPagination
       v-model="page"
+      :max="4"
       :page-count="pageSize"
       :total="totalRows" />
   </div>

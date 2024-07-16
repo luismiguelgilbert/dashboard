@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { sessionData } = useUserSession();
-const supabase = useSupabaseClient();
+const { supabase } = useSupabase();
 
 const items = computed(() => [
   [

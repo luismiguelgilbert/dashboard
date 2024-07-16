@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ValidationError } from 'yup';
-import { ens_libros } from '@/types/server/ens/ens_libros';
+import { sys_users } from '@/types/server/security/sys_users';
 import { tabs } from './components/config';
 import Basic from './components/basic.vue';
+import Companies from './components/companies.vue';
 
 const route = useRoute();
-const { state: dataList } = useEnsLibros();
-const { state } = useEnsLibrosForm();
+const { state: dataList } = useSecurityUsers();
+const { state } = useSecurityUsersForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
@@ -15,27 +16,36 @@ const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
 state.value.data = null;
-const { data, pending } = await useLazyFetch(`/api/ens/libros/:${route.params.id}`);
+const { data, pending } = await useLazyFetch(`/api/security/users/:${route.params.id}`);
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 const cancel = async () => {
   dataList.value.selectedId = null;
-  await navigateTo('/ens/libros');
+  await navigateTo('/security/users');
 };
 
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
-    await ens_libros.validate(state.value.data, { abortEarly: false });
+    await sys_users.validate(state.value.data, { abortEarly: false });
     saved.value = false;
     start();
-    state.value.isLoading = true;
+    state.value.isSaving = true;
     if(state.value.data?.id){
-      await $fetch(`/api/ens/libros/:${state.value.data.id}`, {
+      await $fetch(`/api/security/users/:${state.value.data.id}`, {
         method: 'patch',
         body: state.value.data,
       });
+
+      if (state.value.avatar) {
+        const body = new FormData();
+        body.append('file', state.value.avatar);
+        await $fetch(`/api/security/users/:${state.value.data.id}/avatar`, {
+          method: 'patch',
+          body,
+        });
+      }
     }
     validationErrors.value = undefined;
     saved.value = true;
@@ -46,7 +56,7 @@ const save = async () => {
       validationErrors.value = new ValidationError('Algo salió mal');
     }
   } finally {
-    state.value.isLoading = false;
+    state.value.isSaving = false;
     finish();
   }
 };
@@ -61,7 +71,7 @@ const save = async () => {
       grow
       side="right">
       <UDashboardNavbar
-        title="Editar Libro"
+        title="Editar Usuario"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
           <span />
@@ -110,10 +120,12 @@ const save = async () => {
       <BTabs
         v-if="!pending"
         v-model="tab"
-        :items="tabs"
-        class="sticky top-0 z-10 bg-white dark:bg-gray-900">
+        :items="tabs">
         <template #basic>
           <Basic />
+        </template>
+        <template #companies>
+          <Companies />
         </template>
       </BTabs>
     </UDashboardPanel>

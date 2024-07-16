@@ -1,136 +1,69 @@
-import type { DropdownItemExtended } from '~/types/client/DropdownItemExtended';
-import { PermissionsList } from '~/types/client/permissionsEnum';
+import type { DropdownItemExtended } from '@/types/client/DropdownItemExtended';
+import { PermissionsList } from '@/types/client/permissionsEnum';
+import { FilterQueriesKeys } from '@/types/server/filter_keys';
+import { type type_userMenuData } from '~/types/server/sys_users';
+import { type type_filter_option, type type_filter_payload, type type_sort_option_client } from '@/types/client/filter_payload';
 
 export const title = 'Usuarios';
 export const module = 'usuario';
-export const columns = [
-  {
-    key: 'id',
-    label: 'Usuario',
-    sortable: false
-  },
-  {
-    key: 'email',
-    label: 'Email',
-    sortable: false
-  },
-  {
-    key: 'sys_profile_name',
-    label: 'Perfil',
-    sortable: false,
-  },
-  {
-    key: 'last_sign_in_at',
-    label: 'Ult. Ingreso',
-    sortable: false,
-  },
-  {
-    key: 'actions',
-    label: '',
-    sortable: false,
-    class: 'w-1',
-  },
-];
-export const actions: DropdownItemExtended[][] = [
-  [
-    {
-      id: PermissionsList.USERS_CREATE,
-      isMainAction: true,
-      disabled: false,
-      label: 'Nuevo usuario',
-      icon: 'i-heroicons-plus',
-      click: () => { navigateTo('/security/users/create'); }
-    },
-    {
-      id: PermissionsList.USERS_EXPORT,
-      isMainAction: false,
-      disabled: false,
-      label: 'Descargar',
-      icon: 'i-heroicons-document-arrow-down',
-      click: async () => { downloadFile(); }
-    },
-    {
-      id: PermissionsList.USERS_CREATE,
-      isMainAction: false,
-      disabled: false,
-      label: 'Carga en lote',
-      icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => { navigateTo('/security/users/create-batch'); }
-    }
-  ],
-];
+
+export const useActions = (filterPayload: type_filter_payload, permissions: type_userMenuData[] ): DropdownItemExtended[][] => {
+  const actions: DropdownItemExtended[][] = [];
+  actions[0] = [];
+  if (permissions.some(x => x.id === PermissionsList.USERS_CREATE)) {
+    actions[0].push(
+      {
+        id: PermissionsList.USERS_CREATE,
+        isMainAction: true,
+        disabled: false,
+        label: 'Nuevo usuario',
+        icon: 'i-heroicons-plus',
+        click: () => { navigateTo('/security/users/user-new'); }  
+      },
+    );
+  }
+  if (permissions.some(x => x.id === PermissionsList.USERS_EXPORT)) {
+    actions[0].push(
+      {
+        id: PermissionsList.USERS_EXPORT,
+        isMainAction: false,
+        disabled: false,
+        label: 'Descargar',
+        icon: 'i-heroicons-document-arrow-down',
+        click: async () => { downloadFile(filterPayload); }
+      },
+    );
+  }
+  
+  return actions;
+};
 export const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-user-circle', defaultOpen: true },
-  { value: 'companies', slot: 'companies', label: 'Organizaciones', icon: 'i-heroicons-building-office-2', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Usuario', icon: 'i-heroicons-lifebuoy', defaultOpen: true },
+  { value: 'companies', slot: 'companies', label: 'Organizaciones', icon: 'i-heroicons-user-group', defaultOpen: false },
 ];
-export const batchUploadTabs = [
-  { value: 'file', slot: 'file', label: '1. Cargar archivo', icon: 'i-heroicons-document-magnifying-glass', defaultOpen: true },
-  { value: 'mapping', slot: 'mapping', label: '2. Definiciones', icon: 'i-heroicons-adjustments-horizontal', defaultOpen: false },
-  { value: 'errors', slot: 'errors', label: '3. Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
-  { value: 'valid', slot: 'valid', label: '4. Cargar', icon: 'i-heroicons-check-badge', defaultOpen: false },
+export const filter_options: Array<type_filter_option> = [
+  { key: FilterQueriesKeys.SECURITY_USERS_SEX, label: 'Sexo', valueType: 'boolean', requiresOrganization: false, endpointURL: '/api/lookups/security/users_sex' },
+  { key: FilterQueriesKeys.SECURITY_USERS_PROFILE, label: 'Perfil', valueType: 'number', requiresOrganization: false, endpointURL: '/api/lookups/security/users_profile' },
 ];
-export const batchValidationTabs = [
-  { value: 'results', slot: 'results', label: 'Resultados', icon: 'i-heroicons-chart-bar', defaultOpen: true },
-  { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
-  { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
-];
-export const uploadResultTabs = [
-  { value: 'valid', slot: 'valid', label: 'Válidos', icon: 'i-heroicons-check-circle', defaultOpen: false },
-  { value: 'error', slot: 'error', label: 'Errores', icon: 'i-heroicons-exclamation-triangle', defaultOpen: false },
-];
-
-
-export const batchResultColumns = [
-  {
-    key: 'email',
-    label: 'Email',
-    sortable: false
-  },
-  {
-    key: 'user_name',
-    label: 'Nombres',
-    sortable: false
-  },
-  {
-    key: 'user_lastname',
-    label: 'Apellidos',
-    sortable: false,
-  },
-  {
-    key: 'user_sex',
-    label: 'Sexo',
-    sortable: false,
-  },
-  {
-    key: 'errors',
-    label: 'Errores',
-    sortable: false,
-    class: 'w-1',
-  },
+export const sort_options: Array<type_sort_option_client> = [
+  { key: FilterQueriesKeys.SECURITY_USERS_ID, label: 'Código' },
+  { key: FilterQueriesKeys.SECURITY_USERS_NAME, label: 'Nombres' },
+  { key: FilterQueriesKeys.SECURITY_USERS_LASTNAME, label: 'Apellidos' },
 ];
 //Functions
-const downloadFile = async() => {
+const downloadFile = async(filterPayload: type_filter_payload) => {
   try {
-    if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityUsers) {
-      const nuxtApp = window.useNuxtApp();
-      const state = nuxtApp.payload.state.$suseSecurityUsers;
-      state.isLoading = true;
-      const { data, error } = await useFetch('/api/users/download', {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        method: 'post', 
-        body: state.filterPayload,
-      });
-      if (!error.value && data.value) {
-        const url = window.URL.createObjectURL(data.value);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Usuarios.xlsx');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-      state.isLoading = false;
-    }
+    const response: Blob = await $fetch('/api/security/users/download', {
+      method: 'post',
+      body: filterPayload,
+    });
+    const url = window.URL.createObjectURL(response);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Usuarios.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   } catch (error) {
     console.error(error);
   }
