@@ -3,8 +3,7 @@ import serverDB from '@/server/utils/db';
 export async function hasUserPermission(userId: any, PermissionID: string) { 
   const isUserAllowedQuery = `select d.sys_link_id 
     from sys_users a
-    inner join sys_profiles_users b on a.id = b.user_id
-    inner join sys_profiles c on c.id = b.sys_profile_id
+    inner join sys_profiles c on c.id = a.sys_profile_id
     inner join sys_profiles_links d on d.sys_profile_id = c.id
     where a.id = '${userId}'
     and d.sys_link_id = '${PermissionID}'`;

@@ -46,8 +46,7 @@ export default defineEventHandler( async (event) => {
       to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
       from auth.users a
       left join sys_users b on a.id = b.id
-      left join sys_profiles_users c on c.user_id = a.id
-      left join sys_profiles d on c.sys_profile_id = d.id
+      left join sys_profiles d on b.sys_profile_id = d.id
       WHERE 1 = 1
         ${filterQueryString}
         ${filterSearchString}

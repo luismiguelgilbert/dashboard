@@ -22,20 +22,13 @@ export default defineEventHandler( async (event) => {
       ,user_lastname = COALESCE('${payload.user_lastname}', user_lastname)
       ,user_sex = COALESCE(${payload.user_sex ?? false}, user_sex)
       ,dark_enabled = COALESCE(${payload.dark_enabled ?? false}, dark_enabled)
+      ,sys_profile_id = COALESCE(${payload.sys_profile_id}, sys_profile_id)
       ,default_color = COALESCE('${payload.default_color ?? 'indigo'}', default_color)
       ,default_dark_color = COALESCE('${payload.default_dark_color ?? 'zinc'}', default_dark_color)
       ,updated_at = now()
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
-
-    //Update Profiles
-    const sqlProfilesDelete = `delete from sys_profiles_users WHERE user_id = '${id}'`;
-    await serverDB.query(sqlProfilesDelete);
-
-    const sqlProfileInsert = `insert into sys_profiles_users (sys_profile_id, user_id)
-      values (${payload.sys_profile_id}, '${id}')`;
-    await serverDB.query(sqlProfileInsert);
 
     //Update Companies
     const sqlCompaniesDelete = `delete from sys_companies_users WHERE user_id = '${id}'`;

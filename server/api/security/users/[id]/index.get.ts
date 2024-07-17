@@ -15,7 +15,7 @@ export default defineEventHandler( async (event) => {
       b.avatar_url,
       b.website,
       a.email,
-      c.sys_profile_id,
+      b.sys_profile_id,
       d.name_es as sys_profile_name,
       b.dark_enabled,
       b.default_color,
@@ -31,8 +31,7 @@ export default defineEventHandler( async (event) => {
       ), '[]'::json) sys_companies_users
       from auth.users a
       left join sys_users b on a.id = b.id
-      left join sys_profiles_users c on c.user_id = a.id
-      left join sys_profiles d on c.sys_profile_id = d.id
+      left join sys_profiles d on b.sys_profile_id = d.id
       WHERE a.id = '${id}'
     `;
     const data = await serverDB.query(text);

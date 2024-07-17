@@ -27,7 +27,7 @@ export default defineEventHandler( async (event) => {
       b.avatar_url,
       b.website,
       a.email,
-      c.sys_profile_id,
+      b.sys_profile_id,
       INITCAP(d.name_es) as sys_profile_name,
       b.dark_enabled,
       b.default_color,
@@ -38,10 +38,10 @@ export default defineEventHandler( async (event) => {
       to_char (a.last_sign_in_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as last_sign_in_at
       from auth.users a
       left join sys_users b on a.id = b.id
-      left join sys_profiles_users c on c.user_id = a.id
-      left join sys_profiles d on c.sys_profile_id = d.id
+      left join sys_profiles d on b.sys_profile_id = d.id
       left join user_company e on e.user_id = a.id
       WHERE a.id = '${id}'`;
+    
     const userSessionDataResultset = await serverDB.query(sqlUserSessionDataRows);
     const userSessionDataRows = array(userData).cast(userSessionDataResultset.rows);
 
@@ -77,11 +77,11 @@ export default defineEventHandler( async (event) => {
       d.icon,
       d.comment_es,
       d.requires_company
-      from sys_profiles_users a
+      from sys_users a
       inner join sys_profiles b on a.sys_profile_id = b.id
       inner join sys_profiles_links c on c.sys_profile_id = b.id
       inner join sys_links d on c.sys_link_id = d.id
-      where a.user_id = '${id}'
+      where a.id = '${id}'
       UNION
         SELECT
         r.id,
@@ -95,11 +95,11 @@ export default defineEventHandler( async (event) => {
         from sys_links r
         where r.id in (
           select d.parent
-          from sys_profiles_users a
+          from sys_users a
           inner join sys_profiles b on a.sys_profile_id = b.id
           inner join sys_profiles_links c on c.sys_profile_id = b.id
           inner join sys_links d on c.sys_link_id = d.id
-          where a.user_id = '${id}'
+          where a.id = '${id}'
         )
       order by 3`;
     const userMenuResultset = await serverDB.query(sqlUserMenu);

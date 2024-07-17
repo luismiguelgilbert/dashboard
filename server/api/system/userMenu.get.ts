@@ -13,8 +13,7 @@ export default defineEventHandler( async (event) => {
     d.icon,
     d.comment_es,
     d.requires_company
-    from sys_profiles_users a
-    inner join sys_profiles b on a.sys_profile_id = b.id
+    from sys_profiles b
     inner join sys_profiles_links c on c.sys_profile_id = b.id
     inner join sys_links d on c.sys_link_id = d.id
     where a.user_id = $1
@@ -31,8 +30,7 @@ export default defineEventHandler( async (event) => {
       from sys_links r
       where r.id in (
         select d.parent
-        from sys_profiles_users a
-        inner join sys_profiles b on a.sys_profile_id = b.id
+        from sys_profiles b
         inner join sys_profiles_links c on c.sys_profile_id = b.id
         inner join sys_links d on c.sys_link_id = d.id
         where a.user_id = $1
