@@ -12,7 +12,7 @@ const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name 
 const { data, pending, refresh, error } = await useLazyFetch('/api/ens/servicios', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
-watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(); });
+watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 
 const setNewRoute = async (team: type_ens_servicios) => {
   state.value.selectedId = team.id!;

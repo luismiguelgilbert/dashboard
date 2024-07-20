@@ -42,10 +42,12 @@ const onSubmit = async (credentialData: any) => {
       email: credentialData.email,
       password: credentialData.password,
     });
-    await $fetch('/api/system/login', {
-      method: 'post',
-      body: credentials,
-    });
+    const { supabase } = useSupabase();
+    const { data, error } = await supabase.auth.signInWithPassword(credentials, );
+    if (error) throw error;
+    
+    document.cookie = `sb-access-token=${data.session.access_token}; path=/`;
+    document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/`;
     loading.value = false;
     await navigateTo('/');
   } catch(error: any) {
