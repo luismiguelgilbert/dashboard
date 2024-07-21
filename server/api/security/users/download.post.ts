@@ -15,8 +15,6 @@ export default defineEventHandler( async (event) => {
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;
     const sortByOrder = Boolean(filter.sortByOrder);
-    console.log({sortBy});
-    console.log({sortByOrder});
     const filterBy: type_filter_selection = filter.filterSelection;
     let filterQueryString = '';
     Object.keys(filterBy).forEach(key => {
@@ -52,7 +50,6 @@ export default defineEventHandler( async (event) => {
         ${filterSearchString}
         ORDER BY ${sortBy} ${sortByOrder ? 'ASC' : 'DESC'}
     `;
-    console.log(text);
     const data = await serverDB.query(text);
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Usuarios');
