@@ -2,8 +2,8 @@
 import { ValidationError } from 'yup';
 import { sys_roles } from '@/types/server/security/sys_roles';
 import { tabs } from './components/config';
-import Basic from './components/basic.vue';
-import Users from './components/users.vue';
+import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
 const route = useRoute();
 const { state: dataList } = useSecurityRoles();
