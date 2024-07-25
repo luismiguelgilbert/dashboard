@@ -20,13 +20,12 @@ export const sys_roles_created = object({
 export type type_sys_roles_created = InferType<typeof sys_roles_created>;
 
 export const filter_options: Array<type_filter_option> = [
-  { key: FilterQueriesKeys.SECURITY_ROLES_ACTIVE, label: 'Perfil', valueType: 'string', requiresOrganization: false, query: 'a.is_active' },
+  { key: FilterQueriesKeys.SECURITY_ROLES_ACTIVE, label: 'Estado', valueType: 'string', requiresOrganization: false, query: 'a.is_active' },
 ];
 
 export const sort_options: Array<type_sort_option> = [
   { key: FilterQueriesKeys.SECURITY_ROLES_ACTIVE, query: 'a.is_active' },
   { key: FilterQueriesKeys.SECURITY_ROLES_NAME, query: 'a.name_es' },
   { key: FilterQueriesKeys.SECURITY_ROLES_ID, query: 'a.id' },
-  // { key: FilterQueriesKeys.SECURITY_ROLES_USERS_COUNT, query: 'b.user_count' },
   { key: FilterQueriesKeys.SECURITY_ROLES_USERS_COUNT, query: 'COALESCE(b.user_count,0)' },
 ];

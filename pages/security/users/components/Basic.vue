@@ -2,14 +2,12 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { sys_users } from '@/types/server/security/sys_users';
 import { colors, darkColors } from '@/components/home/config';
-// import type { Form } from '#ui/types';
 
 const { state } = useSecurityUsersForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
 const inputSize = computed(() => isMobile.value ? 'lg' : 'xl');
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const fileRef = ref<{ input: HTMLInputElement }>();
-// const form = ref<Form<type_sys_users>>();
 const form = ref();
 
 const { data: profileOptions, pending: profileOptionsPending } = await useLazyFetch('/api/lookups/security/sys_profiles');

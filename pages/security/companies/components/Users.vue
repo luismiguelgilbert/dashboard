@@ -1,55 +1,41 @@
 <script setup lang="ts">
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false
-  },
-});
+const route = useRoute();
 
-const { state } = useSecurityCompaniesForm();
+const { data, pending } = await useLazyFetch(`/api/security/companies/:${route.params.id}/users`);
 </script>
 
 <template>
-  <SkeletonHeader v-if="props.loading" />
+  <SkeletonHeader v-if="pending" />
   <div
     v-else
     class="pl-6 pr-6 md:pl-2 md:pr-2 mt-4 md:mt-2">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-5 px-2 sm:px-4 content-start">
-      <div>
-        <p class="text-gray-900 dark:text-white font-semibold">
-          Usuarios:
-        </p>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Lista de usuarios que tienen este perfil de seguridad.
-        </p>
-      </div>
-    
+    <div class="grid px-2 sm:px-4 content-start">
       <UCard
         :ui="{ header: { padding: 'p-4 sm:px-6' }, body: { padding: '' } }"
-        class="min-w-0">
+        class="min-w-0 mt-4">
         <ul
+          v-if="data?.length"
           role="list"
           class="divide-y divide-gray-200 dark:divide-gray-800">
           <li
-            v-for="(user, index) in state.companyUsers"
+            v-for="(user, index) in data"
             :key="index"
             class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
             <div class="flex items-center gap-3 min-w-0">
               <div class="text-sm min-w-0">
                 <div class="flex items-center gap-3">
-                  <NuxtImg 
-                    v-if="user.avatar_url && user.avatar_url.length > 0"
+                  <UAvatar
+                    v-if="user.avatar_url"
                     :src="user.avatar_url"
-                    width="20"
-                    height="15"
-                    class="mt-1 rounded" />
+                    col
+                    size="lg"
+                    alt="Avatar" />
                   <UAvatar
                     v-else
-                    size="xs">
-                    {{ user.user_name[0] }}
-                  </UAvatar>
-                  <div class="text-base font-semibold dark:text-white text-black">
-                    {{ `${user.user_name} ${user.user_lastname}` }}
+                    :alt="user.user_lastname"
+                    size="lg" />
+                  <div class="text-base font-semibold dark:text-white text-black truncate">
+                    {{ user.user_name }} {{ user.user_lastname }}
                     <p class="text-gray-500 dark:text-gray-400 truncate">
                       {{ user.email }}
                     </p>
@@ -59,7 +45,13 @@ const { state } = useSecurityCompaniesForm();
             </div>
           </li>
         </ul>
+        <div
+          v-else
+          class="m-2">
+          No hay usuarios
+        </div>
       </UCard>
+      <br /> <br />
     </div>
   </div>
 </template>

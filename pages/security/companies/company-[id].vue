@@ -1,46 +1,54 @@
 <script setup lang="ts">
 import { ValidationError } from 'yup';
-import { sys_roles, type type_sys_roles_created } from '@/types/server/security/sys_roles';
+import { sys_companies } from '@/types/server/security/sys_companies';
 import { tabs } from './components/config';
 import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
-const { state: dataList } = useSecurityRoles();
-const { state } = useSecurityRolesForm();
+const route = useRoute();
+const { state: dataList } = useSecurityCompanies();
+const { state } = useSecurityCompaniesForm();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
 const validationErrors = ref<ValidationError>();
 const saved = ref(false);
+dataList.value.selectedId = String(route.params.id);
 
-state.value.data = sys_roles.cast({
-  id: 0,
-  name_es: '',
-  is_active: true,
-  user_count: 0,
-  sys_profiles_links: [],
-});
+state.value.data = null;
+const { data, pending } = await useLazyFetch(`/api/security/companies/:${route.params.id}`);
+if (data.value) { state.value.data = data.value[0]; }
+watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
 const cancel = async () => {
   dataList.value.selectedId = null;
-  await navigateTo('/security/roles');
+  await navigateTo('/security/companies');
 };
 
 const save = async () => {
   const { start, finish } = useLoadingIndicator();
   try {
-    state.value.isSaving = true;
-    await sys_roles.validate(state.value.data, { abortEarly: false });
+    await sys_companies.validate(state.value.data, { abortEarly: false });
+    saved.value = false;
     start();
-    let response: type_sys_roles_created = { id: 0 };
-    response = await $fetch('/api/security/roles/create', {
-      method: 'post',
-      body: state.value.data,
-    });
+    state.value.isLoading = true;
+    if(state.value.data?.id){
+      await $fetch(`/api/security/companies/:${state.value.data.id}`, {
+        method: 'patch',
+        body: state.value.data,
+      });
+
+      if (state.value.avatar) {
+        const body = new FormData();
+        body.append('file', state.value.avatar);
+        await $fetch(`/api/security/companies/:${state.value.data.id}/avatar`, {
+          method: 'patch',
+          body,
+        });
+      }
+    }
     validationErrors.value = undefined;
     saved.value = true;
-    
-    dataList.value.selectedId = Number(response.id);
-    await navigateTo(`/security/roles/role-${response.id}`);
   } catch (error) {
     if (error instanceof ValidationError) {
       validationErrors.value = error;
@@ -49,7 +57,6 @@ const save = async () => {
     }
   } finally {
     state.value.isLoading = false;
-    state.value.isSaving = false;
     finish();
   }
 };
@@ -64,7 +71,7 @@ const save = async () => {
       grow
       side="right">
       <UDashboardNavbar
-        title="Crear Perfil"
+        title="Editar Organización"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #toggle>
           <span />
@@ -74,12 +81,12 @@ const save = async () => {
             label="Cancelar"
             icon="i-heroicons-arrow-left-circle"
             color="gray"
-            :disabled="state.isSaving"
+            :disabled="pending || state.isSaving"
             @click="cancel" />
           <UButton
-            label="Crear"
-            icon="i-heroicons-plus-circle"
-            :disabled="state.isSaving"
+            label="Guardar"
+            icon="i-heroicons-check-circle"
+            :disabled="pending || state.isSaving"
             @click="save" />
         </template>
       </UDashboardNavbar>
@@ -107,12 +114,19 @@ const save = async () => {
           variant="soft"
           title="Datos guardados" />
       </div>
+      <UProgress
+        v-if="pending"
+        animation="carousel" />
       <BTabs
+        v-if="!pending"
         v-model="tab"
-        :items="tabs.filter(tab => tab.value !== 'users')"
+        :items="tabs"
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #basic>
           <Basic />
+        </template>
+        <template #users>
+          <Users />
         </template>
       </BTabs>
     </UDashboardPanel>

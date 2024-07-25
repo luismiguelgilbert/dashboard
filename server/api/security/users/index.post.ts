@@ -29,7 +29,7 @@ export default defineEventHandler( async (event) => {
     const offset = pageSize * (page - 1);
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
+      ? ` and b.fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
       : '';
 
     const text = `select

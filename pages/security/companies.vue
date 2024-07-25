@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { useActions, title, sort_options, filter_options } from './roles/components/config';
-import { type type_sys_roles } from '@/types/server/security/sys_roles';
-import indexList from './roles/components/indexList.vue';
+import { useActions, title, sort_options, filter_options } from './companies/components/config';
+import { type type_sys_companies } from '@/types/server/security/sys_companies';
+import indexList from './companies/components/indexList.vue';
 
 useHead({ title });
 const { sessionData, handleUnauthorized } = useUserSession();
-const { state, hasFilter } = useSecurityRoles();
+const { state, hasFilter } = useSecurityCompanies();
 const router = useRouter();
 const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
-const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'security-roles');
-const { data, pending, refresh, error } = await useLazyFetch('/api/security/roles', { method: 'post', body: state.value.filterPayload });
+const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'security-companies');
+const { data, pending, refresh, error } = await useLazyFetch('/api/security/companies', { method: 'post', body: state.value.filterPayload });
 const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 
 
-const setNewRoute = async (record: type_sys_roles) => {
+const setNewRoute = async (record: type_sys_companies) => {
   state.value.selectedId = record.id!;
-  router.push(`/security/roles/role-${record.id}`);
+  router.push(`/security/companies/company-${record.id}`);
 };
 </script>
 

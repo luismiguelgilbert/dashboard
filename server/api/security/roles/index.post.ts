@@ -29,7 +29,7 @@ export default defineEventHandler( async (event) => {
     const offset = pageSize * (page - 1);
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
+      ? ` and a.fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
       : '';
     const text = `
       WITH users_by_profile AS (
