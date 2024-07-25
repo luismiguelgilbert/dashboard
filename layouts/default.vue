@@ -3,7 +3,8 @@ import type { DashboardSidebarLink } from '#ui-pro/types';
 
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
-const { sessionData, handleUnauthorized } = useUserSession();
+const { sessionData } = useUserSession();
+const isLoadingMenu = ref(false);
 colorMode.preference = 'dark';
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
@@ -25,26 +26,67 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
       };
     }) ?? [];
 });
-
-const { data, error, refresh } = await useFetch('/api/system/userData');
-if (error.value) { error.value?.statusCode === 401 && handleUnauthorized(refresh) ;}
-if (!error.value && data.value) {
-  sessionData.value.userData = data.value.userData;
-  sessionData.value.userCompanies = data.value.userCompanies;
-  sessionData.value.userMenuData = data.value.userMenu;
-  //Preset colors:
-  colorMode.preference = sessionData.value.userData.dark_enabled ? 'dark' : 'light';
-  appConfig.ui.primary = sessionData.value.userData.default_color!;
-  appConfig.ui.gray = sessionData.value.userData.default_dark_color!;
-  //Select default Company
-  const defaultCompanyID = data.value.userCompanies?.find((company) => company.is_default)?.id;
-  if (defaultCompanyID) {
-    sessionData.value.userCompany = defaultCompanyID;
-  } else {
-    const firstActiveCompanyID = data.value.userCompanies?.find(c => c.is_active)?.id;
-    sessionData.value.userCompany = firstActiveCompanyID ?? null;
+const getUserData = async () => {
+  try {
+    isLoadingMenu.value = true;
+    const data = await $fetch('/api/system/userData', {
+      method: 'get'
+    });
+    sessionData.value.userData = data.userData;
+    sessionData.value.userCompanies = data.userCompanies;
+    sessionData.value.userMenuData = data.userMenu;
+    //Preset colors:
+    colorMode.preference = sessionData.value.userData.dark_enabled ? 'dark' : 'light';
+    appConfig.ui.primary = sessionData.value.userData.default_color!;
+    appConfig.ui.gray = sessionData.value.userData.default_dark_color!;
+    //Select default Company
+    const defaultCompanyID = data.userCompanies?.find((company) => company.is_default)?.id;
+    if (defaultCompanyID) {
+      sessionData.value.userCompany = defaultCompanyID;
+    } else {
+      const firstActiveCompanyID = data.userCompanies?.find(c => c.is_active)?.id;
+      sessionData.value.userCompany = firstActiveCompanyID ?? null;
+    }
+    return true;
+  } catch(error) {
+    return false;
+  } finally {
+    isLoadingMenu.value = false;
   }
-}
+};
+
+const refreshUserSession = async () => {
+  try {
+    isLoadingMenu.value = true;
+    const { supabase } = useSupabase();
+    const { data, error } = await supabase.auth.refreshSession();
+    if (error) throw error;
+
+    document.cookie = `sb-access-token=${data.session?.access_token}; path=/`;
+    document.cookie = `sb-refresh-token=${data.session?.refresh_token}; path=/`;
+  } catch (newError) {
+    return false;
+  } finally {
+    isLoadingMenu.value = false;
+  }
+};
+
+onMounted(async() => {
+  const hasData = await getUserData();
+  if (hasData) return;
+
+  await refreshUserSession();
+
+  const hasDataAfterRefresh = await getUserData();
+  if (hasDataAfterRefresh) return;
+
+  useToast().add({
+    title: 'No encontramos una sesión activa.',
+    color: 'rose',
+    icon: 'i-heroicons-shield-exclamation',
+  });
+  await navigateTo('/auth/login');
+});
 </script>
 
 <template>
@@ -66,7 +108,11 @@ if (!error.value && data.value) {
       </UDashboardNavbar>
 
       <UDashboardSidebar>
+        <UProgress
+          v-if="isLoadingMenu"
+          animation="carousel" />
         <UDashboardSidebarLinks
+          v-if="!isLoadingMenu"
           :links="userMenu"
           :ui="{ 
             label: 'text-lg lg:text-sm truncate relative',

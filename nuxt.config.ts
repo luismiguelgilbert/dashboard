@@ -6,7 +6,9 @@ export default defineNuxtConfig({
   experimental: {
     componentIslands: true,
   },
+
   extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
+
   modules: [
     '@nuxt/ui',
     '@nuxtjs/fontaine',
@@ -15,14 +17,18 @@ export default defineNuxtConfig({
     '@nuxt/image',
     // 'nuxt-clarity-analytics',
   ],
+
   css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+
   ui: {
     icons: ['heroicons', 'simple-icons'],
     safelistColors: ['primary', 'red', 'orange', 'green']
   },
+
   build: {
     transpile: ['@fortawesome/vue-fontawesome']
   },
+
   runtimeConfig: {
     // Private keys are only available on the server
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
@@ -33,6 +39,7 @@ export default defineNuxtConfig({
       supabaseKey: process.env.SUPABASE_KEY
     }
   },
+
   components: [
     {
       path: '~/components'
@@ -42,10 +49,12 @@ export default defineNuxtConfig({
       pathPrefix: false
     }
   ],
+
   // Fonts
   fontMetrics: {
     fonts: ['DM Sans']
   },
+
   googleFonts: {
     display: 'swap',
     download: true,
@@ -53,15 +62,18 @@ export default defineNuxtConfig({
       'DM+Sans': [300, 400, 500, 600, 700]
     }
   },
+
   devtools: {
     enabled: false,
     timeline: {
       enabled: false,
     },
   },
+
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
   },
+
   hooks: {
     'build:before': () => {
       const nuxtInstance = useNuxt();
@@ -97,4 +109,6 @@ export default defineNuxtConfig({
       removePagesMatching(/\/components\//g, pages);
     },
   },
+
+  compatibilityDate: '2024-07-25',
 });

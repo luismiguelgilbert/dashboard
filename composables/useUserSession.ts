@@ -28,7 +28,7 @@ export const useUserSession = () => {
         color: 'rose',
         icon: 'i-heroicons-shield-exclamation',
       });
-      navigateTo('/auth/login');
+      await navigateTo('/auth/login');
     }
   };
 
