@@ -23,7 +23,7 @@ const setNewRoute = async (record: type_sys_roles) => {
 
 <template>
   <UDashboardPage>
-    <UDashboardPanel class="w-full sm:min-w-[calc(35dvw)] sm:max-w-[calc(35dvw)]">
+    <UDashboardPanel class="w-full lg:w-[calc(35dvw)] min-w-full lg:min-w-[calc(35dvw)]">
       <UDashboardNavbar
         :title="title"
         :badge="totalRows">

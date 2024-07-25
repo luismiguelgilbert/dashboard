@@ -12,7 +12,7 @@ const fileRef = ref<{ input: HTMLInputElement }>();
 // const form = ref<Form<type_sys_users>>();
 const form = ref();
 
-const { data: profileOptions, pending: profileOptionsPending } = await useLazyFetch('/api/lookups/sys_profiles');
+const { data: profileOptions, pending: profileOptionsPending } = await useLazyFetch('/api/lookups/security/sys_profiles');
 
 const onFileChange = (e: FileList) => {
   if (!e.length) { return; }

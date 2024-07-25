@@ -28,11 +28,11 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
 </script>
 
 <template>
-  <div class="flex justify-between sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
+  <div class="flex justify-between w-full sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
     <div class="flex flex-row">
       <USelectMenu
         v-model="pageSize"
-        class="hidden lg:block"
+        class="hidden xl:block"
         icon="i-heroicons-circle-stack"
         value-attribute="value"
         :options="pageSizeOptions"

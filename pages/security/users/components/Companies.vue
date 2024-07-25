@@ -2,7 +2,7 @@
 import { type type_sys_companies } from '@/types/server/sys_companies';
 const { state } = useSecurityUsersForm();
 
-const { data, pending } = await useLazyFetch('/api/lookups/sys_companies');
+const { data, pending } = await useLazyFetch('/api/lookups/security/sys_companies');
 
 const makeDefault = (company: type_sys_companies) => {
   if (state.value.data) {

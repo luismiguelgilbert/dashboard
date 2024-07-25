@@ -41,7 +41,7 @@ const save = async () => {
     await sys_users.validate(state.value.data, { abortEarly: false });
     start();
     let response: type_sys_users_created = { id: '' };
-    response = await $fetch('/api/security/users/new', {
+    response = await $fetch('/api/security/users/create', {
       method: 'post',
       body: state.value.data,
     });

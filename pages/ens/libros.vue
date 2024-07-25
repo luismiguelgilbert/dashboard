@@ -22,7 +22,7 @@ const setNewRoute = async (record: type_ens_libros) => {
 
 <template>
   <UDashboardPage>
-    <UDashboardPanel>
+    <UDashboardPanel class="w-full lg:w-[calc(35dvw)] min-w-full lg:min-w-[calc(35dvw)]">
       <UDashboardNavbar
         :title="title"
         :badge="totalRows">
