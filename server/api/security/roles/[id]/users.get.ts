@@ -27,6 +27,7 @@ export default defineEventHandler( async (event) => {
       inner join auth.users b on a.id = b.id
       inner join sys_profiles c on a.sys_profile_id = c.id
       where a.sys_profile_id = '${id}'
+      order by a.user_lastname
     `;
     const data = await serverDB.query(text);
     return array(sys_users).cast(data.rows);

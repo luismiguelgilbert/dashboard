@@ -10,7 +10,7 @@ export const module = 'servicio';
 export const useActions = (filterPayload: type_filter_payload, permissions: type_userMenuData[] ): DropdownItemExtended[][] => {
   const actions: DropdownItemExtended[][] = [];
   actions[0] = [];
-  if (permissions.some(x => x.id === PermissionsList.ENSSERVICIOS_CREATE)) {
+  if (permissions?.some(x => x.id === PermissionsList.ENSSERVICIOS_CREATE)) {
     actions[0].push(
       {
         id: PermissionsList.ENSSERVICIOS_CREATE,
@@ -22,7 +22,7 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
       },
     );
   }
-  if (permissions.some(x => x.id === PermissionsList.ENSSERVICIOS_EXPORT)) {
+  if (permissions?.some(x => x.id === PermissionsList.ENSSERVICIOS_EXPORT)) {
     actions[0].push(
       {
         id: PermissionsList.ENSSERVICIOS_EXPORT,

@@ -18,6 +18,7 @@ export default defineEventHandler( async (event) => {
       )
       select
        a.id
+      ,a.parent
       ,INITCAP(a.name_es) as name_es
       ,a.row_level
       ,a.icon

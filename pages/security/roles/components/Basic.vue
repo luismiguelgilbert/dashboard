@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BasicPermissions from './basicPermissions.vue';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { sys_roles } from '@/types/server/security/sys_roles';
 
@@ -6,8 +7,6 @@ const { state } = useSecurityRolesForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
 const inputSize = computed(() => isMobile.value ? 'lg' : 'xl');
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
-
-// const { data: linksData } = await useLazyFetch('/api/lookups/sys_links');
 </script>
 
 <template>
@@ -58,8 +57,12 @@ const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5'
           class="ml-5"
           style="vertical-align: text-bottom;">{{ state.data.is_active ? 'Activo' : 'Inactivo' }}</span>
       </UFormGroup>
-
-      <br /><br />
     </div>
+    <br />
+    <div class="my-10 sm:my-0 mx-5">
+      <UDivider />
+      <BasicPermissions />
+    </div>
+    <br /><br />
   </UForm>
 </template>

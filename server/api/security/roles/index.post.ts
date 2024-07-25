@@ -10,7 +10,7 @@ import { type type_filter_selection } from '@/types/client/filter_payload';
 export default defineEventHandler( async (event) => {
   try {
     const userSessionId = event.context.user.id;
-    await hasUserPermission(userSessionId, PermissionsList.USERS_READ);
+    await hasUserPermission(userSessionId, PermissionsList.ROLES_READ);
 
     const filter = await readValidatedBody(event, body => filter_payload.cast(body));
     const sortBy = sort_options.find(x => x.key === filter.sortBy)?.query!;

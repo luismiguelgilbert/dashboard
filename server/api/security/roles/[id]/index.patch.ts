@@ -20,8 +20,21 @@ export default defineEventHandler( async (event) => {
     const sqlUpdateUserData = `update sys_profiles set
        name_es = COALESCE('${payload.name_es}', name_es)
       ,is_active = COALESCE(${payload.is_active ?? false}, is_active)
+      ,updated_at = now()
+      ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
     await serverDB.query(sqlUpdateUserData);
+
+    //Update Companies
+    const sqlLinksDelete = `delete from sys_profiles_links WHERE sys_profile_id = '${id}'`;
+    await serverDB.query(sqlLinksDelete);
+
+    let sqlLinksInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values';
+    payload.sys_profiles_links?.forEach((linkId) => {
+      sqlLinksInsert += `('${id}', '${linkId.sys_link_id}'),`;
+    });
+    sqlLinksInsert = sqlLinksInsert.substring(0, sqlLinksInsert.length - 1);//remove last comma
+    await serverDB.query(sqlLinksInsert);
     
     await serverDB.query('COMMIT');
     return { id: id };

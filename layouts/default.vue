@@ -3,7 +3,7 @@ import type { DashboardSidebarLink } from '#ui-pro/types';
 
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
-const { sessionData } = useUserSession();
+const { sessionData, handleUnauthorized } = useUserSession();
 colorMode.preference = 'dark';
 
 const userMenu = computed<Array<DashboardSidebarLink>>(() => {
@@ -26,8 +26,8 @@ const userMenu = computed<Array<DashboardSidebarLink>>(() => {
     }) ?? [];
 });
 
-const { data, error } = await useFetch('/api/system/userData');
-if (error.value) { await navigateTo('/auth/login'); }
+const { data, error, refresh } = await useFetch('/api/system/userData');
+if (error.value) { error.value?.statusCode === 401 && handleUnauthorized(refresh) ;}
 if (!error.value && data.value) {
   sessionData.value.userData = data.value.userData;
   sessionData.value.userCompanies = data.value.userCompanies;

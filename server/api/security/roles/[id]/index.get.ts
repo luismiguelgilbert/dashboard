@@ -10,6 +10,14 @@ export default defineEventHandler( async (event) => {
        a.id
       ,a.name_es
       ,a.is_active
+      ,COALESCE((
+          SELECT json_agg(
+              json_build_object(
+                'sys_link_id', int1.sys_link_id
+              ) ORDER BY sys_link_id desc)
+          FROM sys_profiles_links int1
+          WHERE int1.sys_profile_id = '${id}'
+      ), '[]'::json) sys_profiles_links
       from sys_profiles a
       WHERE a.id = '${id}'
       `;

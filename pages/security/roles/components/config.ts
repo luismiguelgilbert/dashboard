@@ -10,7 +10,7 @@ export const module = 'perfil';
 export const useActions = (filterPayload: type_filter_payload, permissions: type_userMenuData[] ): DropdownItemExtended[][] => {
   const actions: DropdownItemExtended[][] = [];
   actions[0] = [];
-  if (permissions.some(x => x.id === PermissionsList.ROLES_CREATE)) {
+  if (permissions?.some(x => x.id === PermissionsList.ROLES_CREATE)) {
     actions[0].push(
       {
         id: PermissionsList.ROLES_CREATE,
@@ -22,7 +22,7 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
       },
     );
   }
-  if (permissions.some(x => x.id === PermissionsList.ROLES_EXPORT)) {
+  if (permissions?.some(x => x.id === PermissionsList.ROLES_EXPORT)) {
     actions[0].push(
       {
         id: PermissionsList.ROLES_EXPORT,
@@ -48,6 +48,7 @@ export const sort_options: Array<type_sort_option_client> = [
   { key: FilterQueriesKeys.SECURITY_ROLES_ID, label: 'Código' },
   { key: FilterQueriesKeys.SECURITY_ROLES_NAME, label: 'Nombre' },
   { key: FilterQueriesKeys.SECURITY_ROLES_ACTIVE, label: 'Estado' },
+  { key: FilterQueriesKeys.SECURITY_ROLES_USERS_COUNT, label: 'Conteo de Usuarios' },
 ];
 //Functions
 const downloadFile = async(filterPayload: type_filter_payload) => {
@@ -67,54 +68,3 @@ const downloadFile = async(filterPayload: type_filter_payload) => {
     console.error(error);
   }
 };
-// export const actions: DropdownItemExtended[][] = [
-//   [
-//     {
-//       id: PermissionsList.ROLES_CREATE,
-//       isMainAction: true,
-//       disabled: false,
-//       label: 'Nuevo perfil',
-//       icon: 'i-heroicons-plus',
-//       click: () => { navigateTo('/security/roles/create'); }  
-//     },
-//     {
-//       id: PermissionsList.ROLES_EXPORT,
-//       isMainAction: false,
-//       disabled: false,
-//       label: 'Descargar',
-//       icon: 'i-heroicons-document-arrow-down',
-//       click: async () => { downloadFile(); }
-//     },
-//   ],
-// ];
-// export const tabs = [
-//   { value: 'basic', slot: 'basic', label: 'Perfil', icon: 'i-heroicons-user-circle', defaultOpen: true },
-//   { value: 'users', slot: 'users', label: 'Usuarios Asignados', icon: 'i-heroicons-users', defaultOpen: false },
-// ];
-// //Functions
-// const downloadFile = async() => {
-//   try {
-//     if (window.useNuxtApp && window.useNuxtApp().payload.state.$suseSecurityRoles) {
-//       const nuxtApp = window.useNuxtApp();
-//       const state = nuxtApp.payload.state.$suseSecurityRoles;
-//       state.isLoading = true;
-//       const { data, error } = await useFetch('/api/roles/download', {
-//         headers: { 'Content-Type': 'multipart/form-data' },
-//         method: 'post', 
-//         body: state.filterPayload,
-//       });
-//       if (!error.value && data.value) {
-//         const url = window.URL.createObjectURL(data.value);
-//         const link = document.createElement('a');
-//         link.href = url;
-//         link.setAttribute('download', 'Perfiles.xlsx');
-//         document.body.appendChild(link);
-//         link.click();
-//         document.body.removeChild(link);
-//       }
-//       state.isLoading = false;
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };

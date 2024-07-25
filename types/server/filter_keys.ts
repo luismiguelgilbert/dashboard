@@ -7,6 +7,7 @@ export enum FilterQueriesKeys {
   SECURITY_ROLES_ID = 'security_role_id',
   SECURITY_ROLES_NAME = 'security_role_name',
   SECURITY_ROLES_ACTIVE = 'security_role_active',
+  SECURITY_ROLES_USERS_COUNT = 'security_role_users_count',
   ENS_TEAM_ID = 'ens_team_id',
   ENS_TEAM_NAME = 'ens_team_name',
   ENS_TEAM_ACTIVE = 'ens_team_is_active',
