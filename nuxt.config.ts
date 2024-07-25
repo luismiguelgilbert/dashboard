@@ -60,7 +60,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    pageTransition: { name: 'page', mode: 'out-in', duration: 200 }
+    pageTransition: { name: 'page', mode: 'out-in' }
   },
   hooks: {
     'build:before': () => {
