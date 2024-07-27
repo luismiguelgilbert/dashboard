@@ -33,6 +33,13 @@ export default defineEventHandler( async (event) => {
       : '';
 
     const text = `
+      WITH users_by_row AS (
+        select
+          team_id
+          , count(*) as user_count
+        from ens_members_teams int1
+        group by int1.team_id
+      )
       SELECT
           a.id
         , INITCAP(a.name_es) as name_es
@@ -44,10 +51,12 @@ export default defineEventHandler( async (event) => {
         , INITCAP(a.nivel_4) as nivel_4
         , INITCAP(a.nivel_5) as nivel_5
         , INITCAP(a.nivel_6) as nivel_6
+        , COALESCE(b.user_count,0) as user_count
         , to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
         , to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
         , count(*) OVER() AS row_count
       FROM ens_teams a
+      LEFT JOIN users_by_row b on a.id = b.team_id
       WHERE 1 = 1 
         ${filterQueryString}
         ${filterSearchString}

@@ -14,7 +14,6 @@ const { start, finish } = useLoadingIndicator();
 watch( () => pending.value, () => { pending.value ? start() : finish(); });
 watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 
-
 const setNewRoute = async (record: type_sys_companies) => {
   state.value.selectedId = record.id!;
   router.push(`/security/companies/company-${record.id}`);

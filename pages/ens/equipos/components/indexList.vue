@@ -20,31 +20,36 @@ const routerParamId = computed(() => route.params.id);
 </script>
 
 <template>
-  <div class="overflow-scroll h-full sm:min-w-[25rem]">
+  <div class="overflow-scroll h-full">
     <div
-      v-for="(team, index) in rows"
+      v-for="(row, index) in rows"
       :key="index"
       class="border-b dark:border-gray-800"
-      @click="emits('row-click', team)">
+      @click="emits('row-click', row)">
       <div
-        :class="team.id == routerParamId
+        :class="row.id == routerParamId
           ? 'p-4 text-sm cursor-pointer border-l-2 border-primary-500 dark:border-primary-400 bg-primary-100 dark:bg-primary-900/25'
           : 'p-4 text-sm cursor-pointer border-l-2 border-white dark:border-gray-900 hover:border-primary-500/25 dark:hover:border-primary-400/25 hover:bg-primary-100/50 dark:hover:bg-primary-900/10'">
         <div class="flex items-center justify-between">
-          <div class="font-semibold max-w-52">
-            {{ team.name_es }}
+          <div class="flex min-w-0 items-center gap-3">
+            <UAvatar
+              :alt="row.name_es[0]"
+              size="lg" />
+            <div class="min-w-0 flex-auto text-base font-semibold">
+              <p class="dark:text-white text-black truncate text-ellipsis">
+                {{ row.name_es }}
+              </p>
+              <p class="dark:text-white text-black truncate text-ellipsis">
+                {{ row.nivel_0 }} - {{ row.nivel_1 }}
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+                Usuarios: {{ row.user_count }}
+              </p>
+            </div>
           </div>
-          <UBadge
-            :label="team.is_active? 'activo' : 'inactivo'"
-            :color="team.is_active ? 'primary' : 'red'"
-            variant="subtle"
-            class="capitalize"
-          />
-        </div>
-        <div class="flex items-center justify-between">
-          <div>
-            {{ team.nivel_0 }} - {{ team.nivel_1 }}
-          </div>
+          <UToggle
+            size="md"
+            :model-value="row.is_active" />
         </div>
       </div>
     </div>

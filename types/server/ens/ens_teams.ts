@@ -13,6 +13,7 @@ export const ens_teams = object({
   nivel_4: string(),
   nivel_5: string(),
   nivel_6: string(),
+  user_count: number().optional(),
   created_at: string().optional(),
   updated_at: string().optional(),
   row_count: number().optional().nullable().default(0),
