@@ -26,7 +26,7 @@ export default defineEventHandler( async (event) => {
 
     const search_string = sanitizeSQL(filter.searchString);
     const filterSearchString = search_string.length > 0
-      ? ` and (a.name_es ILIKE '%${search_string}%')`
+      ? ` and fts @@ to_tsquery('${search_string.replaceAll(' ','+') }:*')`
       : '';
     
     const text = `
