@@ -3,7 +3,7 @@ import { ValidationError } from 'yup';
 import { ens_servicios } from '@/types/server/ens/ens_servicios';
 import { type type_ens_servicios_created } from '@/types/server/ens/ens_servicios';
 import { tabs } from './components/config';
-import Basic from './components/basic.vue';
+import Basic from './components/Basic.vue';
 
 const { state: dataList } = useEnsServicios();
 const { state } = useEnsServiciosForm();

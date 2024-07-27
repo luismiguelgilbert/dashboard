@@ -13,6 +13,7 @@ export enum FilterQueriesKeys {
   SECURITY_COMPANIES_NAME_SHORT = 'security_company_name_short',
   SECURITY_COMPANIES_ACTIVE = 'security_company_active',
   SECURITY_COMPANIES_USERS_COUNT = 'security_company_users_count',
+  ENS_MEMBERS_ID = 'ens_member_id',
   ENS_TEAM_ID = 'ens_team_id',
   ENS_TEAM_NAME = 'ens_team_name',
   ENS_TEAM_ACTIVE = 'ens_team_is_active',

@@ -2,8 +2,8 @@
 import { ValidationError } from 'yup';
 import { ens_servicios } from '@/types/server/ens/ens_servicios';
 import { tabs } from './components/config';
-import Basic from './components/basic.vue';
-import Users from './components/users.vue';
+import Basic from './components/Basic.vue';
+import Users from './components/Users.vue';
 
 const route = useRoute();
 const { state: dataList } = useEnsServicios();

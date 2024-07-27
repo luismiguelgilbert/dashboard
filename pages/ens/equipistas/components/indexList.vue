@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type type_sys_users } from '@/types/server/security/sys_users';
+import { type type_ens_members } from '@/types/server/ens/ens_members';
 
 defineProps({
   rows: {
-    type: Array<type_sys_users>,
+    type: Array<type_ens_members>,
     required: false,
     default: () => []
   },
@@ -53,11 +53,25 @@ const routerParamId = computed(() => route.params.id);
               <p class="dark:text-white text-black truncate text-ellipsis">
                 {{ row.user_name }} {{ row.user_lastname }}
               </p>
-              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+              <p class="dark:text-white text-black truncate text-ellipsis">
                 {{ row.email }}
+              </p>
+              <p
+                v-if="!row.es_consiliario" 
+                class="dark:text-white text-black font-thin truncate text-ellipsis">
+                <UIcon name="i-hugeicons-favourite" />
+                {{ row.partner_full_name }}
+              </p>
+              <p
+                v-if="row.es_consiliario" 
+                class="dark:text-white text-black font-thin truncate text-ellipsis">
+                <UIcon name="i-hugeicons-church"/>
               </p>
             </div>
           </div>
+          <UToggle
+            size="md"
+            :model-value="row.is_active" />
         </div>
       </div>
     </div>
