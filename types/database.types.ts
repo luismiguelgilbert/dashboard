@@ -719,6 +719,7 @@ export type Database = {
           billing_phone: string | null
           company_number: string
           created_at: string
+          fts: unknown | null
           id: string
           is_active: boolean
           name_es: string
@@ -732,6 +733,7 @@ export type Database = {
           billing_phone?: string | null
           company_number: string
           created_at?: string
+          fts?: unknown | null
           id?: string
           is_active?: boolean
           name_es: string
@@ -745,6 +747,7 @@ export type Database = {
           billing_phone?: string | null
           company_number?: string
           created_at?: string
+          fts?: unknown | null
           id?: string
           is_active?: boolean
           name_es?: string
@@ -850,6 +853,7 @@ export type Database = {
       sys_profiles: {
         Row: {
           created_at: string
+          fts: unknown | null
           id: number
           is_active: boolean
           name_es: string
@@ -858,6 +862,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          fts?: unknown | null
           id?: number
           is_active?: boolean
           name_es: string
@@ -866,6 +871,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          fts?: unknown | null
           id?: number
           is_active?: boolean
           name_es?: string
@@ -915,35 +921,6 @@ export type Database = {
           },
         ]
       }
-      sys_profiles_users: {
-        Row: {
-          created_at: string | null
-          id: number
-          sys_profile_id: number
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          sys_profile_id: number
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          sys_profile_id?: number
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'sys_profiles_users_user_id_fkey'
-            columns: ['user_id']
-            isOneToOne: false
-            referencedRelation: 'sys_users'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       sys_users: {
         Row: {
           avatar_url: string | null
@@ -952,6 +929,7 @@ export type Database = {
           default_dark_color: string | null
           fts: unknown | null
           id: string
+          sys_profile_id: number
           updated_at: string | null
           updated_by: string
           user_lastname: string
@@ -966,6 +944,7 @@ export type Database = {
           default_dark_color?: string | null
           fts?: unknown | null
           id: string
+          sys_profile_id: number
           updated_at?: string | null
           updated_by: string
           user_lastname: string
@@ -980,6 +959,7 @@ export type Database = {
           default_dark_color?: string | null
           fts?: unknown | null
           id?: string
+          sys_profile_id?: number
           updated_at?: string | null
           updated_by?: string
           user_lastname?: string
@@ -993,6 +973,13 @@ export type Database = {
             columns: ['id']
             isOneToOne: true
             referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'sys_users_sys_profile_id_fkey'
+            columns: ['sys_profile_id']
+            isOneToOne: false
+            referencedRelation: 'sys_profiles'
             referencedColumns: ['id']
           },
           {
