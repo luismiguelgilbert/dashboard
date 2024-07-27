@@ -2,7 +2,7 @@
 import { ValidationError } from 'yup';
 import { ens_libros, type type_ens_libros_created } from '@/types/server/ens/ens_libros';
 import { tabs } from './components/config';
-import Basic from './components/Basic.vue';
+import Basic from './components/basicForm.vue';
 
 const { state: dataList } = useEnsLibros();
 const { state } = useEnsLibrosForm();

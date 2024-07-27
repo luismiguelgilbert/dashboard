@@ -2,7 +2,7 @@
 import { ValidationError } from 'yup';
 import { ens_teams, type type_ens_teams_created } from '@/types/server/ens/ens_teams';
 import { tabs } from './components/config';
-import Basic from './components/basic.vue';
+import Basic from './components/basicForm.vue';
 
 const { state: dataList } = useEnsEquipos();
 const { state } = useEnsEquiposForm();

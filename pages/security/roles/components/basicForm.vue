@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import BasicPermissions from './basicPermissions.vue';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { sys_roles } from '@/types/server/security/sys_roles';
+import BasicPermissions from './basicPermissions.vue';
 
 const { state } = useSecurityRolesForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');

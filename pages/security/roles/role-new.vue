@@ -2,7 +2,7 @@
 import { ValidationError } from 'yup';
 import { sys_roles, type type_sys_roles_created } from '@/types/server/security/sys_roles';
 import { tabs } from './components/config';
-import Basic from './components/Basic.vue';
+import Basic from './components/basicForm.vue';
 
 const { state: dataList } = useSecurityRoles();
 const { state } = useSecurityRolesForm();

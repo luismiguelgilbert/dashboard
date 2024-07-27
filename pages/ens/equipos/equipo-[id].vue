@@ -2,8 +2,8 @@
 import { ValidationError } from 'yup';
 import { ens_teams } from '@/types/server/ens/ens_teams';
 import { tabs } from './components/config';
-import Basic from './components/Basic.vue';
-import Users from './components/Users.vue';
+import Basic from './components/basicForm.vue';
+import Users from './components/usersList.vue';
 
 const route = useRoute();
 const { state: dataList } = useEnsEquipos();
