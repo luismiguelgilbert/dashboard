@@ -1,6 +1,6 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { ens_members } from '@/types/server/ens_types';
+import { ens_members } from '@/types/server/ens/ens_members';
 
 export default defineEventHandler( async (event) => {
   try{
