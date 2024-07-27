@@ -2,7 +2,7 @@
 import { ValidationError } from 'yup';
 import { sys_companies, type type_sys_companies_created } from '@/types/server/security/sys_companies';
 import { tabs } from './components/config';
-import Basic from './components/Basic.vue';
+import Basic from './components/basicForm.vue';
 
 const { state: dataList } = useSecurityCompanies();
 const { state } = useSecurityCompaniesForm();
