@@ -20,6 +20,7 @@ export default defineEventHandler( async (event) => {
     const sqlUpdateUserData = `update sys_users set
        user_name = COALESCE('${payload.user_name}', user_name)
       ,user_lastname = COALESCE('${payload.user_lastname}', user_lastname)
+      ,website = COALESCE('${payload.email}', website)
       ,user_sex = COALESCE(${payload.user_sex ?? false}, user_sex)
       ,dark_enabled = COALESCE(${payload.dark_enabled ?? false}, dark_enabled)
       ,sys_profile_id = COALESCE(${payload.sys_profile_id}, sys_profile_id)
@@ -28,6 +29,7 @@ export default defineEventHandler( async (event) => {
       ,updated_at = now()
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
+      console.log(sqlUpdateUserData);
     await serverDB.query(sqlUpdateUserData);
 
     //Update Companies

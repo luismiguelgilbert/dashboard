@@ -41,6 +41,7 @@ export default defineEventHandler( async (event) => {
     const sqlUpdateUserData = `update sys_users set
        user_name = COALESCE('${payload.user_name}', user_name)
       ,user_lastname = COALESCE('${payload.user_lastname}', user_lastname)
+      ,website = COALESCE('${payload.email}', website)
       ,user_sex = COALESCE(${payload.user_sex ?? false}, user_sex)
       ,sys_profile_id = COALESCE(${payload.sys_profile_id}, sys_profile_id)
       ,dark_enabled = COALESCE(${payload.dark_enabled ?? false}, dark_enabled)
