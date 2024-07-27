@@ -14,14 +14,15 @@ export default defineNuxtConfig({
     '@nuxtjs/fontaine',
     '@nuxtjs/google-fonts',
     '@vueuse/nuxt',
-    '@nuxt/image',
     // 'nuxt-clarity-analytics',
+    '@nuxt/image',
+    // "@nuxt/icon"
   ],
 
-  css: ['@fortawesome/fontawesome-svg-core/styles.css'],
+  // css: ['@fortawesome/fontawesome-svg-core/styles.css'],
 
   ui: {
-    icons: ['heroicons', 'simple-icons'],
+    // icons: ['heroicons', 'simple-icons'],
     safelistColors: ['primary', 'red', 'orange', 'green']
   },
 

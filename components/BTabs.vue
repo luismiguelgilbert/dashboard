@@ -42,10 +42,10 @@ const tabClick = (tab: bTabItem) => {
                 "
               :class="item.value === innerValue ? 'after:absolute after:bottom-0 after:inset-x-2.5 after:block after:h-[2px] after:mt-2 after:bg-primary-500 dark:after:bg-primary-400 after:rounded-full' : undefined"
             >
-              <span
+              <UIcon
                 v-if="item.icon"
-                :class="`${item.icon} flex-shrink-0 w-5 h-5 text-gray-700 dark:text-gray-200`"
-              />
+                :name="item.icon"
+                :class="`${item.icon} flex-shrink-0 w-5 h-5 text-gray-700 dark:text-gray-200`" />
               <span class="truncate relative text-gray-700 dark:text-gray-200">
                 {{ item.label }}
               </span>
