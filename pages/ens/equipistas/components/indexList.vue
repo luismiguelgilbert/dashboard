@@ -65,7 +65,7 @@ const routerParamId = computed(() => route.params.id);
               <p
                 v-if="row.es_consiliario" 
                 class="dark:text-white text-black font-thin truncate text-ellipsis">
-                <UIcon name="i-hugeicons-church"/>
+                <UIcon name="i-hugeicons-church" />
               </p>
             </div>
           </div>
