@@ -13,24 +13,12 @@ export const sys_users = object({
   dark_enabled: boolean(),
   default_color: string(),
   default_dark_color: string(),
-  // prefered_company_id: string(),
   created_at: date(),
   updated_at: date(),
   last_sign_in_at: date().optional().nullable(),
   row_count: number(),
 });
 export type type_sys_users = InferType<typeof sys_users>;
-
-export const sys_users_form = object({
-  user_name: string().min(3,  'Nombre debe incluir 3 o más caracteres.'),
-  user_lastname: string().min(3,  'Apellido debe incluir 3 o más caracteres.'),
-  user_sex: boolean(),
-  email: string().email( 'Correo Electrónico no es válido.'),
-  sys_profile_id: number().positive( 'Perfil no es válido.'),
-  dark_enabled: boolean(),
-  default_color: string(),
-  default_dark_color: string(),
-});
 
 export const userData = object({
   id: string(),
@@ -76,37 +64,6 @@ export const UseUserSession = object({
   userMenuData: array(userMenuData).optional().nullable(),
 });
 
-export const userDataForm = object({
-  id: string(),
-  user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
-  user_lastname: string().required('Apellido es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
-  user_sex: boolean(),
-  avatar_url: string().optional().nullable().transform((value) => value || null),
-  website: string().optional().nullable(),
-  email: string().email().required('Email es requerido.'),
-  sys_profile_id: number().min(1, 'Debe seleccionar un Perfil.').required('Debe seleccionar un Perfil.'),
-  sys_profile_name: string().optional().nullable(),
-  dark_enabled: boolean(),
-  default_color: string(),
-  default_dark_color: string(),
-  prefered_company_id: string().min(1, 'Debe seleccionar una Organización.'),
-});
-export type type_userDataForm = InferType<typeof userDataForm>;
-
-export const userCompaniesForm = array(string()).min(1, 'Debe seleccionar una Organización.').required('Debe seleccionar una Organización.');
-export type type_userCompaniesForm = InferType<typeof userCompaniesForm>;
-
-export const userPayload = object({
-  userData: userDataForm,
-  userCompanies: userCompaniesForm,
-});
-export type type_userPayload = InferType<typeof userPayload>;
-
-export type type_userBody = {
-  userData: type_userDataForm,
-  userCompanies: type_userCompaniesForm,
-};
-
 export const bulkMapping = object({
   email: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
   user_name: string().required().min(1, 'Debe incluir 1 o más caracteres.'),
@@ -139,15 +96,3 @@ export const bulkUsersUpload = object({
   prefered_company_id: string().required().min(1, 'Debe seleccionar una Organización.'),
 });
 export type type_bulkUsersUpload = InferType<typeof bulkUsersUpload>;
-
-export const filter_options = [
-  { label: 'Todos los Usuarios', value: 1, sqlValue: 'true', icon: 'i-heroicons-funnel' },
-];
-
-export const sort_options = [
-  { label: 'Apellidos', value: 1, sqlValue: 'b.user_lastname', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Nombres', value: 2, sqlValue: 'b.user_name', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Mail', value: 3, sqlValue: 'a.email', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Perfil', value: 4, sqlValue: 'd.name_es', icon: 'i-heroicons-bars-arrow-down' },
-  { label: 'Ult. Ingreso', value: 5, sqlValue: 'last_sign_in_at desc', icon: 'i-heroicons-bars-arrow-down' }
-];

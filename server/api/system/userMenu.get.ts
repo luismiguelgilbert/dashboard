@@ -1,6 +1,6 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { sp_system_menu } from '@/types/server/sp_system_menu';
+import { sp_system_menu } from '@/types/server/system/sp_system_menu';
 
 export default defineEventHandler( async (event) => {
   try{

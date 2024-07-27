@@ -1,6 +1,6 @@
 import serverDB from '@/server/utils/db';
 import { array } from 'yup';
-import { sys_profiles } from '@/types/server/sys_profiles';
+import { sys_profiles } from '@/types/server/lookups/security_sys_profiles';
 
 export default defineEventHandler( async (event) => {
   try{

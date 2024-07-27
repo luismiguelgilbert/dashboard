@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type type_sys_companies } from '@/types/server/sys_companies';
+import { type type_sys_companies } from '@/types/server/lookups/security_sys_companies';
 const { state } = useSecurityUsersForm();
 
 const { data, pending } = await useLazyFetch('/api/lookups/security/sys_companies');
