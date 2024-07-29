@@ -7,6 +7,7 @@ definePageMeta({
   layout: 'auth',
 });
 const loading = ref<boolean>(false);
+const { start, finish } = useLoadingIndicator();
 
 const sizeXL: FormGroupSize = 'xl';
 const fields = [
@@ -37,6 +38,7 @@ const validate = (state: any) => {
 
 const onSubmit = async (credentialData: any) => {
   try {
+    start();
     loading.value = true;
     const credentials = ({
       email: credentialData.email,
@@ -49,8 +51,10 @@ const onSubmit = async (credentialData: any) => {
     document.cookie = `sb-access-token=${data.session.access_token}; path=/`;
     document.cookie = `sb-refresh-token=${data.session.refresh_token}; path=/`;
     loading.value = false;
+    finish();
     await navigateTo('/');
   } catch(error: any) {
+    finish();
     loading.value = false;
     console.error(error);
     const toast = useToast();

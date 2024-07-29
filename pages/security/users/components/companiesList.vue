@@ -98,7 +98,7 @@ const toggleCompany = (company: type_sys_companies) => {
                 @click="makeDefault(company)" />
               <UToggle
                 :model-value="state.data?.sys_companies_users?.some(x => x.sys_company_id === company.id)"
-                class="mt-4"
+                class="mt-4 mr-1 sm:mr-4"
                 @click="toggleCompany(company)" />
             </span>
           </li>

@@ -125,9 +125,13 @@ onMounted(async() => {
               inactive: 'bg-gray-400 dark:bg-gray-500 group-hover:bg-gray-700 dark:group-hover:bg-gray-200'
             },
           }" />
-        <UDivider class="sticky bottom-0" />
+        <UDivider
+          class="sticky bottom-0"
+          :ui="{ border: { base: 'flex border-gray-200 dark:border-gray-700' } }" />
         <template #footer>
-          <UserDropdown />
+          <div class="flex flex-col w-full">
+            <UserDropdown />
+          </div>
         </template>
       </UDashboardSidebar>
     </UDashboardPanel>

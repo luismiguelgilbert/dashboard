@@ -10,7 +10,9 @@ export const sys_roles = object({
   row_count: number().optional(),
   sys_profiles_links: array(object({
     sys_link_id: string(),
-  })).min(1, 'Debe seleccionar al menos un permiso.')
+  }))
+    .min(1, 'Debe seleccionar al menos un permiso.')
+    .test('real-permission-exists', 'Debe seleccionar al menos un permiso.', (permission) => permission && permission.length >= 6),
 });
 export type type_sys_roles = InferType<typeof sys_roles>;
 

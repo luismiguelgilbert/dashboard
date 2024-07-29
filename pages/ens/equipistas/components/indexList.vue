@@ -53,7 +53,7 @@ const routerParamId = computed(() => route.params.id);
               <p class="dark:text-white text-black truncate text-ellipsis">
                 {{ row.user_name }} {{ row.user_lastname }}
               </p>
-              <p class="dark:text-white text-black truncate text-ellipsis">
+              <p class="dark:text-white text-black truncate text-xs font-light text-ellipsis">
                 {{ row.email }}
               </p>
               <p

@@ -1,5 +1,21 @@
 <script setup lang="ts">
 const { sessionData } = useUserSession();
+const { supabase } = useSupabase();
+const { start, finish } = useLoadingIndicator();
+
+const logout = async () => {
+  start();
+  await supabase.auth.signOut();
+  document.cookie.split(';').forEach((c) => {
+    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+  await navigateTo('/auth/login');
+  //Reset state
+  sessionData.value.userData = null;
+  sessionData.value.userCompanies = null;
+  sessionData.value.userMenuData = null;
+  finish();
+};
 </script>
 
 <template>
@@ -95,60 +111,15 @@ const { sessionData } = useUserSession();
       icon="i-heroicons-circle-stack"
       readonly
     />
-    <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-    <div>
-      <p class="text-gray-900 dark:text-white font-semibold">
-        Ingreso:
-      </p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        Fecha y hora del último ingreso.
-      </p>
-    </div>
-    <UInput
-      :value="sessionData.userData?.last_sign_in_at"
-      label="Último Ingreso"
-      size="xl"
-      type="text"
-      name="last_sign_in_at"
-      icon="i-heroicons-arrow-right-end-on-rectangle"
-      readonly
-    />
-    <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-    <div>
-      <p class="text-gray-900 dark:text-white font-semibold">
-        Desde:
-      </p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        Fecha y hora de creación del usuario.
-      </p>
-    </div>
-    <UInput
-      :value="sessionData.userData?.created_at"
-      label="Fecha de creación"
-      size="xl"
-      type="text"
-      name="created_at"
-      icon="i-heroicons-calendar"
-      readonly
-    />
-    <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />
-    <div>
-      <p class="text-gray-900 dark:text-white font-semibold">
-        Actualización:
-      </p>
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        Fecha y hora de última edición al usuario.
-      </p>
-    </div>
-    <UInput
-      :value="sessionData.userData?.updated_at"
-      label="Fecha de actualización"
-      size="xl"
-      type="text"
-      name="updated_at"
-      icon="i-heroicons-pencil-square"
-      readonly
-    />
-    <div class="col-span-1 sm:col-span-2 pb-6" />
+
+    <UAlert
+      class="col-span-1 sm:col-span-2 my-5 sm:my-0 mt-5"
+      :actions="[{ variant: 'link', color: 'white', icon: 'i-hugeicons-logout-04', label: 'Salir', click: () => logout() }]"
+      color="rose"
+      title="Cerrar Sesión <br/><i class='font-thin'>Limpia datos de sesión en este dispositivo y cierra sesión</i>">
+      <template #title="{ title }">
+        <span v-html="title" />
+      </template>
+    </UAlert>
   </div>
 </template>

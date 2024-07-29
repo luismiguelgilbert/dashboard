@@ -1,76 +1,35 @@
 <script setup lang="ts">
 const { sessionData } = useUserSession();
-const { supabase } = useSupabase();
-
-const items = computed(() => [
-  [
-    {
-      slot: 'account',
-      to: '/'
-    }
-  ],
-  [
-    {
-      label: 'Cerrar sesión',
-      icon: 'i-heroicons-arrow-left-start-on-rectangle',
-      click: () => logout()
-    }
-  ]
-]);
-
-const logout = async () => {
-  await supabase.auth.signOut();
-  document.cookie.split(';').forEach((c) => {
-    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-  });
-  await navigateTo('/auth/login');
-  //Reset state
-  sessionData.value.userData = null;
-  sessionData.value.userCompanies = null;
-  sessionData.value.userMenuData = null;
-};
 </script>
 
 <template>
-  <UDropdown
-    mode="hover"
-    :items="items"
-    :ui="{ width: 'w-full', item: { disabled: 'cursor-text select-text' } }"
-    :popper="{ strategy: 'absolute', placement: 'top' }"
-    class="w-full bg-gray-100 dark:bg-gray-800 rounded-md">
-    <template #default="{ open }">
-      <UButton
-        color="gray"
-        variant="ghost"
-        class="w-full"
-        :label="sessionData.userData?.user_name"
-        :class="[open && 'bg-gray-50 dark:bg-gray-800']">
-        <template #leading>
-          <NuxtImg
-            v-if="sessionData.userData?.avatar_url"
-            :src="sessionData.userData.avatar_url"
-            width="15"
-            height="15"
-            class="rounded" />
-        </template>
-
-        <template #trailing>
-          <UIcon
-            name="i-heroicons-ellipsis-vertical"
-            class="w-5 h-5 ml-auto" />
-        </template>
-      </UButton>
-    </template>
-
-    <template #account>
-      <div class="text-left">
-        <p class="font-extralight">
-          Usuario:
+  <div class="flex flex-col w-full">
+    <UButton
+      label="Ajustes"
+      icon="i-heroicons-cog"
+      size="xl"
+      variant="ghost"
+      color="white"
+      to="/" />
+    <div class="flex min-w-0 items-center gap-3 mt-2">
+      <UAvatar
+        v-if="sessionData.userData?.avatar_url"
+        :src="sessionData.userData.avatar_url"
+        col
+        size="md"
+        alt="Avatar" />
+      <UAvatar
+        v-else-if="sessionData.userData?.user_lastname"
+        :alt="sessionData.userData?.user_lastname[0]"
+        size="md" />
+      <div class="min-w-0 flex-auto text-base font-semibold">
+        <p class="dark:text-white text-black truncate text-ellipsis">
+          {{ sessionData.userData?.user_name }} {{ sessionData.userData?.user_lastname }}
         </p>
-        <p class="truncate font-semibold text-gray-900 dark:text-white">
+        <p class="dark:text-white text-black truncate text-xs text-ellipsis font-extralight">
           {{ sessionData.userData?.email }}
         </p>
       </div>
-    </template>
-  </UDropdown>
+    </div>
+  </div>
 </template>

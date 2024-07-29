@@ -38,10 +38,11 @@ export const useActions = (filterPayload: type_filter_payload, permissions: type
   return actions;
 };
 export const tabs = [
-  { value: 'basic', slot: 'basic', label: 'Equipista', icon: 'i-heroicons-user-group', defaultOpen: true },
-  { value: 'users', slot: 'users', label: 'Equipistas', icon: 'i-heroicons-users', defaultOpen: false },
-  { value: 'phones', slot: 'phones', label: 'Teléfonos', icon: 'i-hugeicons-telephone', defaultOpen: false },
-  { value: 'addresses', slot: 'addresses', label: 'Direcciones', icon: 'i-hugeicons-location-01', defaultOpen: false },
+  { value: 'basic', slot: 'basic', label: 'Equipista', icon: 'i-heroicons-user', defaultOpen: true },
+  { value: 'teams', slot: 'teams', label: 'Equipo Y Servicios', icon: 'i-heroicons-users', defaultOpen: false },
+  // { value: 'services', slot: 'services', label: 'Servicios', icon: 'i-hugeicons-workout-run', defaultOpen: false },
+  // { value: 'phones', slot: 'phones', label: 'Info personal', icon: 'i-hugeicons-telephone', defaultOpen: false },
+  { value: 'jobs', slot: 'jobs', label: 'Bolsa de trabajo', icon: 'i-hugeicons-job-link', defaultOpen: false },
 ];
 export const filter_options: Array<type_filter_option> = [
   // { key: FilterQueriesKeys.ENS_TEAM_ACTIVE, label: 'Estado', valueType: 'boolean', requiresOrganization: false, endpointURL: '/api/lookups/ens/ens_teams_active' },

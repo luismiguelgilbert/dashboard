@@ -5,6 +5,7 @@ import { tabs } from './components/config';
 import Basic from './components/basicForm.vue';
 
 const route = useRoute();
+const { handleUnauthorized } = useUserSession();
 const { state: dataList } = useEnsEquipistas();
 const { state } = useEnsEquipistasForm();
 
@@ -15,7 +16,8 @@ const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
 state.value.data = null;
-const { data, pending } = await useLazyFetch(`/api/ens/equipistas/:${route.params.id}`);
+const { data, pending, refresh, error } = await useLazyFetch(`/api/ens/equipistas/:${route.params.id}`);
+watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 

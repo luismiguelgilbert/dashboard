@@ -17,7 +17,7 @@ export const useUserSession = () => {
       document.cookie = `sb-access-token=${data.session?.access_token}; path=/`;
       document.cookie = `sb-refresh-token=${data.session?.refresh_token}; path=/`;
       useToast().add({
-        title: 'Su sesión expiró y fue actualizada.',
+        title: 'Su sesión expiró y fue actualizada. Por favor, recargue la página.',
         color: 'amber',
         icon: 'i-heroicons-shield-exclamation',
       });
