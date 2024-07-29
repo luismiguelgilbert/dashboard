@@ -16,8 +16,8 @@ const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
 state.value.data = null;
-const { data, pending, refresh, error } = await useLazyFetch(`/api/ens/equipistas/:${route.params.id}`);
-watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
+const { data, pending, refresh, error: equipistaError } = await useLazyFetch(`/api/ens/equipistas/:${route.params.id}`);
+watch([equipistaError], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 if (data.value) { state.value.data = data.value[0]; }
 watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
 
