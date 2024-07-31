@@ -54,7 +54,7 @@ const setNewRoute = async (team: type_ens_teams) => {
           @refresh-clicked="refresh" />
       </UDashboardPanelContent>
     </UDashboardPanel>
-    <div class="overflow-scroll w-full">
+    <div class="overflow-y-auto w-full">
       <NuxtPage />
       <BFormNoSelection v-if="isRightPanelOpen" />
     </div>
