@@ -20,7 +20,7 @@ const routerParamId = computed(() => String(route.params.id));
 </script>
 
 <template>
-  <div class="overflow-scroll h-full">
+  <div class="overflow-y-auto h-full">
     <div
       v-for="(row, index) in rows"
       :key="index"
