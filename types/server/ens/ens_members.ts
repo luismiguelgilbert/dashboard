@@ -19,6 +19,12 @@ export const ens_members_mail = object({
 });
 export type type_ens_members_mail = InferType<typeof ens_members_mail>;
 
+export const ens_members_children = object({
+  child_name: string().required('Nombre es requerido.'),
+  child_sex: boolean().required('Sexo es requerido.'),
+});
+export type type_ens_members_children = InferType<typeof ens_members_children>;
+
 export const ens_members = object({
   id: string(),
   user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
@@ -37,6 +43,7 @@ export const ens_members = object({
   phones: array(ens_members_phone),
   emails: array(ens_members_mail),
   addresses: array(ens_members_address),
+  children: array(ens_members_children),
   created_at: date(),
   updated_at: date(),
   row_count: number().optional().nullable().default(0),

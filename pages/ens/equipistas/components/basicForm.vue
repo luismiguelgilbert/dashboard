@@ -6,6 +6,7 @@ import { ens_members } from '@/types/server/ens/ens_members';
 import BasicPhones from './basicPhones.vue';
 import BasicMails from './basicMails.vue';
 import BasicAddresses from './basicAddresses.vue';
+import basicChildren from './basicChildren.vue';
 
 const { state } = useEnsEquipistasForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
@@ -216,6 +217,7 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
       <BasicPhones />
       <BasicAddresses />
       <BasicMails />
+      <basicChildren />
 
       <br /><br />
     </div>

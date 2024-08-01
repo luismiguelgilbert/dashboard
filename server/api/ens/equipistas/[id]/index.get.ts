@@ -48,6 +48,16 @@ export default defineEventHandler( async (event) => {
             FROM ens_members_addresses int1
             WHERE int1.user_id = a.id
         ), '[]'::json) addresses
+
+      ,COALESCE((
+            SELECT json_agg(
+                json_build_object(
+                  'child_name', int1.child_name,
+                  'child_sex', int1.child_sex
+                ) ORDER BY int1.child_name desc)
+            FROM ens_members_children int1
+            WHERE int1.user_id = a.id
+        ), '[]'::json) children
       from ens_members a
       inner join sys_users b on a.id = b.id
       inner join auth.users c on b.id = c.id
