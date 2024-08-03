@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { ens_members } from '@/types/server/ens/ens_members';
 import BasicPhones from './basicPhones.vue';
@@ -130,7 +131,7 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
         name="nivel_0">
         <UPopover :popper="{ placement: 'bottom-start' }">
           <UInput
-            :value="format(state.data.fecha_matrimonio!, 'd MMM y')"
+            :value="state.data.fecha_matrimonio ? format(toZonedTime(state.data.fecha_matrimonio, 'UTC'), 'd MMM y') : ''"
             required
             placeholder="Fecha"
             icon="i-hugeicons-church"
@@ -143,6 +144,7 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
               v-if="state.data && state.data.fecha_matrimonio"
               v-model="state.data.fecha_matrimonio"
               is-required
+              :timezone="'UTC'"
               @close="close"
               @update:model-value="(value) => {
                 if (state.data?.fecha_matrimonio) {
@@ -168,10 +170,10 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
         name="nivel_0">
         <UPopover :popper="{ placement: 'bottom-start' }">
           <UInput
-            :value="format(state.data.fecha_nacimiento!, 'dd MMM y')"
+            :value="state.data.fecha_nacimiento ? format(toZonedTime(state.data.fecha_nacimiento, 'UTC'), 'd MMM y') : ''"
             required
-            placeholder="Fecha"
-            icon="i-hugeicons-church"
+            placeholder="Cumpleaños"
+            icon="i-hugeicons-birthday-cake"
             class="w-full"
             readonly
             :ui="inputUI"

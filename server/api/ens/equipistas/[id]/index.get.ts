@@ -16,8 +16,8 @@ export default defineEventHandler( async (event) => {
       ,b.website
       ,b.avatar_url
       ,INITCAP(d.user_name || ' ' || d.user_lastname) as partner_full_name
-      ,a.fecha_matrimonio
-      ,a.fecha_nacimiento
+      ,to_char (a.fecha_matrimonio::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as fecha_matrimonio
+      ,to_char (a.fecha_nacimiento::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as fecha_nacimiento
       ,a.is_active
       ,a.es_consiliario
       ,COALESCE((
@@ -54,7 +54,7 @@ export default defineEventHandler( async (event) => {
                 json_build_object(
                   'child_name', int1.child_name,
                   'child_sex', int1.child_sex,
-                  'birthday', int1.birthday
+                  'birthday', to_char (int1.birthday::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')
                 ) ORDER BY int1.child_name desc)
             FROM ens_members_children int1
             WHERE int1.user_id = a.id
@@ -65,8 +65,6 @@ export default defineEventHandler( async (event) => {
       inner join sys_users d on a.partner_id = d.id
       WHERE a.id = '${id}'
       `;
-    // ,to_char (a.created_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
-    // ,to_char (a.updated_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
     const data = await serverDB.query(text);
     return array(ens_members).cast(data.rows);
   }catch(err) {

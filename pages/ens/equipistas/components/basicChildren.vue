@@ -2,6 +2,7 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { type type_ens_members_children } from '@/types/server/ens/ens_members.js';
 import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 const { state } = useEnsEquipistasForm();
 const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm');
@@ -59,7 +60,7 @@ const removeChild = (childRow: type_ens_members_children) => {
           <div class="w-full space-y-2">
             <UInput
               v-model:model-value="row.child_name"
-              placeholder="Número de teléfono"
+              placeholder="Nombre"
               class="w-full"
               :size="inputSize"
               :loading="state.isLoading" />
@@ -72,27 +73,24 @@ const removeChild = (childRow: type_ens_members_children) => {
             <UFormGroup
               :size="inputSize"
               name="birthday">
-              <UPopover :popper="{ placement: 'top-end' }">
+              <UPopover :popper="{ placement: 'bottom-start' }">
                 <UInput
-                  :value="row.birthday ? format(row.birthday!, 'd MMM y') : ''"
+                  :value="row.birthday ? format(toZonedTime(row.birthday, 'UTC'), 'd MMM y') : ''"
                   required
-                  placeholder="Fecha de Nacimiento"
+                  placeholder="cumpleaños"
                   icon="i-hugeicons-birthday-cake"
                   class="w-full"
                   readonly
-                  :size="inputSize"
+                  :ui="inputSize"
                   :loading="state.isLoading" />
                 <template #panel="{ close }">
                   <DatePicker
+                    v-if="row.birthday"
                     v-model="row.birthday"
                     is-required
+                    :timezone="'UTC'"
                     @close="close"
-                    @update:model-value="(value) => {
-                      if (row.birthday) {
-                        console.log(value.toISOString())
-                        row.birthday = value.toISOString();
-                      }
-                    }" />
+                    @update:model-value="(value) => row.birthday = value.toISOString()" />
                 </template>
               </UPopover>
             </UFormGroup>
