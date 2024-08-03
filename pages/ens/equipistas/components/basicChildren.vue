@@ -73,11 +73,11 @@ const removeChild = (childRow: type_ens_members_children) => {
             <UFormGroup
               :size="inputSize"
               name="birthday">
-              <UPopover :popper="{ placement: 'bottom-start' }">
+              <UPopover :popper="{ placement: 'top-end' }">
                 <UInput
                   :value="row.birthday ? format(toZonedTime(row.birthday, 'UTC'), 'd MMM y') : ''"
                   required
-                  placeholder="cumpleaños"
+                  placeholder="Fecha de Nacimiento (Cumpleaños)"
                   icon="i-hugeicons-birthday-cake"
                   class="w-full"
                   readonly

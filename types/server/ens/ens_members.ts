@@ -22,9 +22,18 @@ export type type_ens_members_mail = InferType<typeof ens_members_mail>;
 export const ens_members_children = object({
   child_name: string().required('Nombre es requerido.'),
   child_sex: boolean().required('Sexo es requerido.'),
-  birthday: date().optional().nullable(),
+  birthday: string().optional().nullable(),//date
 });
 export type type_ens_members_children = InferType<typeof ens_members_children>;
+
+export const ens_members_teams = object({
+  team_id: string().required('Equipo es requerido.'),
+  fecha_pilotaje: string().optional().nullable(),//date
+  fecha_alianza: string().optional().nullable(),//date
+  fecha_salida: string().optional().nullable(),//date
+  is_active: boolean().required('Estado en el Equipo es requerido.'),
+});
+export type type_ens_members_teams = InferType<typeof ens_members_teams>;
 
 export const ens_members = object({
   id: string(),
@@ -37,16 +46,17 @@ export const ens_members = object({
   avatar_url: string().optional().nullable(),
   partner_id: string().optional(),
   partner_full_name: string(),
-  fecha_matrimonio: date().optional(),
-  fecha_nacimiento: date().optional(),
+  fecha_matrimonio: string().optional(),//date
+  fecha_nacimiento: string().optional(),//date
   is_active: boolean(),
   es_consiliario: boolean(),
   phones: array(ens_members_phone),
   emails: array(ens_members_mail),
   addresses: array(ens_members_address),
   children: array(ens_members_children),
-  created_at: date(),
-  updated_at: date(),
+  teams: array(ens_members_teams),
+  created_at: string(),//date
+  updated_at: string(),//date
   row_count: number().optional().nullable().default(0),
 });
 export type type_ens_members = InferType<typeof ens_members>;

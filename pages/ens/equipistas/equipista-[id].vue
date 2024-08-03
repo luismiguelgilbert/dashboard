@@ -3,6 +3,7 @@ import { ValidationError } from 'yup';
 import { ens_members } from '@/types/server/ens/ens_members';
 import { tabs } from './components/config';
 import Basic from './components/basicForm.vue';
+import TeamsAndServices from './components/teamsAndServices.vue';
 
 const route = useRoute();
 const { handleUnauthorized } = useUserSession();
@@ -116,6 +117,9 @@ const save = async () => {
         class="sticky top-0 z-10 bg-white dark:bg-gray-900">
         <template #basic>
           <Basic />
+        </template>
+        <template #teams>
+          <TeamsAndServices />
         </template>
       </BTabs>
     </UDashboardPanel>
