@@ -22,6 +22,7 @@ export type type_ens_members_mail = InferType<typeof ens_members_mail>;
 export const ens_members_children = object({
   child_name: string().required('Nombre es requerido.'),
   child_sex: boolean().required('Sexo es requerido.'),
+  birthday: date().optional().nullable(),
 });
 export type type_ens_members_children = InferType<typeof ens_members_children>;
 

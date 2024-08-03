@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
-// import { fromZonedTime } from 'date-fns-tz';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 import { ens_members } from '@/types/server/ens/ens_members';
 import BasicPhones from './basicPhones.vue';
@@ -144,7 +143,6 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
               v-if="state.data && state.data.fecha_matrimonio"
               v-model="state.data.fecha_matrimonio"
               is-required
-              :timezone="'UTC'"
               @close="close"
               @update:model-value="(value) => {
                 if (state.data?.fecha_matrimonio) {
@@ -205,6 +203,7 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
       </div>
       <UFormGroup
         :size="inputSize"
+        class="self-center"
         name="is_active">
         <UToggle
           v-model="state.data.is_active"

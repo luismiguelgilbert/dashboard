@@ -53,7 +53,8 @@ export default defineEventHandler( async (event) => {
             SELECT json_agg(
                 json_build_object(
                   'child_name', int1.child_name,
-                  'child_sex', int1.child_sex
+                  'child_sex', int1.child_sex,
+                  'birthday', int1.birthday
                 ) ORDER BY int1.child_name desc)
             FROM ens_members_children int1
             WHERE int1.user_id = a.id

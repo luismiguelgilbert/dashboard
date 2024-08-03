@@ -1,6 +1,4 @@
-export default defineNuxtRouteMiddleware(async (from, to) => {
-  console.log('from', from.fullPath);
-  console.log('to', to.fullPath);
+export default defineNuxtRouteMiddleware(async () => {
   const accessToken = useCookie('sb-access-token');
   const refreshToken = useCookie('sb-refresh-token');
   if (!accessToken.value || !refreshToken.value) {
