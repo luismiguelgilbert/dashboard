@@ -1,0 +1,1 @@
+export const unprotectedPaths = ['/login', '/confirm', '/api/login', '/api/system/login', '/api/refresh-session'];

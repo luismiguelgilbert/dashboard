@@ -111,7 +111,7 @@ watch(filteredMails, () => {
               orientation="vertical"
               class="mx-1.5" />
 
-            <UPopover :popper="{ placement: 'bottom-start' }">
+            <UPopover :popper="{ placement: 'top-end' }">
               <template #default="{ open }">
                 <UTooltip
                   text="Snooze"

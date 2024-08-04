@@ -141,13 +141,12 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
             :loading="state.isLoading" />
           <template #panel="{ close }">
             <DatePicker
-              v-if="state.data && state.data.fecha_matrimonio"
               v-model="state.data.fecha_matrimonio"
               is-required
               :timezone="'UTC'"
               @close="close"
               @update:model-value="(value) => {
-                if (state.data?.fecha_matrimonio) {
+                if (state.data) {
                   state.data.fecha_matrimonio = value.toISOString();
                 }
               }" />
@@ -180,13 +179,12 @@ const { data: members, pending: membersPending } = await useLazyFetch('/api/look
             :loading="state.isLoading" />
           <template #panel="{ close }">
             <DatePicker
-              v-if="state.data && state.data.fecha_nacimiento"
               v-model="state.data.fecha_nacimiento"
               is-required
               :timezone="'UTC'"
               @close="close"
               @update:model-value="(value) => {
-                if (state.data?.fecha_nacimiento) {
+                if (state.data) {
                   state.data.fecha_nacimiento = value.toISOString();
                 }
               }" />

@@ -35,6 +35,15 @@ export const ens_members_teams = object({
 });
 export type type_ens_members_teams = InferType<typeof ens_members_teams>;
 
+export const ens_members_services = object({
+  id: string(),
+  service_id: string().required('Servicio es requerido.'),
+  date_start: string().optional().nullable(),//date
+  date_stop: string().optional().nullable(),//date
+  is_active: boolean().required('Estado en el Equipo es requerido.'),
+});
+export type type_ens_members_services = InferType<typeof ens_members_services>;
+
 export const ens_members = object({
   id: string(),
   user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
@@ -46,8 +55,8 @@ export const ens_members = object({
   avatar_url: string().optional().nullable(),
   partner_id: string().optional(),
   partner_full_name: string(),
-  fecha_matrimonio: string().optional(),//date
-  fecha_nacimiento: string().optional(),//date
+  fecha_matrimonio: string().nullable().optional(),//date
+  fecha_nacimiento: string().nullable().optional(),//date
   is_active: boolean(),
   es_consiliario: boolean(),
   phones: array(ens_members_phone),
@@ -55,6 +64,7 @@ export const ens_members = object({
   addresses: array(ens_members_address),
   children: array(ens_members_children),
   teams: array(ens_members_teams),
+  services: array(ens_members_services),
   created_at: string(),//date
   updated_at: string(),//date
   row_count: number().optional().nullable().default(0),

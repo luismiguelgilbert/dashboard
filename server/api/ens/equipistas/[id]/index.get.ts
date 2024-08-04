@@ -60,7 +60,7 @@ export default defineEventHandler( async (event) => {
             WHERE int1.user_id = a.id
         ), '[]'::json) children
 
-    ,COALESCE((
+      ,COALESCE((
             SELECT json_agg(
                 json_build_object(
                   'team_id', int1.team_id,
@@ -72,6 +72,19 @@ export default defineEventHandler( async (event) => {
             FROM ens_members_teams int1
             WHERE int1.user_id = a.id
         ), '[]'::json) teams
+
+      ,COALESCE((
+            SELECT json_agg(
+                json_build_object(
+                  'id', int1.id,
+                  'service_id', int1.service_id,
+                  'date_start', to_char (int1.date_start::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
+                  'date_stop', to_char (int1.date_stop::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
+                  'is_active', int1.is_active
+                ) ORDER BY int1.is_active desc, int1.date_start desc)
+            FROM ens_members_services int1
+            WHERE int1.user_id = a.id
+        ), '[]'::json) services
       from ens_members a
       inner join sys_users b on a.id = b.id
       inner join auth.users c on b.id = c.id
