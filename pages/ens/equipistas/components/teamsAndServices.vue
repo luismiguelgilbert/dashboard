@@ -138,7 +138,7 @@ const addService = () => {
                     icon="i-hugeicons-customer-support"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker
@@ -163,7 +163,7 @@ const addService = () => {
                     icon="i-hugeicons-checkmark-circle-01"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker
@@ -192,7 +192,7 @@ const addService = () => {
                     icon="i-hugeicons-user-remove-02"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker
@@ -268,7 +268,7 @@ const addService = () => {
                     icon="i-hugeicons-workout-stretching"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker
@@ -293,7 +293,7 @@ const addService = () => {
                     icon="i-hugeicons-sleeping"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker

@@ -102,7 +102,7 @@ const removeChild = (childRow: type_ens_members_children) => {
                     icon="i-hugeicons-birthday-cake"
                     class="w-full"
                     readonly
-                    :ui="inputSize"
+                    :size="inputSize"
                     :loading="state.isLoading" />
                   <template #panel="{ close }">
                     <DatePicker
