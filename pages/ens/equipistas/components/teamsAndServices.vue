@@ -184,7 +184,7 @@ const addService = () => {
                 :size="inputSize"
                 label="Fecha de Salida:"
                 name="salida">
-                <UPopover :popper="{ placement: 'top-end' }">
+                <UPopover :popper="{ placement: 'top-start' }">
                   <UInput
                     :value="row.fecha_salida ? format(toZonedTime(row.fecha_salida, 'UTC'), 'd MMM y') : ''"
                     required
@@ -260,7 +260,7 @@ const addService = () => {
                 :size="inputSize"
                 label="Inicio de Servicio:"
                 name="birthday">
-                <UPopover :popper="{ placement: 'top-end' }">
+                <UPopover :popper="{ placement: 'top-start' }">
                   <UInput
                     :value="row.date_start ? format(toZonedTime(row.date_start, 'UTC'), 'd MMM y') : ''"
                     required
@@ -285,7 +285,7 @@ const addService = () => {
                 :size="inputSize"
                 label="Fin de Servicio:"
                 name="birthday">
-                <UPopover :popper="{ placement: 'top-end' }">
+                <UPopover :popper="{ placement: 'top-start' }">
                   <UInput
                     :value="row.date_stop ? format(toZonedTime(row.date_stop, 'UTC'), 'd MMM y') : ''"
                     required

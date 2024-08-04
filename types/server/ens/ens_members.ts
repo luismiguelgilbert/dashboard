@@ -44,6 +44,17 @@ export const ens_members_services = object({
 });
 export type type_ens_members_services = InferType<typeof ens_members_services>;
 
+export const ens_members_jobs = object({
+  id: string(),
+  company_name: string().required('Nombre de Compañía es requerido.'),
+  position_name: string().required('Nombre de Posición es requerido.'),
+  date_start: string().optional().nullable(),//date
+  date_stop: string().optional().nullable(),//date
+  skills: string(),
+  places: string(),
+});
+export type type_ens_members_jobs = InferType<typeof ens_members_jobs>;
+
 export const ens_members = object({
   id: string(),
   user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
@@ -65,6 +76,7 @@ export const ens_members = object({
   children: array(ens_members_children),
   teams: array(ens_members_teams),
   services: array(ens_members_services),
+  jobs: array(ens_members_jobs),
   created_at: string(),//date
   updated_at: string(),//date
   row_count: number().optional().nullable().default(0),

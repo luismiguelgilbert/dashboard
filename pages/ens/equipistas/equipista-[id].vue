@@ -4,6 +4,7 @@ import { ens_members } from '@/types/server/ens/ens_members';
 import { tabs } from './components/config';
 import Basic from './components/basicForm.vue';
 import TeamsAndServices from './components/teamsAndServices.vue';
+import JobSkills from './components/jobSkills.vue';
 
 const route = useRoute();
 const { handleUnauthorized } = useUserSession();
@@ -120,6 +121,9 @@ const save = async () => {
         </template>
         <template #teams>
           <TeamsAndServices />
+        </template>
+        <template #jobs>
+          <JobSkills />
         </template>
       </BTabs>
     </UDashboardPanel>

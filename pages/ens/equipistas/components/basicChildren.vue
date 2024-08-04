@@ -94,7 +94,7 @@ const removeChild = (childRow: type_ens_members_children) => {
               <UFormGroup
                 :size="inputSize"
                 name="birthday">
-                <UPopover :popper="{ placement: 'top-end' }">
+                <UPopover :popper="{ placement: 'top-start' }">
                   <UInput
                     :value="row.birthday ? format(toZonedTime(row.birthday, 'UTC'), 'd MMM y') : ''"
                     required

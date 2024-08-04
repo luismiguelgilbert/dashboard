@@ -85,6 +85,21 @@ export default defineEventHandler( async (event) => {
             FROM ens_members_services int1
             WHERE int1.user_id = a.id
         ), '[]'::json) services
+
+      ,COALESCE((
+            SELECT json_agg(
+                json_build_object(
+                  'id', int1.id,
+                  'company_name', int1.company_name,
+                  'position_name', int1.position_name,
+                  'date_start', to_char (int1.date_start::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
+                  'date_stop', to_char (int1.date_stop::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
+                  'skills', int1.skills,
+                  'places', int1.places
+                ) ORDER BY int1.date_start desc)
+            FROM ens_members_jobs int1
+            WHERE int1.user_id = a.id
+        ), '[]'::json) jobs
       from ens_members a
       inner join sys_users b on a.id = b.id
       inner join auth.users c on b.id = c.id
