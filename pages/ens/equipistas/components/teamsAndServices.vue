@@ -252,6 +252,7 @@ const addService = () => {
                 v-model="row.service_id"
                 value-attribute="id"
                 option-attribute="name_es"
+                placeholder="Seleccione el Servicio"
                 searchable
                 :loading="pendingServices"
                 :size="inputSize"

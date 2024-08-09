@@ -3,6 +3,9 @@ import fs from 'fs';
 import { useNuxt } from 'nuxt/kit';
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4
+  },
   experimental: {
     componentIslands: true,
   },
