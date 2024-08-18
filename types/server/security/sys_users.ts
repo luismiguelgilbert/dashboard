@@ -4,7 +4,7 @@ import { type type_filter_option, type type_sort_option } from '@/types/server/f
 
 export const sys_users = object({
   id: string(),
-  user_name: string().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
+  user_name: string().trim().required('Nombre es requerido.').min(3, 'Nombre debe incluir 3 o más caracteres.'),
   user_lastname: string().required('Apellido es requerido.').min(3, 'Apellido debe incluir 3 o más caracteres.'),
   email: string().email('Debe ser un email válido.').required('Email es requerido.'),
   user_sex: boolean(),

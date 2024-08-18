@@ -94,7 +94,7 @@ onMounted(async() => {
     <UDashboardPanel
       class="bg-gray-50 dark:bg-gray-800"
       :width="300"
-      :resizable="{ min: 200, max: 300 }"
+      resizable
       collapsible>
       <UDashboardNavbar
         class="!border-transparent"
@@ -103,7 +103,7 @@ onMounted(async() => {
           <CompaniesDropdown />
         </template>
         <template #right>
-          <UColorModeToggle />
+          <UColorModeButton color="primary" />
         </template>
       </UDashboardNavbar>
 
