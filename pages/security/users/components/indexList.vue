@@ -56,6 +56,15 @@ const routerParamId = computed(() => route.params.id);
               <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
                 {{ row.email }}
               </p>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+                <UBadge
+                  color="primary"
+                  variant="subtle"
+                  class="gap-1">
+                  <UIcon name="i-hugeicons-account-setting-01" />
+                  {{ row.sys_profile_name }}
+                </UBadge>
+              </p>
             </div>
           </div>
         </div>

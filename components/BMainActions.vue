@@ -49,10 +49,10 @@ const extendedDropdownActions = computed(() => [...props.dropdownActions, [{
 }]]);
 
 //ACTIONS
-const updatePropSearchString = useDebounceFn((inputEvent: InputEvent) => {
+const updatePropSearchString = (inputEvent: InputEvent) => {
   page.value = 1;
   searchString.value = (inputEvent.target as HTMLInputElement).value ?? '';
-}, 1000);
+};
 </script>
 
 <template>

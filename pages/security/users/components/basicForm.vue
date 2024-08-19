@@ -23,6 +23,14 @@ const onFileChange = (e: FileList) => {
 
 const onFileClick = () => { fileRef.value?.input.click(); };
 
+//Required to update Algolia indice
+const updateSysProfileName = () => {
+  if (state.value.data) {
+    const sysProfileName = profileOptions.value?.find(x => x.id === state.value.data?.sys_profile_id)?.name_es;
+    state.value.data.sys_profile_name = sysProfileName;
+  }
+};
+
 watch([state.value], ([newState]) => newState.isSaving && form.value?.validate());
 </script>
 
@@ -140,7 +148,8 @@ watch([state.value], ([newState]) => newState.isSaving && form.value?.validate()
           icon="i-heroicons-user-circle"
           value-attribute="id"
           option-attribute="name_es"
-          :options="profileOptions ?? []" />
+          :options="profileOptions ?? []"
+          @update:model-value="updateSysProfileName" />
       </UFormGroup>
 
       <UDivider class="col-span-1 sm:col-span-2 my-5 sm:my-0" />

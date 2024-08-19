@@ -19,7 +19,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     // 'nuxt-clarity-analytics',
     '@nuxt/image',
-    // "@nuxt/icon"
+    '@nuxtjs/algolia',
   ],
 
   // css: ['@fortawesome/fontawesome-svg-core/styles.css'],
@@ -36,6 +36,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private keys are only available on the server
     supabaseServiceKey: process.env.SUPABASE_SERVICE_KEY,
+    algoliaAppId: process.env.ALGOLIA_APPLICATION_ID,
+    algoliaAdminApiKey: process.env.ALGOLIA_ADMIN_API_KEY,
 
     // Public keys that are exposed to the client
     public: {

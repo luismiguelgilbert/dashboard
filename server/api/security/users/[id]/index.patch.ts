@@ -1,4 +1,5 @@
 import serverDB from '@/server/utils/db';
+import { updateAlgolia } from '@/lib/helpers';
 import { hasUserPermission } from '~/server/utils/hasUserPermission';
 import { PermissionsList } from '@/types/client/permissionsEnum';
 import { sys_users } from '@/types/server/security/sys_users';
@@ -29,7 +30,6 @@ export default defineEventHandler( async (event) => {
       ,updated_at = now()
       ,updated_by = '${userSessionId}'
       WHERE id = '${id}'`;
-      console.log(sqlUpdateUserData);
     await serverDB.query(sqlUpdateUserData);
 
     //Update Companies
@@ -44,6 +44,10 @@ export default defineEventHandler( async (event) => {
     await serverDB.query(sqlCompaniesInsert);
     
     await serverDB.query('COMMIT');
+
+    // Update Algolia Index
+    updateAlgolia('sys_users', { ...payload, objectID: payload.id });
+
     return { id: id };
   } catch(err) {
     console.error(`Error at ${event.path}. ${err}`);

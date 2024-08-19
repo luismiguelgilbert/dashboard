@@ -4,15 +4,38 @@ import { type type_sys_users } from '@/types/server/security/sys_users';
 import indexList from './users/components/indexList.vue';
 
 useHead({ title });
-const { sessionData, handleUnauthorized } = useUserSession();
+// const { sessionData, handleUnauthorized } = useUserSession();
+const { sessionData } = useUserSession();
 const { state, hasFilter } = useSecurityUsers();
 const router = useRouter();
-const totalRows = computed<number>(() => data.value?.[0]?.row_count ?? 0 );
+const totalRows = ref<number>(0);
+const data = ref<type_sys_users[]>([]);
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'security-users');
-const { data, pending, refresh, error } = await useLazyFetch('/api/security/users', { method: 'post', body: state.value.filterPayload });
-const { start, finish } = useLoadingIndicator();
-watch( () => pending.value, () => { pending.value ? start() : finish(); });
-watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
+// watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
+
+
+const refresh = async() => {
+  try {
+    state.value.isLoading = true;
+    const { data: algoliaData } = await useAsyncAlgoliaSearch({ 
+      indexName: 'sys_users',
+      query: state.value.filterPayload.searchString,
+      requestOptions: {
+        page: (state.value.filterPayload.page - 1),
+        cacheable: false,
+      }
+    });
+    state.value.filterPayload.pageSize = algoliaData.value.hitsPerPage;
+    totalRows.value = algoliaData.value.nbHits;
+    data.value = algoliaData.value.hits;
+  } catch(error) {
+    console.error(error);
+  } finally {
+    state.value.isLoading = false;
+  }
+};
+watch(() => state.value.filterPayload, () => refresh(), { deep: true });
+onMounted(() => refresh());
 
 const setNewRoute = async (record: type_sys_users) => {
   state.value.selectedId = record.id!;
@@ -49,7 +72,7 @@ const setNewRoute = async (record: type_sys_users) => {
           v-model:page="state.filterPayload.page"
           v-model:showFilterPanel="state.showFilterPanel"
           :has-filter="hasFilter"
-          :pending="pending"
+          :pending="state.isLoading"
           :total-rows="totalRows"
           @refresh-clicked="refresh" />
       </UDashboardPanelContent>

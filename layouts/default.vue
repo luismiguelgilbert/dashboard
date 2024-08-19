@@ -107,33 +107,35 @@ onMounted(async() => {
         </template>
       </UDashboardNavbar>
 
-      <UDashboardSidebar>
-        <UProgress
-          v-if="isLoadingMenu"
-          animation="carousel" />
-        <UDashboardSidebarLinks
-          v-if="!isLoadingMenu"
-          :links="userMenu"
-          :ui="{ 
-            label: 'text-lg lg:text-sm truncate relative',
-            active: 'text-primary-500 dark:text-primary-400 before:bg-gray-100 dark:before:bg-gray-800',
-            dot: {
-              wrapper: 'w-px h-full mx-[9.5px] bg-gray-200 dark:bg-gray-700 relative',
-              after: 'after:absolute after:z-[1] after:w-px after:h-full after:bg-gray-200 after:dark:bg-gray-700 after:transform after:translate-y-full',
-              base: 'w-1 h-1 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-              active: 'bg-primary-400 dark:bg-primary',
-              inactive: 'bg-gray-400 dark:bg-gray-500 group-hover:bg-gray-700 dark:group-hover:bg-gray-200'
-            },
-          }" />
-        <UDivider
-          class="sticky bottom-0"
-          :ui="{ border: { base: 'flex border-gray-200 dark:border-gray-700' } }" />
-        <template #footer>
-          <div class="flex flex-col w-full">
-            <UserDropdown />
-          </div>
-        </template>
-      </UDashboardSidebar>
+      <UDashboardPanelContent>
+        <UDashboardSidebar>
+          <UProgress
+            v-if="isLoadingMenu"
+            animation="carousel" />
+          <UDashboardSidebarLinks
+            v-if="!isLoadingMenu"
+            :links="userMenu"
+            :ui="{ 
+              label: 'text-lg lg:text-sm truncate relative',
+              active: 'text-primary-500 dark:text-primary-400 before:bg-gray-100 dark:before:bg-gray-800',
+              dot: {
+                wrapper: 'w-px h-full mx-[9.5px] bg-gray-200 dark:bg-gray-700 relative',
+                after: 'after:absolute after:z-[1] after:w-px after:h-full after:bg-gray-200 after:dark:bg-gray-700 after:transform after:translate-y-full',
+                base: 'w-1 h-1 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+                active: 'bg-primary-400 dark:bg-primary',
+                inactive: 'bg-gray-400 dark:bg-gray-500 group-hover:bg-gray-700 dark:group-hover:bg-gray-200'
+              },
+            }" />
+          <UDivider
+            class="sticky bottom-0"
+            :ui="{ border: { base: 'flex border-gray-200 dark:border-gray-700' } }" />
+          <template #footer>
+            <div class="flex flex-col w-full">
+              <UserDropdown />
+            </div>
+          </template>
+        </UDashboardSidebar>
+      </UDashboardPanelContent> 
     </UDashboardPanel>
 
     <suspense>
