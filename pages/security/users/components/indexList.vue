@@ -39,19 +39,15 @@ const routerParamId = computed(() => route.params.id);
               size="lg"
               alt="Avatar" />
             <UAvatar
-              v-else-if="row.user_lastname"
+              v-else
               size="lg">
               <UIcon
-                v-if="row.user_sex"
-                name="i-hugeicons-manager" />
-              <UIcon
-                v-if="!row.user_sex"
-                name="i-hugeicons-dress-02"
-                class="dark:bg-rose-300 bg-rose-400" />
+                :name="row.user_sex ? 'i-hugeicons-manager' : 'i-hugeicons-dress-02'"
+                :class="row.user_sex ? '' : 'dark:bg-rose-300 bg-rose-400'"/>
             </UAvatar>
             <div class="min-w-0 flex-auto text-base font-semibold">
               <p class="dark:text-white text-black truncate text-ellipsis">
-                {{ row.user_name }} {{ row.user_lastname }}
+                {{ row.user_name }} {{ row.user_lastname }} {{ row.user_sex }}
               </p>
               <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
                 {{ row.email }}
@@ -60,8 +56,7 @@ const routerParamId = computed(() => route.params.id);
                 <UBadge
                   color="primary"
                   variant="subtle"
-                  class="gap-1">
-                  <UIcon name="i-hugeicons-account-setting-01" />
+                  class="gap-1 mt-1">
                   {{ row.sys_profile_name }}
                 </UBadge>
               </p>

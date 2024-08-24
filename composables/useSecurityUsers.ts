@@ -1,6 +1,6 @@
 import { FilterQueriesKeys } from '@/types/server/filter_keys';
 import { type type_filter_selection, type type_filter_payload } from '@/types/client/filter_payload';
-import { type type_sys_users } from '@/types/server/security/sys_users';
+import { type type_sys_users, filter_options } from '@/types/server/security/sys_users';
 
 export const useSecurityUsers = () => {
   const state = useState('useSecurityUsers', () => { return {
@@ -19,8 +19,21 @@ export const useSecurityUsers = () => {
   };});
   const hasFilter = computed(() => {
     const keys = Object.keys(state.value.filterPayload.filterSelection);
-    return keys.some(x => state.value.filterPayload.filterSelection[x].length > 0);
+    return keys.some(x => state.value.filterPayload.filterSelection[x] && state.value.filterPayload.filterSelection[x].length > 0);
   });
 
-  return { state, hasFilter };
+  const selectedFiltersFacet = computed(() => {
+    const result: any[][] = [];
+    Object.keys(state.value.filterPayload.filterSelection).forEach((key) => {
+      if (filter_options.find(x => x.key === key)?.algoliaField) {
+        const algoliaFieldName = filter_options.find(x => x.key === key)?.algoliaField;
+        const filter: any[] = [];
+        state.value.filterPayload.filterSelection[key]?.forEach((value) => filter.push(`${algoliaFieldName}:${value}`));
+        result.push(filter);
+      }
+    });
+    return result;
+  });
+
+  return { state, hasFilter, selectedFiltersFacet };
 };

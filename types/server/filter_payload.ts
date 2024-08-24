@@ -18,6 +18,7 @@ export const filter_option = object({
   valueType: string().required(),
   requiresOrganization: boolean().required(),
   query: string().required(),
+  algoliaField: string().optional(),
 });
 export type type_filter_option = InferType<typeof filter_option>;
 

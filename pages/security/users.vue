@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { useActions, title, sort_options, filter_options } from './users/components/config';
-import { type type_sys_users } from '@/types/server/security/sys_users';
+import { type type_sys_users, sys_users } from '@/types/server/security/sys_users';
 import indexList from './users/components/indexList.vue';
+import { array } from 'yup';
 
 useHead({ title });
 // const { sessionData, handleUnauthorized } = useUserSession();
 const { sessionData } = useUserSession();
-const { state, hasFilter } = useSecurityUsers();
+const { state, hasFilter, selectedFiltersFacet } = useSecurityUsers();
 const router = useRouter();
 const totalRows = ref<number>(0);
 const data = ref<type_sys_users[]>([]);
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'security-users');
 // watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
-
 
 const refresh = async() => {
   try {
@@ -23,11 +23,12 @@ const refresh = async() => {
       requestOptions: {
         page: (state.value.filterPayload.page - 1),
         cacheable: false,
+        facetFilters: selectedFiltersFacet.value ? selectedFiltersFacet.value : undefined,
       }
     });
     state.value.filterPayload.pageSize = algoliaData.value.hitsPerPage;
     totalRows.value = algoliaData.value.nbHits;
-    data.value = algoliaData.value.hits;
+    data.value =  array(sys_users).cast(algoliaData.value.hits) ?? [];
   } catch(error) {
     console.error(error);
   } finally {
