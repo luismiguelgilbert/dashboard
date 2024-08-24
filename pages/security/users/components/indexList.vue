@@ -47,7 +47,7 @@ const routerParamId = computed(() => route.params.id);
             </UAvatar>
             <div class="min-w-0 flex-auto text-base font-semibold">
               <p class="dark:text-white text-black truncate text-ellipsis">
-                {{ row.user_name }} {{ row.user_lastname }} {{ row.user_sex }}
+                {{ row.user_name }} {{ row.user_lastname }}
               </p>
               <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
                 {{ row.email }}
