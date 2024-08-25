@@ -10,11 +10,12 @@ const { state: dataList } = useSecurityUsers();
 const { state } = useSecurityUsersForm();
 const { handleUnauthorized } = useUserSession();
 
+state.value.isLoading = true;
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
 const validationErrors = ref<ValidationError>();
 const saved = ref(false);
-dataList.value.selectedId = String(route.params.id);
+dataList.value.selectedId = String(route.params?.id);
 
 const cancel = async () => {
   state.value.data = null;
@@ -60,7 +61,10 @@ const save = async () => {
 };
 
 await $fetch(`/api/security/users/:${route.params.id}`)
-  .then((res) => { if (res && res[0]) { state.value.data = res[0]; }})
+  .then((res) => { if (res && res[0]) {
+      state.value.data = res[0];
+      state.value.isLoading = false;
+    }})
   .catch((err) => { err.statusCode === 401 && handleUnauthorized(null); });
 
 </script>
@@ -84,12 +88,12 @@ await $fetch(`/api/security/users/:${route.params.id}`)
             label="Cancelar"
             icon="i-heroicons-arrow-left-circle"
             color="gray"
-            :disabled="state.isSaving"
+            :disabled="state.isLoading || state.isSaving"
             @click="cancel" />
           <UButton
             label="Guardar"
             icon="i-heroicons-check-circle"
-            :disabled="state.isSaving"
+            :disabled="state.isLoading || state.isSaving"
             @click="save" />
         </template>
       </UDashboardNavbar>
@@ -117,17 +121,19 @@ await $fetch(`/api/security/users/:${route.params.id}`)
           variant="soft"
           title="Datos guardados" />
       </div>
-      <!-- <UProgress animation="carousel" /> -->
-      <BTabs
-        v-model="tab"
-        :items="tabs">
-        <template #basic>
-          <Basic />
-        </template>
-        <template #companies>
-          <Companies />
-        </template>
-      </BTabs>
+      <div v-if="!state.isLoading">
+        <BTabs
+          v-model="tab"
+          :items="tabs">
+          <template #basic>
+            <Basic v-if="state.data" />
+          </template>
+          <template #companies>
+            <Companies v-if="state.data" />
+          </template>
+        </BTabs>
+      </div>
+      <SkeletonHeader v-if="state.isLoading" />
     </UDashboardPanel>
   </div>
 </template>
