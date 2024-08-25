@@ -11,7 +11,6 @@ const router = useRouter();
 const totalRows = ref<number>(0);
 const data = ref<type_sys_users[]>([]);
 const isRightPanelOpen = computed<boolean>(() => router.currentRoute.value.name === 'security-users');
-// watch([error], ([errorData]) => { errorData?.statusCode === 401 && handleUnauthorized(refresh); });
 
 const refresh = async() => {
   try {

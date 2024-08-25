@@ -8,6 +8,7 @@ import Companies from './components/companiesList.vue';
 const route = useRoute();
 const { state: dataList } = useSecurityUsers();
 const { state } = useSecurityUsersForm();
+const { handleUnauthorized } = useUserSession();
 
 const tab = ref('basic');
 const isRightPanelOpen = ref(true);
@@ -15,13 +16,10 @@ const validationErrors = ref<ValidationError>();
 const saved = ref(false);
 dataList.value.selectedId = String(route.params.id);
 
-state.value.data = null;
-const { data, pending } = await useLazyFetch(`/api/security/users/:${route.params.id}`);
-if (data.value) { state.value.data = data.value[0]; }
-watch(data, (newData) => { if (newData?.length) { state.value.data = newData[0]; } });
-
 const cancel = async () => {
+  state.value.data = null;
   dataList.value.selectedId = null;
+  isRightPanelOpen.value = false;
   await navigateTo('/security/users');
 };
 
@@ -60,6 +58,11 @@ const save = async () => {
     finish();
   }
 };
+
+await $fetch(`/api/security/users/:${route.params.id}`)
+  .then((res) => { if (res && res[0]) { state.value.data = res[0]; }})
+  .catch((err) => { err.statusCode === 401 && handleUnauthorized(null); });
+
 </script>
 
 <template>
@@ -81,12 +84,12 @@ const save = async () => {
             label="Cancelar"
             icon="i-heroicons-arrow-left-circle"
             color="gray"
-            :disabled="pending || state.isSaving"
+            :disabled="state.isSaving"
             @click="cancel" />
           <UButton
             label="Guardar"
             icon="i-heroicons-check-circle"
-            :disabled="pending || state.isSaving"
+            :disabled="state.isSaving"
             @click="save" />
         </template>
       </UDashboardNavbar>
@@ -114,11 +117,8 @@ const save = async () => {
           variant="soft"
           title="Datos guardados" />
       </div>
-      <UProgress
-        v-if="pending"
-        animation="carousel" />
+      <!-- <UProgress animation="carousel" /> -->
       <BTabs
-        v-if="!pending"
         v-model="tab"
         :items="tabs">
         <template #basic>

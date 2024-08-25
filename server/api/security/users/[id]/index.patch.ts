@@ -46,7 +46,7 @@ export default defineEventHandler( async (event) => {
     await serverDB.query('COMMIT');
 
     // Update Algolia Index
-    updateAlgolia('sys_users', { ...payload, objectID: payload.id });
+    await updateAlgolia('sys_users', { ...payload, objectID: payload.id });
 
     return { id: id };
   } catch(err) {
