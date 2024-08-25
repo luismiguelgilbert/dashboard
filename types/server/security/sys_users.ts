@@ -36,7 +36,7 @@ export type type_sys_users_created = InferType<typeof sys_users_created>;
 
 export const filter_options: Array<type_filter_option> = [
   { key: FilterQueriesKeys.SECURITY_USERS_SEX, label: 'Sexo', valueType: 'boolean', requiresOrganization: false, query: 'b.user_sex', algoliaField: 'user_sex' },
-  { key: FilterQueriesKeys.SECURITY_USERS_PROFILE, label: 'Perfil', valueType: 'string', requiresOrganization: false, query: 'c.sys_profile_id', algoliaField: 'sys_profile_id' },
+  { key: FilterQueriesKeys.SECURITY_USERS_PROFILE, label: 'Perfil', valueType: 'string', requiresOrganization: false, query: 'b.sys_profile_id', algoliaField: 'sys_profile_id' },
 ];
 
 export const sort_options: Array<type_sort_option> = [

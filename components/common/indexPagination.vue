@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { pageSizeOptions } from './config';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
 defineProps({
@@ -30,13 +29,6 @@ const showFilterPanel = defineModel<boolean>('showFilterPanel', { default: false
 <template>
   <div class="flex justify-between w-full sm:justify-between px-3 py-1 sm:py-3.5 sm:border-t border-gray-200 dark:border-gray-700">
     <div class="flex flex-row">
-      <USelectMenu
-        v-model="pageSize"
-        class="hidden xl:block"
-        icon="i-heroicons-circle-stack"
-        value-attribute="value"
-        :options="pageSizeOptions"
-        @change="() => { page = 1 }" />
       <UButton
         size="sm"
         variant="link"

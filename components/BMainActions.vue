@@ -42,7 +42,7 @@ const cardUI = {
 };
 const inputUI = { icon: { leading: { wrapper: 'content-start items-start pt-2.5' }, base: 'text-gray-400' } };
 const extendedDropdownActions = computed(() => [...props.dropdownActions, [{
-  label: 'Filtros y Orden',
+  label: props.sortOptions.length > 0 ? 'Filtros y Orden' : 'Filtros',
   icon: 'i-heroicons-funnel',
   isMainAction: false,
   click: () => { showFilterPanel.value = true; }
@@ -85,7 +85,7 @@ const updatePropSearchString = (inputEvent: InputEvent) => {
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
-              Filtros y Orden
+              {{ props.sortOptions.length > 0 ? 'Filtros y Orden' : 'Filtros' }}
             </h3>
             <UButton
               color="gray"

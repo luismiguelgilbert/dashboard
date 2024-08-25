@@ -39,31 +39,26 @@ const routerParamId = computed(() => route.params.id);
               size="lg"
               alt="Avatar" />
             <UAvatar
-              v-else
-              size="lg">
-              <UIcon
-                :name="row.user_sex ? 'i-hugeicons-manager' : 'i-hugeicons-dress-02'"
-                :class="row.user_sex ? '' : 'dark:bg-rose-300 bg-rose-400'"/>
-            </UAvatar>
+              v-else-if="row.user_lastname"
+              :alt="row.user_lastname[0]"
+              size="lg" />
             <div class="min-w-0 flex-auto text-base font-semibold">
               <p class="dark:text-white text-black truncate text-ellipsis">
                 {{ row.user_name }} {{ row.user_lastname }}
               </p>
-              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
                 {{ row.email }}
               </p>
-              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis">
-                <UBadge
-                  color="primary"
-                  variant="subtle"
-                  class="gap-1 mt-1">
-                  {{ row.sys_profile_name }}
-                </UBadge>
+              <p class="text-gray-500 dark:text-gray-400 truncate text-ellipsis text-xs">
+                {{ row.sys_profile_name }}
               </p>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="!rows.length">
+      No se encontraron datos
     </div>
   </div>
 </template>

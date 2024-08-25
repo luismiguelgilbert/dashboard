@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useActions, title, sort_options, filter_options } from './users/components/config';
+import { useActions, title, filter_options } from './users/components/config';
 import { type type_sys_users, sys_users } from '@/types/server/security/sys_users';
 import indexList from './users/components/indexList.vue';
 import { array } from 'yup';
 
 useHead({ title });
-// const { sessionData, handleUnauthorized } = useUserSession();
 const { sessionData } = useUserSession();
 const { state, hasFilter, selectedFiltersFacet } = useSecurityUsers();
 const router = useRouter();
@@ -36,7 +35,7 @@ const refresh = async() => {
   }
 };
 watch(() => state.value.filterPayload, () => refresh(), { deep: true });
-onMounted(() => refresh());
+refresh();
 
 const setNewRoute = async (record: type_sys_users) => {
   state.value.selectedId = record.id!;
@@ -59,7 +58,7 @@ const setNewRoute = async (record: type_sys_users) => {
             v-model:sortDirection="state.filterPayload.sortByOrder"
             v-model:filterSelection="state.filterPayload.filterSelection"
             :dropdown-actions="useActions(state.filterPayload, sessionData.userMenuData!)"
-            :sort-options="sort_options"
+            :sort-options="[]"
             :filter-options="filter_options" />
         </template>
       </UDashboardNavbar>
