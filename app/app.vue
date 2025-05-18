@@ -6,7 +6,10 @@ const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
 useHead({
   meta: [
     { charset: 'utf-8' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+    { name: 'mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
   link: [
