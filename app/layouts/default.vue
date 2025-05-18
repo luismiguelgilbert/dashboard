@@ -18,27 +18,24 @@ const links = [
       label: 'Inbox',
       icon: 'i-lucide-inbox',
       to: '/inbox',
-      badge: '4',
+      // badge: '4',
       onSelect: () => {
         open.value = false
       }
     },
     {
-      label: 'Usuarios',
-      icon: 'i-lucide-users',
-      to: '/security/users',
-      badge: '4',
-      onSelect: () => {
-        open.value = false
-      }
-    },
-    {
-      label: 'Customers',
-      icon: 'i-lucide-users',
-      to: '/customers',
-      onSelect: () => {
-        open.value = false
-      }
+      label: 'Sistema',
+      icon: 'i-lucide-cog',
+      children: [
+        {
+          label: 'Usuarios',
+          icon: 'i-lucide-users',
+          to: '/security/users',
+          onSelect: () => {
+            open.value = false
+          }
+        }
+      ]
     },
     {
       label: 'Settings',
