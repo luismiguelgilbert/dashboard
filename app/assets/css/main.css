@@ -1,7 +1,7 @@
 @import "tailwindcss" theme(static);
 @import "@nuxt/ui-pro";
 
-@theme static {
+/* @theme static {
   --font-sans: 'Public Sans', sans-serif;
 
   --color-green-50: #EFFDF5;
@@ -15,4 +15,12 @@
   --color-green-800: #016538;
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
+} */
+
+/* :root {
+  --ui-primary: black;
 }
+
+.dark {
+  --ui-primary: white;
+} */

@@ -26,7 +26,7 @@ const period = ref<Period>('daily')
     <template #header>
       <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
         <template #leading>
-          <UDashboardSidebarCollapse />
+          <UDashboardSidebarCollapse class="cursor-pointer" />
         </template>
 
         <template #right>
@@ -35,8 +35,7 @@ const period = ref<Period>('daily')
               color="neutral"
               variant="ghost"
               square
-              @click="isNotificationsSlideoverOpen = true"
-            >
+              @click="isNotificationsSlideoverOpen = true">
               <UChip color="error" inset>
                 <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
               </UChip>
@@ -65,4 +64,7 @@ const period = ref<Period>('daily')
       <HomeSales :period="period" :range="range" />
     </template>
   </UDashboardPanel>
+  <!-- <HomeStats :period="period" :range="range" />
+  <HomeChart :period="period" :range="range" />
+  <HomeSales :period="period" :range="range" /> -->
 </template>

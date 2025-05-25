@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+
 const colorMode = useColorMode()
 
 const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
@@ -37,9 +39,18 @@ useSeoMeta({
 <template>
   <UApp>
     <NuxtLoadingIndicator />
-
     <NuxtLayout>
       <NuxtPage />
+      <VueQueryDevtools :initial-is-open="true" />
     </NuxtLayout>
   </UApp>
 </template>
+
+<style>
+/* @import 'tailwindcss'; */
+/* @import '@nuxt/ui'; */
+
+html {
+  font-family: Inter, sans-serif;
+}
+</style>

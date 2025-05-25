@@ -1,12 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    '@hebilicious/vue-query-nuxt',
     '@nuxt/eslint',
     '@nuxt/ui-pro',
     '@pinia/nuxt',
-    '@pinia/colada-nuxt',
     '@vueuse/nuxt',
-    'nuxt-auth-utils'
+    'nuxt-auth-utils',
   ],
   pages: {
     pattern: [
@@ -22,8 +22,11 @@ export default defineNuxtConfig({
       pathPrefix: false
     }
   ],
+  imports: {
+    dirs: ['../shared/types']
+  },
   devtools: {
-    enabled: true
+    enabled: false
   },
   css: ['~/assets/css/main.css'],
   routeRules: {
@@ -34,6 +37,26 @@ export default defineNuxtConfig({
   future: { compatibilityVersion: 4 },
   experimental: { componentIslands: true },
   compatibilityDate: '2025-04-01',
+  nitro: {
+    experimental: { database: true },
+    database: {
+      default: {
+        connector: 'postgresql',
+        options: {
+          // url: process.env.DATABASE_URL,
+          host: process.env.DATABASE_HOST,
+          port: Number(process.env.DATABASE_PORT),
+          database: process.env.DATABASE_NAME,
+          user: process.env.DATABASE_USER,
+          password: process.env.DATABASE_PWD,
+          min: 10
+        }
+      }
+    },
+    imports: {
+      dirs: ['shared/types']
+    }
+  },
   eslint: {
     config: {
       stylistic: {
@@ -41,5 +64,5 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
-  }
+  },
 })
