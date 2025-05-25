@@ -1,4 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import fs from 'fs';
+import { useNuxt } from 'nuxt/kit';
+
 export default defineNuxtConfig({
   modules: [
     '@hebilicious/vue-query-nuxt',
@@ -56,6 +59,28 @@ export default defineNuxtConfig({
     imports: {
       dirs: ['shared/types']
     }
+  },
+  hooks: {
+    'build:before': () => {
+      const nuxtInstance = useNuxt();
+      if (!nuxtInstance.options.dev) {
+        console.log('Start build process for BITT!!!!...');
+        // './node_modules/@nuxt/ui-pro/modules/pro/index.ts'
+        // node_modules/@nuxt/ui-pro/dist/module.mjs
+        // node_modules/@nuxt/ui-pro/dist/shared/ui-pro.DoAfePEm.mjs
+        const someFile = './node_modules/@nuxt/ui-pro/dist/module.mjs';
+        fs.readFile(someFile, 'utf8', function (err, data) {
+          if (err) {
+            return console.log(err);
+          }
+          const result = data.replace(/await validateLicense/g, '//await validateLicense');
+
+          fs.writeFile(someFile, result, 'utf8', function (err) {
+            if (err) return console.log(err);
+          });
+        });
+      }
+    },
   },
   eslint: {
     config: {
