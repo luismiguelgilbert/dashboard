@@ -22,7 +22,7 @@ useHead({
   }
 })
 
-const title = 'Nuxt Dashboard Template'
+const title = 'Framework'
 const description = 'A professional dashboard template built with Nuxt UI Pro, featuring multiple pages, data visualization, and comprehensive management capabilities for creating powerful admin interfaces.'
 
 useSeoMeta({

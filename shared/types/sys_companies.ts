@@ -1,9 +1,9 @@
 import { z } from 'zod/v4';
 
-export const sys_users_sort_enum = z.enum(['a.user_name', 'a.user_lastname', 'a.user_sex', 'a.is_active', 'a.email', 'b.name_es']);
-export type sys_users_sort = z.infer<typeof sys_users_sort_enum>;
+export const sys_companies_sort_enum = z.enum(['a.name_es', 'a.name_es_short', 'a.is_active']);
+export type sys_companies_sort = z.infer<typeof sys_companies_sort_enum>;
 
-export const sys_users_query_schema = z.object({
+export const sys_companies_query_schema = z.object({
   searchString: z.string()
     .refine(s => !s.includes(' '), 'Sin espacios!')
     .refine(s => !s.includes(';'), 'Sin caracteres especiales!')
@@ -13,10 +13,8 @@ export const sys_users_query_schema = z.object({
     .refine(s => !s.includes('select'), 'Sin palabras claves!')
     .refine(s => !s.includes('insert'), 'Sin palabras claves!')
     .refine(s => !s.includes('update'), 'Sin palabras claves!'),
-  filterProfile: z.coerce.number().array(),
-  filterSex: z.coerce.boolean().array(),
   filterIsActive: z.coerce.boolean().array(),
-  sortBy: sys_users_sort_enum,
+  sortBy: sys_companies_sort_enum,
   page: z.coerce.number().optional().nullable(),
   pageSize: z.coerce.number().optional(),
   is_downloading: z.coerce.boolean().default(false),
@@ -29,20 +27,23 @@ export const sys_users_query_schema = z.object({
     val => ((val.is_downloading) || (!val.is_downloading && z.number().min(5).max(1000).safeParse(val.pageSize).success)),
     { error: `Campo [pageSize] es obligatorio y debe ser menor a 1000`, path: ['pageSize'] },
   )
-export type sys_users_query = z.infer<typeof sys_users_query_schema>;
+export type sys_companies_query = z.infer<typeof sys_companies_query_schema>;
 
-export const sys_users_schema = z.object(
+export const sys_companies_schema = z.object(
   {
     id: z.string().default(''),
-    user_name: z.string().default(''),
-    user_lastname: z.string().default(''),
+    company_number: z.coerce.string().optional().default(''),
+    name_es: z.string().optional().default(''),
+    name_es_short: z.string().default(''),
+    billing_phone: z.coerce.string().optional(),
+    billing_address: z.coerce.string().optional(),
     is_active: z.coerce.boolean().default(true),
-    user_sex: z.coerce.boolean().default(true),
+    disabled: z.coerce.boolean().default(true),
     avatar_url: z.coerce.string().optional().nullable(),
-    email: z.coerce.string().default(''),
-    // sys_profile_id: z.string().default(''),
-    sys_profile_name: z.coerce.string(),
+    is_saving: z.boolean().default(false),
     is_new: z.boolean().default(true),
+
+    // sys_profile_id: z.string().default(''),
     // default_color: z.string().default(''),
     // default_dark_color: z.string().default(''),
     // dark_enabled: z.coerce.boolean().default(false),
@@ -60,4 +61,4 @@ export const sys_users_schema = z.object(
     // rows_count: '829
   },
 )
-export type sys_users = z.infer<typeof sys_users_schema>;
+export type sys_companies = z.infer<typeof sys_companies_schema>;

@@ -35,6 +35,14 @@ const links = [
           onSelect: () => {
             open.value = false
           }
+        },
+        {
+          label: 'Organizaciones',
+          icon: 'i-lucide-building-2',
+          to: '/security/companies',
+          onSelect: () => {
+            open.value = false
+          }
         }
       ]
     },

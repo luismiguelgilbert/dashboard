@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
       SELECT
       1 as row_num,
       a.id,
-      COALESCE(a.user_name, '') as user_name,
-      COALESCE(a.user_lastname, '') as user_lastname,
+      a.user_name,
+      a.user_lastname,
       COALESCE(a.user_sex, False) as user_sex,
       a.avatar_url,
       a.is_active,
