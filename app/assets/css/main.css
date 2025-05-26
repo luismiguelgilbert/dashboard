@@ -28,8 +28,8 @@
 @layer utilities {
   .pt-safe {
     padding-top: env(safe-area-inset-top);
-  }
-  /* .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
-  } */
+    /* padding-bottom: env(safe-area-inset-bottom); */
+    /* padding-bottom: 0px !important; */
+  }
 }

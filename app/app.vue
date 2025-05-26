@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
+// import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 
 const colorMode = useColorMode()
 
@@ -81,7 +81,7 @@ useSeoMeta({
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
-      <VueQueryDevtools :initial-is-open="true" />
+      <!-- <VueQueryDevtools :initial-is-open="true" /> -->
     </NuxtLayout>
   </UApp>
 </template>
