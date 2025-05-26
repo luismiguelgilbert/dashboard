@@ -11,7 +11,7 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   const isLoading = ref<boolean>(false);
   const isFilterOpen = ref<boolean>(false);
   const selectedRecordId = ref<string>();
-  const selectedRowData = ref<sys_companies>();
+  const selectedRowData = ref<sys_companies>(sys_companies_schema.parse({}));
   const selectedRowDataAvatarHelper = ref<File | null>();
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([

@@ -25,10 +25,10 @@ watch(data, (newData) => {
 <template>
   <div class="flex-1 overflow-y-auto">
     <UProgress v-if="isFetching" class="p-3" />
-    <LazyCompanyFormContentBasic
+    <CompanyFormContentBasic
       id="formBasic"
       ref="formBasic"
       :disable="false" />
-    <LazyCompanyFormContentAvatar :disable="false" />
+    <CompanyFormContentAvatar :disable="false" />
   </div>
 </template>

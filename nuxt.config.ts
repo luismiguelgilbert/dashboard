@@ -29,7 +29,7 @@ export default defineNuxtConfig({
     dirs: ['../shared/types']
   },
   devtools: {
-    enabled: false
+    enabled: true
   },
   css: ['~/assets/css/main.css'],
   routeRules: {
