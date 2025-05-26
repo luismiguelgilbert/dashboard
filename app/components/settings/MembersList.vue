@@ -20,13 +20,11 @@ const items = [{
     <li
       v-for="(member, index) in members"
       :key="index"
-      class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6"
-    >
+      class="flex items-center justify-between gap-3 py-3 px-4 sm:px-6">
       <div class="flex items-center gap-3 min-w-0">
         <UAvatar
           v-bind="member.avatar"
-          size="md"
-        />
+          size="md" />
 
         <div class="text-sm min-w-0">
           <p class="text-highlighted font-medium truncate">
@@ -43,15 +41,13 @@ const items = [{
           :model-value="member.role"
           :items="['member', 'owner']"
           color="neutral"
-          :ui="{ value: 'capitalize', item: 'capitalize' }"
-        />
+          :ui="{ value: 'capitalize', item: 'capitalize' }" />
 
         <UDropdownMenu :items="items" :content="{ align: 'end' }">
           <UButton
             icon="i-lucide-ellipsis-vertical"
             color="neutral"
-            variant="ghost"
-          />
+            variant="ghost" />
         </UDropdownMenu>
       </div>
     </li>

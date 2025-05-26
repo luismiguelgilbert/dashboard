@@ -31,8 +31,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         :schema="schema"
         :state="state"
         class="space-y-4"
-        @submit="onSubmit"
-      >
+        @submit="onSubmit">
         <UFormField label="Name" placeholder="John Doe" name="name">
           <UInput v-model="state.name" class="w-full" />
         </UFormField>
@@ -44,14 +43,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             label="Cancel"
             color="neutral"
             variant="subtle"
-            @click="open = false"
-          />
+            @click="open = false" />
           <UButton
             label="Create"
             color="primary"
             variant="solid"
-            type="submit"
-          />
+            type="submit" />
         </div>
       </UForm>
     </template>

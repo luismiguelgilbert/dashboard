@@ -17,8 +17,7 @@ async function onSubmit() {
   <UModal
     v-model:open="open"
     :title="`Delete ${count} customer${count > 1 ? 's' : ''}`"
-    :description="`Are you sure, this action cannot be undone.`"
-  >
+    :description="`Are you sure, this action cannot be undone.`">
     <slot />
 
     <template #body>
@@ -27,15 +26,13 @@ async function onSubmit() {
           label="Cancel"
           color="neutral"
           variant="subtle"
-          @click="open = false"
-        />
+          @click="open = false" />
         <UButton
           label="Delete"
           color="error"
           variant="solid"
           loading-auto
-          @click="onSubmit"
-        />
+          @click="onSubmit" />
       </div>
     </template>
   </UModal>

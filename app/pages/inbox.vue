@@ -53,8 +53,7 @@ const isMobile = breakpoints.smaller('lg')
     :default-size="25"
     :min-size="20"
     :max-size="30"
-    resizable
-  >
+    resizable>
     <UDashboardNavbar title="Inbox">
       <template #leading>
         <UDashboardSidebarCollapse />
@@ -69,8 +68,7 @@ const isMobile = breakpoints.smaller('lg')
           :items="tabItems"
           class="w-32"
           :content="false"
-          size="xs"
-        />
+          size="xs" />
       </template>
     </UDashboardNavbar>
     <InboxList v-model="selectedMail" :mails="filteredMails" />

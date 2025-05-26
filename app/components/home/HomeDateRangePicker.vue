@@ -83,8 +83,7 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
       color="neutral"
       variant="ghost"
       icon="i-lucide-calendar"
-      class="data-[state=open]:bg-elevated group"
-    >
+      class="data-[state=open]:bg-elevated group">
       <span class="truncate">
         <template v-if="selected.start">
           <template v-if="selected.end">
@@ -116,16 +115,14 @@ const selectRange = (range: { days?: number, months?: number, years?: number }) 
             class="rounded-none px-4"
             :class="[isRangeSelected(range) ? 'bg-elevated' : 'hover:bg-elevated/50']"
             truncate
-            @click="selectRange(range)"
-          />
+            @click="selectRange(range)" />
         </div>
 
         <UCalendar
           v-model="calendarRange"
           class="p-2"
           :number-of-months="2"
-          range
-        />
+          range />
       </div>
     </template>
   </UPopover>

@@ -49,13 +49,14 @@ export default defineEventHandler(async (event) => {
     const results = await Promise.all([
       userDataQuery.get(),
       userCompaniesQuery.all(),
-      userDefaultCompanyQuery.all() as any,
+      userDefaultCompanyQuery.all(),
     ]);
 
     return sys_users_schema.parse({
       ...sys_users_schema.parse(results[0] ?? {}),
       sys_companies_users: results[1],
-      default_user_company: results[2][0]?.sys_company_id ?? undefined,
+      // default_user_company: results[2][0]?.sys_company_id ?? undefined,
+      default_user_company: undefined,
     });
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);

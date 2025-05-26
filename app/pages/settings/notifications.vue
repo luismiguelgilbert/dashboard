@@ -49,8 +49,7 @@ async function onChange() {
       :title="section.title"
       :description="section.description"
       variant="naked"
-      class="mb-4"
-    />
+      class="mb-4" />
 
     <UPageCard variant="subtle" :ui="{ container: 'divide-y divide-default' }">
       <UFormField
@@ -59,12 +58,10 @@ async function onChange() {
         :name="field.name"
         :label="field.label"
         :description="field.description"
-        class="flex items-center justify-between not-last:pb-4 gap-2"
-      >
+        class="flex items-center justify-between not-last:pb-4 gap-2">
         <USwitch
           v-model="state[field.name]"
-          @update:model-value="onChange"
-        />
+          @update:model-value="onChange" />
       </UFormField>
     </UPageCard>
   </div>

@@ -54,8 +54,7 @@ function onSubmit() {
           color="neutral"
           variant="ghost"
           class="-ms-1.5"
-          @click="emits('close')"
-        />
+          @click="emits('close')" />
       </template>
 
       <template #right>
@@ -63,8 +62,7 @@ function onSubmit() {
           <UButton
             icon="i-lucide-inbox"
             color="neutral"
-            variant="ghost"
-          />
+            variant="ghost" />
         </UTooltip>
 
         <UTooltip text="Reply">
@@ -75,8 +73,7 @@ function onSubmit() {
           <UButton
             icon="i-lucide-ellipsis-vertical"
             color="neutral"
-            variant="ghost"
-          />
+            variant="ghost" />
         </UDropdownMenu>
       </template>
     </UDashboardNavbar>
@@ -86,8 +83,7 @@ function onSubmit() {
         <UAvatar
           v-bind="mail.from.avatar"
           :alt="mail.from.name"
-          size="3xl"
-        />
+          size="3xl" />
 
         <div class="min-w-0">
           <p class="font-semibold text-highlighted">
@@ -131,31 +127,27 @@ function onSubmit() {
             :rows="4"
             :disabled="loading"
             class="w-full"
-            :ui="{ base: 'p-0 resize-none' }"
-          />
+            :ui="{ base: 'p-0 resize-none' }" />
 
           <div class="flex items-center justify-between">
             <UTooltip text="Attach file">
               <UButton
                 color="neutral"
                 variant="ghost"
-                icon="i-lucide-paperclip"
-              />
+                icon="i-lucide-paperclip" />
             </UTooltip>
 
             <div class="flex items-center justify-end gap-2">
               <UButton
                 color="neutral"
                 variant="ghost"
-                label="Save draft"
-              />
+                label="Save draft" />
               <UButton
                 type="submit"
                 color="neutral"
                 :loading="loading"
                 label="Send"
-                icon="i-lucide-send"
-              />
+                icon="i-lucide-send" />
             </div>
           </div>
         </form>

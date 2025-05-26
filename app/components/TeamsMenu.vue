@@ -44,8 +44,7 @@ const items = computed(() => {
   <UDropdownMenu
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-  >
+    :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
     <UButton
       v-bind="{
         ...selectedTeam,
@@ -60,7 +59,6 @@ const items = computed(() => {
       :class="[!collapsed && 'py-2']"
       :ui="{
         trailingIcon: 'text-dimmed'
-      }"
-    />
+      }" />
   </UDropdownMenu>
 </template>

@@ -19,13 +19,11 @@ const filteredMembers = computed(() => {
       description="Invite new members by email address."
       variant="naked"
       orientation="horizontal"
-      class="mb-4"
-    >
+      class="mb-4">
       <UButton
         label="Invite people"
         color="neutral"
-        class="w-fit lg:ms-auto"
-      />
+        class="w-fit lg:ms-auto" />
     </UPageCard>
 
     <UPageCard variant="subtle" :ui="{ container: 'p-0 sm:p-0 gap-y-0', wrapper: 'items-stretch', header: 'p-4 mb-0 border-b border-default' }">
@@ -35,8 +33,7 @@ const filteredMembers = computed(() => {
           icon="i-lucide-search"
           placeholder="Search members"
           autofocus
-          class="w-full"
-        />
+          class="w-full" />
       </template>
 
       <SettingsMembersList :members="filteredMembers" />
