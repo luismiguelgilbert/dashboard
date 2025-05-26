@@ -32,7 +32,7 @@ const isOpen = ref<boolean>(false);
       description="Buscar, ordenar y filtrar la lista"
       :direction="isMobile ? 'top' : 'right'">
       <template #header>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between pt-safe">
           <h2 class="text-lg font-semibold">
             Opciones
           </h2>

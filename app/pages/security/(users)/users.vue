@@ -123,6 +123,7 @@ const closeForm = () => {
   <ClientOnly>
     <USlideover
       v-if="isFormPanelOpen && isMobile"
+      class="pt-safe"
       :open="isFormPanelOpen"
       :title="formPanelTitle">
       <template #close>

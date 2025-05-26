@@ -123,14 +123,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UDashboardGroup unit="rem">
+  <UDashboardGroup
+    unit="rem"
+    class="pt-safe">
     <UDashboardSidebar
       id="default"
       v-model:open="open"
       collapsible
       resizable
       class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }">
+      :ui="{
+        header: 'h-(--ui-header-height) shrink-0 flex items-center gap-1.5 px-4 pt-safe',
+        footer: 'lg:border-t lg:border-default'
+      }">
       <template #header="{ collapsed }">
         <TeamsMenu :collapsed="collapsed" />
       </template>
