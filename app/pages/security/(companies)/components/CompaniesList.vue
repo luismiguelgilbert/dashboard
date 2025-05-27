@@ -21,12 +21,12 @@ const {
 const onLoadMore = async () => {
   await fetchNextPage();
 };
-const canLoadMore = () => !isFetching.value;
 </script>
 
 <template>
   <div
-    v-infinite-scroll="[onLoadMore, { distance: 1, canLoadMore }]"
+    :key="JSON.stringify(computedQueryKey)"
+    v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
     style="height: calc(100dvh - 65px); overflow-y: auto;"
     class="divide-y divide-default">
     <div
