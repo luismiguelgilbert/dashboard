@@ -2,7 +2,10 @@
 const props = defineProps<{
   title: string
 }>();
-const emits = defineEmits(['close-clicked']);
+const emits = defineEmits(['close-clicked', 'save-clicked']);
+
+const store = useSecurityCompaniesStore();
+const { isLoading } = storeToRefs(store);
 </script>
 
 <template>
@@ -16,14 +19,20 @@ const emits = defineEmits(['close-clicked']);
           color="neutral"
           variant="ghost"
           class="-ms-1.5 cursor-pointer"
+          :disabled="isLoading"
+          :loading="isLoading"
           @click="emits('close-clicked')" />
       </template>
 
       <template #right>
         <UButton
+          class="cursor-pointer"
           label="Guardar"
           icon="i-lucide-save"
-          color="neutral" />
+          color="neutral"
+          :disabled="isLoading"
+          :loading="isLoading"
+          @click="emits('save-clicked')" />
       </template>
     </UDashboardNavbar>
     <CompanyFormContent />

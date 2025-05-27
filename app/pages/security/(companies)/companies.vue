@@ -2,10 +2,11 @@
 import { breakpointsTailwind } from '@vueuse/core';
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
+const queryClient = useQueryClient();
 const isMobile = breakpoints.smaller('lg');
 const store = useSecurityCompaniesStore();
-const { sortItems, queryPayload, computedQueryKey, selectedRecordId, selectedRowData, hasFilter, filterActiveItems, filterSexItems } = storeToRefs(store);
-const isFormPanelOpen = computed<boolean>(() => !!useRoute().query.id);
+const { sortItems, queryPayload, computedQueryKey, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems } = storeToRefs(store);
+const isFormPanelOpen = computed<boolean>(() => !!selectedRecordId.value);
 const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
 const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva Organización' : 'Editar Organización');
 
@@ -41,21 +42,64 @@ const downloadFile = async () => {
 
 const openNew = () => {
   const newUniqueId = crypto.randomUUID();
-  selectedRowData.value = sys_users_schema.safeParse({ id: newUniqueId, is_new: true }).data;
-  selectedRowData.value = sys_users_schema.safeParse({ id: newUniqueId, is_new: true }).data;
+  selectedRowData.value = sys_companies_schema.safeParse({ id: newUniqueId, is_new: true }).data;
   useRouter().push({ query: { id: newUniqueId, is_new: 'true' } });
 }
-const openEdit = (row: sys_users) => {
-  selectedRowData.value = row;
+
+const openEdit = (row: sys_companies) => {
   selectedRecordId.value = row.id;
+  selectedRowData.value = sys_companies_schema.parse({});
   useRouter().push({ query: { id: row.id } });
 };
+
 const closeForm = () => {
-  console.log('closeForm');
   selectedRowData.value = undefined;
   selectedRecordId.value = undefined;
   useRouter().replace({ query: undefined });
 };
+
+const { mutateAsync, isPending } = useMutation({
+  mutationFn: () => $fetch('/api/security/company-upsert', { method: 'POST', body: selectedRowData.value }),
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: ['security-companies-search'] });
+    await queryClient.invalidateQueries({ queryKey: ['security-companies-record'] });
+  },
+});
+
+const saveForm = async () => {
+  try {
+    if (selectedRowData.value) {
+      selectedRowData.value.is_saving = true;
+      const { error } = sys_companies_schema.safeParse(selectedRowData.value);
+      if (error) throw error.issues.map(err => `- ${err.message}`).join('.\n    ');
+      await mutateAsync();
+      selectedRowData.value.is_saving = false;
+      useToast().add({
+        title: 'Datos guardados',
+        icon: 'i-lucide-circle-check',
+        color: 'success',
+      });
+    }
+  } catch (error) {
+    useToast().add({
+      title: 'Error al guardar',
+      description: `Revise sus datos y vuelva a intentarlo: \n ${error}`,
+      icon: 'i-lucide-alert-triangle',
+      color: 'error',
+      ui: { description: 'text-sm text-muted whitespace-pre-line' }
+    });
+    console.error(error);
+  }
+};
+
+watch(() => isPending.value, newData => isLoading.value = newData, { deep: true, immediate: true });
+// on mounted, set the selectedRowData the same ID available in the URl query string parameter (if exists)
+onMounted(() => {
+  const recordId = useRoute().query.id;
+  if (recordId) {
+    selectedRecordId.value = recordId as string;
+  }
+});
 </script>
 
 <template>
@@ -78,7 +122,7 @@ const closeForm = () => {
           v-model:search-string="queryPayload.searchString"
           v-model:sort-by="queryPayload.sortBy"
           :sort-items="sortItems"
-          :filter-times="[filterActiveItems, filterSexItems]"
+          :filter-times="[filterActiveItems]"
           @open-new="openNew"
           @download-file="downloadFile">
           <template #FilterSection>
@@ -100,7 +144,7 @@ const closeForm = () => {
     <div class="overflow-y-auto divide-y divide-default">
       <ClientOnly>
         <CompaniesList
-          :key="computedQueryKey"
+          :key="computedQueryKey.flatMap(key => key.toString()).join('-')"
           @row-clicked="openEdit" />
       </ClientOnly>
     </div>
@@ -109,7 +153,8 @@ const closeForm = () => {
   <CompanyForm
     v-if="isFormPanelOpen && !isMobile"
     :title="formPanelTitle"
-    @close-clicked="closeForm" />
+    @close-clicked="closeForm"
+    @save-clicked="saveForm" />
   <div v-else class="hidden lg:flex flex-1 items-center justify-center">
     <UIcon name="i-lucide-building-2" class="size-32 text-dimmed" />
   </div>
@@ -133,11 +178,17 @@ const closeForm = () => {
             color="neutral"
             variant="soft"
             icon="i-lucide-circle-x"
+            :disabled="isLoading"
+            :loading="isLoading"
             @click="closeForm" />
           <UButton
+            class="cursor-pointer"
             label="Guardar"
             icon="i-lucide-save"
-            color="neutral" />
+            color="neutral"
+            :disabled="isLoading"
+            :loading="isLoading"
+            @click="saveForm" />
         </div>
       </template>
     </USlideover>

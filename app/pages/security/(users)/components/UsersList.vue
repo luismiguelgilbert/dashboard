@@ -28,7 +28,8 @@ const canLoadMore = () => !isFetching.value;
   <div
     :key="computedQueryKey"
     v-infinite-scroll="[onLoadMore, { distance: 1, canLoadMore }]"
-    style="height: calc(100dvh - 65px); overflow-y: auto;">
+    style="height: calc(100dvh - 65px); overflow-y: auto;"
+    class="divide-y divide-default">
     <div
       v-for="item in data?.pages.flatMap(page => page)"
       :key="item ? item.id : 0">

@@ -13,7 +13,7 @@ export const useSecurityUsersStore = defineStore('securityUsers', () => {
   const isLoading = ref<boolean>(false);
   const isFilterOpen = ref<boolean>(false);
   const selectedRecordId = ref<string>();
-  const selectedRowData = ref<sys_users>(sys_users_schema.parse({}));
+  const selectedRowData = ref<sys_users>();
   const selectedRowDataAvatarHelper = ref<File | null>();
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([

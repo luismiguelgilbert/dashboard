@@ -42,7 +42,6 @@ const downloadFile = async () => {
 const openNew = () => {
   const newUniqueId = crypto.randomUUID();
   selectedRowData.value = sys_users_schema.safeParse({ id: newUniqueId, is_new: true }).data;
-  selectedRowData.value = sys_users_schema.safeParse({ id: newUniqueId, is_new: true }).data;
   useRouter().push({ query: { id: newUniqueId, is_new: 'true' } });
 }
 const openEdit = (row: sys_users) => {
@@ -141,6 +140,7 @@ const closeForm = () => {
             icon="i-lucide-circle-x"
             @click="closeForm" />
           <UButton
+            class="cursor-pointer"
             label="Guardar"
             icon="i-lucide-save"
             color="neutral" />

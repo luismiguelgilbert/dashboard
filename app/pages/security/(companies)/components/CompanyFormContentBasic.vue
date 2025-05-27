@@ -4,7 +4,7 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityCompaniesStore();
-const { selectedRowData } = storeToRefs(moduleStore);
+const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
 const myForm = useTemplateRef('myForm');
 
 defineExpose({
@@ -16,7 +16,7 @@ defineExpose({
 
 <template>
   <div
-    v-if="selectedRowData"
+    v-if="selectedRecordId && selectedRowData"
     class="m-1 md:m-6">
     <div class="pb-2 md:pb-5">
       <p class="font-bold pb-0 text-xl">
@@ -31,7 +31,7 @@ defineExpose({
         ref="myForm"
         :disabled="props.disable"
         :state="selectedRowData"
-        :schema="sys_users_schema">
+        :schema="sys_companies_schema">
         <UiDashboardSection
           name="is_active"
           label="Estado"

@@ -21,6 +21,7 @@ const emits = defineEmits(['close-clicked']);
 
       <template #right>
         <UButton
+          class="cursor-pointer"
           label="Guardar"
           icon="i-lucide-save"
           color="neutral" />

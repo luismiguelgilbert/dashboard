@@ -42,23 +42,18 @@ export const sys_companies_schema = z.object(
     avatar_url: z.coerce.string().optional().nullable(),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(true),
-
-    // sys_profile_id: z.string().default(''),
-    // default_color: z.string().default(''),
-    // default_dark_color: z.string().default(''),
-    // dark_enabled: z.coerce.boolean().default(false),
-    // created_at: z.string().optional().nullable(),
-    // updated_at: z.string().optional().nullable(),
-    // sys_companies_users: z.any().array(),
-    // default_user_company: z.string().uuid().optional(),
-    // last_sign_in_at: z.string().optional().nullable(),
-    // rows_count: z.coerce.number().optional().nullable(),
-    // row_num: z.coerce.number().default(1),
-    // change_password: z.coerce.boolean().default(false),
-    // new_password: z.string().optional(),
-    // new_password_confirm: z.string().optional(),
-    // is_saving: z.boolean().default(false),
-    // rows_count: '829
-  },
-)
+  })
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.company_number && val.company_number.length >= 10)),
+    { message: `RUC debe incluir 10 o más caracteres.`, path: ['company_number'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
+    { message: `Razón Social debe incluir 3 o más caracteres.`, path: ['name_es'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.name_es_short && val.name_es_short.length >= 3)),
+    { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es_short'] },
+  )
+;
 export type sys_companies = z.infer<typeof sys_companies_schema>;

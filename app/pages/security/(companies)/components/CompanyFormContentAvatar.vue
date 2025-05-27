@@ -69,7 +69,7 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
       <UForm
         :disabled="props.disable"
         :state="selectedRowData"
-        :schema="sys_users_schema">
+        :schema="sys_companies_schema">
         <UiDashboardSection
           class="p-5"
           name="avatar_url"

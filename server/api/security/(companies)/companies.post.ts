@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,a.name_es
-      ,a.name_es_short
+      ,initcap(a.name_es) as name_es
+      ,initcap(a.name_es_short) as name_es_short
       ,a.company_number
       ,a.billing_phone
       ,a.billing_address

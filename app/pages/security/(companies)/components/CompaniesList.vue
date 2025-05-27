@@ -11,7 +11,7 @@ const {
   fetchNextPage,
   isFetching,
 } = useInfiniteQuery({
-  queryKey: [computedQueryKey.value],
+  queryKey: computedQueryKey,
   queryFn: ({ pageParam }) => $fetch('/api/security/companies', { method: 'post', headers, body: { ...queryPayload.value, page: pageParam } }),
   initialPageParam: 1,
   getNextPageParam: (lastPage, pages) => lastPage.length > 0 ? pages.length + 1 : undefined,
@@ -26,9 +26,9 @@ const canLoadMore = () => !isFetching.value;
 
 <template>
   <div
-    :key="computedQueryKey"
     v-infinite-scroll="[onLoadMore, { distance: 1, canLoadMore }]"
-    style="height: calc(100dvh - 65px); overflow-y: auto;">
+    style="height: calc(100dvh - 65px); overflow-y: auto;"
+    class="divide-y divide-default">
     <div
       v-for="item in data?.pages.flatMap(page => page)"
       :key="item ? item.id : 0">

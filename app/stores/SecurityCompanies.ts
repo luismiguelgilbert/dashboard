@@ -7,11 +7,12 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     sortBy: 'a.name_es_short',
     is_downloading: false,
   });
-  const computedQueryKey = computed(() => `companies-search:${queryPayload.value.searchString}-sort:${queryPayload.value.sortBy}-filterActive:${queryPayload.value.filterIsActive.join(',')}}`);
+  const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
+  const computedRecordQueryKey = computed(() => ['security-companies-record', { id: selectedRecordId.value }]);
   const isLoading = ref<boolean>(false);
   const isFilterOpen = ref<boolean>(false);
   const selectedRecordId = ref<string>();
-  const selectedRowData = ref<sys_companies>(sys_companies_schema.parse({}));
+  const selectedRowData = ref<sys_companies>();
   const selectedRowDataAvatarHelper = ref<File | null>();
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([
@@ -27,6 +28,7 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0);
   return {
     computedQueryKey,
+    computedRecordQueryKey,
     filterActiveItems,
     hasFilter,
     isFilterOpen,
