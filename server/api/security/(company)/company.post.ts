@@ -29,7 +29,10 @@ export default defineEventHandler(async (event) => {
       WHERE a.id = '${payload.id}'
     `);
 
-    return sys_companies_schema.parse(await userDataQuery.get() ?? {});
+    return sys_companies_schema.parse(
+      await userDataQuery.get()
+      ?? { id: payload.id, is_new: true }
+    );
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({

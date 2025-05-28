@@ -44,6 +44,7 @@ const openNew = () => {
   const newUniqueId = crypto.randomUUID();
   selectedRowData.value = sys_companies_schema.safeParse({ id: newUniqueId, is_new: true }).data;
   useRouter().push({ query: { id: newUniqueId, is_new: 'true' } });
+  selectedRecordId.value = newUniqueId;
 }
 
 const openEdit = (row: sys_companies) => {
@@ -74,6 +75,7 @@ const saveForm = async () => {
       if (error) throw error.issues.map(err => `- ${err.message}`).join('.\n    ');
       await mutateAsync();
       selectedRowData.value.is_saving = false;
+      useRouter().replace({ query: { id: selectedRowData.value.id } });
       useToast().add({
         title: 'Datos guardados',
         icon: 'i-lucide-circle-check',
@@ -95,9 +97,11 @@ const saveForm = async () => {
 watch(() => isPending.value, newData => isLoading.value = newData, { deep: true, immediate: true });
 // on mounted, set the selectedRowData the same ID available in the URl query string parameter (if exists)
 onMounted(() => {
-  const recordId = useRoute().query.id;
+  const recordId = useRoute().query.id?.toLocaleString();
+  const is_new = useRoute().query.is_new?.toLocaleString() === 'true';
   if (recordId) {
     selectedRecordId.value = recordId as string;
+    selectedRowData.value = sys_companies_schema.safeParse({ id: selectedRecordId.value, is_new }).data;
   }
 });
 </script>

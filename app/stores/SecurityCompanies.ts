@@ -9,8 +9,8 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   });
   const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
   const computedRecordQueryKey = computed(() => ['security-companies-record', { id: selectedRecordId.value }]);
-  const isLoading = ref<boolean>(false);
   const isFilterOpen = ref<boolean>(false);
+  const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
   const selectedRowData = ref<sys_companies>();
   const selectedRowDataAvatarHelper = ref<File | null>();
