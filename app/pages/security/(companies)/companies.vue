@@ -174,7 +174,8 @@ onMounted(() => {
       <template #footer>
         <div class="flex w-full justify-between">
           <UButton
-            label="Cancelar"
+            class="cursor-pointer"
+            label="Cerrar"
             color="neutral"
             variant="soft"
             icon="i-lucide-circle-x"

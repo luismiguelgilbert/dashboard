@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const route = useRoute();
 const open = ref(false);
 
 const links = [
@@ -100,13 +99,8 @@ const groups = computed(() => [{
         <UNavigationMenu
           :collapsed="collapsed"
           :items="links[0]"
+          popover
           orientation="vertical" />
-
-        <UNavigationMenu
-          :collapsed="collapsed"
-          :items="links[1]"
-          orientation="vertical"
-          class="mt-auto" />
       </template>
 
       <template #footer="{ collapsed }">

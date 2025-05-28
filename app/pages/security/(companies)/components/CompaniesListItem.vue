@@ -11,7 +11,7 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="p-2 pl-2 sm:pl-3 pr-6 text-sm cursor-pointer border-l-2 transition-colors"
+    class="p-2 pl-5 pr-6 text-sm cursor-pointer border-l-2 transition-colors"
     :class="[
       props.itemSelectedId === props.item.id ? 'border-primary bg-primary/10' : 'border-(--ui-bg) hover:border-primary hover:bg-primary/5'
     ]"
