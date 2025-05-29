@@ -9,10 +9,12 @@ const moduleStore = useSecurityCompaniesStore();
 const { selectedRowData, selectedRowDataAvatarHelper } = storeToRefs(moduleStore);
 const myFile = ref();
 const myImagePreview = ref();
+const isProcessing = ref(false);
 const avatarComponent = useTemplateRef('avatarComponent');
 
 async function onFileChange(e: Event) {
   try {
+    isProcessing.value = true;
     const inputElement: HTMLInputElement = e.target as HTMLInputElement;
     if (!(inputElement).files?.length) {
       throw new Error('No se seleccionó archivo.');
@@ -42,7 +44,9 @@ async function onFileChange(e: Event) {
         });
       }
     }
+    isProcessing.value = false;
   } catch (error) {
+    isProcessing.value = false;
     useToast().add({
       title: `Error al cargar archivo: ${error}`,
       icon: 'i-hugeicons-settings-error-01',
@@ -80,6 +84,7 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
               icon="i-lucide-folder-open"
               class="cursor-pointer mt-5"
               :disabled="props.disable"
+              :loading="isProcessing"
               label="Seleccionar archivo"
               size="xl"
               @click="avatarComponent?.inputRef?.click()" />

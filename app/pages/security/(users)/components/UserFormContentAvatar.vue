@@ -9,10 +9,12 @@ const moduleStore = useSecurityUsersStore();
 const { selectedRowData, selectedRowDataAvatarHelper } = storeToRefs(moduleStore);
 const myFile = ref();
 const myImagePreview = ref();
+const isProcessing = ref(false);
 const avatarComponent = useTemplateRef('avatarComponent');
 
 async function onFileChange(e: Event) {
   try {
+    isProcessing.value = true;
     const inputElement: HTMLInputElement = e.target as HTMLInputElement;
     if (!(inputElement).files?.length) {
       throw new Error('No se seleccionó archivo.');
@@ -42,7 +44,9 @@ async function onFileChange(e: Event) {
         });
       }
     }
+    isProcessing.value = true;
   } catch (error) {
+    isProcessing.value = true;
     useToast().add({
       title: `Error al cargar archivo: ${error}`,
       icon: 'i-hugeicons-settings-error-01',
