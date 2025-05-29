@@ -81,7 +81,7 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
               class="cursor-pointer mt-5"
               :disabled="props.disable"
               label="Seleccionar archivo"
-              @click="avatarComponent?.$el.firstChild.click()" />
+              @click="avatarComponent?.inputRef?.click()" />
             <UInput
               ref="avatarComponent"
               v-model="myFile"

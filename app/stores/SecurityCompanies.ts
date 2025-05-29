@@ -21,8 +21,8 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     { id: 'a.is_active', label: 'Estado' },
   ]);
   const filterActiveItems = shallowRef([
-    { label: 'Organizaciones Activos', id: true, },
-    { label: 'Organizaciones Inactivos', id: false, },
+    { label: 'Organizaciones Activos', id: 'true', },
+    { label: 'Organizaciones Inactivos', id: 'false', },
   ]);
 
   const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0);

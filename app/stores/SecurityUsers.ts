@@ -25,12 +25,12 @@ export const useSecurityUsersStore = defineStore('securityUsers', () => {
     { id: 'b.name_es', label: 'Perfil' },
   ]);
   const filterActiveItems = shallowRef([
-    { label: 'Usuarios Activos', id: true, },
-    { label: 'Usuarios Inactivos', id: false, },
+    { label: 'Usuarios Activos', id: 'true', },
+    { label: 'Usuarios Inactivos', id: 'false', },
   ]);
   const filterSexItems = shallowRef([
-    { label: 'Hombres', id: true, },
-    { label: 'Mujeres', id: false, },
+    { label: 'Hombres', id: 'true', },
+    { label: 'Mujeres', id: 'false', },
   ]);
 
   const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0 || queryPayload.value.filterProfile?.length > 0 || queryPayload.value.filterSex?.length > 0);

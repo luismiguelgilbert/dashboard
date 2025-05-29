@@ -13,7 +13,7 @@ export const sys_companies_query_schema = z.object({
     .refine(s => !s.includes('select'), 'Sin palabras claves!')
     .refine(s => !s.includes('insert'), 'Sin palabras claves!')
     .refine(s => !s.includes('update'), 'Sin palabras claves!'),
-  filterIsActive: z.coerce.boolean().array(),
+  filterIsActive: z.coerce.string().array(),
   sortBy: sys_companies_sort_enum,
   page: z.coerce.number().optional().nullable(),
   pageSize: z.coerce.number().optional(),
