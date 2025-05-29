@@ -81,6 +81,7 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
               class="cursor-pointer mt-5"
               :disabled="props.disable"
               label="Seleccionar archivo"
+              size="xl"
               @click="avatarComponent?.inputRef?.click()" />
             <UInput
               ref="avatarComponent"

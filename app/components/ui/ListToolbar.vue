@@ -14,12 +14,11 @@ const isOpen = ref<boolean>(false);
 </script>
 
 <template>
-  <UButtonGroup>
+  <UButtonGroup size="xl">
     <UButton
       class="cursor-pointer"
       color="neutral"
       variant="subtle"
-      size="xl"
       @click="emits('open-new')">
       <template #default>
         <UIcon name="i-lucide-circle-plus" size="30" />
@@ -38,9 +37,10 @@ const isOpen = ref<boolean>(false);
           </h2>
           <UButton
             class="cursor-pointer"
+            icon="i-lucide-x"
+            size="xl"
             color="neutral"
-            icon="i-lucide-circle-x"
-            variant="ghost"
+            variant="soft"
             @click="isOpen = false" />
         </div>
         <p class="text-sm text-gray-500">

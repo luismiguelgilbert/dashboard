@@ -123,10 +123,20 @@ const closeForm = () => {
     <USlideover
       v-if="isFormPanelOpen && isMobile"
       class="pt-safe"
-      :open="isFormPanelOpen"
-      :title="formPanelTitle">
-      <template #close>
-        <span class="hidden" />
+      :open="isFormPanelOpen">
+      <template #header>
+        <div class="flex w-full justify-between items-center">
+          <span class="text-lg font-semibold">
+            {{ formPanelTitle }}
+          </span>
+          <UButton
+            class="cursor-pointer"
+            icon="i-lucide-x"
+            size="xl"
+            color="neutral"
+            variant="soft"
+            @click="closeForm" />
+        </div>
       </template>
       <template #body>
         <UserFormContent />
@@ -138,12 +148,14 @@ const closeForm = () => {
             color="neutral"
             variant="soft"
             icon="i-lucide-circle-x"
+            size="xl"
             @click="closeForm" />
           <UButton
             class="cursor-pointer"
             label="Guardar"
             icon="i-lucide-save"
-            color="neutral" />
+            color="neutral"
+            size="xl" />
         </div>
       </template>
     </USlideover>
