@@ -1,9 +1,10 @@
 
 {
-  "start_url": "/",
+  "description": "Web application powered by BITT",
+  "display_override": ["fullscreen", "minimal-ui"],
   "display": "standalone",
   "short_name": "Framework",
-  "description": "Web application powered by BITT",
+  "start_url": "/",
   "icons": [
     {
       "src": "manifest-icon-192.maskable.png",

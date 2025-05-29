@@ -8,7 +8,7 @@ const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white');
 useHead({
   meta: [
     { charset: 'utf-8' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=0.99, user-scalable=no, viewport-fit=cover' },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, user-scalable=no, viewport-fit=contain' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
@@ -93,4 +93,8 @@ useSeoMeta({
 html {
   font-family: Inter, sans-serif;
 }
+
+/* body {
+  height: calc(100dvh);
+} */
 </style>
