@@ -6,13 +6,13 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityCompaniesStore();
-const { selectedRowData, selectedRowDataAvatarHelper } = storeToRefs(moduleStore);
+const { selectedRowData } = storeToRefs(moduleStore);
 const myFile = ref();
 const myImagePreview = ref();
 const isProcessing = ref(false);
 const avatarComponent = useTemplateRef('avatarComponent');
 
-async function onFileChange(e: Event) {
+const onFileChange = async (e: Event) => {
   try {
     isProcessing.value = true;
     const inputElement: HTMLInputElement = e.target as HTMLInputElement;
@@ -32,7 +32,7 @@ async function onFileChange(e: Event) {
           throw new Error('Tamaño incorrecto.');
         }
         if (compressedFile && selectedRowData.value) {
-          selectedRowDataAvatarHelper.value = compressedFile;
+          selectedRowData.value.avatar_file = await filetoBase64(compressedFile);
           myImagePreview.value = URL.createObjectURL(compressedFile);
         }
       } catch (error) {

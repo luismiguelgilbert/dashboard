@@ -1,4 +1,6 @@
 // import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
+import { supabase } from '@@/server/utils/supabase';
+import { base64toBlob } from '~~/app/utils/index';
 
 export default defineEventHandler(async (event) => {
   const serverDB = useDatabase();
@@ -44,8 +46,31 @@ export default defineEventHandler(async (event) => {
         updated_by = '24f718bb-bbc4-41e5-a399-8330d8be3f70'
     `;
 
-    await serverDB.exec('COMMIT');
+    // Upload and Upsert avatar URL if file is provided
+    if (payload.avatar_file) {
+      const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];
+      const filename = `bita-cars/${payload.id}.${fileExt}`;
+      const blob = base64toBlob(payload.avatar_file, `image/${fileExt}`);
+      if (blob) {
+        const { error: fileError } = await supabase.storage.from('avatars')
+          .upload(filename, blob, {
+            cacheControl: '0',
+            upsert: true,
+          });
+        if (fileError) {
+          throw createError({
+            statusCode: 500,
+            statusMessage: `Error uploading file: ${fileError.message}`,
+          });
+        }
+        const { data: fileURL } = supabase.storage.from('avatars').getPublicUrl(filename);
+        await serverDB.sql`update sys_companies set
+          avatar_url = COALESCE(${fileURL.publicUrl}, avatar_url)
+          WHERE id = ${payload.id}`;
+      }
+    }
 
+    await serverDB.exec('COMMIT');
     return new Response('Record saved', { status: 200 });
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
