@@ -5,17 +5,18 @@ defineProps<{
   collapsed?: boolean
 }>()
 
-const colorMode = useColorMode()
-const appConfig = useAppConfig()
+const colorMode = useColorMode();
+const appConfig = useAppConfig();
+const { clear, session } = useUserSession();
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
 const user = ref({
-  name: 'Benjamin Canac',
+  name: session.value?.user?.email || 'NA',
   avatar: {
-    src: 'https://github.com/benjamincanac.png',
-    alt: 'Benjamin Canac'
+    src: session.value?.user?.avatar_url,
+    alt: session.value?.user?.email || 'NA'
   }
 })
 
@@ -47,9 +48,10 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     children: colors.map(color => ({
       label: color,
       chip: color,
-      slot: 'chip',
       checked: appConfig.ui.colors.primary === color,
+      slot: 'chip',
       type: 'checkbox',
+      class: 'cursor-pointer',
       onSelect: (e) => {
         e.preventDefault()
 
@@ -69,6 +71,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       chip: color,
       slot: 'chip',
       type: 'checkbox',
+      class: 'cursor-pointer',
       checked: appConfig.ui.colors.neutral === color,
       onSelect: (e) => {
         e.preventDefault()
@@ -81,6 +84,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   label: 'Appearance',
   icon: 'i-lucide-sun-moon',
   children: [{
+    class: 'cursor-pointer',
     label: 'Light',
     icon: 'i-lucide-sun',
     type: 'checkbox',
@@ -91,6 +95,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
       colorMode.preference = 'light'
     }
   }, {
+    class: 'cursor-pointer',
     label: 'Dark',
     icon: 'i-lucide-moon',
     type: 'checkbox',
@@ -105,8 +110,13 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
     }
   }]
 }], [{
-  label: 'Log out',
-  icon: 'i-lucide-log-out'
+  label: 'Cerrar sesión',
+  icon: 'i-lucide-log-out',
+  class: 'cursor-pointer',
+  onSelect: () => {
+    clear();
+    navigateTo('/auth/login');
+  }
 }]]))
 </script>
 
@@ -121,11 +131,11 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
         label: collapsed ? undefined : user?.name,
         trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
       }"
+      class="data-[state=open]:bg-elevated h-full cursor-pointer rounded-none"
       color="neutral"
       variant="ghost"
       block
       :square="collapsed"
-      class="data-[state=open]:bg-elevated"
       :ui="{
         trailingIcon: 'text-dimmed'
       }" />
