@@ -4,9 +4,14 @@ const { loggedIn } = useUserSession();
 if (!loggedIn.value) navigateTo('/auth/login?session_error=true');
 
 const userMenu = useState<sys_links[]>('userMenu');
+const userCompanies = useState<sys_companies[]>('userCompanies');
+const userCompany = useState<sys_companies | undefined>('userCompany');
 const requestFetch = useRequestFetch();
-const { data } = await useAsyncData(() => requestFetch('/api/system/userMenu'));
-userMenu.value = data.value || [];
+const { data: menuData } = await useAsyncData(() => requestFetch('/api/system/userMenu'));
+userMenu.value = menuData.value || [];
+const { data: companiesData } = await useAsyncData(() => requestFetch('/api/system/userCompanies'));
+userCompanies.value = companiesData.value || [];
+userCompany.value = userCompanies.value[0];
 
 const userMenuFormatted = computed(() => {
   return [
@@ -37,12 +42,6 @@ const userMenuFormatted = computed(() => {
       }))
   ]
 });
-
-// const groups = computed(() => [{
-//   id: 'links',
-//   label: 'Go to',
-//   items: links.flat()
-// }])
 </script>
 
 <template>
@@ -60,12 +59,10 @@ const userMenuFormatted = computed(() => {
         footer: 'lg:border-t lg:border-default h-15 p-0'
       }">
       <template #header="{ collapsed }">
-        <TeamsMenu :collapsed="collapsed" />
+        <CompaniesMenu :collapsed="collapsed" />
       </template>
 
       <template #default="{ collapsed }">
-        <!-- <UDashboardSearchButton :collapsed="collapsed" class="bg-transparent ring-default" /> -->
-
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"
@@ -77,8 +74,6 @@ const userMenuFormatted = computed(() => {
         <UserMenu :collapsed="collapsed" />
       </template>
     </UDashboardSidebar>
-
-    <!-- <UDashboardSearch :groups="groups" /> -->
 
     <slot />
 
