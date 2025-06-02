@@ -42,7 +42,7 @@ export const sys_companies_schema = z.object(
     avatar_url: z.coerce.string().nullable(),
     avatar_file: z.string().nullable().default(null),
     is_saving: z.boolean().default(false),
-    is_new: z.boolean().default(true),
+    is_new: z.boolean().default(false),
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.company_number && val.company_number.length >= 10)),

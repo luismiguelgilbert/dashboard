@@ -44,7 +44,7 @@ export const sys_users_schema = z.object(
     sys_profile_id: z.coerce.string().default(''),
     sys_profile_name: z.coerce.string(),
     is_saving: z.boolean().default(false),
-    is_new: z.boolean().default(true),
+    is_new: z.boolean().default(false),
     // default_color: z.string().default(''),
     // default_dark_color: z.string().default(''),
     // dark_enabled: z.coerce.boolean().default(false),
