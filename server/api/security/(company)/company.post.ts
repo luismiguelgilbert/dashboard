@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const serverDB = useDatabase();
-    const userDataQuery = await serverDB.prepare(`
+    const recordDataQuery = await serverDB.sql`
       SELECT
       a.id
       ,initcap(a.name_es) as name_es
@@ -26,13 +26,12 @@ export default defineEventHandler(async (event) => {
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
       from sys_companies a
-      WHERE a.id = '${payload.id}'
-    `);
+      WHERE a.id = ${payload.id}
+    `;
 
-    return sys_companies_schema.parse(
-      await userDataQuery.get()
-      ?? { id: payload.id, is_new: true }
-    );
+    return (recordDataQuery.rows && recordDataQuery.rows[0])
+      ? sys_companies_schema.parse(recordDataQuery.rows[0])
+      : sys_companies_schema.parse({ id: payload.id, is_new: true })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({

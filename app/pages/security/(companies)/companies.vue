@@ -109,9 +109,9 @@ onMounted(() => {
 <template>
   <UDashboardPanel
     id="organization-1"
-    :default-size="25"
-    :min-size="20"
-    :max-size="30"
+    :default-size="35"
+    :min-size="25"
+    :max-size="35"
     resizable>
     <UDashboardNavbar title="Organizaciones">
       <template #leading>

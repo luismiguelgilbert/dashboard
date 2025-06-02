@@ -9,12 +9,13 @@ export const useSecurityUsersStore = defineStore('securityUsers', () => {
     sortBy: 'a.user_name',
     is_downloading: false,
   });
-  const computedQueryKey = computed(() => `users-search:${queryPayload.value.searchString}-sort:${queryPayload.value.sortBy}-filterActive:${queryPayload.value.filterIsActive.join(',')}-filterSex:${queryPayload.value.filterSex.join(',')}`);
+  const computedQueryKey = computed(() => ['security-users-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(','), filterProfile: queryPayload.value.filterProfile.join(','), filterSex: queryPayload.value.filterSex.join(',') }]);
+  const computedRecordQueryKey = computed(() => ['security-users-record', { id: selectedRecordId.value }]);
   const isLoading = ref<boolean>(false);
-  const isFilterOpen = ref<boolean>(false);
+  // const isFilterOpen = ref<boolean>(false);
   const selectedRecordId = ref<string>();
   const selectedRowData = ref<sys_users>();
-  const selectedRowDataAvatarHelper = ref<File | null>();
+  // const selectedRowDataAvatarHelper = ref<File | null>();
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([
     { id: 'a.user_name', label: 'Nombres' },
@@ -36,15 +37,16 @@ export const useSecurityUsersStore = defineStore('securityUsers', () => {
   const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0 || queryPayload.value.filterProfile?.length > 0 || queryPayload.value.filterSex?.length > 0);
   return {
     computedQueryKey,
+    computedRecordQueryKey,
     filterActiveItems,
     filterSexItems,
     hasFilter,
-    isFilterOpen,
+    // isFilterOpen,
     isLoading,
     queryPayload,
     selectedRecordId,
     selectedRowData,
-    selectedRowDataAvatarHelper,
+    // selectedRowDataAvatarHelper,
     sortItems,
   };
 });

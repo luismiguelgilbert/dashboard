@@ -9,11 +9,11 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   });
   const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
   const computedRecordQueryKey = computed(() => ['security-companies-record', { id: selectedRecordId.value }]);
-  const isFilterOpen = ref<boolean>(false);
+  // const isFilterOpen = ref<boolean>(false);
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
   const selectedRowData = ref<sys_companies>();
-  const selectedRowDataAvatarHelper = ref<File | null>();
+  // const selectedRowDataAvatarHelper = ref<File | null>();
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([
     { id: 'a.name_es_short', label: 'Nombre' },
@@ -31,12 +31,12 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     computedRecordQueryKey,
     filterActiveItems,
     hasFilter,
-    isFilterOpen,
+    // isFilterOpen,
     isLoading,
     queryPayload,
     selectedRecordId,
     selectedRowData,
-    selectedRowDataAvatarHelper,
+    // selectedRowDataAvatarHelper,
     sortItems,
   };
 });

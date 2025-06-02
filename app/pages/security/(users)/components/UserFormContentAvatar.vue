@@ -6,13 +6,13 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityUsersStore();
-const { selectedRowData, selectedRowDataAvatarHelper } = storeToRefs(moduleStore);
+const { selectedRowData } = storeToRefs(moduleStore);
 const myFile = ref();
 const myImagePreview = ref();
 const isProcessing = ref(false);
 const avatarComponent = useTemplateRef('avatarComponent');
 
-async function onFileChange(e: Event) {
+const onFileChange = async (e: Event) => {
   try {
     isProcessing.value = true;
     const inputElement: HTMLInputElement = e.target as HTMLInputElement;
@@ -32,7 +32,7 @@ async function onFileChange(e: Event) {
           throw new Error('Tamaño incorrecto.');
         }
         if (compressedFile && selectedRowData.value) {
-          selectedRowDataAvatarHelper.value = compressedFile;
+          selectedRowData.value.avatar_file = await filetoBase64(compressedFile);
           myImagePreview.value = URL.createObjectURL(compressedFile);
         }
       } catch (error) {
@@ -44,9 +44,9 @@ async function onFileChange(e: Event) {
         });
       }
     }
-    isProcessing.value = true;
+    isProcessing.value = false;
   } catch (error) {
-    isProcessing.value = true;
+    isProcessing.value = false;
     useToast().add({
       title: `Error al cargar archivo: ${error}`,
       icon: 'i-hugeicons-settings-error-01',
@@ -63,17 +63,17 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
     class="m-1 md:m-6">
     <div class="pb-2 md:pb-5">
       <p class="font-bold pb-0 text-xl">
-        Avatar del Usuario
+        Avatar de la Organización
       </p>
       <p class="text-(--ui-text-muted)">
-        Imagen de perfil del usuario
+        Imagen de perfil de la organización
       </p>
     </div>
     <UCard variant="subtle">
       <UForm
         :disabled="props.disable"
         :state="selectedRowData"
-        :schema="sys_users_schema">
+        :schema="sys_companies_schema">
         <UiDashboardSection
           class="p-5"
           name="avatar_url"
@@ -84,7 +84,9 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
               icon="i-lucide-folder-open"
               class="cursor-pointer mt-5"
               :disabled="props.disable"
+              :loading="isProcessing"
               label="Seleccionar archivo"
+              size="xl"
               @click="avatarComponent?.inputRef?.click()" />
             <UInput
               ref="avatarComponent"

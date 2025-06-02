@@ -6,12 +6,6 @@ const props = defineProps<{
 const moduleStore = useSecurityCompaniesStore();
 const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
 const myForm = useTemplateRef('myForm');
-
-defineExpose({
-  validateForm: async () => {
-    return await myForm.value?.validate();
-  },
-});
 </script>
 
 <template>

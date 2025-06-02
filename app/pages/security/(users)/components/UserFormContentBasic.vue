@@ -4,21 +4,13 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityUsersStore();
-const { selectedRowData } = storeToRefs(moduleStore);
+const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
 const myForm = useTemplateRef('myForm');
-
-const isCreating = computed<boolean>(() => Boolean(selectedRowData.value?.is_new));
-
-defineExpose({
-  validateForm: async () => {
-    return await myForm.value?.validate();
-  },
-});
 </script>
 
 <template>
   <div
-    v-if="selectedRowData"
+    v-if="selectedRecordId && selectedRowData"
     class="m-1 md:m-6">
     <div class="pb-2 md:pb-5">
       <p class="font-bold pb-0 text-xl">
@@ -43,7 +35,7 @@ defineExpose({
             class="w-full"
             placeholder="Email del usuario (login)"
             icon="i-lucide-at-sign"
-            :disabled="!isCreating" />
+            :disabled="props.disable" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection

@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     // if (!user) {
     //   throw createError({ statusCode: 401, statusMessage: 'User not found' });
     // }
-    const { data: payload, error } = await readValidatedBody(event, sys_companies_schema.safeParse);
+    const { data: payload, error } = await readValidatedBody(event, sys_users_schema.safeParse);
     if (error) {
       throw createError({
         statusCode: 500,
@@ -25,24 +25,24 @@ export default defineEventHandler(async (event) => {
     await serverDB.exec('BEGIN');
 
     // Upsert data
-    await serverDB.sql`insert into sys_companies 
-      (id, company_number, name_es, name_es_short, billing_phone, billing_address, is_active, updated_by)
+    await serverDB.sql`insert into sys_users 
+      (id, user_name, user_lastname, email, user_sex, sys_profile_id, is_active, updated_by)
       values (
         ${payload.id},
-        ${payload.company_number},
-        ${payload.name_es},
-        ${payload.name_es_short},
-        ${payload.billing_phone},
-        ${payload.billing_address},
+        ${payload.user_name},
+        ${payload.user_lastname},
+        ${payload.email},
+        ${payload.user_sex},
+        ${payload.sys_profile_id},
         ${payload.is_active},
         ${user?.userId}
       )
       ON CONFLICT(id) DO UPDATE SET
-        company_number = ${payload.company_number},
-        name_es = ${payload.name_es},
-        name_es_short = ${payload.name_es_short},
-        billing_phone = ${payload.billing_phone},
-        billing_address = ${payload.billing_address},
+        user_name = ${payload.user_name},
+        user_lastname = ${payload.user_lastname},
+        email = ${payload.email},
+        user_sex = ${payload.user_sex},
+        sys_profile_id = ${payload.sys_profile_id},
         is_active = ${payload.is_active},
         updated_by = ${user?.userId}
     `;
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     // Upload and Upsert avatar URL if file is provided
     if (payload.avatar_file) {
       const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];
-      const filename = `sys-companies/${payload.id}.${fileExt}`;
+      const filename = `sys-users/${payload.id}.${fileExt}`;
       const blob = base64toBlob(payload.avatar_file, `image/${fileExt}`);
       if (blob) {
         const { error: fileError } = await supabase.storage.from('avatars')
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
           });
         }
         const { data: fileURL } = supabase.storage.from('avatars').getPublicUrl(filename);
-        await serverDB.sql`update sys_companies set
+        await serverDB.sql`update sys_users set
           avatar_url = COALESCE(${fileURL.publicUrl}, avatar_url)
           WHERE id = ${payload.id}`;
       }
