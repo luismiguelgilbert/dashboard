@@ -98,11 +98,11 @@ watch(() => isPending.value, newData => isLoading.value = newData, { deep: true,
 // on mounted, set the selectedRowData the same ID available in the URl query string parameter (if exists)
 onMounted(() => {
   const recordId = useRoute().query.id?.toLocaleString() || store.selectedRecordId;
+  const is_new = useRoute().query.is_new?.toLocaleString() === 'true' || selectedRowData.value?.is_new;
   if (recordId) {
     selectedRecordId.value = recordId as string;
-    useRouter().push({ query: { id: recordId } });
+    useRouter().push({ query: { id: recordId, is_new: is_new ? 'true' : undefined } });
   }
-  const is_new = useRoute().query.is_new?.toLocaleString() === 'true';
   if (is_new) {
     selectedRowData.value = sys_companies_schema.safeParse({ id: selectedRecordId.value, is_new }).data;
   }
