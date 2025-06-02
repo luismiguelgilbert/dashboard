@@ -16,7 +16,6 @@ const userCompaniesFormatted = computed(() => {
     },
     class: 'cursor-pointer',
     onSelect() {
-      console.log('Selected company:', company.name_es);
       userCompany.value = company;
     }
   }))]

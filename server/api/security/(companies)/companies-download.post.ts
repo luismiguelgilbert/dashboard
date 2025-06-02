@@ -14,7 +14,6 @@ export default defineEventHandler(async (event) => {
 
     // QUERIES
     const serverDB = useDatabase();
-    console.log()
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
