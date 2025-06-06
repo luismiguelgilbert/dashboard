@@ -5,7 +5,7 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const queryClient = useQueryClient();
 const isMobile = breakpoints.smaller('lg');
 const store = useSecurityUsersStore();
-const { sortItems, queryPayload, computedQueryKey, computedQueryKeyRef, keyRef, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems, filterSexItems } = storeToRefs(store);
+const { sortItems, queryPayload, computedQueryKey, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems, filterSexItems } = storeToRefs(store);
 const isFormPanelOpen = computed<boolean>(() => !!selectedRecordId.value);
 const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
 const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nuevo usuario' : 'Editar usuario');
@@ -63,7 +63,6 @@ const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch('/api/security/user-upsert', { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
     await queryClient.invalidateQueries({ queryKey: ['security-users-record'] });
-    keyRef.value++; // helps to re-render the list component
     // this optimisticly updates the cache data record to reflect changes in the list component
     queryClient.setQueryData(computedQueryKey.value, (oldData: { pages: sys_users[][], pageParams: number[] }) => {
       oldData.pages.forEach((page) => {
@@ -170,11 +169,9 @@ onMounted(() => {
         </UiListToolbar>
       </template>
     </UDashboardNavbar>
-    <div class="overflow-y-auto divide-y divide-default">
+    <div class="overflow-y-auto">
       <ClientOnly>
-        <UsersList
-          :key="computedQueryKeyRef"
-          @row-clicked="openEdit" />
+        <UsersList @row-clicked="openEdit" />
       </ClientOnly>
     </div>
   </UDashboardPanel>

@@ -6,9 +6,7 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     sortBy: 'a.name_es_short',
     is_downloading: false,
   });
-  const keyRef = ref(1);
   const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
-  const computedQueryKeyRef = computed(() => `${computedQueryKey.value[0]}-${JSON.stringify(computedQueryKey.value[1])}-${keyRef.value}`);
   const computedRecordQueryKey = computed(() => ['security-companies-record', { id: selectedRecordId.value }]);
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
@@ -27,12 +25,10 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0);
   return {
     computedQueryKey,
-    computedQueryKeyRef,
     computedRecordQueryKey,
     filterActiveItems,
     hasFilter,
     isLoading,
-    keyRef,
     queryPayload,
     selectedRecordId,
     selectedRowData,

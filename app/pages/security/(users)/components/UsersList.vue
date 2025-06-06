@@ -8,6 +8,7 @@ const headers = useRequestHeaders(['cookie']);
 
 const {
   data,
+  dataUpdatedAt,
   fetchNextPage,
   isFetching,
 } = useInfiniteQuery({
@@ -25,18 +26,16 @@ const onLoadMore = async () => {
 
 <template>
   <div
-    :key="JSON.stringify(computedQueryKey)"
     v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
-    style="height: calc(100dvh - 65px); overflow-y: auto;"
-    class="divide-y divide-default">
-    <div
-      v-for="item in data?.pages.flatMap(page => page)"
-      :key="item ? item.id : 0">
+    style="height: calc(100dvh - 65px); overflow-y: auto;">
+    <template v-for="page in data?.pages">
       <UsersListItem
+        v-for="item in page"
+        :key="`${dataUpdatedAt}-${item.id}`"
         :item="item"
         :item-selected-id="selectedRecordId || undefined"
         @item-selected="($event) => emits('row-clicked', $event)" />
-    </div>
+    </template>
     <UProgress v-if="isFetching" class="p-3" />
   </div>
 </template>
