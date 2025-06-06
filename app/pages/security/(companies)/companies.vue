@@ -5,7 +5,7 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const queryClient = useQueryClient();
 const isMobile = breakpoints.smaller('lg');
 const store = useSecurityCompaniesStore();
-const { sortItems, queryPayload, computedQueryKey, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems } = storeToRefs(store);
+const { sortItems, queryPayload, computedQueryKey, computedQueryKeyRef, keyRef, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems } = storeToRefs(store);
 const isFormPanelOpen = computed<boolean>(() => !!selectedRecordId.value);
 const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
 const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva Organización' : 'Editar Organización');
@@ -62,8 +62,24 @@ const closeForm = () => {
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch('/api/security/company-upsert', { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: ['security-companies-search'] });
     await queryClient.invalidateQueries({ queryKey: ['security-companies-record'] });
+    keyRef.value++; // helps to re-render the list component
+    // this optimisticly updates the cache data record to reflect changes in the list component
+    queryClient.setQueryData(computedQueryKey.value, (oldData: { pages: sys_companies[][], pageParams: number[] }) => {
+      oldData.pages.forEach((page) => {
+        const recordIndex = page.findIndex(user => user.id === selectedRowData.value?.id);
+        if (page[recordIndex]) {
+          page[recordIndex] = {
+            ...page[recordIndex],
+            // Update fields used in the list component
+            name_es: String(selectedRowData.value?.name_es),
+            name_es_short: String(selectedRowData.value?.name_es_short),
+            is_active: Boolean(selectedRowData.value?.is_active),
+          };
+        }
+      });
+      return oldData;
+    });
   },
 });
 
@@ -151,7 +167,7 @@ onMounted(() => {
     <div class="overflow-y-auto divide-y divide-default">
       <ClientOnly>
         <CompaniesList
-          :key="computedQueryKey.flatMap(key => key.toString()).join('-')"
+          :key="computedQueryKeyRef"
           @row-clicked="openEdit" />
       </ClientOnly>
     </div>

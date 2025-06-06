@@ -90,4 +90,10 @@ export default defineNuxtConfig({
       }
     }
   },
+  vueQuery: {
+    // https://nuxt.com/modules/vue-query
+    vueQueryPluginOptions: {
+      enableDevtoolsV6Plugin: true,
+    }
+  }
 })
