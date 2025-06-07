@@ -109,6 +109,10 @@ const saveForm = async () => {
   }
 };
 
+const invalidateCache = () => {
+  queryClient.invalidateQueries({ queryKey: computedQueryKey.value });
+};
+
 watch(() => isPending.value, newData => isLoading.value = newData, { deep: true, immediate: true });
 // on mounted, set the selectedRowData the same ID available in the URl query string parameter (if exists)
 onMounted(() => {
@@ -146,7 +150,8 @@ onMounted(() => {
           :sort-items="sortItems"
           :filter-times="[filterActiveItems, filterSexItems]"
           @open-new="openNew"
-          @download-file="downloadFile">
+          @download-file="downloadFile"
+          @invalidate-cache="invalidateCache">
           <template #FilterSection>
             <UPageCard
               title="Filtrar lista:"

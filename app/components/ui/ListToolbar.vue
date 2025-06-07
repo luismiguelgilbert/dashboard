@@ -6,7 +6,7 @@ const sortBy = defineModel<string>('sortBy', { default: undefined, required: tru
 const props = defineProps<{
   sortItems: sort_by_options[],
 }>();
-const emits = defineEmits(['download-file', 'open-new']);
+const emits = defineEmits(['download-file', 'open-new', 'invalidate-cache']);
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
@@ -66,12 +66,20 @@ const isOpen = ref<boolean>(false);
             placeholder="Buscar..." />
           <UButton
             class="cursor-pointer !rounded-md"
-            label="Descargar"
+            label="Descargar lista"
             color="neutral"
             icon="i-lucide-file-spreadsheet"
             size="xl"
             variant="subtle"
             @click="emits('download-file')" />
+          <UButton
+            class="cursor-pointer !rounded-md"
+            label="Recargar lista"
+            color="neutral"
+            icon="i-lucide-database-backup"
+            size="xl"
+            variant="subtle"
+            @click="emits('invalidate-cache')" />
           <UPageCard
             title="Ordenar lista:"
             variant="soft">
