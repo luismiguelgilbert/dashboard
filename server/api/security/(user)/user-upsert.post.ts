@@ -53,6 +53,11 @@ export default defineEventHandler(async (event) => {
       await serverDB.sql`insert into sys_companies_users (sys_company_id, user_id) values (${companyId}, ${payload.id})`;
     });
 
+    // Update user password if marked for change
+    if (payload.change_password) {
+      await serverDB.sql`UPDATE sys_users SET user_hash = crypt(${payload.new_password}, gen_salt('md5')) where id = ${payload.id}`;
+    }
+
     // Upload and Upsert avatar URL if file is provided
     if (payload.avatar_file) {
       const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];

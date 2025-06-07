@@ -45,9 +45,9 @@ export const sys_users_schema = z.object({
   sys_companies_users: z.string().array().default([]),
   is_saving: z.boolean().default(false),
   is_new: z.boolean().default(false),
-  // change_password: z.coerce.boolean().default(false),
-  // new_password: z.string().optional(),
-  // new_password_confirm: z.string().optional(),
+  change_password: z.coerce.boolean().default(false),
+  new_password: z.string().optional(),
+  new_password_confirm: z.string().optional(),
 })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.id && z.uuidv4().safeParse(val.id).success)),
@@ -67,7 +67,15 @@ export const sys_users_schema = z.object({
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.sys_companies_users && val.sys_companies_users.length > 0)),
-    { message: `Apellidos debe incluir 3 o más caracteres.`, path: ['user_lastname'] },
+    { message: `Organizaciones no puede estar vacío.`, path: ['sys_companies_users'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && !val.change_password) || (val.is_saving && val.change_password && val.new_password && val.new_password.length > 3)),
+    { message: `Nueva contraseña debe tener más de 3 caracteres`, path: ['new_password'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && !val.change_password) || (val.is_saving && val.change_password && val.new_password === val.new_password_confirm)),
+    { message: `Contraseñas no coinciden`, path: ['new_password_confirm'] },
   )
 ;
 export type sys_users = z.infer<typeof sys_users_schema>;

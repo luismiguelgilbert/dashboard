@@ -2,8 +2,8 @@
 const headers = useRequestHeaders(['cookie']);
 const store = useSecurityUsersStore();
 const { computedRecordQueryKey, selectedRowData, selectedRecordId, isLoading } = storeToRefs(store);
-const selectedTab = ref<'basic' | 'permissions'>('permissions');
-const links = computed(() => {
+const selectedTab = ref<'basic' | 'permissions' | 'password'>('basic');
+const tabs = computed(() => {
   return [[
     {
       label: 'Datos del Usuario',
@@ -18,6 +18,13 @@ const links = computed(() => {
       class: 'cursor-pointer',
       active: selectedTab.value === 'permissions',
       onSelect: () => { selectedTab.value = 'permissions' },
+    },
+    {
+      label: 'Contraseña',
+      icon: 'i-lucide-rectangle-ellipsis',
+      class: 'cursor-pointer',
+      active: selectedTab.value === 'password',
+      onSelect: () => { selectedTab.value = 'password' },
     }
   ]];
 });
@@ -41,7 +48,7 @@ watch(() => isFetching.value, newData => isLoading.value = newData, { deep: true
     <UProgress v-if="isFetching" class="p-3" />
     <UDashboardToolbar v-if="selectedRecordId && selectedRowData">
       <UNavigationMenu
-        :items="links"
+        :items="tabs"
         class="-mx-1 flex-1"
         highlight />
     </UDashboardToolbar>
@@ -55,6 +62,11 @@ watch(() => isFetching.value, newData => isLoading.value = newData, { deep: true
     </template>
     <template v-if="selectedTab === 'permissions'">
       <UserFormContentAccess
+        v-if="selectedRecordId && selectedRowData"
+        :disable="false" />
+    </template>
+    <template v-if="selectedTab === 'password'">
+      <UserFormContentPassword
         v-if="selectedRecordId && selectedRowData"
         :disable="false" />
     </template>
