@@ -4,7 +4,7 @@ import Excel from 'exceljs';
 export default defineEventHandler(async (event) => {
   try {
     // await hasPermission(event, PermissionsList.USERS_READ);
-    const { data: payload, error } = await readValidatedBody(event, sys_users_query_schema.safeParse);
+    const { data: payload, error } = await readValidatedBody(event, sys_companies_query_schema.safeParse);
     if (error) {
       throw createError({
         statusCode: 500,
@@ -17,35 +17,21 @@ export default defineEventHandler(async (event) => {
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,initcap(a.user_name) as user_name
-      ,initcap(a.user_lastname) as user_lastname
+      ,initcap(a.name_es) as name_es
+      ,initcap(a.name_es_short) as name_es_short
+      ,a.company_number
+      ,a.billing_phone
+      ,a.billing_address
       ,a.is_active
-      ,a.user_sex
       ,a.avatar_url
-      ,a.email
-      ,a.sys_profile_id
-      ,b.name_es as sys_profile_name
-      ,'indigo' as default_color
-      ,'zinc' as default_dark_color
-      ,a.dark_enabled
-      from sys_users a
-      inner join sys_profiles b on a.sys_profile_id = b.id
+      from sys_companies a
       where (1 = 1)
       ${payload.searchString?.length > 0
           ? `and (
-            a.user_name ilike '%${payload.searchString}%'
-            or a.user_lastname ilike '%${payload.searchString}%'
-            or a.email ilike '%${payload.searchString}%'
-            or b.name_es ilike '%${payload.searchString}%'
+            a.name_es ilike '%${payload.searchString}%'
+            or a.name_es_short ilike '%${payload.searchString}%'
+            or a.company_number ilike '%${payload.searchString}%'
           )`
-          : ''
-      }
-      ${payload.filterProfile?.length > 0
-          ? `and (a.sys_profile_id in (${payload.filterProfile}))`
-          : ''
-      }
-      ${payload.filterSex?.length > 0
-          ? `and (a.user_sex in (${payload.filterSex}))`
           : ''
       }
       ${payload.filterIsActive?.length > 0
@@ -58,15 +44,15 @@ export default defineEventHandler(async (event) => {
     const data = await userDataQuery.all();
 
     const workbook = new Excel.Workbook();
-    const worksheet = await workbook.addWorksheet('Usuarios');
+    const worksheet = await workbook.addWorksheet('Organizaciones');
     const fileColumns = [
       { key: 'id', header: 'Código', width: 50 },
-      { key: 'user_name', header: 'Nombres', width: 25 },
-      { key: 'user_lastname', header: 'Apellidos', width: 25 },
-      { key: 'user_sex', header: 'Sexo', width: 10 },
+      { key: 'name_es', header: 'Nombre', width: 25 },
+      { key: 'name_es_short', header: 'Razón Social', width: 25 },
+      { key: 'company_number', header: 'RUC', width: 25 },
       { key: 'is_active', header: 'Activo?', width: 10 },
-      { key: 'email', header: 'Email', width: 35 },
-      { key: 'sys_profile_name', header: 'Perfil', width: 25 },
+      { key: 'billing_phone', header: 'Teléfono', width: 15 },
+      { key: 'billing_address', header: 'Dirección', width: 25 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };
