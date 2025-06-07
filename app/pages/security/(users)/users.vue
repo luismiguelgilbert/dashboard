@@ -194,6 +194,7 @@ onMounted(() => {
     <USlideover
       v-if="isFormPanelOpen && isMobile"
       class="pt-safe"
+      :ui="{ body: 'flex-1 overflow-y-auto p-0' }"
       :open="isFormPanelOpen">
       <template #header>
         <div class="flex w-full justify-between items-center">

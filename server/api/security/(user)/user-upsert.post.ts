@@ -47,6 +47,12 @@ export default defineEventHandler(async (event) => {
         updated_by = ${user?.userId}
     `;
 
+    // Delete user companies and Insert new ones
+    await serverDB.sql`delete from sys_companies_users where user_id = ${payload.id}`;
+    payload.sys_companies_users.forEach(async (companyId) => {
+      await serverDB.sql`insert into sys_companies_users (sys_company_id, user_id) values (${companyId}, ${payload.id})`;
+    });
+
     // Upload and Upsert avatar URL if file is provided
     if (payload.avatar_file) {
       const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];

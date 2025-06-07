@@ -25,20 +25,16 @@ export default defineEventHandler(async (event) => {
       a.email,
       a.sys_profile_id,
       d.name_es as sys_profile_name,
-      a.dark_enabled
+      a.dark_enabled,
+        array(
+        select t.sys_company_id 
+        from sys_companies_users t
+        where t.user_id = a.id
+      ) as sys_companies_users
       from sys_users a
       left join sys_profiles d on a.sys_profile_id = d.id
       WHERE a.id = ${payload.id}
     `;
-
-    // const userCompaniesQuery = await serverDB.prepare(`
-    //   select
-    //   (row_number() OVER ()) - 1 AS row_num,
-    //   b.*
-    //   from sys_companies_users a
-    //   inner join sys_companies b on a.sys_company_id = b.id
-    //   WHERE a.user_id = '${payload.id}'
-    // `);
 
     // const userDefaultCompanyQuery = await serverDB.prepare(`
     //   select a.sys_company_id

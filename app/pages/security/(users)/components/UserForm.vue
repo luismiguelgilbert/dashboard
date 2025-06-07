@@ -4,7 +4,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits(['close-clicked', 'save-clicked']);
 
-const store = useSecurityCompaniesStore();
+const store = useSecurityUsersStore();
 const { isLoading } = storeToRefs(store);
 </script>
 

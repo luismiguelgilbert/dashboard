@@ -2,12 +2,13 @@
 const props = defineProps<{
   name: string;
   label: string;
+  labelTop?: boolean
   hint?: string;
 }>();
 </script>
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center px-0 md:px-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 px-0 md:px-5" :class="props.labelTop ? 'items-start' : 'items-center'">
     <div>
       <div class="flex content-center items-center justify-between">
         <label class="block font-medium text-left text-(--ui-text)">

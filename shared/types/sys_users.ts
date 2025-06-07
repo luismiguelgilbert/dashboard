@@ -31,35 +31,43 @@ export const sys_users_query_schema = z.object({
   )
 export type sys_users_query = z.infer<typeof sys_users_query_schema>;
 
-export const sys_users_schema = z.object(
-  {
-    id: z.string().default(''),
-    user_name: z.string().default(''),
-    user_lastname: z.string().default(''),
-    is_active: z.coerce.boolean().default(true),
-    user_sex: z.coerce.boolean().default(true),
-    avatar_url: z.coerce.string().nullable(),
-    avatar_file: z.string().nullable().default(null),
-    email: z.coerce.string().default(''),
-    sys_profile_id: z.coerce.string().default(''),
-    sys_profile_name: z.coerce.string(),
-    is_saving: z.boolean().default(false),
-    is_new: z.boolean().default(false),
-    // default_color: z.string().default(''),
-    // default_dark_color: z.string().default(''),
-    // dark_enabled: z.coerce.boolean().default(false),
-    // created_at: z.string().optional().nullable(),
-    // updated_at: z.string().optional().nullable(),
-    // sys_companies_users: z.any().array(),
-    // default_user_company: z.string().uuid().optional(),
-    // last_sign_in_at: z.string().optional().nullable(),
-    // rows_count: z.coerce.number().optional().nullable(),
-    // row_num: z.coerce.number().default(1),
-    // change_password: z.coerce.boolean().default(false),
-    // new_password: z.string().optional(),
-    // new_password_confirm: z.string().optional(),
-    // is_saving: z.boolean().default(false),
-    // rows_count: '829
-  },
-)
+export const sys_users_schema = z.object({
+  id: z.string().default(''),
+  user_name: z.string().default(''),
+  user_lastname: z.string().default(''),
+  is_active: z.coerce.boolean().default(true),
+  user_sex: z.coerce.boolean().default(true),
+  avatar_url: z.coerce.string().nullable(),
+  avatar_file: z.string().nullable().default(null),
+  email: z.coerce.string().default(''),
+  sys_profile_id: z.coerce.string().default(''),
+  sys_profile_name: z.coerce.string(),
+  sys_companies_users: z.string().array().default([]),
+  is_saving: z.boolean().default(false),
+  is_new: z.boolean().default(false),
+  // change_password: z.coerce.boolean().default(false),
+  // new_password: z.string().optional(),
+  // new_password_confirm: z.string().optional(),
+})
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.id && z.uuidv4().safeParse(val.id).success)),
+    { message: `ID debe  versión 4.`, path: ['id'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.email && val.email.length >= 3)),
+    { message: `Email debe incluir 3 o más caracteres.`, path: ['email'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.user_name && val.user_name.length >= 3)),
+    { message: `Nombres debe incluir 3 o más caracteres.`, path: ['user_name'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.user_lastname && val.user_lastname.length >= 3)),
+    { message: `Apellidos debe incluir 3 o más caracteres.`, path: ['user_lastname'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.sys_companies_users && val.sys_companies_users.length > 0)),
+    { message: `Apellidos debe incluir 3 o más caracteres.`, path: ['user_lastname'] },
+  )
+;
 export type sys_users = z.infer<typeof sys_users_schema>;

@@ -11,7 +11,7 @@ const myForm = useTemplateRef('myForm');
 <template>
   <div
     v-if="selectedRecordId && selectedRowData"
-    class="m-1 md:m-6">
+    class="m-4 md:m-6">
     <div class="pb-2 md:pb-5">
       <p class="font-bold pb-0 text-xl">
         Datos del Usuario
