@@ -18,6 +18,12 @@ export default defineEventHandler(async (event) => {
       a.id
       ,initcap(a.name_es) as name_es
       ,a.is_active
+      ,array(
+        select
+        t.sys_link_id
+        from sys_profiles_links t
+        where t.sys_profile_id = a.id
+      ) as sys_profiles_links
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
       from sys_profiles a

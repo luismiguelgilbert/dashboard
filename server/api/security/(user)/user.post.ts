@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
       a.sys_profile_id,
       d.name_es as sys_profile_name,
       a.dark_enabled,
-        array(
+      array(
         select t.sys_company_id 
         from sys_companies_users t
         where t.user_id = a.id

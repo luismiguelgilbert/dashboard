@@ -23,5 +23,8 @@ watch(() => isFetching.value, newData => isLoading.value = newData, { deep: true
     <ProfileFormContentBasic
       v-if="selectedRecordId && selectedRowData"
       :disable="isLoading" />
+    <ProfileFormContentAccess
+      v-if="selectedRecordId && selectedRowData"
+      :disable="isLoading" />
   </div>
 </template>

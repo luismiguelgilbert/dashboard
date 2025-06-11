@@ -37,6 +37,12 @@ export default defineEventHandler(async (event) => {
         updated_by = ${user?.userId}
     `;
 
+    // Delete profile links and Insert new ones
+    await serverDB.sql`delete from sys_profiles_links where sys_profile_id = ${payload.id}`;
+    payload.sys_profiles_links.forEach(async (link) => {
+      await serverDB.sql`insert into sys_profiles_links (sys_profile_id, sys_link_id) values (${payload.id}, ${link})`;
+    });
+
     await serverDB.exec('COMMIT');
     return new Response('Record saved', { status: 200 });
   } catch (err) {

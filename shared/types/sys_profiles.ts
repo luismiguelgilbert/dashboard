@@ -36,6 +36,7 @@ export const sys_profiles_schema = z.object(
     is_active: z.coerce.boolean().default(true),
     profile_users_count: z.coerce.number().default(0),
     disabled: z.coerce.boolean().default(true),
+    sys_profiles_links: z.array(z.string()).optional().default([]),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
   })

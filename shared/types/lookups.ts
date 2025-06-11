@@ -14,3 +14,11 @@ export const lookup_sys_companies_schema = z.object({
   disabled: z.boolean(),
 });
 export type lookup_sys_companies = z.infer<typeof lookup_sys_companies_schema>;
+
+export const lookup_sys_links_schema = z.object({
+  id: z.coerce.string(),
+  parent: z.coerce.string().optional().nullable(),
+  name_es: z.string(),
+  icon: z.string(),
+});
+export type lookup_sys_links = z.infer<typeof lookup_sys_links_schema>;
