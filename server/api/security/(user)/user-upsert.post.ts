@@ -49,9 +49,17 @@ export default defineEventHandler(async (event) => {
 
     // Delete user companies and Insert new ones
     await serverDB.sql`delete from sys_companies_users where user_id = ${payload.id}`;
-    payload.sys_companies_users.forEach(async (companyId) => {
-      await serverDB.sql`insert into sys_companies_users (sys_company_id, user_id) values (${companyId}, ${payload.id})`;
+
+    let multipleRowsInsert = 'insert into sys_companies_users (user_id, sys_company_id) values ';
+    payload.sys_companies_users.forEach(async (company) => {
+      multipleRowsInsert += `('${payload.id}', '${company}'),`;
     });
+    multipleRowsInsert = multipleRowsInsert.slice(0, -1); // Remove the last comma
+    await serverDB.exec(multipleRowsInsert);
+
+    // payload.sys_companies_users.forEach(async (companyId) => {
+    //   await serverDB.sql`insert into sys_companies_users (sys_company_id, user_id) values (${companyId}, ${payload.id})`;
+    // });
 
     // Update user password if marked for change
     if (payload.change_password) {

@@ -39,9 +39,12 @@ export default defineEventHandler(async (event) => {
 
     // Delete profile links and Insert new ones
     await serverDB.sql`delete from sys_profiles_links where sys_profile_id = ${payload.id}`;
+    let multipleRowsInsert = 'insert into sys_profiles_links (sys_profile_id, sys_link_id) values ';
     payload.sys_profiles_links.forEach(async (link) => {
-      await serverDB.sql`insert into sys_profiles_links (sys_profile_id, sys_link_id) values (${payload.id}, ${link})`;
+      multipleRowsInsert += `('${payload.id}', '${link}'),`;
     });
+    multipleRowsInsert = multipleRowsInsert.slice(0, -1); // Remove the last comma
+    await serverDB.exec(multipleRowsInsert);
 
     await serverDB.exec('COMMIT');
     return new Response('Record saved', { status: 200 });
