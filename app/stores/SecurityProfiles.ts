@@ -1,0 +1,36 @@
+export const useSecurityProfilesStore = defineStore('securityProfiles', () => {
+  const queryPayload = ref<sys_profiles_query>({
+    searchString: '',
+    filterIsActive: [],
+    pageSize: 20,
+    sortBy: 'a.name_es',
+    is_downloading: false,
+  });
+  const computedQueryKey = computed(() => ['security-profiles-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
+  const computedRecordQueryKey = computed(() => ['security-profiles-record', { id: selectedRecordId.value }]);
+  const isLoading = ref<boolean>(false);
+  const selectedRecordId = ref<string>();
+  const selectedRowData = ref<sys_profiles>();
+  // Constants (should be ref to make it work in Pinia)
+  const sortItems = shallowRef([
+    { id: 'a.name_es', label: 'Nombre' },
+    { id: 'a.is_active', label: 'Estado' },
+  ]);
+  const filterActiveItems = shallowRef([
+    { label: 'Perfiles Activos', id: 'true', },
+    { label: 'Perfiles Inactivos', id: 'false', },
+  ]);
+
+  const hasFilter = computed<boolean>(() => queryPayload.value.searchString !== '' || queryPayload.value.filterIsActive?.length > 0);
+  return {
+    computedQueryKey,
+    computedRecordQueryKey,
+    filterActiveItems,
+    hasFilter,
+    isLoading,
+    queryPayload,
+    selectedRecordId,
+    selectedRowData,
+    sortItems,
+  };
+});
