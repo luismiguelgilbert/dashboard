@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
     const serverDB = useDatabase();
 
     const query = await serverDB.sql`
-      with user_links as (
+      with user_links_level_2 as (
         select c.id, c.parent
         from sys_users a
         inner join sys_profiles_links b on a.sys_profile_id = b.sys_profile_id
@@ -17,22 +17,25 @@ export default defineEventHandler(async (event) => {
         where a.id = ${user.userId}
         and a.is_active = True
         and d.is_active = True
+        and c.row_level = 2
+      ),
+        user_links_level_1 as (
+        select distinct sys_links.id, sys_links.parent
+        from user_links_level_2
+        inner join sys_links on user_links_level_2.parent = sys_links.id 
+      ),
+        user_links_level_0 as (
+        select distinct sys_links.id, sys_links.parent
+        from user_links_level_1
+        inner join sys_links on user_links_level_1.parent = sys_links.id 
       )
-
-      select
-      a.id,
-      a.parent,
-      a.position,
-      a.link,
-      a.name_es,
-      a.icon,
-      a.comment_es,
-      a.requires_company,
-      a.row_level
-      from sys_links a
-      inner join user_links on a.id = user_links.id
-      where not (a.row_level = 1 and (select count(*) from user_links int1 where int1.parent = a.id) = 0)
-      order by case when a.parent is null then 1 else 2 end, a.id, a.position, a.parent
+      select Y.*
+      from (
+        select * from user_links_level_0
+        union select * from user_links_level_1
+        union select * from user_links_level_2
+      )X inner join sys_links Y on X.id = Y.id
+      order by case when Y.parent is null then 1 else 2 end, Y.id, Y.position, Y.parent
     `;
 
     return sys_links_schema.array().parse(query.rows);
