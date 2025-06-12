@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
     process.env.NUXT_SESSION_PASSWORD as string,
     { expiresIn: '7d' }
   )
-  setCookie(event, 'nuxt-session-companies', companiesToken);
+  setCookie(event, 'nuxt-session-companies', companiesToken, { maxAge: 60 * 60 * 24 * 28, });
 
   // Create Cookie with app permissions
   const userPermissions = await serverDB.sql`
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     process.env.NUXT_SESSION_PASSWORD as string,
     { expiresIn: '7d' }
   )
-  setCookie(event, 'nuxt-session-permissions', permissionsToken);
+  setCookie(event, 'nuxt-session-permissions', permissionsToken, { maxAge: 60 * 60 * 24 * 28, });
 
   await replaceUserSession(event, {
     user: {

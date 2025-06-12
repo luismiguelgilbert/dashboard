@@ -32,6 +32,19 @@ export default defineNuxtConfig({
     enabled: false
   },
   css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    session: {
+      // maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60 * 24 * 28, // 4 week
+      // maxAge: 15, // 15 seconds
+      password: process.env.SESSION_PASSWORD!,
+      // cookie: {
+      //   sameSite: 'none',
+      //   secure: false,
+      //   httpOnly: false,
+      // },
+    },
+  },
   routeRules: {
     '/api/**': {
       cors: true

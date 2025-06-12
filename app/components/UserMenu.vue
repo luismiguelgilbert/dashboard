@@ -8,6 +8,12 @@ defineProps<{
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
 const { clear, session } = useUserSession();
+const clearCookies = async () => {
+  const companiesCookie = await useCookie('nuxt-session-companies');
+  const permissionsCookie = await useCookie('nuxt-session-permissions');
+  companiesCookie.value = '';
+  permissionsCookie.value = '';
+}
 
 const colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
@@ -109,6 +115,7 @@ const items = computed<DropdownMenuItem[][]>(() => ([[{
   class: 'cursor-pointer',
   onSelect: () => {
     clear();
+    clearCookies();
     navigateTo('/auth/login');
   }
 }]]))
