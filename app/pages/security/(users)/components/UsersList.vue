@@ -8,9 +8,11 @@ const headers = useRequestHeaders(['cookie']);
 
 const {
   data,
+  isStale,
   dataUpdatedAt,
   fetchNextPage,
   isFetching,
+  hasNextPage,
 } = useInfiniteQuery({
   queryKey: computedQueryKey,
   queryFn: ({ pageParam }) => $fetch('/api/security/users', { method: 'post', headers, body: { ...queryPayload.value, page: pageParam } }),
@@ -20,7 +22,9 @@ const {
 });
 
 const onLoadMore = async () => {
-  await fetchNextPage();
+  if (isStale.value || hasNextPage.value) {
+    await fetchNextPage();
+  }
 };
 </script>
 

@@ -8,9 +8,11 @@ const headers = useRequestHeaders(['cookie']);
 
 const {
   data,
+  isStale,
   dataUpdatedAt,
   fetchNextPage,
   isFetching,
+  hasNextPage,
 } = useInfiniteQuery({
   queryKey: computedQueryKey,
   queryFn: ({ pageParam }) => $fetch('/api/security/companies', { method: 'post', headers, body: { ...queryPayload.value, page: pageParam } }),
@@ -20,11 +22,14 @@ const {
 });
 
 const onLoadMore = async () => {
-  await fetchNextPage();
+  if (isStale.value || hasNextPage.value) {
+    await fetchNextPage();
+  }
 };
 </script>
 
 <template>
+  hasNextPage.value: {{ hasNextPage }}
   <div
     v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
     style="height: calc(100dvh - 65px); overflow-y: auto;">
