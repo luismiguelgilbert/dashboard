@@ -33,6 +33,7 @@
     "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
     "html2canvas-pro": "^1.5.11",
+    "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",
     "luxon": "3.6.0",
     "nuxt": "^3.17.5",
@@ -46,9 +47,11 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
     "@nuxt/eslint": "^1.4.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.4",
     "eslint": "^9.28.0",
+    "npm": "^11.4.1",
     "typescript": "^5.8.3",
     "vue-tsc": "^2.2.10"
   },

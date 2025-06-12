@@ -1,5 +1,6 @@
 // Since we encrypt and store session data in cookies, we're constrained by the 4096-byte cookie size limit.
 // If the session data exceeds this limit, it will not be stored correctly.
+import jwt from 'jsonwebtoken';
 
 export default defineEventHandler(async (event) => {
   // event.context.params = useSanitizeParams(event.context.params);
@@ -14,6 +15,7 @@ export default defineEventHandler(async (event) => {
       ,a.avatar_url
       ,a.user_name
       ,a.user_lastname
+      ,a.sys_profile_id
     from sys_users a
     inner join sys_profiles b on a.sys_profile_id = b.id
     where LOWER(a.email) = LOWER(${payload?.email})
@@ -22,22 +24,46 @@ export default defineEventHandler(async (event) => {
     and b.is_active = True
   `;
   const userId = userData.rows && userData.rows[0]?.id as string;
+  const userProfileId = userData.rows && userData.rows[0]?.sys_profile_id as string;
   if (userData?.error || !userId || (userData.rows?.length && userData.rows.length <= 0)) {
     sendRedirect(event, '/auth/login?invalid=true');
   }
-  // // Query User Companies
-  // const userCompanies = await serverDB.sql`
-  //   select
-  //   c.*
-  //   from sys_users a
-  //   inner join sys_companies_users b on a.id = b.user_id
-  //   inner join sys_companies c on c.id = b.sys_company_id
-  //   where a.id = ${userId}
-  //   and c.is_active = True
-  // `;
-  // if (userCompanies?.error || (userCompanies.rows?.length && userCompanies.rows.length <= 0)) {
-  //   sendRedirect(event, '/auth/login?invalid=true');
-  // }
+
+  // Create Cookie with allowed companies
+  const userActiveCompanies = await serverDB.sql`
+    select
+    b.id
+    from sys_companies_users a
+    inner join sys_companies b on a.sys_company_id = b.id
+    where a.user_id = ${userId}
+    and b.is_active = True
+  `;
+  if (userActiveCompanies?.error || (userActiveCompanies.rows?.length && userActiveCompanies.rows.length <= 0)) {
+    sendRedirect(event, '/auth/login?invalid_companies=true');
+  }
+  const companiesToken = jwt.sign(
+    { userId: userId, userCompanies: userActiveCompanies.rows?.map(c => c.id) },
+    process.env.NUXT_SESSION_PASSWORD as string,
+    { expiresIn: '7d' }
+  )
+  setCookie(event, 'nuxt-session-companies', companiesToken);
+
+  // Create Cookie with app permissions
+  const userPermissions = await serverDB.sql`
+    select
+    sys_link_id as id
+    from sys_profiles_links
+    where sys_profile_id = ${userProfileId}
+  `;
+  if (userPermissions?.error || (userPermissions.rows?.length && userPermissions.rows.length <= 0)) {
+    sendRedirect(event, '/auth/login?invalid_permissions=true');
+  }
+  const permissionsToken = jwt.sign(
+    { userId: userId, userCompanies: userPermissions.rows?.map(c => c.id) },
+    process.env.NUXT_SESSION_PASSWORD as string,
+    { expiresIn: '7d' }
+  )
+  setCookie(event, 'nuxt-session-permissions', permissionsToken);
 
   await replaceUserSession(event, {
     user: {

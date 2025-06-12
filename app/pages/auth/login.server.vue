@@ -68,6 +68,18 @@ const queryParams = useRoute().query;
             color="error"
             description="Credenciales incorrectas."
             icon="i-lucide-square-asterisk" />
+          <UAlert
+            v-if="queryParams.invalid_companies"
+            variant="soft"
+            color="error"
+            description="Sin organizaciones asignadas."
+            icon="i-lucide-square-asterisk" />
+          <UAlert
+            v-if="queryParams.invalid_companies"
+            variant="soft"
+            color="error"
+            description="Sin permisos asignados."
+            icon="i-lucide-square-asterisk" />
         </form>
       </div>
     </div>
