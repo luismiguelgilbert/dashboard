@@ -29,7 +29,6 @@ const onLoadMore = async () => {
 </script>
 
 <template>
-  hasNextPage.value: {{ hasNextPage }}
   <div
     v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
     style="height: calc(100dvh - 65px); overflow-y: auto;">
