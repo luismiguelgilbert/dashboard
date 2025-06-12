@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
     sendRedirect(event, '/auth/login?invalid_permissions=true');
   }
   const permissionsToken = jwt.sign(
-    { userId: userId, userCompanies: userPermissions.rows?.map(c => c.id) },
+    { userId: userId, userPermissions: userPermissions.rows?.map(c => c.id) },
     process.env.NUXT_SESSION_PASSWORD as string,
     { expiresIn: '7d' }
   )
