@@ -31,7 +31,7 @@ const downloadFile = async () => {
   } catch (error) {
     useToast().add({
       title: 'Error',
-      description: 'Error al descargar el archivo',
+      description: `Error al descargar el archivo. (${error})`,
       icon: 'i-lucide-shield-alert',
       type: 'foreground',
       color: 'error',

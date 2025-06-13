@@ -1,8 +1,6 @@
-// import { hasPermission } from '@@/server/utils/handler';
-
 export default defineEventHandler(async (event) => {
   try {
-    // await hasPermission(event, PermissionsList.USERS_READ);
+    await hasPermissions(event, [PermissionsList.COMPANIES_READ]);
     const { data: payload, error } = await readValidatedBody(event, sys_companies_query_schema.safeParse);
     if (error) {
       throw createError({

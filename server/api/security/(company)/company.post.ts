@@ -2,7 +2,7 @@
 
 export default defineEventHandler(async (event) => {
   try {
-    // await hasPermission(event, PermissionsList.USERS_READ);
+    await hasPermissions(event, [PermissionsList.COMPANIES_READ]);
     // event.context.params = useSanitizeParams(event.context.params);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     if (error) {

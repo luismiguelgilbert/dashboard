@@ -7,10 +7,6 @@ export default defineEventHandler(async (event) => {
   const serverDB = useDatabase();
   try {
     // event.context.params = useSanitizeParams(event.context.params);
-    // const { user } = await getUserSession(event);
-    // if (!user) {
-    //   throw createError({ statusCode: 401, statusMessage: 'User not found' });
-    // }
     const { data: payload, error } = await readValidatedBody(event, sys_companies_schema.safeParse);
     if (error) {
       throw createError({
@@ -18,9 +14,12 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    // payload.is_new
-    //   ? await hasPermission(event, PermissionsList.COMPANIES_CREATE)
-    //   : await hasPermission(event, PermissionsList.COMPANIES_EDIT);
+
+    if (payload.is_new) {
+      hasPermissions(event, [PermissionsList.COMPANIES_CREATE])
+    } else {
+      hasPermissions(event, [PermissionsList.COMPANIES_EDIT]);
+    }
 
     await serverDB.exec('BEGIN');
 

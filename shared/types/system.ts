@@ -6,6 +6,18 @@ export const login_schema = z.object({
 });
 export type login = z.infer<typeof login_schema>;
 
+export const session_companies_schema = z.object({
+  userId: z.coerce.string(),
+  userCompanies: z.string().array(),
+});
+export type session_companies = z.infer<typeof session_companies_schema>;
+
+export const session_permissions_schema = z.object({
+  userId: z.coerce.string(),
+  userPermissions: z.string().array(),
+});
+export type session_permissions = z.infer<typeof session_permissions_schema>;
+
 export const sort_by_options_schema = z.object(
   {
     id: z.coerce.string().default(''),
