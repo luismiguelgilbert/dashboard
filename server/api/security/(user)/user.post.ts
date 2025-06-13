@@ -1,8 +1,6 @@
-// import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
-
 export default defineEventHandler(async (event) => {
   try {
-    // await hasPermission(event, PermissionsList.USERS_READ);
+    hasPermissions(event, [PermissionsList.USERS_READ])
     // event.context.params = useSanitizeParams(event.context.params);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     if (error) {

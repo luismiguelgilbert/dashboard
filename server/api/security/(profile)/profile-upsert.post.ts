@@ -1,14 +1,8 @@
-// import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
-
 export default defineEventHandler(async (event) => {
   const { user } = await getUserSession(event);
   const serverDB = useDatabase();
   try {
     // event.context.params = useSanitizeParams(event.context.params);
-    // const { user } = await getUserSession(event);
-    // if (!user) {
-    //   throw createError({ statusCode: 401, statusMessage: 'User not found' });
-    // }
     const { data: payload, error } = await readValidatedBody(event, sys_profiles_schema.safeParse);
     if (error) {
       throw createError({
@@ -16,9 +10,11 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    // payload.is_new
-    //   ? await hasPermission(event, PermissionsList.PROFILES_CREATE)
-    //   : await hasPermission(event, PermissionsList.PROFILES_EDIT);
+    if (payload.is_new) {
+      hasPermissions(event, [PermissionsList.ROLES_CREATE])
+    } else {
+      hasPermissions(event, [PermissionsList.ROLES_EDIT]);
+    }
 
     await serverDB.exec('BEGIN');
 

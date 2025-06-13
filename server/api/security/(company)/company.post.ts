@@ -1,5 +1,3 @@
-// import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
-
 export default defineEventHandler(async (event) => {
   try {
     await hasPermissions(event, [PermissionsList.COMPANIES_READ]);

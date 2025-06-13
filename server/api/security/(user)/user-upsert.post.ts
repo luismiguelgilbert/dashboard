@@ -1,4 +1,3 @@
-// import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
 import { supabase } from '@@/server/utils/supabase';
 import { base64toBlob } from '~~/app/utils/index';
 
@@ -7,10 +6,6 @@ export default defineEventHandler(async (event) => {
   const serverDB = useDatabase();
   try {
     // event.context.params = useSanitizeParams(event.context.params);
-    // const { user } = await getUserSession(event);
-    // if (!user) {
-    //   throw createError({ statusCode: 401, statusMessage: 'User not found' });
-    // }
     const { data: payload, error } = await readValidatedBody(event, sys_users_schema.safeParse);
     if (error) {
       throw createError({
@@ -18,9 +13,11 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    // payload.is_new
-    //   ? await hasPermission(event, PermissionsList.COMPANIES_CREATE)
-    //   : await hasPermission(event, PermissionsList.COMPANIES_EDIT);
+    if (payload.is_new) {
+      hasPermissions(event, [PermissionsList.USERS_CREATE])
+    } else {
+      hasPermissions(event, [PermissionsList.USERS_EDIT]);
+    }
 
     await serverDB.exec('BEGIN');
 

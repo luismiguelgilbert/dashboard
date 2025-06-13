@@ -1,4 +1,3 @@
-// import { hasPermission, useSanitizeParams } from '@@/server/utils/handler';
 import { supabase } from '@@/server/utils/supabase';
 import { base64toBlob } from '~~/app/utils/index';
 
