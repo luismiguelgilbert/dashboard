@@ -12,7 +12,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint .",
+    "lint": "npx oxlint && npx eslint",
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
@@ -51,7 +51,9 @@
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.4",
     "eslint": "^9.28.0",
+    "eslint-plugin-oxlint": "^1.1.0",
     "npm": "^11.4.1",
+    "oxlint": "^1.1.0",
     "typescript": "^5.8.3",
     "vue-tsc": "^2.2.10"
   },
@@ -66,5 +68,5 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.11.0"
+  "packageManager": "pnpm@10.12.1"
 }

@@ -1,5 +1,8 @@
 // @ts-check
+import oxlint from 'eslint-plugin-oxlint';
 import withNuxt from './.nuxt/eslint.config.mjs'
+// eslint.config.mjs
+// .oxlintrc.json
 
 export default withNuxt({
   rules: {
@@ -12,5 +15,7 @@ export default withNuxt({
     }],
     'vue/max-attributes-per-line': ['error', { singleline: 3 }],
     'vue/no-multiple-template-root': 'off',
-  }
-})
+  },
+},
+oxlint.buildFromOxlintConfigFile('./.oxlintrc.json'),
+)

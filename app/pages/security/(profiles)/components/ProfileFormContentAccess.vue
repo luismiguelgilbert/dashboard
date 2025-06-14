@@ -69,10 +69,9 @@ const toggleLinkID = (itemID: string) => {
         :state="selectedRowData"
         :schema="sys_profiles_schema">
         <UiDashboardSection
-          class="items-start"
           name="is_active"
-          label="Permisos del Perfil"
-          hint="Asignar permisos al perfil">
+          label="Lista de funciones"
+          vertical>
           <UTree
             :items="items"
             size="xl"
