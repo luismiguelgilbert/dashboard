@@ -54,7 +54,9 @@ const isOpen = ref<boolean>(false);
         @click="isOpen = true">
         <template #default>
           <UIcon name="i-lucide-search" size="30" />
-          <span class="hidden sm:inline-block font-semibold">Opciones</span>
+          <span class="hidden sm:inline-block font-semibold w-20 overflow-x-hidden text-ellipsis">
+            {{ searchString.length > 0 ? `${searchString}` : 'Opciones' }}
+          </span>
         </template>
       </UButton>
 
