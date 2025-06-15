@@ -30,6 +30,10 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: false
+    // vueDevTools: true,
+    // timeline: {
+    //   enabled: true,
+    // }
   },
   css: ['~/assets/css/main.css'],
   runtimeConfig: {

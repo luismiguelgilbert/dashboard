@@ -5,6 +5,8 @@ const searchString = defineModel<string>('searchString', { default: '', required
 const sortBy = defineModel<string>('sortBy', { default: undefined, required: true })
 const props = defineProps<{
   sortItems: sort_by_options[],
+  canCreate?: boolean,
+  canDownload?: boolean,
 }>();
 const emits = defineEmits(['download-file', 'open-new', 'invalidate-cache']);
 
@@ -19,6 +21,7 @@ const isOpen = ref<boolean>(false);
       class="cursor-pointer"
       color="neutral"
       variant="subtle"
+      :disabled="!props.canCreate"
       @click="emits('open-new')">
       <template #default>
         <UIcon name="i-lucide-circle-plus" size="30" />
@@ -73,6 +76,7 @@ const isOpen = ref<boolean>(false);
             icon="i-lucide-file-spreadsheet"
             size="xl"
             variant="subtle"
+            :disabled="!props.canDownload"
             @click="emits('download-file')" />
           <UButton
             class="cursor-pointer !rounded-md"
