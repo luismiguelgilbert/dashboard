@@ -31,7 +31,6 @@ export default defineEventHandler(async (event) => {
         }
       });
     }
-    console.log({allowedCompanies})
 
     return sys_companies_schema.array().parse(allowedCompanies);
   } catch (err) {
