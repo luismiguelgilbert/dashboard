@@ -5,7 +5,7 @@ const props = defineProps<{
 const emits = defineEmits(['close-clicked', 'save-clicked']);
 
 const store = useSecurityProfilesStore();
-const { isLoading } = storeToRefs(store);
+const { isLoading, isSaveDisabled } = storeToRefs(store);
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const { isLoading } = storeToRefs(store);
           label="Guardar"
           icon="i-lucide-save"
           color="neutral"
-          :disabled="isLoading"
+          :disabled="isSaveDisabled"
           :loading="isLoading"
           @click="emits('save-clicked')" />
       </template>

@@ -11,6 +11,13 @@ export const useSecurityProfilesStore = defineStore('securityProfiles', () => {
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
   const selectedRowData = ref<sys_profiles>();
+  const userMenu = useState<sys_links[]>('userMenu');
+  const canEdit = computed(() => userMenu.value.some(link => link.id === PermissionsList.ROLES_EDIT));
+  const canCreate = computed(() => userMenu.value.some(link => link.id === PermissionsList.ROLES_CREATE));
+  const canDownload = computed(() => userMenu.value.some(link => link.id === PermissionsList.ROLES_EXPORT));
+  const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
+  const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nuevo perfil' : 'Editar perfil');
+  const isSaveDisabled = computed<boolean>(() => isLoading.value || (isFormPanelCreating.value && !canCreate) || (!isFormPanelCreating.value && !canEdit));
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([
     { id: 'a.name_es', label: 'Nombre' },
@@ -32,5 +39,11 @@ export const useSecurityProfilesStore = defineStore('securityProfiles', () => {
     selectedRecordId,
     selectedRowData,
     sortItems,
+    formPanelTitle,
+    isFormPanelCreating,
+    isSaveDisabled,
+    canEdit,
+    canCreate,
+    canDownload,
   };
 });

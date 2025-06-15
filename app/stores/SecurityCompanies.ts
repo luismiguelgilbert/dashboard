@@ -11,6 +11,13 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
   const selectedRowData = ref<sys_companies>();
+  const userMenu = useState<sys_links[]>('userMenu');
+  const canEdit = computed(() => userMenu.value.some(link => link.id === PermissionsList.COMPANIES_EDIT));
+  const canCreate = computed(() => userMenu.value.some(link => link.id === PermissionsList.COMPANIES_CREATE));
+  const canDownload = computed(() => userMenu.value.some(link => link.id === PermissionsList.COMPANIES_EXPORT));
+  const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
+  const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva organización' : 'Editar organización');
+  const isSaveDisabled = computed<boolean>(() => isLoading.value || (isFormPanelCreating.value && !canCreate) || (!isFormPanelCreating.value && !canEdit));
   // Constants (should be ref to make it work in Pinia)
   const sortItems = shallowRef([
     { id: 'a.name_es_short', label: 'Nombre' },
@@ -33,5 +40,11 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     selectedRecordId,
     selectedRowData,
     sortItems,
+    formPanelTitle,
+    isFormPanelCreating,
+    isSaveDisabled,
+    canEdit,
+    canCreate,
+    canDownload,
   };
 });

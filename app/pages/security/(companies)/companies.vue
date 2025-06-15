@@ -5,10 +5,21 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const queryClient = useQueryClient();
 const isMobile = breakpoints.smaller('lg');
 const store = useSecurityCompaniesStore();
-const { sortItems, queryPayload, computedQueryKey, isLoading, selectedRecordId, selectedRowData, hasFilter, filterActiveItems } = storeToRefs(store);
+const {
+  sortItems,
+  queryPayload,
+  computedQueryKey,
+  isLoading,
+  selectedRecordId,
+  selectedRowData,
+  hasFilter,
+  filterActiveItems,
+  isSaveDisabled,
+  formPanelTitle,
+  canCreate,
+  canDownload,
+} = storeToRefs(store);
 const isFormPanelOpen = computed<boolean>(() => !!selectedRecordId.value);
-const isFormPanelCreating = computed<boolean>(() => !!useRoute().query.is_new);
-const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva Organización' : 'Editar Organización');
 
 const downloadFile = async () => {
   try {
@@ -149,6 +160,8 @@ onMounted(() => {
           v-model:sort-by="queryPayload.sortBy"
           :sort-items="sortItems"
           :filter-times="[filterActiveItems]"
+          :can-create="canCreate"
+          :can-download="canDownload"
           @open-new="openNew"
           @download-file="downloadFile"
           @invalidate-cache="invalidateCache">
@@ -224,7 +237,7 @@ onMounted(() => {
             icon="i-lucide-save"
             color="neutral"
             size="xl"
-            :disabled="isLoading"
+            :disabled="isSaveDisabled"
             :loading="isLoading"
             @click="saveForm" />
         </div>
