@@ -4,11 +4,12 @@ export default defineEventHandler(async (event) => {
   try {
     const { user } = await getUserSession(event);
     const companiesCookie = getCookie(event, 'nuxt-session-companies');
-    const { userCompanies } = session_companies_schema.parse(jwt.verify(companiesCookie!, process.env.NUXT_SESSION_PASSWORD!));
-
-    if (!user) {
+    if (!user || !companiesCookie) {
       throw createError({ statusCode: 401, statusMessage: 'User not found' });
     }
+    const { userCompanies } = session_companies_schema.parse(jwt.verify(companiesCookie, process.env.NUXT_SESSION_PASSWORD!));
+
+    
     const serverDB = useDatabase();
     const query = await serverDB.sql`
       select

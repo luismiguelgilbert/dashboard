@@ -1,10 +1,14 @@
+import jwt from 'jsonwebtoken';
+
 export default defineEventHandler(async (event) => {
   try {
     const { user } = await getUserSession(event);
-
-    if (!user) {
+    const permissionsCookie = getCookie(event, 'nuxt-session-permissions');
+    if (!user || !permissionsCookie) {
       throw createError({ statusCode: 401, statusMessage: 'User not found' });
     }
+    const { userPermissions } = session_permissions_schema.parse(jwt.verify(permissionsCookie, process.env.NUXT_SESSION_PASSWORD!));
+
     const serverDB = useDatabase();
 
     const query = await serverDB.sql`
@@ -38,7 +42,17 @@ export default defineEventHandler(async (event) => {
       order by case when Y.parent is null then 1 else 2 end, Y.id, Y.position, Y.parent
     `;
 
-    return sys_links_schema.array().parse(query.rows);
+    const queryResult = sys_links_schema.array().parse(query.rows);
+    let allowedPermissions : sys_links[] = [];
+    if (query.rows) {
+      queryResult?.forEach((row : sys_links) => {
+        if (userPermissions.includes(row.id)) {
+          allowedPermissions.push(row);
+        }
+      });
+    }
+
+    return sys_links_schema.array().parse(allowedPermissions);
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
