@@ -32,10 +32,10 @@ const myForm = useTemplateRef('myForm');
           hint="Correo o nombre usado como inicio de sesión">
           <UInput
             v-model="selectedRowData.email"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             placeholder="Email del usuario (login)"
-            icon="i-lucide-at-sign"
-            :disabled="props.disable" />
+            icon="i-lucide-at-sign" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection

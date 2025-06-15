@@ -32,7 +32,7 @@ const emit = defineEmits<{
           </span>
         </p>
       </div>
-      <UChip :color="props.item.is_active ? 'primary' : 'neutral'" inset size="2xl">
+      <UChip :color="props.item.is_active ? 'primary' : 'error'" inset size="2xl">
         <UAvatar v-if="props.item.avatar_url" :src="`${props.item.avatar_url}`" size="2xl" />
         <UAvatar v-else-if="props.item.name_es_short" :alt="`${props.item.name_es_short[0]}`" size="2xl" />
       </UChip>

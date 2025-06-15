@@ -69,17 +69,6 @@ const myForm = useTemplateRef('myForm');
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
-          name="billing_address"
-          label="Dirección de Facturación"
-          hint="Nombre del usuario">
-          <UInput
-            v-model="selectedRowData.billing_address"
-            class="w-full"
-            placeholder="Dirección de Facturación"
-            icon="i-lucide-map-pin-house" />
-        </UiDashboardSection>
-        <USeparator class="py-5" />
-        <UiDashboardSection
           name="billing_phone"
           label="Teléfono de Facturación"
           hint="Nombre del usuario">
@@ -88,6 +77,18 @@ const myForm = useTemplateRef('myForm');
             class="w-full"
             placeholder="Teléfono de Facturación"
             icon="i-lucide-phone" />
+        </UiDashboardSection>
+        <USeparator class="py-5" />
+        <UiDashboardSection
+          name="billing_address"
+          label="Dirección de Facturación"
+          hint="Nombre del usuario"
+          label-top>
+          <UTextarea
+            v-model="selectedRowData.billing_address"
+            class="w-full"
+            placeholder="Dirección de Facturación"
+            icon="i-lucide-map-pin-house" />
         </UiDashboardSection>
         <br>
       </UForm>

@@ -1,6 +1,10 @@
+import jwt from 'jsonwebtoken';
+
 export default defineEventHandler(async (event) => {
   try {
     const { user } = await getUserSession(event);
+    const companiesCookie = getCookie(event, 'nuxt-session-companies');
+    const { userCompanies } = session_companies_schema.parse(jwt.verify(companiesCookie!, process.env.NUXT_SESSION_PASSWORD!));
 
     if (!user) {
       throw createError({ statusCode: 401, statusMessage: 'User not found' });
@@ -18,14 +22,25 @@ export default defineEventHandler(async (event) => {
       order by b.is_default desc, c.name_es_short
     `;
 
-    return sys_companies_schema.array().parse(query.rows);
+    const queryResult = sys_companies_schema.array().parse(query.rows);
+    let allowedCompanies : sys_companies[] = [];
+    if (query.rows) {
+      queryResult?.forEach((row : sys_companies) => {
+        if (userCompanies.includes(row.id)) {
+          allowedCompanies.push(row);
+        }
+      });
+    }
+    console.log({allowedCompanies})
+
+    return sys_companies_schema.array().parse(allowedCompanies);
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
       statusCode: 500,
       statusMessage: typeof err === 'object' && err !== null && 'message' in err
-        ? (err as { message?: string }).message ?? `Unhandled exception`
-        : `Unhandled exception`,
+        ? (err as { message?: string }).message ?? `Unhandled exception getting companies`
+        : `Unhandled exception getting companies`,
     });
   }
 });

@@ -27,7 +27,7 @@ const emit = defineEmits<{
           {{ `Número de usuarios: ${props.item.profile_users_count}` }}
         </p>
       </div>
-      <UChip :color="props.item.is_active ? 'primary' : 'neutral'" inset size="2xl">
+      <UChip :color="props.item.is_active ? 'primary' : 'error'" inset size="2xl">
         <UAvatar :alt="`${props.item.name_es[0]}`" size="2xl" />
       </UChip>
     </div>
