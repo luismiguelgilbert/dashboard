@@ -6,9 +6,10 @@ export const useSecurityUsersStore = defineStore('securityUsers', () => {
     filterSex: [],
     pageSize: 20,
     sortBy: 'a.user_name',
+    sortByOrder: 'asc',
     is_downloading: false,
   });
-  const computedQueryKey = computed(() => ['security-users-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(','), filterProfile: queryPayload.value.filterProfile.join(','), filterSex: queryPayload.value.filterSex.join(',') }]);
+  const computedQueryKey = computed(() => ['security-users-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, sortOrder: queryPayload.value.sortByOrder, filterActive: queryPayload.value.filterIsActive.join(','), filterProfile: queryPayload.value.filterProfile.join(','), filterSex: queryPayload.value.filterSex.join(',') }]);
   const computedRecordQueryKey = computed(() => ['security-users-record', { id: selectedRecordId.value }]);
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();

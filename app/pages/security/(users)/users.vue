@@ -159,6 +159,7 @@ onMounted(() => {
         <UiListToolbar
           v-model:search-string="queryPayload.searchString"
           v-model:sort-by="queryPayload.sortBy"
+          v-model:sort-by-order="queryPayload.sortByOrder"
           :sort-items="sortItems"
           :filter-times="[filterActiveItems, filterSexItems]"
           :can-create="canCreate"

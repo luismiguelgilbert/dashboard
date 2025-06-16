@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
           ? `and (a.is_active in (${payload.filterIsActive}))`
           : ''
       }
-      ORDER BY ${payload.sortBy}
+      ORDER BY ${payload.sortBy} ${payload.sortByOrder}
     `);
 
     const data = await userDataQuery.all();

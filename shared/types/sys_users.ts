@@ -1,6 +1,13 @@
 import { z } from 'zod/v4';
 
-export const sys_users_sort_enum = z.enum(['a.user_name', 'a.user_lastname', 'a.user_sex', 'a.is_active', 'a.email', 'b.name_es']);
+export const sys_users_sort_enum = z.enum([
+  'a.user_name',
+  'a.user_lastname',
+  'a.user_sex',
+  'a.is_active',
+  'a.email',
+  'b.name_es',
+]);
 export type sys_users_sort = z.infer<typeof sys_users_sort_enum>;
 
 export const sys_users_query_schema = z.object({
@@ -17,6 +24,7 @@ export const sys_users_query_schema = z.object({
   filterSex: z.coerce.string().array(),
   filterIsActive: z.coerce.string().array(),
   sortBy: sys_users_sort_enum,
+  sortByOrder: sys_sortbyorder_enum,
   page: z.coerce.number().optional().nullable(),
   pageSize: z.coerce.number().optional(),
   is_downloading: z.coerce.boolean().default(false),

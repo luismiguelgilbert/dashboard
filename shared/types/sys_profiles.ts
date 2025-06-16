@@ -1,6 +1,9 @@
 import { z } from 'zod/v4';
 
-export const sys_profiles_sort_enum = z.enum(['a.name_es', 'a.is_active']);
+export const sys_profiles_sort_enum = z.enum([
+  'a.name_es',
+  'a.is_active',
+]);
 export type sys_profiles_sort = z.infer<typeof sys_profiles_sort_enum>;
 
 export const sys_profiles_query_schema = z.object({
@@ -15,6 +18,7 @@ export const sys_profiles_query_schema = z.object({
     .refine(s => !s.includes('update'), 'Sin palabras claves!'),
   filterIsActive: z.coerce.string().array(),
   sortBy: sys_companies_sort_enum,
+  sortByOrder: sys_sortbyorder_enum,
   page: z.coerce.number().optional().nullable(),
   pageSize: z.coerce.number().optional(),
   is_downloading: z.coerce.boolean().default(false),

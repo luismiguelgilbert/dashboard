@@ -4,9 +4,10 @@ export const useSecurityCompaniesStore = defineStore('securityCompanies', () => 
     filterIsActive: [],
     pageSize: 20,
     sortBy: 'a.name_es_short',
+    sortByOrder: 'asc',
     is_downloading: false,
   });
-  const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, filterActive: queryPayload.value.filterIsActive.join(',') }]);
+  const computedQueryKey = computed(() => ['security-companies-search', { search: queryPayload.value.searchString, sort: queryPayload.value.sortBy, sortOrder: queryPayload.value.sortByOrder, filterActive: queryPayload.value.filterIsActive.join(',') }]);
   const computedRecordQueryKey = computed(() => ['security-companies-record', { id: selectedRecordId.value }]);
   const isLoading = ref<boolean>(false);
   const selectedRecordId = ref<string>();
