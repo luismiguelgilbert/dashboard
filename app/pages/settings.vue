@@ -1,22 +1,22 @@
 <script setup lang="ts">
-const links = [[{
-  label: 'General',
-  icon: 'i-lucide-user',
-  to: '/settings',
-  exact: true
-}, {
-  label: 'Members',
-  icon: 'i-lucide-users',
-  to: '/settings/members'
-}, {
-  label: 'Notifications',
-  icon: 'i-lucide-bell',
-  to: '/settings/notifications'
-}, {
-  label: 'Security',
-  icon: 'i-lucide-shield',
-  to: '/settings/security'
-}]]
+const links = [[
+  {
+    label: 'General',
+    icon: 'i-lucide-user',
+    to: '/settings',
+    exact: true
+  },
+  {
+    label: 'Organzaciones',
+    icon: 'i-lucide-building-2',
+    to: '/settings/organizations'
+  },
+  {
+    label: 'Contraseña',
+    icon: 'i-lucide-shield',
+    to: '/settings/security'
+  }
+]];
 </script>
 
 <template>

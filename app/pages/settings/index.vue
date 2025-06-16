@@ -1,49 +1,90 @@
 <script setup lang="ts">
-import * as z from 'zod'
+import imageCompression from 'browser-image-compression';
 import type { FormSubmitEvent } from '@nuxt/ui'
 
+const userSession = await useUserSession();
+const isProcessing = ref(false);
 const fileRef = ref<HTMLInputElement>()
-
-const profileSchema = z.object({
-  name: z.string().min(2, 'Too short'),
-  email: z.string().email('Invalid email'),
-  username: z.string().min(2, 'Too short'),
-  avatar: z.string().optional(),
-  bio: z.string().optional()
-})
-
-type ProfileSchema = z.output<typeof profileSchema>
-
 const profile = reactive<Partial<ProfileSchema>>({
-  name: 'Benjamin Canac',
-  email: 'ben@nuxtlabs.com',
-  username: 'benjamincanac',
-  avatar: undefined,
-  bio: undefined
+  user_name: userSession.user.value?.user_name,
+  user_lastname: userSession.user.value?.user_lastname,
+  email: userSession.user.value?.email,
+  avatar: userSession.user.value?.avatar_url,
+  avatar_file: undefined,
 })
-const toast = useToast()
-async function onSubmit(event: FormSubmitEvent<ProfileSchema>) {
-  toast.add({
-    title: 'Success',
-    description: 'Your settings have been updated.',
-    icon: 'i-lucide-check',
-    color: 'success'
-  })
-  console.log(event.data)
-}
+const onFileClick = () => fileRef.value?.click();
+const onFileChange = async (e: Event) => {
+  try {
+    isProcessing.value = true;
+    const inputElement: HTMLInputElement = e.target as HTMLInputElement;
+    if (!(inputElement).files?.length) {
+      throw new Error('No se seleccionó archivo.');
+    }
+    if (inputElement.files[0]) {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: false,
+      };
+      try {
+        const compressedFile = await imageCompression(inputElement.files[0], options);
 
-function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement
-
-  if (!input.files?.length) {
-    return
+        if (compressedFile.size / 1024 / 1024 > 1) {
+          throw new Error('Tamaño incorrecto.');
+        }
+        if (compressedFile ) {
+          profile.avatar_file = await filetoBase64(compressedFile);
+          profile.avatar = URL.createObjectURL(compressedFile);
+        }
+      } catch (error) {
+        console.error(error);
+        useToast().add({
+          title: `Error al cargar archivo: ${error}`,
+          icon: 'i-hugeicons-settings-error-01',
+          color: 'error',
+        });
+      }
+    }
+    isProcessing.value = false;
+  } catch (error) {
+    isProcessing.value = false;
+    useToast().add({
+      title: `Error al cargar archivo: ${error}`,
+      icon: 'i-hugeicons-settings-error-01',
+      color: 'error',
+    });
   }
-
-  profile.avatar = URL.createObjectURL(input.files[0]!)
 }
+///
 
-function onFileClick() {
-  fileRef.value?.click()
+const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
+  try {
+    const headers = useRequestHeaders(['cookie']);
+    isProcessing.value = true;
+    await $fetch('/api/system/userUpdate', {
+      method: 'post',
+      body: event.data,
+      headers,
+    })
+    useToast().add({
+      title: 'Listo',
+      description: 'Sus cambios fueron guardados.',
+      icon: 'i-lucide-check',
+      color: 'success'
+    })
+  }
+  catch (error) {
+    useToast().add({
+      title: 'Error',
+      description: `Error al guardar los cambios. (${error})`,
+      icon: 'i-lucide-shield-alert',
+      type: 'foreground',
+      color: 'error',
+    });
+    console.error(error);
+  } finally {
+    isProcessing.value = false;
+  }
 }
 </script>
 
@@ -54,53 +95,62 @@ function onFileClick() {
     :state="profile"
     @submit="onSubmit">
     <UPageCard
-      title="Profile"
-      description="These informations will be displayed publicly."
+      title="Mis Datos"
+      description="Información pública del usuario."
       variant="naked"
       orientation="horizontal"
       class="mb-4">
       <UButton
         form="settings"
-        label="Save changes"
-        color="neutral"
+        label="Guardar cambios"
+        color="primary"
         type="submit"
-        class="w-fit lg:ms-auto" />
+        class="w-fit lg:ms-auto cursor-pointer"
+        size="xl"
+        :loading="isProcessing"
+        :disabled="isProcessing" />
     </UPageCard>
 
     <UPageCard variant="subtle">
       <UFormField
-        name="name"
-        label="Name"
-        description="Will appear on receipts, invoices, and other communication."
+        name="user_name"
+        label="Nombres"
+        description="Aparece en reportes y notificaciones del sistema."
         required
         class="flex max-sm:flex-col justify-between items-start gap-4">
         <UInput
-          v-model="profile.name"
+          v-model="profile.user_name"
+          class="min-w-64"
+          size="xl"
+          autocomplete="off" />
+      </UFormField>
+      <USeparator />
+      <UFormField
+        name="user_lastname"
+        label="Apellidos"
+        description="Aparece en reportes y notificaciones del sistema."
+        required
+        class="flex max-sm:flex-col justify-between items-start gap-4">
+        <UInput
+          v-model="profile.user_lastname"
+          class="min-w-64"
+          size="xl"
           autocomplete="off" />
       </UFormField>
       <USeparator />
       <UFormField
         name="email"
         label="Email"
-        description="Used to sign in, for email receipts and product updates."
+        description="Usado al iniciar sesión."
         required
         class="flex max-sm:flex-col justify-between items-start gap-4">
         <UInput
           v-model="profile.email"
+          class="min-w-64"
           type="email"
-          autocomplete="off" />
-      </UFormField>
-      <USeparator />
-      <UFormField
-        name="username"
-        label="Username"
-        description="Your unique username for logging in and your profile URL."
-        required
-        class="flex max-sm:flex-col justify-between items-start gap-4">
-        <UInput
-          v-model="profile.username"
-          type="username"
-          autocomplete="off" />
+          size="xl"
+          autocomplete="off"
+          readonly />
       </UFormField>
       <USeparator />
       <UFormField
@@ -111,10 +161,10 @@ function onFileClick() {
         <div class="flex flex-wrap items-center gap-3">
           <UAvatar
             :src="profile.avatar"
-            :alt="profile.name"
+            :alt="profile.user_name"
             size="lg" />
           <UButton
-            label="Choose"
+            label="Seleccionar"
             color="neutral"
             @click="onFileClick" />
           <input
@@ -124,19 +174,6 @@ function onFileClick() {
             accept=".jpg, .jpeg, .png, .gif"
             @change="onFileChange">
         </div>
-      </UFormField>
-      <USeparator />
-      <UFormField
-        name="bio"
-        label="Bio"
-        description="Brief description for your profile. URLs are hyperlinked."
-        class="flex max-sm:flex-col justify-between items-start gap-4"
-        :ui="{ container: 'w-full' }">
-        <UTextarea
-          v-model="profile.bio"
-          :rows="5"
-          autoresize
-          class="w-full" />
       </UFormField>
     </UPageCard>
   </UForm>

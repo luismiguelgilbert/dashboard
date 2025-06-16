@@ -6,7 +6,6 @@ const props = defineProps<{
 const headers = useRequestHeaders(['cookie']);
 const moduleStore = useSecurityUsersStore();
 const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
-const myForm = useTemplateRef('myForm');
 
 const {
   data: lookupProfiles,
@@ -41,7 +40,6 @@ const {
     <UCard variant="subtle">
       <UForm
         v-if="selectedRowData"
-        ref="myForm"
         :disabled="props.disable"
         :state="selectedRowData"
         :schema="sys_users_schema">

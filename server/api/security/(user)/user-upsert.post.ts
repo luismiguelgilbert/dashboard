@@ -54,10 +54,6 @@ export default defineEventHandler(async (event) => {
     multipleRowsInsert = multipleRowsInsert.slice(0, -1); // Remove the last comma
     await serverDB.exec(multipleRowsInsert);
 
-    // payload.sys_companies_users.forEach(async (companyId) => {
-    //   await serverDB.sql`insert into sys_companies_users (sys_company_id, user_id) values (${companyId}, ${payload.id})`;
-    // });
-
     // Update user password if marked for change
     if (payload.change_password) {
       await serverDB.sql`UPDATE sys_users SET user_hash = crypt(${payload.new_password}, gen_salt('md5')) where id = ${payload.id}`;
