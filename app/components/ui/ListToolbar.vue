@@ -3,6 +3,7 @@ import { breakpointsTailwind } from '@vueuse/core';
 
 const searchString = defineModel<string>('searchString', { default: '', required: true })
 const sortBy = defineModel<string>('sortBy', { default: undefined, required: true })
+const sortByOrder = defineModel<sys_sortbyorder>('sortByOrder', { default: 'asc', required: true })
 const props = defineProps<{
   sortItems: sort_by_options[],
   canCreate?: boolean,
@@ -86,10 +87,23 @@ const isOpen = ref<boolean>(false);
             size="xl"
             variant="subtle"
             @click="emits('invalidate-cache')" />
-          <UPageCard
-            title="Ordenar lista:"
-            variant="soft">
-            <template #footer>
+          <UPageCard variant="soft">
+            <template #header>
+              <h3 class="text-lg font-semibold">
+                Ordenar lista:
+              </h3>
+              <URadioGroup
+                v-model="sortByOrder"
+                class="cursor-pointer"
+                value-key="id"
+                size="xl"
+                :items="[
+                  { id: 'asc', label: 'Ascendente   ⬇️' },
+                  { id: 'desc', label: 'Descendente ⬆️' }
+                ]" />
+              <h3 class="pt-3 text-lg font-semibold">
+                Campo:
+              </h3>
               <URadioGroup
                 v-model="sortBy"
                 class="cursor-pointer"

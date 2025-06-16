@@ -62,3 +62,6 @@ export const sys_links_schema = z.object({
 });
 
 export type sys_links = z.infer<typeof sys_links_schema>;
+
+export const sys_sortbyorder_enum = z.enum(['asc', 'desc']);
+export type sys_sortbyorder = z.infer<typeof sys_sortbyorder_enum>;

@@ -1,10 +1,9 @@
 export default defineEventHandler(async (event) => {
   try {
-    // const { user } = await getUserSession(event);
-
-    // if (!user) {
-    //   throw createError({ statusCode: 401, statusMessage: 'User not found' });
-    // }
+    const { user } = await getUserSession(event);
+    if (!user) {
+      throw createError({ statusCode: 401, statusMessage: 'User not found' });
+    }
     const serverDB = useDatabase();
     const query = await serverDB.sql`
       select
