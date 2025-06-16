@@ -55,7 +55,7 @@ const {
             :loading="isFetchingLookupProfiles"
             class="w-full"
             placeholder="Perfil del usuario"
-            icon="i-lucide-user"
+            icon="i-lucide-shield-user"
             value-key="id"
             label-key="name_es" />
         </UiDashboardSection>

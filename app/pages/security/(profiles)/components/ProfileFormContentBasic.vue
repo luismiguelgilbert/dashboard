@@ -43,7 +43,7 @@ const myForm = useTemplateRef('myForm');
             v-model="selectedRowData.name_es"
             class="w-full"
             placeholder="Nombre descriptivo del perfil"
-            icon="i-lucide-building-2" />
+            icon="i-lucide-shield-user" />
         </UiDashboardSection>
         <br>
       </UForm>
