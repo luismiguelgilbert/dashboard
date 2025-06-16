@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   const { user } = await getUserSession(event);
   const serverDB = useDatabase();
   try {
-    // event.context.params = useSanitizeParams(event.context.params);
     const { data: payload, error } = await readValidatedBody(event, sys_companies_schema.safeParse);
     if (error) {
       throw createError({

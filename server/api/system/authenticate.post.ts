@@ -3,7 +3,6 @@
 import jwt from 'jsonwebtoken';
 
 export default defineEventHandler(async (event) => {
-  // event.context.params = useSanitizeParams(event.context.params);
   const { data: payload } = await readValidatedBody(event, login_schema.safeParse);
 
   const serverDB = useDatabase();

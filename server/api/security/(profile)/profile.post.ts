@@ -1,7 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
     await hasPermissions(event, [PermissionsList.ROLES_READ]);
-    // event.context.params = useSanitizeParams(event.context.params);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     if (error) {
       throw createError({

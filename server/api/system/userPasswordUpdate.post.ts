@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
       });
     }
     
-    // Upsert user info
+    // Update user password
     const serverDB = useDatabase();
     await serverDB.sql`
       update sys_users set 
