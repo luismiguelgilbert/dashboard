@@ -9,8 +9,7 @@ const userCompanies = useState<sys_companies[]>('userCompanies');
       description="Puedo acceder a estas organizaciones:"
       variant="naked"
       orientation="horizontal"
-      class="mb-4">
-    </UPageCard>
+      class="mb-4" />
 
     <UPageCard variant="subtle" :ui="{ container: 'p-0 sm:p-0 gap-y-0', wrapper: 'items-stretch', header: 'p-4 mb-0 border-b border-default' }">
       <div
@@ -24,8 +23,7 @@ const userCompanies = useState<sys_companies[]>('userCompanies');
           :avatar="{
             src: company.avatar_url || undefined,
             icon: 'i-lucide-image'
-          }"
-        />
+          }" />
       </div>
     </UPageCard>
   </div>

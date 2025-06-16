@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     }
     const { userCompanies } = session_companies_schema.parse(jwt.verify(companiesCookie, process.env.NUXT_SESSION_PASSWORD!));
 
-    
     const serverDB = useDatabase();
     const query = await serverDB.sql`
       select
@@ -24,9 +23,9 @@ export default defineEventHandler(async (event) => {
     `;
 
     const queryResult = sys_companies_schema.array().parse(query.rows);
-    let allowedCompanies : sys_companies[] = [];
+    const allowedCompanies: sys_companies[] = [];
     if (query.rows) {
-      queryResult?.forEach((row : sys_companies) => {
+      queryResult?.forEach((row: sys_companies) => {
         if (userCompanies.includes(row.id)) {
           allowedCompanies.push(row);
         }

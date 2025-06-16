@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    
+
     // Update user password
     const serverDB = useDatabase();
     await serverDB.sql`

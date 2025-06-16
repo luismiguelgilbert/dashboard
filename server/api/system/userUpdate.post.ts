@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    
+
     // Upsert user info
     const serverDB = useDatabase();
     await serverDB.sql`

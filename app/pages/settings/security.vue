@@ -30,8 +30,7 @@ const onSubmit = async (event: FormSubmitEvent<PasswordSchema>) => {
       icon: 'i-lucide-check',
       color: 'success'
     })
-  }
-  catch (error) {
+  } catch (error) {
     useToast().add({
       title: 'Error',
       description: `Error al guardar los cambios. (${error})`,

@@ -32,7 +32,7 @@ const onFileChange = async (e: Event) => {
         if (compressedFile.size / 1024 / 1024 > 1) {
           throw new Error('Tamaño incorrecto.');
         }
-        if (compressedFile ) {
+        if (compressedFile) {
           profile.avatar_file = await filetoBase64(compressedFile);
           profile.avatar = URL.createObjectURL(compressedFile);
         }
@@ -71,8 +71,7 @@ const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
       icon: 'i-lucide-check',
       color: 'success'
     })
-  }
-  catch (error) {
+  } catch (error) {
     useToast().add({
       title: 'Error',
       description: `Error al guardar los cambios. (${error})`,

@@ -43,9 +43,9 @@ export default defineEventHandler(async (event) => {
     `;
 
     const queryResult = sys_links_schema.array().parse(query.rows);
-    let allowedPermissions : sys_links[] = [];
+    const allowedPermissions: sys_links[] = [];
     if (query.rows) {
-      queryResult?.forEach((row : sys_links) => {
+      queryResult?.forEach((row: sys_links) => {
         if (userPermissions.includes(row.id)) {
           allowedPermissions.push(row);
         }
