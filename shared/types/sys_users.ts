@@ -96,3 +96,9 @@ export const profileSchema = z.object({
   avatar_file: z.string().nullable().default(null),
 });
 export type ProfileSchema = z.output<typeof profileSchema>
+
+export const passwordSchema = z.object({
+  new: z.string().min(5, 'Debe tener al menos 5 caracteres'),
+  confirm: z.string().min(5, 'Debe tener al menos 5 caracteres'),
+})
+export type PasswordSchema = z.output<typeof passwordSchema>

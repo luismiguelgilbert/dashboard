@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import imageCompression from 'browser-image-compression';
-import type { FormSubmitEvent } from '@nuxt/ui'
+import type { FormSubmitEvent } from '@nuxt/ui';
 
 const userSession = await useUserSession();
 const isProcessing = ref(false);
@@ -55,7 +55,6 @@ const onFileChange = async (e: Event) => {
     });
   }
 }
-///
 
 const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
   try {
