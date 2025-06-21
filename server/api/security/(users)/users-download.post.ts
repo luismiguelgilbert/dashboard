@@ -12,46 +12,39 @@ export default defineEventHandler(async (event) => {
     }
 
     // QUERIES
+    const sort = sys_users_sort_enum_server.find(s => s.id === payload.sort) || sys_users_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
-       a.id
+      a.id
       ,initcap(a.user_name) as user_name
       ,initcap(a.user_lastname) as user_lastname
       ,a.is_active
       ,a.user_sex
       ,a.avatar_url
       ,a.email
-      ,a.sys_profile_id
       ,b.name_es as sys_profile_name
-      ,'indigo' as default_color
-      ,'zinc' as default_dark_color
-      ,a.dark_enabled
       from sys_users a
       inner join sys_profiles b on a.sys_profile_id = b.id
       where (1 = 1)
-      ${payload.searchString?.length > 0
+      ${payload.search && payload.search.trim()?.length > 0
           ? `and (
-            a.user_name ilike '%${payload.searchString}%'
-            or a.user_lastname ilike '%${payload.searchString}%'
-            or a.email ilike '%${payload.searchString}%'
-            or b.name_es ilike '%${payload.searchString}%'
+            a.user_name ilike '%${payload.search.trim()}%'
+            or a.user_lastname ilike '%${payload.search.trim()}%'
+            or a.email ilike '%${payload.search.trim()}%'
+            or b.name_es ilike '%${payload.search.trim()}%'
           )`
           : ''
       }
-      ${payload.filterProfile?.length > 0
-          ? `and (a.sys_profile_id in (${payload.filterProfile}))`
+      ${payload.is_active && payload.is_active.length > 0
+          ? `and (a.is_active in (${payload.is_active.join(',')}))`
           : ''
       }
-      ${payload.filterSex?.length > 0
-          ? `and (a.user_sex in (${payload.filterSex}))`
+      ${payload.user_sex && payload.user_sex.length > 0
+          ? `and (a.user_sex in (${payload.user_sex.join(',')}))`
           : ''
       }
-      ${payload.filterIsActive?.length > 0
-          ? `and (a.is_active in (${payload.filterIsActive}))`
-          : ''
-      }
-      ORDER BY ${payload.sortBy} ${payload.sortByOrder}
+      ORDER BY ${sort?.label} ${payload.order}
     `);
 
     const data = await userDataQuery.all();

@@ -1,19 +1,19 @@
 <script setup lang="ts">
 const props = defineProps<{
   item: sys_users;
-  itemSelectedId: string | undefined;
 }>();
 
 const emit = defineEmits<{
   (e: 'itemSelected', value: sys_users): void
 }>()
+const { currentRoute } = useRouter();
 </script>
 
 <template>
   <div
     class="p-2 pl-5 pr-6 text-sm cursor-pointer border-l-2 transition-colors border-b border-b-default"
     :class="[
-      props.itemSelectedId === props.item.id ? 'border-primary bg-primary/10' : 'border-(--ui-bg) hover:border-l-primary hover:bg-primary/5'
+      currentRoute.params.id === props.item.id ? 'border-primary bg-primary/10' : 'border-(--ui-bg) hover:border-l-primary hover:bg-primary/5'
     ]"
     @click="emit('itemSelected', props.item)">
     <div class="flex items-center justify-between">

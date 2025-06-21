@@ -4,21 +4,18 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityUsersStore();
-const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
+const { selectedRowData } = storeToRefs(moduleStore);
 </script>
 
 <template>
   <div
-    v-if="selectedRecordId && selectedRowData"
+    v-if="selectedRowData"
     class="m-4 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Contraseña
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Cambiar la contraseña del usuario
-      </p>
-    </div>
+    <UPageFeature
+      title="Contraseña"
+      description="Cambiar la contraseña del usuario" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
         v-if="selectedRowData"
@@ -28,11 +25,8 @@ const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
         :schema="sys_users_schema">
         <UiDashboardSection
           name="sys_profile_id"
-          label="Perfil"
-          hint="Permisos del usuario (roles)">
-          <USwitch
-            v-model="selectedRowData.change_password"
-            label="Cambiar contraseña" />
+          label="Cambiar contraseña">
+          <USwitch v-model="selectedRowData.change_password" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
@@ -42,6 +36,7 @@ const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
           <UInput
             v-model="selectedRowData.new_password"
             class="w-full"
+            :disabled="!selectedRowData.change_password"
             placeholder="Escriba la nueva contraseña"
             icon="i-lucide-user" />
         </UiDashboardSection>
@@ -52,6 +47,7 @@ const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
           hint="Confirme la nueva contraseña del usuario">
           <UInput
             v-model="selectedRowData.new_password_confirm"
+            :disabled="!selectedRowData.change_password"
             class="w-full"
             placeholder="Confirme la nueva contraseña"
             icon="i-lucide-user-round" />
@@ -59,6 +55,6 @@ const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
         <br>
       </UForm>
     </UCard>
-    <br><br>
+    <br>
   </div>
 </template>

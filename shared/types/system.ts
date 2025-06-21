@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import type { CheckboxGroupItem } from '@nuxt/ui';
 
 export const login_schema = z.object({
   email: z.coerce.string(),
@@ -25,6 +26,16 @@ export const sort_by_options_schema = z.object(
   },
 )
 export type sort_by_options = z.infer<typeof sort_by_options_schema>;
+
+export const filter_by_options_enum_keys_schema = z.enum(['boolean']);
+export const filter_by_options_schema = z.object(
+  {
+    id: z.coerce.string(),
+    legend: z.coerce.string(),
+    category: filter_by_options_enum_keys_schema,
+  }
+);
+export type filter_by_options = z.infer<typeof filter_by_options_schema> & { options: CheckboxGroupItem[] };
 
 export const filter_string_options_schema = z.object(
   {
@@ -63,5 +74,18 @@ export const sys_links_schema = z.object({
 
 export type sys_links = z.infer<typeof sys_links_schema>;
 
-export const sys_sortbyorder_enum = z.enum(['asc', 'desc']);
-export type sys_sortbyorder = z.infer<typeof sys_sortbyorder_enum>;
+export const sys_sort_order_enum = z.enum(['asc', 'desc']);
+export type sys_sortbyorder = z.infer<typeof sys_sort_order_enum>;
+
+export const sys_url_params_schema = z.object({
+  company: z.string(),
+  id: z.string().optional(),
+  search: z.string().optional(),
+  is_new: z.string().optional(),
+});
+export type sys_url_params = z.infer<typeof sys_url_params_schema>;
+
+export const sys_users_sort_array_keys_schema = z.enum(['id', 'label']);
+export const sys_users_sort_array_schema = z.record(sys_users_sort_array_keys_schema, z.string());
+export type sys_users_sort_enum_array = z.infer<typeof sys_users_sort_array_schema>;
+export const sys_filter_boolean_schema = z.enum(['True', 'False']);

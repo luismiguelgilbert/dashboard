@@ -19,7 +19,7 @@ export const sys_companies_query_schema = z.object({
     .refine(s => !s.includes('update'), 'Sin palabras claves!'),
   filterIsActive: z.coerce.string().array(),
   sortBy: sys_companies_sort_enum,
-  sortByOrder: sys_sortbyorder_enum,
+  sortByOrder: sys_sort_order_enum,
   page: z.coerce.number().optional().nullable(),
   pageSize: z.coerce.number().optional(),
   is_downloading: z.coerce.boolean().default(false),

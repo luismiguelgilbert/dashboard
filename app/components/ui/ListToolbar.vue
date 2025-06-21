@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { breakpointsTailwind } from '@vueuse/core';
 
-const searchString = defineModel<string>('searchString', { default: '', required: true })
-const sortBy = defineModel<string>('sortBy', { default: undefined, required: true })
-const sortByOrder = defineModel<sys_sortbyorder>('sortByOrder', { default: 'asc', required: true })
+const search = defineModel<string | undefined>('search');
+const sort = defineModel<string>('sort', { default: '1' });
+const order = defineModel<string>('order', { default: 'asc' });
+
 const props = defineProps<{
   sortItems: sort_by_options[],
   canCreate?: boolean,
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>();
 const emits = defineEmits(['download-file', 'open-new', 'invalidate-cache']);
 
+const { currentRoute, push } = useRouter();
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 const isOpen = ref<boolean>(false);
@@ -31,6 +33,7 @@ const isOpen = ref<boolean>(false);
     </UButton>
     <UDrawer
       v-model:open="isOpen"
+      :overlay="false"
       title="Opciones"
       description="Buscar, ordenar y filtrar la lista"
       :direction="isMobile ? 'top' : 'right'">
@@ -58,18 +61,23 @@ const isOpen = ref<boolean>(false);
         @click="isOpen = true">
         <template #default>
           <UIcon name="i-lucide-search" size="30" />
-          <span class="hidden sm:inline-block font-semibold w-20 overflow-x-hidden text-ellipsis">
-            {{ searchString.length > 0 ? `${searchString}` : 'Opciones' }}
+          <span
+            class="hidden sm:inline-block font-semibold w-20 overflow-x-hidden text-ellipsis text-left"
+            :class="{ 'text-primary-400': (search && search.length > 0) }">
+            {{ search && search.length > 0 ? `${search}` : 'Opciones' }}
           </span>
         </template>
       </UButton>
 
       <template #body>
-        <div class="w-full grid grid-cols-1 gap-y-2">
-          <UiDebouncedSearchInput
-            v-model="searchString"
-            size="xl"
-            placeholder="Buscar..." />
+        <div class="w-full grid grid-cols-1 gap-y-2 min-w-full sm:min-w-[350px]">
+          <UFormField size="xl">
+            <UiDebouncedSearchInput
+              v-model="search"
+              size="xl"
+              placeholder="Buscar..."
+              @update:model-value="val => push({ query: { ...currentRoute.query, search: val || undefined } })" />
+          </UFormField>
           <UButton
             class="cursor-pointer !rounded-md"
             label="Descargar lista"
@@ -87,32 +95,38 @@ const isOpen = ref<boolean>(false);
             size="xl"
             variant="subtle"
             @click="emits('invalidate-cache')" />
-          <UPageCard variant="soft">
-            <template #header>
-              <h3 class="text-lg font-semibold">
-                Ordenar lista:
-              </h3>
+
+          <UPageCard variant="soft" class="my-2">
+            <UFormField label="Ordenar lista:" size="xl">
               <URadioGroup
-                v-model="sortByOrder"
-                class="cursor-pointer"
+                v-model="order"
                 value-key="id"
                 size="xl"
+                :ui="{ base: 'cursor-pointer hover:bg-primary-500', label: 'cursor-pointer', description: 'cursor-pointer' }"
                 :items="[
                   { id: 'asc', label: 'Ascendente   ⬇️' },
                   { id: 'desc', label: 'Descendente ⬆️' }
-                ]" />
-              <h3 class="pt-3 text-lg font-semibold">
-                Campo:
-              </h3>
-              <URadioGroup
-                v-model="sortBy"
-                class="cursor-pointer"
+                ]"
+                @update:model-value="val => push({ query: { ...currentRoute.query, order: val || undefined } })" />
+            </UFormField>
+            <UFormField label="Campo:" size="xl">
+              <USelectMenu
+                v-model="sort"
                 value-key="id"
                 size="xl"
-                :items="props.sortItems" />
-            </template>
+                class="w-full"
+                :search-input="false"
+                :items="props.sortItems"
+                @update:model-value="val => push({ query: { ...currentRoute.query, sort: val || undefined } })" />
+            </UFormField>
           </UPageCard>
-          <slot name="FilterSection" />
+
+          <UPageCard
+            variant="soft"
+            class="my-2">
+            <UFormField label="Filtrar lista:" size="xl" />
+            <slot name="FilterSection" />
+          </UPageCard>
         </div>
       </template>
     </UDrawer>

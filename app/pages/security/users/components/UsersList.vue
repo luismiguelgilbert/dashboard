@@ -3,7 +3,7 @@ import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
 const store = useSecurityUsersStore();
-const { queryPayload, computedQueryKey, selectedRecordId } = storeToRefs(store);
+const { queryPayload, computedQueryKey } = storeToRefs(store);
 const headers = useRequestHeaders(['cookie']);
 const errorFetching = ref(false);
 const errorFetchingMessage = ref('');
@@ -25,7 +25,7 @@ const {
   isFetching,
   hasNextPage,
 } = useInfiniteQuery({
-  queryKey: computedQueryKey,
+  queryKey: [computedQueryKey.value, queryPayload],
   queryFn: ({ pageParam }) => fetcher(pageParam),
   initialPageParam: 1,
   getNextPageParam: (lastPage, pages) => lastPage && lastPage.length > 0 ? pages.length + 1 : undefined,
@@ -55,7 +55,6 @@ const onLoadMore = async () => {
           v-for="item in page"
           :key="`${dataUpdatedAt}-${item.id}`"
           :item="item"
-          :item-selected-id="selectedRecordId || undefined"
           @item-selected="($event) => emits('row-clicked', $event)" />
       </template>
       <UProgress v-if="isFetching" class="p-3" />

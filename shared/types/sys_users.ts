@@ -1,42 +1,62 @@
 import { z } from 'zod/v4';
 
-export const sys_users_sort_enum = z.enum([
-  'a.user_name',
-  'a.user_lastname',
-  'a.user_sex',
-  'a.is_active',
-  'a.email',
-  'b.name_es',
-]);
-export type sys_users_sort = z.infer<typeof sys_users_sort_enum>;
+export const sys_users_sort_enum_keys_schema = z.enum(['1', '2', '3', '4', '5', '6']);
+export type sys_users_sort_enum_keys = z.infer<typeof sys_users_sort_enum_keys_schema>;
+export const sys_users_sort_enum_client: sys_users_sort_enum_array[] = [
+  { id: '1', label: 'Nombre' },
+  { id: '2', label: 'Apellidos' },
+  { id: '3', label: 'Sexo' },
+  { id: '4', label: 'Estado' },
+  { id: '5', label: 'Email' },
+  { id: '6', label: 'Perfil' },
+];
+export const sys_users_sort_enum_server: sys_users_sort_enum_array[] = [
+  { id: '1', label: 'a.user_name' },
+  { id: '2', label: 'a.user_lastname' },
+  { id: '3', label: 'a.user_sex' },
+  { id: '4', label: 'a.is_active' },
+  { id: '5', label: 'a.email' },
+  { id: '6', label: 'b.name_es' },
+];
 
 export const sys_users_query_schema = z.object({
-  searchString: z.string()
-    .refine(s => !s.includes(' '), 'Sin espacios!')
-    .refine(s => !s.includes(';'), 'Sin caracteres especiales!')
-    .refine(s => !s.includes('truncate'), 'Sin palabras claves!')
-    .refine(s => !s.includes('drop'), 'Sin palabras claves!')
-    .refine(s => !s.includes('delete'), 'Sin palabras claves!')
-    .refine(s => !s.includes('select'), 'Sin palabras claves!')
-    .refine(s => !s.includes('insert'), 'Sin palabras claves!')
-    .refine(s => !s.includes('update'), 'Sin palabras claves!'),
-  filterProfile: z.coerce.number().array(),
-  filterSex: z.coerce.string().array(),
-  filterIsActive: z.coerce.string().array(),
-  sortBy: sys_users_sort_enum,
-  sortByOrder: sys_sortbyorder_enum,
-  page: z.coerce.number().optional().nullable(),
-  pageSize: z.coerce.number().optional(),
-  is_downloading: z.coerce.boolean().default(false),
+  search: z.coerce.string().optional()
+    .refine(s => !s || (!!s && !s.includes(';')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('truncate')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('drop')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('delete')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('select')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('insert')), 'Sin caracteres especiales!')
+    .refine(s => !s || (!!s && !s.includes('update')), 'Sin caracteres especiales!'),
+  // filterProfile: z.coerce.number().array().optional(),
+  sort: sys_users_sort_enum_keys_schema.catch('1'),
+  order: sys_sort_order_enum.catch('asc'),
+  page: z.coerce.number().optional().refine(p => !p || p > 0, 'Página debe ser mayor a 0'),
+  is_active: z
+    .union([
+      z.literal('True'),
+      z.literal('False'),
+      z.array(z.union([z.literal('True'), z.literal('False')]))
+    ])
+    .optional()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      if (Array.isArray(val)) return val;
+      return [val];
+    }),
+  user_sex: z
+    .union([
+      z.literal('True'),
+      z.literal('False'),
+      z.array(z.union([z.literal('True'), z.literal('False')]))
+    ])
+    .optional()
+    .transform((val) => {
+      if (val === undefined) return undefined;
+      if (Array.isArray(val)) return val;
+      return [val];
+    }),
 })
-  .refine(
-    val => ((val.is_downloading) || (!val.is_downloading && z.number().min(1).safeParse(val.page).success)),
-    { error: `Campo [page] es obligatorio`, path: ['page'] },
-  )
-  .refine(
-    val => ((val.is_downloading) || (!val.is_downloading && z.number().min(5).max(1000).safeParse(val.pageSize).success)),
-    { error: `Campo [pageSize] es obligatorio y debe ser menor a 1000`, path: ['pageSize'] },
-  )
 export type sys_users_query = z.infer<typeof sys_users_query_schema>;
 
 export const sys_users_schema = z.object({
@@ -85,8 +105,18 @@ export const sys_users_schema = z.object({
     val => ((!val.is_saving) || (val.is_saving && !val.change_password) || (val.is_saving && val.change_password && val.new_password === val.new_password_confirm)),
     { message: `Contraseñas no coinciden`, path: ['new_password_confirm'] },
   )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && !val.is_new) || (val.is_saving && val.is_new && val.change_password)),
+    { message: `Debe definir una contraseña`, path: ['new_password'] },
+  )
 ;
 export type sys_users = z.infer<typeof sys_users_schema>;
+
+export const sys_users_query_cache_schema = z.object({
+  pageParams: z.array(z.number()).default([]),
+  pages: z.array(sys_users_schema.array()).default([]),
+});
+export type sys_users_query_cache = z.infer<typeof sys_users_query_cache_schema>;
 
 export const profileSchema = z.object({
   user_name: z.string().min(3, 'Debe tener al menos 3 caracteres'),

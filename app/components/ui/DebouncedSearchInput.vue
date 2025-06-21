@@ -6,7 +6,7 @@ const props = defineProps({
   },
 });
 
-const model = defineModel({ default: '', required: true, type: String });
+const model = defineModel<string | undefined>({ default: '', required: true, type: String });
 
 const inputValue = ref(model.value);
 const inputValueDebounced = refDebounced(inputValue, props.delay);
@@ -22,7 +22,6 @@ watch(inputValueDebounced, (newValue) => {
     autofocus
     class="w-full"
     icon="i-lucide-search"
-    variant="soft"
     size="xl">
     <template v-if="inputValue?.length" #trailing>
       <UButton

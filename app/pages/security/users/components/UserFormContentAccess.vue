@@ -5,7 +5,7 @@ const props = defineProps<{
 
 const headers = useRequestHeaders(['cookie']);
 const moduleStore = useSecurityUsersStore();
-const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
+const { selectedRowData } = storeToRefs(moduleStore);
 
 const {
   data: lookupProfiles,
@@ -27,16 +27,13 @@ const {
 
 <template>
   <div
-    v-if="selectedRecordId && selectedRowData"
+    v-if="selectedRowData"
     class="m-4 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Perfil y Organizaciones
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Roles y organizaciones a las que puede acceder el usuario
-      </p>
-    </div>
+    <UPageFeature
+      title="Perfil y Organizaciones"
+      description="Roles y organizaciones a las que puede acceder el usuario" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
         v-if="selectedRowData"
@@ -74,6 +71,6 @@ const {
         <br>
       </UForm>
     </UCard>
-    <br><br>
+    <br>
   </div>
 </template>

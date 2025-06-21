@@ -4,22 +4,18 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityUsersStore();
-const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
-const myForm = useTemplateRef('myForm');
+const { selectedRowData } = storeToRefs(moduleStore);
 </script>
 
 <template>
   <div
-    v-if="selectedRecordId && selectedRowData"
+    v-if="selectedRowData"
     class="m-4 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Datos del Usuario
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Datos básicos del usuario
-      </p>
-    </div>
+    <UPageFeature
+      title="Datos del Usuario"
+      description="Datos básicos del usuario" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
         ref="myForm"
@@ -80,6 +76,6 @@ const myForm = useTemplateRef('myForm');
         <br>
       </UForm>
     </UCard>
-    <br><br>
+    <br>
   </div>
 </template>
