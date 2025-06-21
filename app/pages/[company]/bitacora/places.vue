@@ -1,3 +1,3 @@
 <template>
-  <span>Pending Page</span>
+  <span>Pending Page > places: {{ $route.params }}</span>
 </template>

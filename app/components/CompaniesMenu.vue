@@ -16,7 +16,8 @@ const userCompaniesFormatted = computed(() => {
     },
     class: 'cursor-pointer',
     onSelect() {
-      userCompany.value = company;
+      userCompany.value = userCompanies.value.find(c => c.id === company.id);
+      useRouter().push({ params: { company: company.id } });
     }
   }))]
 })

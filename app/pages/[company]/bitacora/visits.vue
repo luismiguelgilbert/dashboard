@@ -1,3 +1,3 @@
 <template>
-  <span>Pending Page</span>
+  <span>Pending Page > visits: {{ $route.params }}</span>
 </template>

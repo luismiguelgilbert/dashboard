@@ -1,3 +1,3 @@
 <template>
-  <span>Pending Page</span>
+  <span>Pending Page > cars: {{ $route.params }}</span>
 </template>
