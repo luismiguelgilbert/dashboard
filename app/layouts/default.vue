@@ -3,6 +3,7 @@ const open = ref(false);
 const { loggedIn } = useUserSession();
 if (!loggedIn.value) navigateTo('/auth/login?session_error=true');
 
+const { currentRoute } = useRouter();
 const userMenu = useState<sys_links[]>('userMenu');
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
@@ -11,33 +12,31 @@ const { data: menuData } = await useAsyncData(() => requestFetch('/api/system/us
 userMenu.value = menuData.value || [];
 const { data: companiesData } = await useAsyncData(() => requestFetch('/api/system/userCompanies'));
 userCompanies.value = companiesData.value || [];
-userCompany.value = userCompanies.value[0];
+userCompany.value = useRoute().params.company
+  ? userCompanies.value.find(c => c.id === useRoute().params.company)
+  : userCompanies.value[0];
 
 const userMenuFormatted = computed(() => {
   return [
     {
       label: 'Home',
+      class: 'cursor-pointer',
       icon: 'i-lucide-house',
       to: '/',
-      onSelect: () => {
-        open.value = false
-      }
     },
     ...userMenu.value.filter(x => x.row_level === 0)
       .map(rootItem => ({
         ...rootItem,
         label: rootItem.name_es,
-        class: 'cursor-pointer',
         defaultOpen: true,
         children: userMenu.value.filter(x => x.parent === rootItem.id)
           .map(childItem => ({
             ...childItem,
-            label: childItem.name_es!,
-            to: childItem.link,
-            class: 'cursor-pointer',
-            onSelect: () => {
-              open.value = false;
-            }
+            label: `${childItem.name_es}`,
+            to: childItem.requires_company
+              ? `/${userCompany.value?.id}${childItem.link}`
+              : childItem.link,
+            disabled: currentRoute.value.path.includes(childItem.link),
           }))
       }))
   ]
@@ -66,6 +65,7 @@ const userMenuFormatted = computed(() => {
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"
+          :ui="{ link: 'text-md' }"
           popover
           orientation="vertical" />
       </template>
