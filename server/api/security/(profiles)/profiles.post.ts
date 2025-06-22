@@ -1,5 +1,3 @@
-import { sys_profiles_sort_enum_server } from '@@/shared/types/sys_profiles';
-
 export default defineEventHandler(async (event) => {
   try {
     await hasPermissions(event, [PermissionsList.ROLES_READ]);

@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // QUERIES
+    const sort = sys_companies_sort_enum_server.find(s => s.id === payload.sort) || sys_companies_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
@@ -25,19 +26,19 @@ export default defineEventHandler(async (event) => {
       ,a.avatar_url
       from sys_companies a
       where (1 = 1)
-      ${payload.searchString?.length > 0
+      ${payload.search && payload.search.trim()?.length > 0
           ? `and (
-            a.name_es ilike '%${payload.searchString}%'
-            or a.name_es_short ilike '%${payload.searchString}%'
-            or a.company_number ilike '%${payload.searchString}%'
+            a.name_es ilike '%${payload.search}%'
+            a.name_es_short ilike '%${payload.search}%'
+            a.company_number ilike '%${payload.search}%'
           )`
           : ''
       }
-      ${payload.filterIsActive?.length > 0
-          ? `and (a.is_active in (${payload.filterIsActive}))`
+      ${payload.is_active && payload.is_active.length > 0
+          ? `and (a.is_active in (${payload.is_active.join(',')}))`
           : ''
       }
-      ORDER BY ${payload.sortBy} ${payload.sortByOrder}
+      ORDER BY ${sort?.label} ${payload.order}
     `);
 
     const data = await userDataQuery.all();
