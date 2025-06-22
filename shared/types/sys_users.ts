@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 
 export const sys_users_sort_enum_keys_schema = z.enum(['1', '2', '3', '4', '5', '6']);
 export type sys_users_sort_enum_keys = z.infer<typeof sys_users_sort_enum_keys_schema>;
-export const sys_users_sort_enum_client: sys_users_sort_enum_array[] = [
+export const sys_users_sort_enum_client: sort_enum_array[] = [
   { id: '1', label: 'Nombre' },
   { id: '2', label: 'Apellidos' },
   { id: '3', label: 'Sexo' },
@@ -10,7 +10,7 @@ export const sys_users_sort_enum_client: sys_users_sort_enum_array[] = [
   { id: '5', label: 'Email' },
   { id: '6', label: 'Perfil' },
 ];
-export const sys_users_sort_enum_server: sys_users_sort_enum_array[] = [
+export const sys_users_sort_enum_server: sort_enum_array[] = [
   { id: '1', label: 'a.user_name' },
   { id: '2', label: 'a.user_lastname' },
   { id: '3', label: 'a.user_sex' },

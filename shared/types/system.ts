@@ -85,7 +85,7 @@ export const sys_url_params_schema = z.object({
 });
 export type sys_url_params = z.infer<typeof sys_url_params_schema>;
 
-export const sys_users_sort_array_keys_schema = z.enum(['id', 'label']);
-export const sys_users_sort_array_schema = z.record(sys_users_sort_array_keys_schema, z.string());
-export type sys_users_sort_enum_array = z.infer<typeof sys_users_sort_array_schema>;
+export const sort_array_keys_schema = z.enum(['id', 'label']);
+export const sort_array_schema = z.record(sort_array_keys_schema, z.string());
+export type sort_enum_array = z.infer<typeof sort_array_schema>;
 export const sys_filter_boolean_schema = z.enum(['True', 'False']);
