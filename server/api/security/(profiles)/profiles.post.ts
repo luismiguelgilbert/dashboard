@@ -1,3 +1,5 @@
+import { sys_profiles_sort_enum_server } from '@@/shared/types/sys_profiles';
+
 export default defineEventHandler(async (event) => {
   try {
     await hasPermissions(event, [PermissionsList.ROLES_READ]);
@@ -10,6 +12,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // QUERIES
+    const pageSize = 25;
+    const sort = sys_profiles_sort_enum_server.find(s => s.id === payload.sort) || sys_profiles_sort_enum_server['1'];
     const serverDB = useDatabase();
     // ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
     const userDataQuery = await serverDB.prepare(`
@@ -27,19 +31,19 @@ export default defineEventHandler(async (event) => {
       from sys_profiles a
       left join users_count on a.id = users_count.sys_profile_id
       where (1 = 1)
-      ${payload.searchString?.length > 0
+      ${payload.search && payload.search.trim()?.length > 0
           ? `and (
-            a.name_es ilike '%${payload.searchString}%'
+            a.name_es ilike '%${payload.search}%'
           )`
           : ''
       }
-      ${payload.filterIsActive?.length > 0
-          ? `and (a.is_active in (${payload.filterIsActive}))`
+      ${payload.is_active && payload.is_active.length > 0
+          ? `and (a.is_active in (${payload.is_active.join(',')}))`
           : ''
       }
-      ORDER BY ${payload.sortBy} ${payload.sortByOrder}
-      OFFSET ${(payload.pageSize ?? 5) * ((payload.page ?? 1) - 1)} ROWS
-      FETCH NEXT ${payload.pageSize} ROWS ONLY
+      ORDER BY ${sort?.label} ${payload.order}
+      OFFSET ${(pageSize) * ((payload.page ?? 1) - 1)} ROWS
+      FETCH NEXT ${pageSize} ROWS ONLY
     `);
 
     return sys_profiles_schema.array().parse(await userDataQuery.all());

@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // QUERIES
+    const sort = sys_profiles_sort_enum_server.find(s => s.id === payload.sort) || sys_profiles_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       with users_count as (
@@ -24,21 +25,21 @@ export default defineEventHandler(async (event) => {
        a.id
       ,initcap(a.name_es) as name_es
       ,a.is_active
-      ,profile_users_count
+      ,coalesce(profile_users_count,0) as profile_users_count
       from sys_profiles a
       left join users_count on a.id = users_count.sys_profile_id
       where (1 = 1)
-      ${payload.searchString?.length > 0
+      ${payload.search && payload.search.trim()?.length > 0
           ? `and (
-            a.name_es ilike '%${payload.searchString}%'
+            a.name_es ilike '%${payload.search}%'
           )`
           : ''
       }
-      ${payload.filterIsActive?.length > 0
-          ? `and (a.is_active in (${payload.filterIsActive}))`
+      ${payload.is_active && payload.is_active.length > 0
+          ? `and (a.is_active in (${payload.is_active.join(',')}))`
           : ''
       }
-      ORDER BY ${payload.sortBy} ${payload.sortByOrder}
+      ORDER BY ${sort?.label} ${payload.order}
     `);
 
     const data = await userDataQuery.all();
@@ -49,7 +50,7 @@ export default defineEventHandler(async (event) => {
       { key: 'id', header: 'Código', width: 50 },
       { key: 'name_es', header: 'Nombre', width: 25 },
       { key: 'is_active', header: 'Activo?', width: 10 },
-      { key: 'profile_users_count', header: '# Usuarios', width: 10 },
+      { key: 'profile_users_count', header: '# Usuarios', width: 15 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };

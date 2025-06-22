@@ -8,7 +8,7 @@ const props = defineProps<{
 
 const headers = useRequestHeaders(['cookie']);
 const moduleStore = useSecurityProfilesStore();
-const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
+const { selectedRowData } = storeToRefs(moduleStore);
 
 const {
   data: lookupSysLinks,
@@ -42,26 +42,23 @@ const toggleLinkID = (itemID: string) => {
   if (selectedRowData.value) {
     const linkIndex = selectedRowData.value?.sys_profiles_links.findIndex(x => x === itemID);
     if (linkIndex === -1) {
-      selectedRowData.value.sys_profiles_links.push(itemID);
-      return;
+      selectedRowData.value.sys_profiles_links = [...selectedRowData.value.sys_profiles_links, itemID];
+    } else {
+      selectedRowData.value.sys_profiles_links = selectedRowData.value.sys_profiles_links.filter(x => x !== itemID);
     }
-    selectedRowData.value.sys_profiles_links.splice(linkIndex, 1);
   }
 };
 </script>
 
 <template>
   <div
-    v-if="selectedRecordId && selectedRowData"
+    v-if="selectedRowData"
     class="m-4 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Permisos
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Seleccione los permisos que desea asignar al perfil.
-      </p>
-    </div>
+    <UPageFeature
+      title="Permisos"
+      description="Seleccione los permisos que desea asignar al perfil" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
         v-if="selectedRowData && !isFetchingLookupSysLinks"
