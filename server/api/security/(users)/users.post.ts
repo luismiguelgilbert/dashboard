@@ -1,5 +1,3 @@
-import { sys_users_sort_enum_server } from '@@/shared/types/sys_users';
-
 export default defineEventHandler(async (event) => {
   try {
     await hasPermissions(event, [PermissionsList.USERS_READ]);
