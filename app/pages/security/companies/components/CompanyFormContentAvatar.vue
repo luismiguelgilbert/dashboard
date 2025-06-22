@@ -60,15 +60,12 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
 <template>
   <div
     v-if="selectedRowData"
-    class="m-1 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Avatar de la Organización
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Imagen de perfil de la organización
-      </p>
-    </div>
+    class="m-4 md:m-6">
+    <UPageFeature
+      title="Avatar de la Organización"
+      description="Imagen de perfil de la organización" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
         :disabled="props.disable"

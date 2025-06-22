@@ -29,8 +29,8 @@ export default defineEventHandler(async (event) => {
       ${payload.search && payload.search.trim()?.length > 0
           ? `and (
             a.name_es ilike '%${payload.search}%'
-            a.name_es_short ilike '%${payload.search}%'
-            a.company_number ilike '%${payload.search}%'
+            or a.name_es_short ilike '%${payload.search}%'
+            or a.company_number ilike '%${payload.search}%'
           )`
           : ''
       }

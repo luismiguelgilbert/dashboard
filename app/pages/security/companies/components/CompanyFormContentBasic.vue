@@ -4,25 +4,20 @@ const props = defineProps<{
 }>();
 
 const moduleStore = useSecurityCompaniesStore();
-const { selectedRecordId, selectedRowData } = storeToRefs(moduleStore);
-const myForm = useTemplateRef('myForm');
+const { selectedRowData } = storeToRefs(moduleStore);
 </script>
 
 <template>
   <div
-    v-if="selectedRecordId && selectedRowData"
-    class="m-1 md:m-6">
-    <div class="pb-2 md:pb-5">
-      <p class="font-bold pb-0 text-xl">
-        Datos de la Organización
-      </p>
-      <p class="text-(--ui-text-muted)">
-        Datos básicos de la organización
-      </p>
-    </div>
+    v-if="selectedRowData"
+    class="m-4 md:m-6">
+    <UPageFeature
+      title="Datos de la Organización"
+      description="Datos básicos de la organización" />
+    <br>
+
     <UCard variant="subtle">
       <UForm
-        ref="myForm"
         :disabled="props.disable"
         :state="selectedRowData"
         :schema="sys_companies_schema">

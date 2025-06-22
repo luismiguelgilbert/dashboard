@@ -5,8 +5,8 @@ export const useSecurityProfilesStore = defineStore('securityProfiles', () => {
     order: 'asc',
     is_active: undefined,
   });
-  const computedQueryKey = computed(() => 'security-profile-search');
-  const computedRecordQueryKey = computed(() => 'security-profile-record');
+  const computedQueryKey = computed(() => 'security-profiles-search');
+  const computedRecordQueryKey = computed(() => 'security-profiles-record');
   const selectedRowData = ref<sys_profiles>();
   const userMenu = useState<sys_links[]>('userMenu');
   const canEdit = computed(() => userMenu.value.some(link => link.id === PermissionsList.ROLES_EDIT));
