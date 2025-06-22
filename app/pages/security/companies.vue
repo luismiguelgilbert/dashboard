@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import { breakpointsTailwind } from '@vueuse/core';
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import type { CheckboxGroupItem } from '@nuxt/ui';
 
-const breakpoints = useBreakpoints(breakpointsTailwind);
+const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
-const isMobile = breakpoints.smaller('lg');
 const store = useSecurityCompaniesStore();
-const {
-  sortItems,
-  queryPayload,
-  computedQueryKey,
-  isLoading,
-  selectedRecordId,
-  selectedRowData,
-  hasFilter,
-  filterActiveItems,
-  isSaveDisabled,
-  formPanelTitle,
-  canCreate,
-  canDownload,
-} = storeToRefs(store);
-const isFormPanelOpen = computed<boolean>(() => !!selectedRecordId.value);
+const { computedQueryKey, queryPayload, hasFilter, canCreate, canDownload } = storeToRefs(store);
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('lg');
+const isFormPanelOpen = computed<boolean>(() => !!currentRoute.value.params.id);
+const statusOptions = ref<CheckboxGroupItem[]>([
+  { label: 'Activos', value: 'True' },
+  { label: 'Inactivos', value: 'False' },
+]);
+
+const openNew = async () => {
+  const newUniqueId = crypto.randomUUID();
+  await navigateTo({ name: 'security-companies-id', params: { id: newUniqueId }, query: { ...useRoute().query } })
+};
 
 const downloadFile = async () => {
   try {
@@ -27,7 +25,6 @@ const downloadFile = async () => {
       method: 'POST',
       body: {
         ...queryPayload.value,
-        is_downloading: true,
         page: undefined,
         pageSize: undefined,
       },
@@ -35,7 +32,7 @@ const downloadFile = async () => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Organizaciones.xlsx');
+    link.setAttribute('download', 'Perfiles.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -51,97 +48,26 @@ const downloadFile = async () => {
   }
 };
 
-const openNew = () => {
-  const newUniqueId = crypto.randomUUID();
-  selectedRowData.value = sys_companies_schema.safeParse({ id: newUniqueId, is_new: true }).data;
-  useRouter().push({ query: { id: newUniqueId, is_new: 'true' } });
-  selectedRecordId.value = newUniqueId;
-}
-
-const openEdit = (row: sys_companies) => {
-  selectedRecordId.value = row.id;
-  selectedRowData.value = sys_companies_schema.parse({});
-  useRouter().push({ query: { id: row.id } });
-};
-
-const closeForm = () => {
-  selectedRowData.value = undefined;
-  selectedRecordId.value = undefined;
-  useRouter().replace({ query: undefined });
-};
-
-const { mutateAsync, isPending } = useMutation({
-  mutationFn: () => $fetch('/api/security/company-upsert', { method: 'POST', body: selectedRowData.value }),
-  onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: ['security-companies-record'] });
-    // this optimisticly updates the cache data record to reflect changes in the list component
-    queryClient.setQueryData(computedQueryKey.value, (oldData: { pages: sys_companies[][], pageParams: number[] }) => {
-      oldData.pages.forEach((page) => {
-        const recordIndex = page.findIndex(user => user.id === selectedRowData.value?.id);
-        if (page[recordIndex]) {
-          page[recordIndex] = {
-            ...page[recordIndex],
-            // Update fields used in the list component
-            name_es: String(selectedRowData.value?.name_es),
-            name_es_short: String(selectedRowData.value?.name_es_short),
-            is_active: Boolean(selectedRowData.value?.is_active),
-          };
-        }
-      });
-      return oldData;
-    });
-  },
-});
-
-const saveForm = async () => {
+onBeforeMount(() => {
   try {
-    if (selectedRowData.value) {
-      selectedRowData.value.is_saving = true;
-      const { error } = sys_companies_schema.safeParse(selectedRowData.value);
-      if (error) throw error.issues.map(err => `- ${err.message}`).join('.\n    ');
-      await mutateAsync();
-      selectedRowData.value.is_saving = false;
-      useRouter().replace({ query: { id: selectedRowData.value.id } });
-      useToast().add({
-        title: 'Datos guardados',
-        icon: 'i-lucide-circle-check',
-        color: 'success',
-      });
+    if (Object.keys(currentRoute.value.query).length) {
+      const parsedQuery = sys_companies_query_schema.parse(currentRoute.value.query);
+      push({ query: parsedQuery, replace: true });
+      queryPayload.value = parsedQuery;
+    } else {
+      const parsedQuery = sys_companies_query_schema.parse(queryPayload.value);
+      push({ query: parsedQuery, replace: true });
     }
-  } catch (error) {
-    useToast().add({
-      title: 'Error al guardar',
-      description: `Revise sus datos y vuelva a intentarlo: \n ${error}`,
-      icon: 'i-lucide-alert-triangle',
-      color: 'error',
-      ui: { description: 'text-sm text-muted whitespace-pre-line' }
-    });
-    console.error(error);
-  }
-};
-
-const invalidateCache = () => {
-  queryClient.invalidateQueries({ queryKey: computedQueryKey.value });
-};
-
-watch(() => isPending.value, newData => isLoading.value = newData, { deep: true, immediate: true });
-// on mounted, set the selectedRowData the same ID available in the URl query string parameter (if exists)
-onMounted(() => {
-  const recordId = useRoute().query.id?.toLocaleString() || store.selectedRecordId;
-  const is_new = useRoute().query.is_new?.toLocaleString() === 'true' || selectedRowData.value?.is_new;
-  if (recordId) {
-    selectedRecordId.value = recordId as string;
-    useRouter().push({ query: { id: recordId, is_new: is_new ? 'true' : undefined } });
-  }
-  if (is_new) {
-    selectedRowData.value = sys_companies_schema.safeParse({ id: selectedRecordId.value, is_new }).data;
+  } catch {
+    push({ query: {} });
+    useToast().add({ color: 'info', orientation: 'horizontal', icon: 'i-lucide-info', description: 'Por su seguridad, hemos quitado los parámetros de búsqueda.' });
   }
 });
 </script>
 
 <template>
   <UDashboardPanel
-    id="organization-1"
+    id="company-1"
     :default-size="35"
     :min-size="25"
     :max-size="35"
@@ -153,96 +79,75 @@ onMounted(() => {
       <template #trailing>
         <UBadge v-if="hasFilter" icon="i-lucide-filter" variant="subtle" />
       </template>
-
       <template #right>
         <UiListToolbar
-          v-model:search-string="queryPayload.searchString"
-          v-model:sort-by="queryPayload.sortBy"
-          v-model:sort-by-order="queryPayload.sortByOrder"
-          :sort-items="sortItems"
-          :filter-times="[filterActiveItems]"
+          v-model:search="queryPayload.search"
+          v-model:sort="queryPayload.sort"
+          v-model:order="queryPayload.order"
+          :sort-items="sys_companies_sort_enum_client"
           :can-create="canCreate"
           :can-download="canDownload"
           @open-new="openNew"
           @download-file="downloadFile"
-          @invalidate-cache="invalidateCache">
+          @invalidate-cache="queryClient.invalidateQueries({ queryKey: [computedQueryKey] })">
           <template #FilterSection>
-            <UPageCard
-              title="Filtrar lista:"
-              variant="soft">
-              <template #footer>
-                <UCheckboxGroup
-                  v-model="queryPayload.filterIsActive"
-                  size="xl"
-                  value-key="id"
-                  :items="filterActiveItems" />
+            <UFormField label="Organizaciones:">
+              <template #hint>
+                <UButton
+                  label="Quitar"
+                  class="cursor-pointer"
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  icon="i-lucide-eraser"
+                  @click="() => {
+                    queryPayload.is_active = undefined;
+                    push({ query: { ...currentRoute.query, is_active: undefined } })
+                  }" />
               </template>
-            </UPageCard>
+              <USelectMenu
+                v-model="queryPayload.is_active"
+                class="w-full"
+                value-key="value"
+                size="xl"
+                multiple
+                :search-input="false"
+                :items="statusOptions"
+                @update:model-value="() => push({ query: { ...currentRoute.query, is_active: queryPayload.is_active || undefined } })" />
+            </UFormField>
           </template>
         </UiListToolbar>
       </template>
     </UDashboardNavbar>
-    <div class="overflow-y-auto">
-      <ClientOnly>
-        <CompaniesList @row-clicked="openEdit" />
-      </ClientOnly>
-    </div>
+    <ClientOnly>
+      <CompaniesList @row-clicked="async (row) => await navigateTo({ name: 'security-companies-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+    </ClientOnly>
   </UDashboardPanel>
 
-  <CompanyForm
-    v-if="isFormPanelOpen && !isMobile"
-    :title="formPanelTitle"
-    @close-clicked="closeForm"
-    @save-clicked="saveForm" />
-  <div v-else class="hidden lg:flex flex-1 items-center justify-center">
+  <div
+    v-if="!isMobile && !isFormPanelOpen"
+    class="hidden lg:flex flex-1 items-center justify-center">
     <UIcon name="i-lucide-building-2" class="size-32 text-dimmed" />
   </div>
 
-  <ClientOnly>
-    <USlideover
-      v-if="isFormPanelOpen && isMobile"
-      class="pt-safe"
-      :open="isFormPanelOpen">
-      <template #header>
-        <div class="flex w-full justify-between items-center">
-          <span class="text-lg font-semibold">
-            {{ formPanelTitle }}
-          </span>
-          <UButton
-            class="cursor-pointer"
-            icon="i-lucide-x"
-            size="xl"
-            color="neutral"
-            variant="soft"
-            @click="closeForm" />
-        </div>
-      </template>
-      <template #body>
-        <CompanyFormContent />
-      </template>
-      <template #footer>
-        <div class="flex w-full justify-between">
-          <UButton
-            class="cursor-pointer"
-            label="Cerrar"
-            color="neutral"
-            variant="soft"
-            icon="i-lucide-circle-x"
-            size="xl"
-            :disabled="isLoading"
-            :loading="isLoading"
-            @click="closeForm" />
-          <UButton
-            class="cursor-pointer"
-            label="Guardar"
-            icon="i-lucide-save"
-            color="neutral"
-            size="xl"
-            :disabled="isSaveDisabled"
-            :loading="isLoading"
-            @click="saveForm" />
-        </div>
-      </template>
-    </USlideover>
-  </ClientOnly>
+  <UDashboardPanel
+    v-if="!isMobile && isFormPanelOpen"
+    id="company-2">
+    <ClientOnly>
+      <NuxtPage />
+    </ClientOnly>
+  </UDashboardPanel>
+
+  <USlideover
+    v-if="isMobile && isFormPanelOpen"
+    class="pt-safe"
+    :ui="{ body: 'flex-1 overflow-y-auto p-0' }"
+    :open="true"
+    @update:open="navigateTo({ name: 'security-companies', query: { ...useRoute().query } })">
+    <template #content>
+      <ClientOnly>
+        <NuxtPage />
+      </ClientOnly>
+    </template>
+  </USlideover>
 </template>
