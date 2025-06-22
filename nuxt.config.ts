@@ -77,6 +77,13 @@ export default defineNuxtConfig({
       dirs: ['shared/types']
     }
   },
+  vite: {
+    resolve: {
+      alias: {
+        jspdf: 'jspdf/dist/jspdf.es.js'
+      }
+    }
+  },
   hooks: {
     'build:before': () => {
       const nuxtInstance = useNuxt();
@@ -112,5 +119,5 @@ export default defineNuxtConfig({
     vueQueryPluginOptions: {
       enableDevtoolsV6Plugin: true,
     }
-  }
+  },
 })
