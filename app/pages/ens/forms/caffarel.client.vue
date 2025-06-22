@@ -31,7 +31,8 @@ const df = new DateFormatter('es-EC', { dateStyle: 'full' });
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
 const currentDay = new Date().getDate();
-const modelValue = ref(new CalendarDate(currentYear, currentMonth, currentDay));
+const calendarModelValue = shallowRef(new CalendarDate(currentYear, currentMonth, currentDay));
+
 const total = computed(() => formData.value.rows.reduce((acc, row) => acc + row.amount, 0));
 
 const addRowB = ({ newRow, customValue }: { newRow: ens_form_caffarel_row_b; customValue: number }) => {
@@ -47,7 +48,7 @@ const addRowB = ({ newRow, customValue }: { newRow: ens_form_caffarel_row_b; cus
 const downloadPDF = async () => {
   openPDF.value = true;
   await promiseTimeout(500);
-  formData.value.fecha = new DateFormatter('es-EC', { dateStyle: 'medium' }).format(modelValue.value.toDate(getLocalTimeZone()));
+  formData.value.fecha = new DateFormatter('es-EC', { dateStyle: 'medium' }).format(calendarModelValue.value.toDate(getLocalTimeZone()));
   const myContent = myFormHeader.value as HTMLElement;
   if (myContent) {
     const A4_WIDTH = 842; // const A4_WIDTH = 3508;
@@ -109,12 +110,12 @@ const downloadPDF = async () => {
                 icon="i-lucide-calendar"
                 class="w-full"
                 size="xl">
-                {{ df.format(modelValue.toDate(getLocalTimeZone())) }}
+                {{ df.format(calendarModelValue.toDate(getLocalTimeZone())) }}
               </UButton>
 
               <template #content>
                 <UCalendar
-                  v-model="modelValue"
+                  v-model="calendarModelValue"
                   class="p-2" />
               </template>
             </UPopover>
