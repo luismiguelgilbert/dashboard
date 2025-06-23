@@ -55,10 +55,27 @@ export type filter_boolean_options = z.infer<typeof filter_boolean_options_schem
 
 export const get_record_schema = z.object(
   {
-    id: z.string().min(1).max(50),
+    id: z.string().min(1).max(50)
+      .refine(s => !s || (!!s && !s.includes(';')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('truncate')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('drop')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('delete')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('select')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('insert')), 'Sin caracteres especiales!')
+      .refine(s => !s || (!!s && !s.includes('update')), 'Sin caracteres especiales!'),
   },
 )
 export type get_record = z.infer<typeof get_record_schema>;
+
+export const get_company_schema = z.string().min(1).max(50)
+  .refine(s => !s || (!!s && !s.includes(';')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('truncate')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('drop')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('delete')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('select')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('insert')), 'Sin caracteres especiales!')
+  .refine(s => !s || (!!s && !s.includes('update')), 'Sin caracteres especiales!')
+export type get_company = z.infer<typeof get_company_schema>;
 
 export const sys_links_schema = z.object({
   id: z.string(),

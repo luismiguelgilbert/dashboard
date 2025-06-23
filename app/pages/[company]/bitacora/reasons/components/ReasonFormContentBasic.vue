@@ -3,7 +3,7 @@ const props = defineProps<{
   disable: boolean;
 }>();
 
-const moduleStore = useSecurityProfilesStore();
+const moduleStore = useBitacoraReasonsStore();
 const { selectedRowData } = storeToRefs(moduleStore);
 </script>
 
@@ -12,20 +12,19 @@ const { selectedRowData } = storeToRefs(moduleStore);
     v-if="selectedRowData"
     class="m-4 md:m-6">
     <UPageFeature
-      title="Datos del Perfil"
-      description="Datos básicos del perfil" />
+      title="Datos del Motivo"
+      description="Datos básicos del motivo" />
     <br>
 
     <UCard variant="subtle">
       <UForm
-        ref="myForm"
         :disabled="props.disable"
         :state="selectedRowData"
-        :schema="sys_profiles_schema">
+        :schema="bitacora_reasons_schema">
         <UiDashboardSection
           name="is_active"
           label="Estado"
-          hint="Activar/Inactivar perfil">
+          hint="Activar/Inactivar motivo">
           <USwitch
             v-model="selectedRowData.is_active"
             :label="selectedRowData.is_active ? 'Activo' : 'Inactivo'" />
@@ -33,12 +32,12 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <USeparator class="py-5" />
         <UiDashboardSection
           name="name_es"
-          label="Nombre del perfil"
-          hint="Nombre descriptivo del perfil">
+          label="Nombre del motivo"
+          hint="Nombre descriptivo del motivo">
           <UInput
             v-model="selectedRowData.name_es"
             class="w-full"
-            placeholder="Nombre descriptivo del perfil"
+            placeholder="Nombre descriptivo del motivo"
             icon="i-lucide-shield-user" />
         </UiDashboardSection>
         <br>

@@ -10,8 +10,8 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 const isFormPanelOpen = computed<boolean>(() => !!currentRoute.value.params.id);
 const statusOptions = ref<CheckboxGroupItem[]>([
-  { label: 'Activos', value: 'True' },
-  { label: 'Inactivos', value: 'False' },
+  { label: 'Activas', value: 'True' },
+  { label: 'Inactivas', value: 'False' },
 ]);
 
 const openNew = async () => {
