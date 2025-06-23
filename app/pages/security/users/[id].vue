@@ -27,7 +27,7 @@ const { data, isFetching } = useQuery({
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch('/api/security/user-upsert', { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: ['security-users-record'] });
+    await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value] });
     // this optimisticly updates the cache data record to reflect changes in the list component
     queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: sys_users_query_cache | undefined) => {
       cacheData?.pages.forEach((page) => {

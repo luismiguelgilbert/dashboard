@@ -25,7 +25,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <UiDashboardSection
           name="email"
           label="Email"
-          hint="Correo o nombre usado como inicio de sesión">
+          hint="Correo o id usado como inicio de sesión">
           <UInput
             v-model="selectedRowData.email"
             :disabled="!selectedRowData.is_new"
@@ -46,7 +46,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <UiDashboardSection
           name="user_name"
           label="Nombres"
-          hint="Nombre del usuario">
+          hint="Nombres del usuario">
           <UInput
             v-model="selectedRowData.user_name"
             class="w-full"
@@ -57,7 +57,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <UiDashboardSection
           name="user_lastname"
           label="Apellidos"
-          hint="Nombre del usuario">
+          hint="Apellidos del usuario">
           <UInput
             v-model="selectedRowData.user_lastname"
             class="w-full"
@@ -68,7 +68,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <UiDashboardSection
           name="user_sex"
           label="Sexo"
-          hint="Nombre del usuario">
+          hint="Sexo del usuario">
           <USwitch
             v-model="selectedRowData.user_sex"
             :label="selectedRowData.user_sex ? 'Masculino' : 'Femenino'" />
