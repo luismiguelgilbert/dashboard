@@ -23,7 +23,7 @@ const { currentRoute } = useRouter();
             {{ props.item.name_es }}
           </p>
         </div>
-        <p class="line-clamp-1 tabular-nums">
+        <p class="text-dimmed line-clamp-1 tabular-nums">
           {{ `Número de usuarios: ${props.item.profile_users_count}` }}
         </p>
       </div>
