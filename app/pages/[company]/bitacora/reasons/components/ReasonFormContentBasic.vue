@@ -38,7 +38,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
             v-model="selectedRowData.name_es"
             class="w-full"
             placeholder="Nombre descriptivo del motivo"
-            icon="i-lucide-shield-user" />
+            icon="i-lucide-list-check" />
         </UiDashboardSection>
         <br>
       </UForm>

@@ -62,8 +62,8 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
     v-if="selectedRowData"
     class="m-4 md:m-6">
     <UPageFeature
-      title="Avatar de la Organización"
-      description="Imagen de perfil de la organización" />
+      title="Avatar del Vehículo"
+      description="Imagen de perfil del vehículo" />
     <br>
 
     <UCard variant="subtle">

@@ -73,7 +73,7 @@ onBeforeMount(() => {
     :min-size="25"
     :max-size="35"
     resizable>
-    <UDashboardNavbar title="Motivos de Visita">
+    <UDashboardNavbar title="Vehículos">
       <template #leading>
         <UDashboardSidebarCollapse class="cursor-pointer" />
       </template>
@@ -92,7 +92,7 @@ onBeforeMount(() => {
           @download-file="downloadFile"
           @invalidate-cache="queryClient.invalidateQueries({ queryKey: [computedQueryKey] })">
           <template #FilterSection>
-            <UFormField label="Motivos:">
+            <UFormField label="Vehículos:">
               <template #hint>
                 <UButton
                   label="Quitar"

@@ -38,18 +38,18 @@ const { selectedRowData } = storeToRefs(moduleStore);
             v-model="selectedRowData.name_es"
             class="w-full"
             placeholder="Nombre descriptivo del vehículo"
-            icon="i-lucide-shield-user" />
+            icon="i-lucide-car" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
           name="name_es_short"
           label="Código del vehículo"
-          hint="Nombre descriptivo del vehículo">
+          hint="Código del vehículo">
           <UInput
             v-model="selectedRowData.name_es_short"
             class="w-full"
-            placeholder="Código descriptivo del vehículo"
-            icon="i-lucide-shield-user" />
+            placeholder="Código del vehículo"
+            icon="i-lucide-car-front" />
         </UiDashboardSection>
         <br>
       </UForm>

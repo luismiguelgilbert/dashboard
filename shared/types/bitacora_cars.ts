@@ -3,12 +3,14 @@ import { z } from 'zod/v4';
 export const bitacora_cars_sort_enum_keys_schema = z.enum(['1', '2']);
 export type bitacora_cars_sort_enum_keys = z.infer<typeof bitacora_cars_sort_enum_keys_schema>;
 export const bitacora_cars_sort_enum_client: sort_enum_array[] = [
-  { id: '1', label: 'Motivo' },
-  { id: '2', label: 'Estado' },
+  { id: '1', label: 'Descripción' },
+  { id: '2', label: 'Código' },
+  { id: '3', label: 'Estado' },
 ];
 export const bitacora_cars_sort_enum_server: sort_enum_array[] = [
   { id: '1', label: 'a.name_es' },
-  { id: '2', label: 'a.is_active' },
+  { id: '2', label: 'a.name_es_short' },
+  { id: '3', label: 'a.is_active' },
 ];
 
 export const bitacora_cars_query_schema = z.object({
