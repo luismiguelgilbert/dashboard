@@ -44,17 +44,12 @@ export const bitacora_reasons_schema = z.object(
     name_es: z.string().default(''),
     is_active: z.coerce.boolean().default(true),
     disabled: z.coerce.boolean().default(true),
-    bitacora_reasons_links: z.array(z.string()).default([]),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
     { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es'] },
-  )
-  .refine(
-    val => ((!val.is_saving) || (val.is_saving && val.bitacora_reasons_links && val.bitacora_reasons_links.length > 0)),
-    { message: `Permisos no puede estar vacío.`, path: ['bitacora_reasons_links'] },
   )
 ;
 export type bitacora_reasons = z.infer<typeof bitacora_reasons_schema>;

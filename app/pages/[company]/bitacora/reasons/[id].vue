@@ -20,7 +20,7 @@ const { data, isFetching } = useQuery({
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/reason-upsert`, { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
-    await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value] });
+    await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value, userCompany.value?.id] });
     // this optimisticly updates the cache data record to reflect changes in the list component
     queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: bitacora_reasons_query_cache | undefined) => {
       cacheData?.pages.forEach((page) => {

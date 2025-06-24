@@ -3,6 +3,7 @@ defineProps<{
   collapsed?: boolean
 }>()
 
+const { currentRoute, push } = useRouter();
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
 
@@ -15,9 +16,13 @@ const userCompaniesFormatted = computed(() => {
       alt: company.name_es
     },
     class: 'cursor-pointer',
-    onSelect() {
+    async onSelect() {
       userCompany.value = userCompanies.value.find(c => c.id === company.id);
-      useRouter().push({ params: { company: company.id } });
+      if (currentRoute.value.matched.length > 1 && currentRoute.value.matched[0]?.name) {
+        await navigateTo({ name: currentRoute.value.matched[0].name, params: { company: company.id }, query: useRoute().query });
+      } else {
+        await push({ params: { company: company.id }, query: useRoute().query });
+      }
     }
   }))]
 })
