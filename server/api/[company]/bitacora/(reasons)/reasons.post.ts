@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     // QUERIES
     const pageSize = 25;
-    const sort = sys_profiles_sort_enum_server.find(s => s.id === payload.sort) || sys_profiles_sort_enum_server['1'];
+    const sort = sys_profiles_sort_enum_server.find(s => s.id === payload.sort) || bitacora_reasons_sort_enum_server['1'];
     const serverDB = useDatabase();
     // ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
     const userDataQuery = await serverDB.prepare(`

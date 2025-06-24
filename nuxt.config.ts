@@ -5,7 +5,6 @@ import { useNuxt } from 'nuxt/kit';
 export default defineNuxtConfig({
   modules: [
     '@hebilicious/vue-query-nuxt',
-    '@nuxt/eslint',
     '@nuxt/ui-pro',
     '@pinia/nuxt',
     '@vueuse/nuxt',
@@ -105,14 +104,6 @@ export default defineNuxtConfig({
         });
       }
     },
-  },
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
   },
   vueQuery: {
     // https://nuxt.com/modules/vue-query

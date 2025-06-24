@@ -2,8 +2,8 @@ import Excel from 'exceljs';
 
 export default defineEventHandler(async (event) => {
   try {
-    await hasPermissions(event, [PermissionsList.BITACORA_REASONS_EXPORT]);
-    const { data: payload, error } = await readValidatedBody(event, bitacora_reasons_query_schema.safeParse);
+    await hasPermissions(event, [PermissionsList.BITACORA_CARS_EXPORT]);
+    const { data: payload, error } = await readValidatedBody(event, bitacora_cars_query_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
     if (error) {
       throw createError({
@@ -20,14 +20,16 @@ export default defineEventHandler(async (event) => {
     await hasCompanies(event, [companyId]);
 
     // QUERIES
-    const sort = bitacora_reasons_sort_enum_server.find(s => s.id === payload.sort) || bitacora_reasons_sort_enum_server['1'];
+    const sort = bitacora_reasons_sort_enum_server.find(s => s.id === payload.sort) || bitacora_cars_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
       ,initcap(a.name_es) as name_es
+      ,initcap(a.name_es_short) as name_es_short
       ,a.is_active
-      from bita_reasons a
+      ,a.avatar_url
+      from bita_cars a
       where (1 = 1)
       ${companyId ? `and (a.sys_company_id = '${companyId}')` : ''}
       ${payload.search && payload.search.trim()?.length > 0

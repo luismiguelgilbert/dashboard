@@ -13,6 +13,7 @@ export const base64toBlob = (dataURL: string, mimeType?: string): Blob | undefin
   const b64 = matches[2];
   if (b64) {
     const byteChars = atob(b64);
+    // oxlint-disable-next-line no-new-array
     const byteNumbers = new Array(byteChars.length);
     for (let i = 0; i < byteChars.length; i++) {
       byteNumbers[i] = byteChars.charCodeAt(i);
