@@ -4,6 +4,7 @@ import type { CheckboxGroupItem } from '@nuxt/ui';
 
 const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
+const userCompany = useState<sys_companies | undefined>('userCompany');
 const store = useBitacoraReasonsStore();
 const { computedQueryKey, queryPayload, hasFilter, canCreate, canDownload } = storeToRefs(store);
 const breakpoints = useBreakpoints(breakpointsTailwind);
@@ -16,12 +17,12 @@ const statusOptions = ref<CheckboxGroupItem[]>([
 
 const openNew = async () => {
   const newUniqueId = crypto.randomUUID();
-  await navigateTo({ name: 'bitacora-reasons-id', params: { id: newUniqueId }, query: { ...useRoute().query } })
+  await navigateTo({ name: 'company-bitacora-reasons-id', params: { id: newUniqueId }, query: { ...useRoute().query } })
 };
 
 const downloadFile = async () => {
   try {
-    const response: Blob = await $fetch('/api/:company/bitacora/reasons-download', {
+    const response: Blob = await $fetch(`/api/${userCompany.value?.id}/bitacora/reasons-download`, {
       method: 'POST',
       body: {
         ...queryPayload.value,
@@ -32,7 +33,7 @@ const downloadFile = async () => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Perfiles.xlsx');
+    link.setAttribute('download', 'Motivos.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

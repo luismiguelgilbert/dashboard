@@ -2,33 +2,34 @@ import Excel from 'exceljs';
 
 export default defineEventHandler(async (event) => {
   try {
-    await hasPermissions(event, [PermissionsList.ROLES_EXPORT]);
+    await hasPermissions(event, [PermissionsList.BITACORA_REASONS_EXPORT]);
     const { data: payload, error } = await readValidatedBody(event, sys_profiles_query_schema.safeParse);
+    const companyId = get_company_schema.parse(event.context.params?.company);
     if (error) {
       throw createError({
         statusCode: 500,
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
+    if (!companyId) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Invalid request: a company ID is required.',
+      });
+    }
+    await hasCompanies(event, [companyId]);
 
     // QUERIES
-    const sort = sys_profiles_sort_enum_server.find(s => s.id === payload.sort) || sys_profiles_sort_enum_server['1'];
+    const sort = bitacora_reasons_sort_enum_server.find(s => s.id === payload.sort) || sys_profiles_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
-      with users_count as (
-        select sys_profile_id, count(*) as profile_users_count
-        from sys_users int1
-        group by int1.sys_profile_id
-      )
-
       select
        a.id
       ,initcap(a.name_es) as name_es
       ,a.is_active
-      ,coalesce(profile_users_count,0) as profile_users_count
-      from sys_profiles a
-      left join users_count on a.id = users_count.sys_profile_id
+      from bita_reasons a
       where (1 = 1)
+      ${companyId ? `and (a.sys_company_id = '${companyId}')` : ''}
       ${payload.search && payload.search.trim()?.length > 0
           ? `and (
             a.name_es ilike '%${payload.search}%'
@@ -50,7 +51,6 @@ export default defineEventHandler(async (event) => {
       { key: 'id', header: 'Código', width: 50 },
       { key: 'name_es', header: 'Nombre', width: 25 },
       { key: 'is_active', header: 'Activo?', width: 10 },
-      { key: 'profile_users_count', header: '# Usuarios', width: 15 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };
