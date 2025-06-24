@@ -8,6 +8,7 @@ const {
   computedRecordQueryKey,
   selectedRowData,
   formPanelTitle,
+  isSaveDisabled,
 } = storeToRefs(store);
 
 const { data, isFetching } = useQuery({
@@ -88,7 +89,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           variant="solid"
           label="Guardar"
           class="-ms-1.5 cursor-pointer"
-          :disabled="isFetching || isPending"
+          :disabled="isFetching || isPending || isSaveDisabled"
           @click="saveForm" />
       </template>
     </UDashboardNavbar>
