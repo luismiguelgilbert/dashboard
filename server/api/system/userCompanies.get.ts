@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     const query = await serverDB.sql`
       select
       c.*
+      , b.is_default
       from sys_users a
       inner join sys_companies_users b on a.id = b.user_id
       inner join sys_companies c on c.id = b.sys_company_id

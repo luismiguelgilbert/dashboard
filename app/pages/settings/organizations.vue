@@ -1,5 +1,39 @@
 <script setup lang="ts">
 const userCompanies = useState<sys_companies[]>('userCompanies');
+const isProcessing = ref(false);
+
+const updateCompany = async (company: sys_companies) => {
+  try {
+    userCompanies.value.forEach(c => {
+      c.is_default = c.id === company.id;
+    });
+
+    const headers = useRequestHeaders(['cookie']);
+    isProcessing.value = true;
+    await $fetch('/api/system/userOrganizationUpdate', {
+      method: 'post',
+      body: company,
+      headers,
+    })
+    useToast().add({
+      title: 'Listo',
+      description: 'Sus cambios fueron guardados.',
+      icon: 'i-lucide-check',
+      color: 'success'
+    })
+  } catch (error) {
+    useToast().add({
+      title: 'Error',
+      description: `Error al guardar los cambios. (${error})`,
+      icon: 'i-lucide-shield-alert',
+      type: 'foreground',
+      color: 'error',
+    });
+    console.error(error);
+  } finally {
+    isProcessing.value = false;
+  }
+};
 </script>
 
 <template>
@@ -24,6 +58,13 @@ const userCompanies = useState<sys_companies[]>('userCompanies');
             src: company.avatar_url || undefined,
             icon: 'i-lucide-image'
           }" />
+        <USwitch
+          v-model="company.is_default"
+          :ui="{ root: 'cursor-pointer', label: 'cursor-pointer', base: 'cursor-pointer' }"
+          :disabled="company.is_default"
+          size="xl"
+          label="Principal"
+          @update:model-value="updateCompany(company)" />
       </div>
     </UPageCard>
   </div>

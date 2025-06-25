@@ -49,6 +49,7 @@ export const sys_companies_schema = z.object(
     billing_phone: z.coerce.string().nullable(),
     billing_address: z.coerce.string().nullable(),
     is_active: z.coerce.boolean().default(true),
+    is_default: z.coerce.boolean().default(false),
     disabled: z.coerce.boolean().default(true),
     avatar_url: z.coerce.string().nullable(),
     avatar_file: z.string().nullable().default(null),
