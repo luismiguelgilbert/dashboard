@@ -90,6 +90,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           variant="solid"
           label="Guardar"
           class="-ms-1.5 cursor-pointer"
+          :loading="isFetching || isPending"
           :disabled="isFetching || isPending || isSaveDisabled"
           @click="saveForm" />
       </template>
@@ -97,7 +98,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
 
     <UProgress v-if="isFetching" class="p-3" />
     <main v-if="!isFetching && selectedRowData">
-      <ReasonFormContentBasic :disable="isFetching" />
+      <ReasonFormContentBasic :disable="isFetching || isPending" />
     </main>
   </div>
 </template>

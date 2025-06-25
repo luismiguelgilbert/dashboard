@@ -98,6 +98,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           variant="solid"
           label="Guardar"
           class="-ms-1.5 cursor-pointer"
+          :loading="isFetching || isPending"
           :disabled="isFetching || isPending || isSaveDisabled"
           @click="saveForm" />
       </template>
@@ -117,14 +118,14 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
     </header>
     <main v-if="!isFetching && selectedRowData">
       <template v-if="selectedTab === 'basic'">
-        <UserFormContentBasic :disable="isFetching" />
-        <UserFormContentAvatar :disable="isFetching" />
+        <UserFormContentBasic :disable="isFetching || isPending" />
+        <UserFormContentAvatar :disable="isFetching || isPending" />
       </template>
       <template v-if="selectedTab === 'permissions'">
-        <UserFormContentAccess :disable="isFetching" />
+        <UserFormContentAccess :disable="isFetching || isPending" />
       </template>
       <template v-if="selectedTab === 'password'">
-        <UserFormContentPassword :disable="isFetching" />
+        <UserFormContentPassword :disable="isFetching || isPending" />
       </template>
     </main>
   </div>
