@@ -27,6 +27,11 @@ export default defineEventHandler(async (event) => {
       ,a.avatar_url
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
+      ,array(
+        select t.car_id 
+        from bita_places_cars t
+        where t.sys_company_id = ${companyId} and t.place_id = a.id
+      ) as bita_places_cars
       from bita_places a
       WHERE 
       a.sys_company_id = ${companyId}

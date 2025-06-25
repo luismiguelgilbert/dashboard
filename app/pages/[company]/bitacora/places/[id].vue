@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TabsItem } from '@nuxt/ui'
+
 const { currentRoute } = useRouter();
 const headers = useRequestHeaders(['cookie']);
 const userCompany = useState<sys_companies | undefined>('userCompany');
@@ -11,6 +13,12 @@ const {
   formPanelTitle,
   isSaveDisabled,
 } = storeToRefs(store);
+const selectedTab = ref<'basic' | 'cars' | 'users'>('basic');
+const tabs = ref<TabsItem[]>([
+  { value: 'basic', label: 'Datos Básicos' },
+  { value: 'users', label: 'Usuarios' },
+  { value: 'cars', label: 'Vehículos' },
+]);
 
 const { data, isFetching } = useQuery({
   queryKey: [computedRecordQueryKey.value, userCompany.value?.id, currentRoute.value.params.id],
@@ -96,10 +104,29 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
       </template>
     </UDashboardNavbar>
 
-    <UProgress v-if="isFetching" class="p-3" />
+    <header>
+      <UProgress v-if="isFetching" class="p-3" />
+      <UTabs
+        v-if="!isFetching"
+        v-model="selectedTab"
+        :unmount-on-hide="false"
+        :items="tabs"
+        color="neutral"
+        variant="pill"
+        class="w-full mt-1.5 ml-2 pr-4" />
+      <USeparator />
+    </header>
     <main v-if="!isFetching && selectedRowData">
-      <PlaceFormContentBasic :disable="isFetching" />
-      <PlaceFormContentAvatar :disable="isFetching" />
+      <template v-if="selectedTab === 'basic'">
+        <PlaceFormContentBasic :disable="isFetching" />
+        <PlaceFormContentAvatar :disable="isFetching" />
+      </template>
+      <template v-if="selectedTab === 'users'">
+        <PlaceFormContentUsers :disable="isFetching" />
+      </template>
+      <template v-if="selectedTab === 'cars'">
+        <PlaceFormContentCars :disable="isFetching" />
+      </template>
     </main>
   </div>
 </template>
@@ -110,6 +137,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
   display: flex;
   flex-direction: column;
 }
+header { height: 65px;}
 main {
   flex: 1;
   overflow-y: scroll;

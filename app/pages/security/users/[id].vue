@@ -17,7 +17,7 @@ const tabs = ref<TabsItem[]>([
   { value: 'basic', label: 'Datos del Usuario' },
   { value: 'permissions', label: 'Permisos' },
   { value: 'password', label: 'Contraseña' }
-])
+]);
 
 const { data, isFetching } = useQuery({
   queryKey: [computedRecordQueryKey.value, currentRoute.value.params.id],

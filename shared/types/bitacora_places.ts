@@ -48,6 +48,7 @@ export const bitacora_places_schema = z.object(
     is_active: z.coerce.boolean().default(true),
     avatar_url: z.coerce.string().nullable(),
     avatar_file: z.string().nullable().default(null),
+    bita_places_cars: z.string().array().default([]),
     disabled: z.coerce.boolean().default(true),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
