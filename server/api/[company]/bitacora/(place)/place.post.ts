@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    await hasPermissions(event, [PermissionsList.BITACORA_CARS_READ]);
+    await hasPermissions(event, [PermissionsList.BITACORA_PLACES_READ]);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
     if (error) {
@@ -27,15 +27,15 @@ export default defineEventHandler(async (event) => {
       ,a.avatar_url
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
       ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
-      from bita_cars a
+      from bita_places a
       WHERE 
       a.sys_company_id = ${companyId}
       and a.id = ${payload.id}
     `;
 
     return (recordDataQuery.rows && recordDataQuery.rows[0])
-      ? bitacora_cars_schema.parse(recordDataQuery.rows[0])
-      : bitacora_cars_schema.parse({ id: payload.id, is_new: true })
+      ? bitacora_places_schema.parse(recordDataQuery.rows[0])
+      : bitacora_places_schema.parse({ id: payload.id, is_new: true })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({

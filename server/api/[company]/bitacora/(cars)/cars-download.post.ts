@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     await hasCompanies(event, [companyId]);
 
     // QUERIES
-    const sort = bitacora_reasons_sort_enum_server.find(s => s.id === payload.sort) || bitacora_cars_sort_enum_server['1'];
+    const sort = bitacora_cars_sort_enum_server.find(s => s.id === payload.sort) || bitacora_cars_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
@@ -35,6 +35,7 @@ export default defineEventHandler(async (event) => {
       ${payload.search && payload.search.trim()?.length > 0
           ? `and (
             a.name_es ilike '%${payload.search}%'
+            or a.name_es_short ilike '%${payload.search}%'
           )`
           : ''
       }
@@ -48,10 +49,11 @@ export default defineEventHandler(async (event) => {
     const data = await userDataQuery.all();
 
     const workbook = new Excel.Workbook();
-    const worksheet = await workbook.addWorksheet('Perfiles');
+    const worksheet = await workbook.addWorksheet('Vehículos');
     const fileColumns = [
       { key: 'id', header: 'Código', width: 50 },
       { key: 'name_es', header: 'Nombre', width: 25 },
+      { key: 'name_es_short', header: 'Código', width: 25 },
       { key: 'is_active', header: 'Activo?', width: 10 },
     ];
     worksheet.columns = fileColumns;

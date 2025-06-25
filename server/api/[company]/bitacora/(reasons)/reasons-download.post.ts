@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
     const data = await userDataQuery.all();
 
     const workbook = new Excel.Workbook();
-    const worksheet = await workbook.addWorksheet('Perfiles');
+    const worksheet = await workbook.addWorksheet('Motivos');
     const fileColumns = [
       { key: 'id', header: 'Código', width: 50 },
       { key: 'name_es', header: 'Nombre', width: 25 },

@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 
-export const sys_companies_sort_enum_keys_schema = z.enum(['1', '2']);
+export const sys_companies_sort_enum_keys_schema = z.enum(['1', '2', '3']);
 export type sys_companies_sort_enum_keys = z.infer<typeof sys_companies_sort_enum_keys_schema>;
 export const sys_companies_sort_enum_client: sort_enum_array[] = [
   { id: '1', label: 'Nombre' },
