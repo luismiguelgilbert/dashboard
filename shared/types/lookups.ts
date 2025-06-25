@@ -32,3 +32,13 @@ export const lookup_bitacora_cars_schema = z.object({
   avatar_url: z.string().optional().nullable(),
 });
 export type lookup_bitacora_cars = z.infer<typeof lookup_bitacora_cars_schema>;
+
+export const lookup_sys_users_schema = z.object({
+  id: z.coerce.string(),
+  label: z.string(),
+  suffix: z.string(),
+  is_active: z.boolean(),
+  disabled: z.boolean(),
+  avatar_url: z.string().optional().nullable(),
+});
+export type lookup_sys_users = z.infer<typeof lookup_sys_users_schema>;

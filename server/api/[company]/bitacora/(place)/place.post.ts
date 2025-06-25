@@ -32,6 +32,11 @@ export default defineEventHandler(async (event) => {
         from bita_places_cars t
         where t.sys_company_id = ${companyId} and t.place_id = a.id
       ) as bita_places_cars
+      ,array(
+        select t.user_id 
+        from bita_places_users t
+        where t.sys_company_id = ${companyId} and t.place_id = a.id
+      ) as bita_places_users
       from bita_places a
       WHERE 
       a.sys_company_id = ${companyId}

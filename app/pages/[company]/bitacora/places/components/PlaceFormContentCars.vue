@@ -29,6 +29,7 @@ const {
         label: car.name_es,
         suffix: car.name_es_short,
         disabled: car.disabled,
+        class: car.disabled ? 'line-through' : undefined,
         avatar: {
           src: car.is_active ? (car.avatar_url || '') : '',
           icon: car.is_active ? 'i-lucide-image' : 'i-lucide-ban',
@@ -59,30 +60,36 @@ const {
       </template>
 
       <template #right>
-        <UModal>
+        <UDrawer
+          :handle="false"
+          :overlay="false"
+          direction="right">
           <UButton
             label="Agregar vehículos"
             class="cursor-pointer"
             color="neutral"
             variant="subtle"
             icon="i-lucide-car"
-            leading-icon="i-lucide-circle-plus"
-            size="xl" />
-
+            leading-icon="i-lucide-circle-plus" />
           <template #content>
             <UCommandPalette
               v-model:search-term="searchTerm"
               :groups="groups"
               :fuse="{ fuseOptions: { includeMatches: true } }"
-              placeholder="Buscar vehículo..."
-              class="h-80"
-            />
+              placeholder="Buscar vehículo...">
+              <template #item-trailing="item">
+                <UIcon
+                  v-if="selectedRowData.bita_places_cars.includes(item.item.id)"
+                  name="i-lucide-circle-check"
+                  class="size-5" />
+              </template>
+            </UCommandPalette>
           </template>
-        </UModal>
+        </UDrawer>
       </template>
     </UDashboardNavbar>
     <UCard
-      class="mx-4 md:mx-6"
+      class="mx-2 md:mx-4"
       variant="subtle">
       <UProgress v-if="isFetchingLookupCars" class="p-3" />
       <span v-if="!selectedCars.length">No hay vehículos seleccionados</span>
