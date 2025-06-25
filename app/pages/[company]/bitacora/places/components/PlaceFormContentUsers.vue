@@ -12,7 +12,7 @@ const selectedCars = computed(() => lookupCars.value?.filter(car => selectedRowD
 
 const groups = computed(() => [{
   id: 'cars',
-  label: searchTerm.value ? `Usuarios con “${searchTerm.value}”...` : 'Usuarios',
+  label: searchTerm.value ? `Buscando usuarios con “${searchTerm.value}”...` : 'Usuarios',
   items: lookupCars.value || [],
 }]);
 
@@ -63,6 +63,7 @@ const {
         <UDrawer
           :handle="false"
           :overlay="false"
+          :ui="{ content: 'md:min-w-[500px]' }"
           direction="right">
           <UButton
             label="Agregar usuarios"

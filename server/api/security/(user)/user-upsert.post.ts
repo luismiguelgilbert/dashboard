@@ -1,4 +1,3 @@
-import { supabase } from '@@/server/utils/supabase';
 import { base64toBlob } from '~~/app/utils/index';
 
 export default defineEventHandler(async (event) => {

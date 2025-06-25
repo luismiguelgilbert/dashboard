@@ -46,6 +46,30 @@ export default defineEventHandler(async (event) => {
         updated_by = ${user?.userId}
     `;
 
+    // Delete users for the company/place and Insert new ones
+    await serverDB.sql`delete from bita_places_users where sys_company_id = ${companyId} and place_id = ${payload.id}`;
+    
+    if (payload.bita_places_users.length > 0) {
+      let multipleUsersRowsInsert = 'insert into bita_places_users (sys_company_id, place_id, user_id) values ';
+      payload.bita_places_users.forEach(async (record) => {
+        multipleUsersRowsInsert += `('${companyId}', '${payload.id}', '${record}'),`;
+      });
+      multipleUsersRowsInsert = multipleUsersRowsInsert.slice(0, -1); // Remove the last comma
+      await serverDB.exec(multipleUsersRowsInsert);
+    }
+
+    // Delete cars for the company/place and Insert new ones
+    await serverDB.sql`delete from bita_places_cars where sys_company_id = ${companyId} and place_id = ${payload.id}`;
+    
+    if (payload.bita_places_cars.length > 0) {
+      let multipleCarsRowsInsert = 'insert into bita_places_cars (sys_company_id, place_id, car_id) values ';
+      payload.bita_places_cars.forEach(async (record) => {
+        multipleCarsRowsInsert += `('${companyId}', '${payload.id}', '${record}'),`;
+      });
+      multipleCarsRowsInsert = multipleCarsRowsInsert.slice(0, -1); // Remove the last comma
+      await serverDB.exec(multipleCarsRowsInsert);
+    }
+
     // Upload and Upsert avatar URL if file is provided
     if (payload.avatar_file) {
       const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];
@@ -64,7 +88,7 @@ export default defineEventHandler(async (event) => {
           });
         }
         const { data: fileURL } = supabase.storage.from('avatars').getPublicUrl(filename);
-        await serverDB.sql`update bita_cars set
+        await serverDB.sql`update bita_places set
           avatar_url = COALESCE(${fileURL.publicUrl}, avatar_url)
           WHERE id = ${payload.id} and sys_company_id = ${companyId}`;
       }
