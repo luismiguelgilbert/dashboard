@@ -8,6 +8,8 @@ const userMenu = useState<sys_links[]>('userMenu');
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
 const userBitaPlaces = useState<bitacora_places[]>('userBitaPlaces');
+const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
+
 const requestFetch = useRequestFetch();
 const { data: menuData } = await useAsyncData(() => requestFetch('/api/system/userMenu'));
 userMenu.value = menuData.value || [];
@@ -18,6 +20,9 @@ userCompany.value = useRoute().params.company
   : userCompanies.value[0];
 const { data: bitaPlaces } = await useAsyncData(() => requestFetch('/api/system/userBitaPlaces'));
 userBitaPlaces.value = bitaPlaces.value || [];
+userBitaPlace.value = useRoute().params.placeId
+  ? userBitaPlaces.value.find(c => c.id === useRoute().params.placeId)
+  : userBitaPlaces.value[0];
 
 const userMenuFormatted = computed(() => {
   return [
@@ -65,6 +70,9 @@ const userMenuFormatted = computed(() => {
       </template>
 
       <template #default="{ collapsed }">
+        <BitaPlacesMenu
+          v-if="userBitaPlaces.length > 0"
+          :collapsed="collapsed" />
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"

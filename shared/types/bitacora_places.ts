@@ -43,6 +43,7 @@ export type bitacora_places_query = z.infer<typeof bitacora_places_query_schema>
 export const bitacora_places_schema = z.object(
   {
     id: z.string().default(''),
+    sys_company_id: z.string().default(''),
     name_es: z.string().default(''),
     name_es_short: z.string().default(''),
     is_active: z.coerce.boolean().default(true),

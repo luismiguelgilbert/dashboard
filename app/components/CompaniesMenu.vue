@@ -6,6 +6,8 @@ defineProps<{
 const { currentRoute, push } = useRouter();
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
+const userBitaPlaces = useState<bitacora_places[]>('userBitaPlaces');
+const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
 
 const userCompaniesFormatted = computed(() => {
   return [userCompanies.value.map(company => ({
@@ -18,10 +20,20 @@ const userCompaniesFormatted = computed(() => {
     class: 'cursor-pointer',
     async onSelect() {
       userCompany.value = userCompanies.value.find(c => c.id === company.id);
+      console.log(currentRoute.value);
+      // In case the currentRoute is a nested Child within the company (e.g. a recordID that belongs to a company)
+      // then we need to remove the recordID from the route
       if (currentRoute.value.matched.length > 1 && currentRoute.value.matched[0]?.name) {
         await navigateTo({ name: currentRoute.value.matched[0].name, params: { company: company.id }, query: useRoute().query });
       } else {
         await push({ params: { company: company.id }, query: useRoute().query });
+      }
+      // If user has Bitacora places, we can also set the first place as the current one
+      if (userBitaPlace.value?.id && userBitaPlaces.value.length > 0) {
+        const firstPlaceForCompany = userBitaPlaces.value.find(p => p.sys_company_id === userCompany.value?.id);
+        if (firstPlaceForCompany) {
+          userBitaPlace.value = firstPlaceForCompany;
+        }
       }
     }
   }))]

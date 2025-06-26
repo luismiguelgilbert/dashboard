@@ -1,15 +1,16 @@
 <script setup lang="ts">
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
-const store = useBitacoraReasonsStore();
+const store = useBitacoraEventsStore();
 const { queryPayload, computedQueryKey } = storeToRefs(store);
 const headers = useRequestHeaders(['cookie']);
 const userCompany = useState<sys_companies | undefined>('userCompany');
+const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
 const errorFetching = ref(false);
 const errorFetchingMessage = ref('');
 
 const fetcher = async (pageParam: number) => {
-  const { data, error } = await useFetch(`/api/${userCompany.value?.id}/bitacora/reasons`, { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) })
+  const { data, error } = await useFetch(`/api/${userCompany.value?.id}/${userBitaPlace.value?.id}bitacora/events`, { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) })
   if (error.value) {
     errorFetching.value = true;
     errorFetchingMessage.value = error.value?.message || 'An error occurred while fetching data';
@@ -25,7 +26,7 @@ const {
   isFetching,
   hasNextPage,
 } = useInfiniteQuery({
-  queryKey: [computedQueryKey.value, userCompany.value?.id, queryPayload],
+  queryKey: [computedQueryKey.value, userCompany.value?.id, userBitaPlace.value?.id, queryPayload],
   queryFn: ({ pageParam }) => fetcher(pageParam),
   initialPageParam: 1,
   getNextPageParam: (lastPage, pages) => lastPage && lastPage.length > 0 ? pages.length + 1 : undefined,
@@ -60,12 +61,14 @@ const onLoadMore = async () => {
           ]">
           <UUser
             class="p-3 pl-3 pr-6"
-            :name="item.name_es"
+            :title="item.comments"
+            :description="item.comments"
             :avatar="{
-              alt: item.name_es[0],
+              src: item.avatar_url || undefined,
+              icon: 'i-lucide-image'
             }"
             :chip=" {
-              color: item.is_active ? 'primary' : 'error',
+              color: item.is_critical ? 'primary' : 'error',
               position: 'top-right'
             }"
             @click="emits('row-clicked', item)" />
