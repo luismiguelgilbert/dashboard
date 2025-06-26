@@ -64,6 +64,20 @@ export default defineEventHandler(async (event) => {
   )
   setCookie(event, 'nuxt-session-permissions', permissionsToken, { maxAge: 60 * 60 * 24 * 28, });
 
+  // Create Cookie with bitacora places
+  const userBitaPlaces = await serverDB.sql`
+    select
+    place_id as id
+    from bita_places_users
+    where user_id = ${userId}
+  `;
+  const placesToken = jwt.sign(
+    { userId: userId, userPlaces: userBitaPlaces.rows?.map(c => c.id) },
+    process.env.NUXT_SESSION_PASSWORD as string,
+    { expiresIn: '7d' }
+  )
+  setCookie(event, 'nuxt-session-bitaplaces', placesToken, { maxAge: 60 * 60 * 24 * 28, });
+
   await replaceUserSession(event, {
     user: {
       userId: userId,

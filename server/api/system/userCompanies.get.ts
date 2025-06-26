@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     const query = await serverDB.sql`
       select
       c.*
+      , NOT(c.is_active) as disabled
       , b.is_default
       from sys_users a
       inner join sys_companies_users b on a.id = b.user_id

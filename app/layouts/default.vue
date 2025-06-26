@@ -7,6 +7,7 @@ const { currentRoute } = useRouter();
 const userMenu = useState<sys_links[]>('userMenu');
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
+const userBitaPlaces = useState<bitacora_places[]>('userBitaPlaces');
 const requestFetch = useRequestFetch();
 const { data: menuData } = await useAsyncData(() => requestFetch('/api/system/userMenu'));
 userMenu.value = menuData.value || [];
@@ -15,6 +16,8 @@ userCompanies.value = companiesData.value || [];
 userCompany.value = useRoute().params.company
   ? userCompanies.value.find(c => c.id === useRoute().params.company)
   : userCompanies.value[0];
+const { data: bitaPlaces } = await useAsyncData(() => requestFetch('/api/system/userBitaPlaces'));
+userBitaPlaces.value = bitaPlaces.value || [];
 
 const userMenuFormatted = computed(() => {
   return [

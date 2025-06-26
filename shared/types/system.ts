@@ -19,6 +19,12 @@ export const session_permissions_schema = z.object({
 });
 export type session_permissions = z.infer<typeof session_permissions_schema>;
 
+export const session_bitaplaces_schema = z.object({
+  userId: z.coerce.string(),
+  userPlaces: z.string().array(),
+});
+export type session_bitaplaces = z.infer<typeof session_bitaplaces_schema>;
+
 export const sort_by_options_schema = z.object(
   {
     id: z.coerce.string().default(''),
