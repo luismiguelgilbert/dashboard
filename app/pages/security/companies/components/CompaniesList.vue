@@ -2,6 +2,7 @@
 import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
+const { currentRoute } = useRouter();
 const store = useSecurityCompaniesStore();
 const { queryPayload, computedQueryKey } = storeToRefs(store);
 const headers = useRequestHeaders(['cookie']);
@@ -51,11 +52,27 @@ const onLoadMore = async () => {
       v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
       style="height: calc(100dvh - 65px); overflow-y: auto;">
       <template v-for="page in data?.pages">
-        <CompaniesListItem
+        <div
           v-for="item in page"
-          :key="`${dataUpdatedAt}-${item.id}`"
-          :item="item"
-          @item-selected="($event) => emits('row-clicked', $event)" />
+          :key="item.id"
+          class="text-sm cursor-pointer border-l-2 transition-colors border-b border-b-default"
+          :class="[
+            currentRoute.params.id === item.id ? 'border-primary bg-primary/10' : 'border-(--ui-bg) hover:border-l-primary hover:bg-primary/5'
+          ]">
+          <UUser
+            class="p-3 pl-3 pr-6"
+            :name="item.name_es_short"
+            :description="`${item.name_es} (${item.company_number})`"
+            :avatar="{
+              src: item.avatar_url || undefined,
+              icon: 'i-lucide-image'
+            }"
+            :chip=" {
+              color: item.is_active ? 'primary' : 'error',
+              position: 'top-right'
+            }"
+            @click="emits('row-clicked', item)" />
+        </div>
       </template>
       <UProgress v-if="isFetching" class="p-3" />
     </div>

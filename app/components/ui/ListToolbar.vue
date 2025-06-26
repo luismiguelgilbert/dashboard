@@ -19,7 +19,7 @@ const isOpen = ref<boolean>(false);
 </script>
 
 <template>
-  <UButtonGroup size="xl">
+  <UButtonGroup size="sm">
     <UButton
       class="cursor-pointer"
       color="neutral"
@@ -27,15 +27,15 @@ const isOpen = ref<boolean>(false);
       :disabled="!props.canCreate"
       @click="emits('open-new')">
       <template #default>
-        <UIcon name="i-lucide-circle-plus" size="30" />
+        <UIcon name="i-lucide-circle-plus" size="20" />
         <span class="hidden sm:inline-block">Nuevo</span>
       </template>
     </UButton>
     <UDrawer
       v-model:open="isOpen"
-      :overlay="false"
       title="Opciones"
       description="Buscar, ordenar y filtrar la lista"
+      :overlay="false"
       :direction="isMobile ? 'top' : 'right'">
       <template #header>
         <div class="flex items-center justify-between pt-safe">
@@ -45,7 +45,6 @@ const isOpen = ref<boolean>(false);
           <UButton
             class="cursor-pointer"
             icon="i-lucide-x"
-            size="xl"
             color="neutral"
             variant="soft"
             @click="isOpen = false" />
@@ -60,9 +59,9 @@ const isOpen = ref<boolean>(false);
         variant="outline"
         @click="isOpen = true">
         <template #default>
-          <UIcon name="i-lucide-search" size="30" />
+          <UIcon name="i-lucide-search" size="20" />
           <span
-            class="hidden sm:inline-block font-semibold w-20 overflow-x-hidden text-ellipsis text-left"
+            class="hidden sm:inline-block font-semibold w-16 overflow-x-hidden text-ellipsis text-left"
             :class="{ 'text-primary-400': (search && search.length > 0) }">
             {{ search && search.length > 0 ? `${search}` : 'Opciones' }}
           </span>
