@@ -128,7 +128,7 @@ onBeforeMount(() => {
   <div
     v-if="!isMobile && !isFormPanelOpen"
     class="hidden lg:flex flex-1 items-center justify-center">
-    <UIcon name="i-lucide-shield-user" class="size-32 text-dimmed" />
+    <UIcon name="i-lucide-car" class="size-32 text-dimmed" />
   </div>
 
   <UDashboardPanel

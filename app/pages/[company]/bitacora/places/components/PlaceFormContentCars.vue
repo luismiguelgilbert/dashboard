@@ -63,7 +63,6 @@ const {
         <UDrawer
           :handle="false"
           :overlay="false"
-          :ui="{ content: 'md:min-w-[500px]' }"
           direction="right">
           <UButton
             label="Agregar vehículos"
