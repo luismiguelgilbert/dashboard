@@ -2,9 +2,10 @@ import Excel from 'exceljs';
 
 export default defineEventHandler(async (event) => {
   try {
-    await hasPermissions(event, [PermissionsList.BITACORA_PLACES_EXPORT]);
-    const { data: payload, error } = await readValidatedBody(event, bitacora_places_query_schema.safeParse);
+    await hasPermissions(event, [PermissionsList.BITACORA_EVENTS_EXPORT]);
+    const { data: payload, error } = await readValidatedBody(event, bitacora_events_query_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
+    const placeId = get_company_schema.parse(event.context.params?.placeId);
     if (error) {
       throw createError({
         statusCode: 500,
@@ -20,27 +21,28 @@ export default defineEventHandler(async (event) => {
     await hasCompanies(event, [companyId]);
 
     // QUERIES
-    const sort = bitacora_places_sort_enum_server.find(s => s.id === payload.sort) || bitacora_places_sort_enum_server['1'];
+    const sort = bitacora_events_sort_enum_server.find(s => s.id === payload.sort) || bitacora_events_sort_enum_server['1'];
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,initcap(a.name_es) as name_es
-      ,initcap(a.name_es_short) as name_es_short
+      ,a.event_at::text as event_at
+      ,a.comments
       ,a.is_active
+      ,a.is_critical
       ,a.avatar_url
-      from bita_places a
+      ,b.user_name || ' ' || b.user_lastname as responsible
+      from bita_events a
+      inner join sys_users b on a.updated_by = b.id
       where (1 = 1)
       ${companyId ? `and (a.sys_company_id = '${companyId}')` : ''}
-      ${payload.search && payload.search.trim()?.length > 0
-          ? `and (
-            a.name_es ilike '%${payload.search}%'
-            or a.name_es_short ilike '%${payload.search}%'
-          )`
-          : ''
-      }
+      ${placeId ? `and (a.place_id = '${placeId}')` : ''}
       ${payload.is_active && payload.is_active.length > 0
           ? `and (a.is_active in (${payload.is_active.join(',')}))`
+          : ''
+      }
+      ${payload.is_critical && payload.is_critical.length > 0
+          ? `and (a.is_critical in (${payload.is_critical.join(',')}))`
           : ''
       }
       ORDER BY ${sort?.label} ${payload.order}
@@ -51,10 +53,10 @@ export default defineEventHandler(async (event) => {
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Puntos de Control');
     const fileColumns = [
-      { key: 'id', header: 'Código', width: 50 },
-      { key: 'name_es', header: 'Nombre', width: 25 },
-      { key: 'name_es_short', header: 'Código', width: 25 },
-      { key: 'is_active', header: 'Activo?', width: 10 },
+      { key: 'event_at', header: 'Código', width: 30 },
+      { key: 'responsible', header: 'Código', width: 30 },
+      { key: 'comments', header: 'Nombre', width: 100 },
+      { key: 'is_critical', header: 'Crítico?', width: 10 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };

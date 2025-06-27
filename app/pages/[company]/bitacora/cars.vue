@@ -33,7 +33,7 @@ const downloadFile = async () => {
     const url = window.URL.createObjectURL(response);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Motivos.xlsx');
+    link.setAttribute('download', 'Vehiculos.xlsx');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

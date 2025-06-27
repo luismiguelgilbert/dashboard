@@ -22,15 +22,18 @@ export default defineEventHandler(async (event) => {
     const pageSize = 25;
     const sort = bitacora_events_sort_enum_server.find(s => s.id === payload.sort) || bitacora_events_sort_enum_server['1'];
     const serverDB = useDatabase();
+    // ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as event_at
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as event_at
+      ,a.event_at::text as event_at
       ,a.comments
       ,a.is_active
       ,a.is_critical
       ,a.avatar_url
+      ,b.user_name || ' ' || b.user_lastname as responsible
       from bita_events a
+      inner join sys_users b on a.updated_by = b.id
       where (1 = 1)
       ${companyId ? `and (a.sys_company_id = '${companyId}')` : ''}
       ${placeId ? `and (a.place_id = '${placeId}')` : ''}

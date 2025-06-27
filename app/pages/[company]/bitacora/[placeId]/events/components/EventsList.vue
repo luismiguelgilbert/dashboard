@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { DateTime } from 'luxon';
+
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
 const store = useBitacoraEventsStore();
@@ -61,14 +63,13 @@ const onLoadMore = async () => {
           ]">
           <UUser
             class="p-3 pl-3 pr-6"
-            :title="item.comments"
-            :description="item.comments"
+            :name="item.comments"
+            :description="`${item.responsible} - ${ DateTime.fromSQL(item.event_at).setLocale('es-EC').toFormat('dd/MMMM/yyyy HH:mm') }`"
             :avatar="{
-              src: item.avatar_url || undefined,
-              icon: 'i-lucide-image'
+              icon: item.is_critical ? 'i-lucide-triangle-alert' : 'i-lucide-check',
             }"
             :chip=" {
-              color: item.is_critical ? 'primary' : 'error',
+              color: item.is_critical ? 'error' : 'primary',
               position: 'top-right'
             }"
             @click="emits('row-clicked', item)" />

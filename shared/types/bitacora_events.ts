@@ -66,6 +66,7 @@ export const bitacora_events_schema = z.object(
     is_critical: z.coerce.boolean().default(false),
     avatar_url: z.coerce.string().nullable(),
     avatar_file: z.string().nullable().default(null),
+    responsible: z.string().default(''),
     disabled: z.coerce.boolean().default(true),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
