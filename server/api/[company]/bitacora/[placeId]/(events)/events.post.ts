@@ -22,13 +22,13 @@ export default defineEventHandler(async (event) => {
     const pageSize = 25;
     const sort = bitacora_events_sort_enum_server.find(s => s.id === payload.sort) || bitacora_events_sort_enum_server['1'];
     const serverDB = useDatabase();
-    // ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,initcap(a.name_es) as name_es
-      ,initcap(a.name_es_short) as name_es_short
+      ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as event_at
+      ,a.comments
       ,a.is_active
+      ,a.is_critical
       ,a.avatar_url
       from bita_events a
       where (1 = 1)

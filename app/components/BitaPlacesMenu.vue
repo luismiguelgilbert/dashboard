@@ -39,7 +39,7 @@ const userBitaPlacesFormatted = computed(() => {
     v-if="userBitaPlacesFormatted[0]?.length && userBitaPlacesFormatted[0]?.length > 0"
     size="sm"
     :ui="{ description: 'pl-3' }"
-    description="Punto de Control:">
+    :description="collapsed ? undefined : 'Punto de Control:'">
     <UDropdownMenu
       :items="userBitaPlacesFormatted"
       :content="{ align: 'center', collisionPadding: 12 }"

@@ -41,9 +41,9 @@ const userMenuFormatted = computed(() => {
           .map(childItem => ({
             ...childItem,
             label: `${childItem.name_es}`,
-            to: childItem.requires_company
-              ? `/${userCompany.value?.id}${childItem.link}`
-              : childItem.link,
+            to: childItem.link
+              .replace('company?', userCompany.value?.id || '')
+              .replace('placeId?', userBitaPlace.value?.id || ''),
             disabled: currentRoute.value.path.includes(childItem.link),
           }))
       }))

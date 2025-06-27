@@ -92,7 +92,6 @@ export const sys_links_schema = z.object({
   icon: z.coerce.string().optional(),
   comment_es: z.coerce.string().optional().nullable(),
   row_level: z.coerce.number(),
-  requires_company: z.coerce.boolean(),
 });
 
 export type sys_links = z.infer<typeof sys_links_schema>;

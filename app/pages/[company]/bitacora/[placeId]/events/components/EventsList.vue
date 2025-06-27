@@ -10,7 +10,7 @@ const errorFetching = ref(false);
 const errorFetchingMessage = ref('');
 
 const fetcher = async (pageParam: number) => {
-  const { data, error } = await useFetch(`/api/${userCompany.value?.id}/${userBitaPlace.value?.id}bitacora/events`, { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) })
+  const { data, error } = await useFetch(`/api/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/events`, { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) })
   if (error.value) {
     errorFetching.value = true;
     errorFetchingMessage.value = error.value?.message || 'An error occurred while fetching data';
