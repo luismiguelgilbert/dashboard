@@ -21,7 +21,6 @@ const userBitaPlacesFormatted = computed(() => {
       class: 'cursor-pointer',
       async onSelect() {
         userBitaPlace.value = userBitaPlaces.value.find(p => p.id === place.id);
-        console.log(currentRoute.value);
         // In case the currentRoute is a nested Child within the company (e.g. an eventID that belongs to a company)
         // then we need to remove the eventID from the route
         if (currentRoute.value.matched.length > 1 && currentRoute.value.matched[0]?.name) {
@@ -36,25 +35,31 @@ const userBitaPlacesFormatted = computed(() => {
 </script>
 
 <template>
-  <UDropdownMenu
-    :items="userBitaPlacesFormatted"
-    :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
-    <UButton
-      :label="userBitaPlace?.name_es_short"
-      :avatar="{
-        src: userBitaPlace?.avatar_url ?? undefined,
-        alt: userBitaPlace?.name_es_short
-      }"
-      :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
-      color="neutral"
-      variant="ghost"
-      :square="collapsed"
-      class="data-[state=open]:bg-elevated cursor-pointer"
-      :class="collapsed ? 'pl-3' : undefined"
-      block
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }" />
-  </UDropdownMenu>
+  <UFormField
+    v-if="userBitaPlacesFormatted[0]?.length && userBitaPlacesFormatted[0]?.length > 0"
+    size="sm"
+    :ui="{ description: 'pl-3' }"
+    description="Punto de Control:">
+    <UDropdownMenu
+      :items="userBitaPlacesFormatted"
+      :content="{ align: 'center', collisionPadding: 12 }"
+      :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
+      <UButton
+        :label="userBitaPlace?.name_es_short"
+        :avatar="{
+          src: userBitaPlace?.avatar_url ?? undefined,
+          alt: userBitaPlace?.name_es_short
+        }"
+        :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
+        color="neutral"
+        variant="ghost"
+        :square="collapsed"
+        class="data-[state=open]:bg-elevated cursor-pointer"
+        :class="collapsed ? 'pl-3' : undefined"
+        block
+        :ui="{
+          trailingIcon: 'text-dimmed'
+        }" />
+    </UDropdownMenu>
+  </UFormField>
 </template>

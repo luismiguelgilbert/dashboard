@@ -20,7 +20,6 @@ const userCompaniesFormatted = computed(() => {
     class: 'cursor-pointer',
     async onSelect() {
       userCompany.value = userCompanies.value.find(c => c.id === company.id);
-      console.log(currentRoute.value);
       // In case the currentRoute is a nested Child within the company (e.g. a recordID that belongs to a company)
       // then we need to remove the recordID from the route
       if (currentRoute.value.matched.length > 1 && currentRoute.value.matched[0]?.name) {
@@ -34,6 +33,8 @@ const userCompaniesFormatted = computed(() => {
         if (firstPlaceForCompany) {
           userBitaPlace.value = firstPlaceForCompany;
         }
+      } else {
+        userBitaPlace.value = undefined;
       }
     }
   }))]

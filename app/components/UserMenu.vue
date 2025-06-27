@@ -62,7 +62,6 @@ const items = computed<DropdownMenuItem[][]>(() => ([
           class: 'cursor-pointer',
           onSelect: (e) => {
             e.preventDefault()
-
             appConfig.ui.colors.primary = color
           }
         }))
