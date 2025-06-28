@@ -55,7 +55,7 @@ const onLoadMore = async () => {
         <div
           v-for="item in page"
           :key="`${dataUpdatedAt}-${item.id}`"
-          class="text-sm cursor-pointer border-l-2 transition-colors border-b border-b-default"
+          class="text-sm cursor-pointer border-l-2 transition-colors border-b border-b-default overflow-x-hidden"
           :class="[
             currentRoute.params.id === item.id ? 'border-primary bg-primary/10' : 'border-(--ui-bg) hover:border-l-primary hover:bg-primary/5'
           ]">
