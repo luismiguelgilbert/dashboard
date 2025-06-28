@@ -1,21 +1,19 @@
 import { z } from 'zod/v4';
 
-export const bitacora_events_sort_enum_keys_schema = z.enum(['1', '2', '3', '4', '5']);
+export const bitacora_events_sort_enum_keys_schema = z.enum(['1', '2', '3', '4']);
 export type bitacora_events_sort_enum_keys = z.infer<typeof bitacora_events_sort_enum_keys_schema>;
 export const bitacora_events_sort_enum_client: sort_enum_array[] = [
   { id: '1', label: 'Fecha' },
   { id: '2', label: 'Crítico' },
-  { id: '3', label: 'Estado' },
-  { id: '4', label: 'Responsable' },
-  { id: '5', label: 'Creación' },
+  { id: '3', label: 'Responsable' },
+  { id: '4', label: 'Creación' },
 ];
 
 export const bitacora_events_sort_enum_server: sort_enum_array[] = [
   { id: '1', label: 'a.event_at' },
   { id: '2', label: 'a.is_critical' },
-  { id: '3', label: 'a.is_active' },
-  { id: '4', label: 'a.updated_by' },
-  { id: '5', label: 'a.updated_at' },
+  { id: '3', label: 'a.updated_by' },
+  { id: '4', label: 'a.updated_at' },
 ];
 
 export const bitacora_events_query_schema = z.object({

@@ -18,6 +18,7 @@ export const useBitacoraEventsStore = defineStore('bitacoraEvents', () => {
   const isSaveDisabled = computed<boolean>(() => (isFormPanelCreating.value && !canCreate) || (!isFormPanelCreating.value && !canEdit));// pending
   const hasFilter = computed<boolean>(() => (queryPayload.value.search && queryPayload.value.search.trim().length > 0)
     || Boolean(queryPayload.value.is_active?.length && queryPayload.value.is_active.length > 0)
+    || Boolean(queryPayload.value.is_critical?.length && queryPayload.value.is_critical.length > 0)
   );
 
   return {

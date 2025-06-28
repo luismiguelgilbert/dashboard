@@ -11,9 +11,9 @@ const { computedQueryKey, queryPayload, hasFilter, canCreate, canDownload } = st
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 const isFormPanelOpen = computed<boolean>(() => !!currentRoute.value.params.id);
-const statusOptions = ref<CheckboxGroupItem[]>([
-  { label: 'Activos', value: 'True' },
-  { label: 'Inactivos', value: 'False' },
+const criticalOptions = ref<CheckboxGroupItem[]>([
+  { label: 'Crítico', value: 'True' },
+  { label: 'Normal', value: 'False' },
 ]);
 
 const openNew = async () => {
@@ -103,18 +103,18 @@ onBeforeMount(() => {
                   color="neutral"
                   icon="i-lucide-eraser"
                   @click="() => {
-                    queryPayload.is_active = undefined;
+                    queryPayload.is_critical = undefined;
                     push({ query: { ...currentRoute.query, is_active: undefined } })
                   }" />
               </template>
               <USelectMenu
-                v-model="queryPayload.is_active"
+                v-model="queryPayload.is_critical"
                 class="w-full"
                 value-key="value"
                 size="xl"
                 multiple
                 :search-input="false"
-                :items="statusOptions"
+                :items="criticalOptions"
                 @update:model-value="() => push({ query: { ...currentRoute.query, is_active: queryPayload.is_active || undefined } })" />
             </UFormField>
           </template>
