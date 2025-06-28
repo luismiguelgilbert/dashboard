@@ -1,8 +1,14 @@
 @import "tailwindcss" theme(static);
 @import "@nuxt/ui-pro";
 
+@media (max-width: 640px) {
+  html {
+    font-size: 20px;
+  }
+}
+
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  /* --font-sans: 'Public Sans', sans-serif; */
 
   --color-bitt-50: #f5f5f5;
   --color-bitt-100: #737373;
