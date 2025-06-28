@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useBitacoraReasonsStore();
@@ -22,6 +23,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="bitacora_reasons_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="is_active"
           label="Estado"
           hint="Activar/Inactivar motivo">
@@ -31,6 +33,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es"
           label="Nombre del motivo"
           hint="Nombre descriptivo del motivo">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useSecurityUsersStore();
@@ -23,6 +24,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="sys_users_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="email"
           label="Email"
           hint="Correo o id usado como inicio de sesión">
@@ -35,6 +37,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="is_active"
           label="Estado"
           hint="Activar/Inactivar usuario">
@@ -44,6 +47,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="user_name"
           label="Nombres"
           hint="Nombres del usuario">
@@ -55,6 +59,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="user_lastname"
           label="Apellidos"
           hint="Apellidos del usuario">
@@ -66,6 +71,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="user_sex"
           label="Sexo"
           hint="Sexo del usuario">

@@ -4,6 +4,7 @@ import { arrayToTree } from 'performant-array-to-tree';
 
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const headers = useRequestHeaders(['cookie']);

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('lg');
+
 const { currentRoute } = useRouter();
 const headers = useRequestHeaders(['cookie']);
 const queryClient = useQueryClient();
@@ -97,8 +101,8 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
 
     <UProgress v-if="isFetching" class="p-3" />
     <main v-if="!isFetching && selectedRowData">
-      <ProfileFormContentBasic :disable="isFetching || isPending" />
-      <ProfileFormContentAccess :disable="isFetching || isPending" />
+      <ProfileFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
+      <ProfileFormContentAccess :vertical="isMobile" :disable="isFetching || isPending" />
     </main>
   </div>
 </template>

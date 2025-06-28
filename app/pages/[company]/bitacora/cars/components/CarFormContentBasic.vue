@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useBitacoraCarsStore();
@@ -22,6 +23,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="bitacora_cars_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="is_active"
           label="Estado"
           hint="Activar/Inactivar vehículo">
@@ -31,6 +33,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es"
           label="Nombre del vehículo"
           hint="Nombre descriptivo del vehículo">
@@ -42,6 +45,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es_short"
           label="Código del vehículo"
           hint="Código del vehículo">

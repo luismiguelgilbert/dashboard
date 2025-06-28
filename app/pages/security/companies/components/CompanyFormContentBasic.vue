@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useSecurityCompaniesStore();
@@ -22,6 +23,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="sys_companies_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="is_active"
           label="Estado"
           hint="Activar/Inactivar organización">
@@ -31,6 +33,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es_short"
           label="Nombre"
           hint="Nombre de la organización">
@@ -42,6 +45,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es"
           label="Razón Social"
           hint="Razón social de la organización">
@@ -53,6 +57,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="company_number"
           label="RUC"
           hint="Registro único de contribuyente">
@@ -64,6 +69,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="billing_phone"
           label="Teléfono de Facturación"
           hint="Nombre del usuario">
@@ -75,6 +81,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="billing_address"
           label="Dirección de Facturación"
           hint="Nombre del usuario"

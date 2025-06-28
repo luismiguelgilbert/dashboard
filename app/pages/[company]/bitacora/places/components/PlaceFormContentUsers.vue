@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const headers = useRequestHeaders(['cookie']);

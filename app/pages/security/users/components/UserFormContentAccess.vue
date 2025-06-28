@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const headers = useRequestHeaders(['cookie']);
@@ -41,6 +42,7 @@ const {
         :state="selectedRowData"
         :schema="sys_users_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="sys_profile_id"
           label="Perfil"
           hint="Permisos del usuario (roles)">
@@ -56,6 +58,7 @@ const {
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="sys_companies_users"
           label="Organizaciones"
           hint="Permitir acceso a las organizaciones seleccionadas"

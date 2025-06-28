@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('lg');
+
 // const { currentRoute } = useRouter();
 // const headers = useRequestHeaders(['cookie']);
 // const userCompany = useState<sys_companies | undefined>('userCompany');
@@ -100,8 +104,8 @@
 
     <UProgress v-if="isFetching" class="p-3" />
     <main v-if="!isFetching && selectedRowData">
-      <CarFormContentBasic :disable="isFetching || isPending" />
-      <CarFormContentAvatar :disable="isFetching || isPending" />
+      <CarFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
+      <CarFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
     </main> -->
   </div>
 </template>

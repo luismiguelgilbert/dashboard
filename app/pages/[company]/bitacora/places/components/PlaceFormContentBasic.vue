@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useBitacoraPlacesStore();
@@ -22,6 +23,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="bitacora_places_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="is_active"
           label="Estado"
           hint="Activar/Inactivar punto de control">
@@ -31,6 +33,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es"
           label="Nombre del punto de control"
           hint="Nombre descriptivo del punto de control">
@@ -42,6 +45,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="name_es_short"
           label="Código del punto de control"
           hint="Código del punto de control">

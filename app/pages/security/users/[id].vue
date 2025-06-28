@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
+import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('lg');
 
 const { currentRoute } = useRouter();
 const headers = useRequestHeaders(['cookie']);
@@ -118,14 +121,14 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
     </header>
     <main v-if="!isFetching && selectedRowData">
       <template v-if="selectedTab === 'basic'">
-        <UserFormContentBasic :disable="isFetching || isPending" />
-        <UserFormContentAvatar :disable="isFetching || isPending" />
+        <UserFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
+        <UserFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
       </template>
       <template v-if="selectedTab === 'permissions'">
-        <UserFormContentAccess :disable="isFetching || isPending" />
+        <UserFormContentAccess :vertical="isMobile" :disable="isFetching || isPending" />
       </template>
       <template v-if="selectedTab === 'password'">
-        <UserFormContentPassword :disable="isFetching || isPending" />
+        <UserFormContentPassword :vertical="isMobile" :disable="isFetching || isPending" />
       </template>
     </main>
   </div>

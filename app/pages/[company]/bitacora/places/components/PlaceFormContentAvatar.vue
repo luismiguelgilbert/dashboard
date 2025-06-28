@@ -3,6 +3,7 @@ import imageCompression from 'browser-image-compression';
 
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useBitacoraPlacesStore();
@@ -72,6 +73,7 @@ onUpdated(() => myFile.value = undefined /* Prevent UInput error when compontent
         :state="selectedRowData"
         :schema="bitacora_places_schema">
         <UiDashboardSection
+          :vertical="vertical"
           class="p-5"
           name="avatar_url"
           label="Avatar"

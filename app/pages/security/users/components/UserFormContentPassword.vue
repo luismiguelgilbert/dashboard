@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   disable: boolean;
+  vertical?: boolean;
 }>();
 
 const moduleStore = useSecurityUsersStore();
@@ -24,12 +25,14 @@ const { selectedRowData } = storeToRefs(moduleStore);
         :state="selectedRowData"
         :schema="sys_users_schema">
         <UiDashboardSection
+          :vertical="vertical"
           name="sys_profile_id"
           label="Cambiar contraseña">
           <USwitch v-model="selectedRowData.change_password" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="new_password"
           label="Nueva Contraseña"
           hint="Ingrese la nueva contraseña del usuario">
@@ -42,6 +45,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
+          :vertical="vertical"
           name="new_password_confirm"
           label="Confirmar Contraseña"
           hint="Confirme la nueva contraseña del usuario">
