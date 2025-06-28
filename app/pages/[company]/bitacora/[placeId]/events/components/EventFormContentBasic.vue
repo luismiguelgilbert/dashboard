@@ -44,7 +44,6 @@ const { selectedRowData } = storeToRefs(moduleStore);
             placeholder="Dirección de Facturación"
             icon="i-lucide-map-pin-house" />
         </UiDashboardSection>
-        <USeparator class="py-5" />
         <br>
       </UForm>
     </UCard>

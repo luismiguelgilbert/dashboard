@@ -86,7 +86,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           color="neutral"
           variant="ghost"
           class="-ms-1.5 cursor-pointer"
-          @click="navigateTo({ name: 'company-bitacora-events', query: { ...useRoute().query } })" />
+          @click="navigateTo({ name: 'company-bitacora-placeId-events', query: { ...useRoute().query } })" />
       </template>
       <template #right>
         <UButton

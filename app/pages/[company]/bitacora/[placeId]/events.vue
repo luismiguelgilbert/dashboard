@@ -145,7 +145,7 @@ onBeforeMount(() => {
     class="pt-safe"
     :ui="{ body: 'flex-1 overflow-y-auto p-0' }"
     :open="true"
-    @update:open="navigateTo({ name: 'company-bitacora-events', query: { ...useRoute().query } })">
+    @update:open="navigateTo({ name: 'company-bitacora-placeId-events', query: { ...useRoute().query } })">
     <template #content>
       <ClientOnly>
         <NuxtPage />
