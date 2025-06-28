@@ -18,7 +18,7 @@ const statusOptions = ref<CheckboxGroupItem[]>([
 
 const openNew = async () => {
   const newUniqueId = crypto.randomUUID();
-  await navigateTo({ name: 'company-bitacora-events-id', params: { id: newUniqueId }, query: { ...useRoute().query } })
+  await navigateTo({ name: 'company-bitacora-placeId-events-id', params: { id: newUniqueId }, query: { ...useRoute().query } })
 };
 
 const downloadFile = async () => {
@@ -122,7 +122,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <EventsList @row-clicked="async (row) => await navigateTo({ name: 'company-bitacora-events-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <EventsList @row-clicked="async (row) => await navigateTo({ name: 'company-bitacora-placeId-events-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

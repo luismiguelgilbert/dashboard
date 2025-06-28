@@ -1,8 +1,9 @@
 export default defineEventHandler(async (event) => {
   try {
-    await hasPermissions(event, [PermissionsList.BITACORA_PLACES_READ]);
+    await hasPermissions(event, [PermissionsList.BITACORA_EVENTS_READ]);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
+    const placeId = get_company_schema.parse(event.context.params?.placeId);
     if (error) {
       throw createError({
         statusCode: 500,
@@ -21,31 +22,23 @@ export default defineEventHandler(async (event) => {
     const recordDataQuery = await serverDB.sql`
       SELECT
        a.id
-      ,initcap(a.name_es) as name_es
-      ,initcap(a.name_es_short) as name_es_short
+      ,a.event_at::text as event_at
+      ,a.comments
       ,a.is_active
+      ,a.is_critical
       ,a.avatar_url
-      ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as created_at
-      ,to_char (now()::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as updated_at
-      ,array(
-        select t.car_id 
-        from bita_places_cars t
-        where t.sys_company_id = ${companyId} and t.place_id = a.id
-      ) as bita_places_cars
-      ,array(
-        select t.user_id 
-        from bita_places_users t
-        where t.sys_company_id = ${companyId} and t.place_id = a.id
-      ) as bita_places_users
-      from bita_places a
+      ,b.user_name || ' ' || b.user_lastname as responsible
+      from bita_events a
+      inner join sys_users b on a.updated_by = b.id
       WHERE 
       a.sys_company_id = ${companyId}
+      and a.place_id = ${placeId}
       and a.id = ${payload.id}
     `;
 
     return (recordDataQuery.rows && recordDataQuery.rows[0])
-      ? bitacora_places_schema.parse(recordDataQuery.rows[0])
-      : bitacora_places_schema.parse({ id: payload.id, is_new: true })
+      ? bitacora_events_schema.parse(recordDataQuery.rows[0])
+      : bitacora_events_schema.parse({ id: payload.id, is_new: true })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
