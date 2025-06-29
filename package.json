@@ -36,6 +36,7 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",
     "luxon": "3.6.0",
+    "maska": "^3.1.1",
     "nuxt": "^3.17.5",
     "nuxt-auth-utils": "^0.5.20",
     "performant-array-to-tree": "^1.11.0",
@@ -65,5 +66,5 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.12.2"
+  "packageManager": "pnpm@10.12.4"
 }

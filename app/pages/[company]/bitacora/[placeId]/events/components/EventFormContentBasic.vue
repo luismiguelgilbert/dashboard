@@ -36,6 +36,24 @@ const { selectedRowData } = storeToRefs(moduleStore);
         <UiDashboardSection
           :vertical="vertical"
           name="name_es"
+          label="Fecha"
+          hint="Comentario sobre el evento">
+          <UiInputDate
+            class="w-full" />
+        </UiDashboardSection>
+        <USeparator class="py-5" />
+        <UiDashboardSection
+          :vertical="vertical"
+          name="name_es"
+          label="Hora"
+          hint="Comentario sobre el evento">
+          <UiInputTime
+            class="w-full" />
+        </UiDashboardSection>
+        <USeparator class="py-5" />
+        <UiDashboardSection
+          :vertical="vertical"
+          name="name_es"
           label="Descripción"
           hint="Comentario sobre el evento">
         <UTextarea

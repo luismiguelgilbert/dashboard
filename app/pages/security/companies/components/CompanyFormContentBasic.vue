@@ -64,6 +64,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
           <UInput
             v-model="selectedRowData.company_number"
             class="w-full"
+            inputmode="numeric"
             placeholder="Registro único de contribuyente"
             icon="i-lucide-id-card" />
         </UiDashboardSection>
@@ -76,6 +77,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
           <UInput
             v-model="selectedRowData.billing_phone"
             class="w-full"
+            inputmode="numeric"
             placeholder="Teléfono de Facturación"
             icon="i-lucide-phone" />
         </UiDashboardSection>
