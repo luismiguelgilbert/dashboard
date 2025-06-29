@@ -62,7 +62,9 @@ const formattedDate = computed(() => {
   const date = DateTime.fromFormat(_value.value, 'yyyy-MM-dd', { locale: 'es' });
 
   return date.isValid 
-    ? (date.hasSame(DateTime.local(), "day")) ? 'Hoy' : date.toFormat('dd-MMM-yyyy')
+    ? (date.hasSame(DateTime.local(), "day")) ? 'Hoy'
+      : (date.hasSame(DateTime.local().plus({ days: -1 }), "day")) ? 'Ayer'
+        : date.toFormat('dd-MMM-yyyy')
     : 'Fecha incorrecta';
 });
 
