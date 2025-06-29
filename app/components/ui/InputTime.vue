@@ -5,6 +5,7 @@ import type { MaskInputOptions } from "maska"
 const props = defineProps<{
   initialDate: string; //expected format: "2025-04-29 03:56:00+00"
 }>();
+const emit = defineEmits(['value-changed']);
 
 const _value = ref(DateTime.fromSQL(props.initialDate).toString().slice(11, 16));
 
@@ -24,6 +25,12 @@ const options = computed<MaskInputOptions>(() => ({
 }));
 
 const isformattedTimeValid = computed(() => _value.value.length === 5);
+
+watch(_value, () => {
+  if (isformattedTimeValid.value) {
+    emit('value-changed', _value.value);
+  }
+});
 </script>
 
 <template>
