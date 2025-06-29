@@ -47,6 +47,7 @@ const updateEventAtTime = (newTime: string) => {
           <USwitch
             v-model="selectedRowData.is_critical"
             color="error"
+            :disabled="!selectedRowData.is_new"
             :label="selectedRowData.is_critical ? 'Crítico' : 'Normal'" />
         </UiDashboardSection>
         <USeparator class="py-5" />
@@ -57,6 +58,7 @@ const updateEventAtTime = (newTime: string) => {
           hint="Fecha del evento">
           <UiInputDate
             :initial-date="selectedRowData.event_at"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             @value-changed="updateEventAtDate" />
         </UiDashboardSection>
@@ -68,6 +70,7 @@ const updateEventAtTime = (newTime: string) => {
           hint="Hora del evento">
           <UiInputTime
             :initial-date="selectedRowData.event_at"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             @value-changed="updateEventAtTime" />
         </UiDashboardSection>
@@ -80,6 +83,7 @@ const updateEventAtTime = (newTime: string) => {
           hint="Comentario sobre el evento">
         <UTextarea
             v-model="selectedRowData.comments"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             placeholder="Describir evento"
             icon="i-lucide-notebook-pen" />

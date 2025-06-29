@@ -4,6 +4,7 @@ import type { MaskInputOptions } from "maska"
 
 const props = defineProps<{
   initialDate: string; //expected format: "2025-04-29 03:56:00+00"
+  disabled?: boolean;
 }>();
 const emit = defineEmits(['value-changed']);
 
@@ -87,6 +88,7 @@ watch(_value, () => {
     <UInput
       v-model="_value"
       v-maska="options"
+      :disabled="props.disabled"
       class="w-full"
       inputmode="numeric"
       icon="i-lucide-calendar"
