@@ -81,7 +81,7 @@ const updateEventAtTime = (newTime: string) => {
         <UTextarea
             v-model="selectedRowData.comments"
             class="w-full"
-            placeholder="Dirección de Facturación"
+            placeholder="Describir evento"
             icon="i-lucide-notebook-pen" />
         </UiDashboardSection>
         <USeparator class="py-5" />

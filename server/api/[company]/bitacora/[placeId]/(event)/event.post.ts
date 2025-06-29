@@ -1,5 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
+    const { user } = await getUserSession(event);
     await hasPermissions(event, [PermissionsList.BITACORA_EVENTS_READ]);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
@@ -38,7 +39,7 @@ export default defineEventHandler(async (event) => {
 
     return (recordDataQuery.rows && recordDataQuery.rows[0])
       ? bitacora_events_schema.parse(recordDataQuery.rows[0])
-      : bitacora_events_schema.parse({ id: payload.id, is_new: true })
+      : bitacora_events_schema.parse({ id: payload.id, is_new: true, responsible: `${user?.user_name} ${user?.user_lastname}` })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
