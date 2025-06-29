@@ -37,8 +37,9 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Fecha"
-          hint="Comentario sobre el evento">
+          hint="Fecha del evento">
           <UiInputDate
+            :initial-date="selectedRowData.event_at"
             class="w-full" />
         </UiDashboardSection>
         <USeparator class="py-5" />
@@ -46,13 +47,15 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Hora"
-          hint="Comentario sobre el evento">
+          hint="Hora del evento">
           <UiInputTime
+            :initial-date="selectedRowData.event_at"
             class="w-full" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
           :vertical="vertical"
+          labelTop
           name="name_es"
           label="Descripción"
           hint="Comentario sobre el evento">
@@ -60,7 +63,7 @@ const { selectedRowData } = storeToRefs(moduleStore);
             v-model="selectedRowData.comments"
             class="w-full"
             placeholder="Dirección de Facturación"
-            icon="i-lucide-map-pin-house" />
+            icon="i-lucide-notebook-pen" />
         </UiDashboardSection>
         <br>
       </UForm>

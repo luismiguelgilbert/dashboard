@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { DateTime } from 'luxon';
 import type { MaskInputOptions } from "maska"
 
-const _value = ref('');
+const props = defineProps<{
+  initialDate: string; //expected format: "2025-04-29 03:56:00+00"
+}>();
+
+const _value = ref(DateTime.fromSQL(props.initialDate).toString().slice(0, 10));
 
 const isLeapYear = (year: number): boolean => {
   if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
@@ -51,13 +56,34 @@ const options = computed<MaskInputOptions>(() => ({
     },
   }
 ));
+
+const formattedDate = computed(() => {
+  const date = DateTime.fromFormat(_value.value, 'yyyy-MM-dd', { locale: 'es' });
+
+  return date.isValid 
+    ? (date.hasSame(DateTime.local(), "day")) ? 'Hoy' : date.toFormat('dd-MMM-yyyy')
+    : 'Fecha incorrecta';
+});
+
+const isformattedDateValid = computed(() => {
+  const date = DateTime.fromFormat(_value.value, 'yyyy-MM-dd', { locale: 'es' });
+  return date.isValid;
+});
 </script>
 
 <template>
-  <UInput
-    v-model="_value"
-    v-maska="options"
-    inputmode="numeric"
-    icon="i-lucide-calendar"
-    placeholder="AAAA-MM-DD" />
+  <UButtonGroup
+    class="w-full">
+    <UInput
+      v-model="_value"
+      v-maska="options"
+      class="w-full"
+      inputmode="numeric"
+      icon="i-lucide-calendar"
+      placeholder="AAAA-MM-DD" />
+    <UButton
+      :label="formattedDate"
+      :color="isformattedDateValid ? 'neutral' : 'error'"
+      variant="subtle" />
+  </UButtonGroup>
 </template>

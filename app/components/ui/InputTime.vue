@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { DateTime } from 'luxon';
 import type { MaskInputOptions } from "maska"
 
-const _value = ref('');
+const props = defineProps<{
+  initialDate: string; //expected format: "2025-04-29 03:56:00+00"
+}>();
+
+const _value = ref(DateTime.fromSQL(props.initialDate).toString().slice(11, 16));
+
 const options = computed<MaskInputOptions>(() => ({
   mask: "Hh:Mm",
   eager: true,
@@ -16,13 +22,23 @@ const options = computed<MaskInputOptions>(() => ({
     m: { pattern: /[0-9]/ }
   }
 }));
+
+const isformattedTimeValid = computed(() => _value.value.length === 5);
 </script>
 
 <template>
-  <UInput
-    v-model="_value"
-    v-maska="options"
-    inputmode="numeric"
-    icon="i-lucide-clock-3"
-    placeholder="HH:MM" />
+  <UButtonGroup class="w-full">
+    <UInput
+      v-model="_value"
+      v-maska="options"
+      class="w-full"
+      inputmode="numeric"
+      icon="i-lucide-clock-3"
+      placeholder="HH:MM" />
+      <UButton
+      :label="!isformattedTimeValid ? 'Hora incorrecta' : undefined"
+      icon="i-lucide-circle-check"
+      :color="isformattedTimeValid ? 'neutral' : 'error'"
+      variant="subtle" />
+  </UButtonGroup>
 </template>
