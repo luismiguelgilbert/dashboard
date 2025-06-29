@@ -10,10 +10,10 @@ export default defineEventHandler(async (event) => {
         statusMessage: `Invalid request: ${error.issues.map(e => e.message).join(';')}`,
       });
     }
-    if (!companyId) {
+    if (!companyId || !placeId) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Invalid request: a company ID is required.',
+        statusMessage: 'Invalid request: a company ID and a place ID is required.',
       });
     }
     await hasCompanies(event, [companyId]);
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     const recordDataQuery = await serverDB.sql`
       SELECT
        a.id
-      ,a.event_at::text as event_at
+      ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as event_at
       ,a.comments
       ,a.is_active
       ,a.is_critical

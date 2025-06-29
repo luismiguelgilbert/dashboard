@@ -36,6 +36,7 @@ const { mutateAsync, isPending } = useMutation({
             ...page[recordIndex],
             // Update fields used in the list component
             comments: String(selectedRowData.value?.comments),
+            event_at: String(selectedRowData.value?.event_at),
             is_critical: Boolean(selectedRowData.value?.is_critical),
           };
         }

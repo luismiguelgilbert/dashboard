@@ -23,10 +23,12 @@ export default defineEventHandler(async (event) => {
     const sort = bitacora_events_sort_enum_server.find(s => s.id === payload.sort) || bitacora_events_sort_enum_server['1'];
     const serverDB = useDatabase();
     // ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') as event_at
+    // ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00')
+    // ,a.event_at::text as event_at
     const userDataQuery = await serverDB.prepare(`
       select
        a.id
-      ,a.event_at::text as event_at
+      ,to_char (a.event_at::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as event_at
       ,a.comments
       ,a.is_active
       ,a.is_critical

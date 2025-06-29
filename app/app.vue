@@ -77,7 +77,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
+  <UApp
+    :toaster="{
+      expand: false
+    }">
     <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
