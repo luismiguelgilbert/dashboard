@@ -51,11 +51,11 @@ export const sys_profiles_schema = z.object(
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
-    { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es'] },
+    { message: `Nombre debe incluir 3 o más caracteres`, path: ['name_es'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.sys_profiles_links && val.sys_profiles_links.length > 0)),
-    { message: `Permisos no puede estar vacío.`, path: ['sys_profiles_links'] },
+    { message: `Permisos no puede estar vacío`, path: ['sys_profiles_links'] },
   )
 ;
 export type sys_profiles = z.infer<typeof sys_profiles_schema>;

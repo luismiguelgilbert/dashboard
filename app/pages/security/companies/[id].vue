@@ -24,24 +24,29 @@ const { data, isFetching } = useQuery({
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch('/api/security/company-upsert', { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
+    if (selectedRowData.value?.is_new) {
+      await queryClient.invalidateQueries({ queryKey: [computedQueryKey.value] });
+    } else {
+      // this optimisticly updates the cache data record to reflect changes in the list component
+      queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: sys_companies_query_cache | undefined) => {
+        cacheData?.pages.forEach((page) => {
+          const recordIndex = page.findIndex(company => company.id === selectedRowData.value?.id);
+          if (page[recordIndex]) {
+            page[recordIndex] = {
+              ...page[recordIndex],
+              // Update fields used in the list component
+              name_es: String(selectedRowData.value?.name_es),
+              name_es_short: String(selectedRowData.value?.name_es_short),
+              company_number: String(selectedRowData.value?.company_number),
+              is_active: Boolean(selectedRowData.value?.is_active),
+            };
+          }
+        });
+        return cacheData;
+      })
+    }
     await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value] });
-    // this optimisticly updates the cache data record to reflect changes in the list component
-    queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: sys_companies_query_cache | undefined) => {
-      cacheData?.pages.forEach((page) => {
-        const recordIndex = page.findIndex(company => company.id === selectedRowData.value?.id);
-        if (page[recordIndex]) {
-          page[recordIndex] = {
-            ...page[recordIndex],
-            // Update fields used in the list component
-            name_es: String(selectedRowData.value?.name_es),
-            name_es_short: String(selectedRowData.value?.name_es_short),
-            company_number: String(selectedRowData.value?.company_number),
-            is_active: Boolean(selectedRowData.value?.is_active),
-          };
-        }
-      });
-      return cacheData;
-    })
+    
   },
 });
 
@@ -50,7 +55,7 @@ const saveForm = async () => {
     if (selectedRowData.value) {
       selectedRowData.value.is_saving = true;
       const { error } = sys_companies_schema.safeParse(selectedRowData.value);
-      if (error) throw error.issues.map(err => `- ${err.message}`).join('.\n    ');
+      if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
       await mutateAsync();
       selectedRowData.value.is_saving = false;
       useToast().add({

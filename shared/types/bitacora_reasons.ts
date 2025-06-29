@@ -49,7 +49,7 @@ export const bitacora_reasons_schema = z.object(
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
-    { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es'] },
+    { message: `Nombre debe incluir 3 o más caracteres`, path: ['name_es'] },
   )
 ;
 export type bitacora_reasons = z.infer<typeof bitacora_reasons_schema>;

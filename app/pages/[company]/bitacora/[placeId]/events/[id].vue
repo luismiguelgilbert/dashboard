@@ -26,23 +26,27 @@ const { data, isFetching } = useQuery({
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/event-upsert`, { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
+    if (selectedRowData.value?.is_new) {
+      queryClient.invalidateQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id] });
+    } else {
+      // this optimisticly updates the cache data record to reflect changes in the list component
+      queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: bitacora_events_query_cache | undefined) => {
+        cacheData?.pages.forEach((page) => {
+          const recordIndex = page.findIndex(event => event.id === selectedRowData.value?.id);
+          if (page[recordIndex]) {
+            page[recordIndex] = {
+              ...page[recordIndex],
+              // Update fields used in the list component
+              comments: String(selectedRowData.value?.comments),
+              event_at: String(selectedRowData.value?.event_at),
+              is_critical: Boolean(selectedRowData.value?.is_critical),
+            };
+          }
+        });
+        return cacheData;
+      })
+    }
     await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value, userCompany.value?.id] });
-    // this optimisticly updates the cache data record to reflect changes in the list component
-    queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: bitacora_events_query_cache | undefined) => {
-      cacheData?.pages.forEach((page) => {
-        const recordIndex = page.findIndex(event => event.id === selectedRowData.value?.id);
-        if (page[recordIndex]) {
-          page[recordIndex] = {
-            ...page[recordIndex],
-            // Update fields used in the list component
-            comments: String(selectedRowData.value?.comments),
-            event_at: String(selectedRowData.value?.event_at),
-            is_critical: Boolean(selectedRowData.value?.is_critical),
-          };
-        }
-      });
-      return cacheData;
-    })
   },
 });
 
@@ -51,7 +55,7 @@ const saveForm = async () => {
     if (selectedRowData.value) {
       selectedRowData.value.is_saving = true;
       const { error } = bitacora_events_schema.safeParse(selectedRowData.value);
-      if (error) throw error.issues.map(err => `- ${err.message}`).join('.\n    ');
+      if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
       await mutateAsync();
       selectedRowData.value.is_saving = false;
       useToast().add({

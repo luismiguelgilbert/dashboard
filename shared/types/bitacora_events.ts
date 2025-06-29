@@ -72,12 +72,12 @@ export const bitacora_events_schema = z.object(
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.comments && val.comments.length >= 3)),
-    { message: `Comentario debe incluir 3 o más caracteres.`, path: ['comments'] },
+    { message: `Comentario debe incluir 3 o más caracteres`, path: ['comments'] },
   )
   .refine(
     //use Luxon to validate if event_at is a valid date and it is in the UTC format
     val => DateTime.fromFormat(val.event_at, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid,
-    { message: `Fecha debe ser válida y en formato UTC.`, path: ['event_at'] },
+    { message: `Fecha debe ser válida y en formato UTC`, path: ['event_at'] },
   )
 ;
 export type bitacora_events = z.infer<typeof bitacora_events_schema>;

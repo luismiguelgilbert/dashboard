@@ -57,11 +57,11 @@ export const bitacora_places_schema = z.object(
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
-    { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es'] },
+    { message: `Nombre debe incluir 3 o más caracteres`, path: ['name_es'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es_short && val.name_es_short.length >= 3)),
-    { message: `Código debe incluir 3 o más caracteres.`, path: ['name_es_short'] },
+    { message: `Código debe incluir 3 o más caracteres`, path: ['name_es_short'] },
   )
 ;
 export type bitacora_places = z.infer<typeof bitacora_places_schema>;

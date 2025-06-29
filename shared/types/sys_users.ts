@@ -68,7 +68,7 @@ export const sys_users_schema = z.object({
   avatar_url: z.coerce.string().nullable(),
   avatar_file: z.string().nullable().default(null),
   email: z.coerce.string().default(''),
-  sys_profile_id: z.coerce.string().default(''),
+  sys_profile_id: z.coerce.string().default('0'),//UI component is a string, but backend expects a number
   sys_profile_name: z.coerce.string(),
   sys_companies_users: z.string().array().default([]),
   is_saving: z.boolean().default(false),
@@ -79,23 +79,27 @@ export const sys_users_schema = z.object({
 })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.id && z.uuidv4().safeParse(val.id).success)),
-    { message: `ID debe  versión 4.`, path: ['id'] },
+    { message: `ID debe  versión 4`, path: ['id'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.email && val.email.length >= 3)),
-    { message: `Email debe incluir 3 o más caracteres.`, path: ['email'] },
+    { message: `Email debe incluir 3 o más caracteres`, path: ['email'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.user_name && val.user_name.length >= 3)),
-    { message: `Nombres debe incluir 3 o más caracteres.`, path: ['user_name'] },
+    { message: `Nombres debe incluir 3 o más caracteres`, path: ['user_name'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.user_lastname && val.user_lastname.length >= 3)),
-    { message: `Apellidos debe incluir 3 o más caracteres.`, path: ['user_lastname'] },
+    { message: `Apellidos debe incluir 3 o más caracteres`, path: ['user_lastname'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.sys_profile_id && val.sys_profile_id.length > 0 && val.sys_profile_id !== '0')),
+    { message: `Perfil no puede estar vacío`, path: ['sys_profile_id'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.sys_companies_users && val.sys_companies_users.length > 0)),
-    { message: `Organizaciones no puede estar vacío.`, path: ['sys_companies_users'] },
+    { message: `Organizaciones no puede estar vacío`, path: ['sys_companies_users'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && !val.change_password) || (val.is_saving && val.change_password && val.new_password && val.new_password.length > 3)),

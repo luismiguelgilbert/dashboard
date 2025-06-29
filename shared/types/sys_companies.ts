@@ -58,15 +58,15 @@ export const sys_companies_schema = z.object(
   })
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.company_number && val.company_number.length >= 10)),
-    { message: `RUC debe incluir 10 o más caracteres.`, path: ['company_number'] },
+    { message: `RUC debe incluir 10 o más caracteres`, path: ['company_number'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es && val.name_es.length >= 3)),
-    { message: `Razón Social debe incluir 3 o más caracteres.`, path: ['name_es'] },
+    { message: `Razón Social debe incluir 3 o más caracteres`, path: ['name_es'] },
   )
   .refine(
     val => ((!val.is_saving) || (val.is_saving && val.name_es_short && val.name_es_short.length >= 3)),
-    { message: `Nombre debe incluir 3 o más caracteres.`, path: ['name_es_short'] },
+    { message: `Nombre debe incluir 3 o más caracteres`, path: ['name_es_short'] },
   )
 ;
 export type sys_companies = z.infer<typeof sys_companies_schema>;
