@@ -68,7 +68,7 @@ export const sys_users_schema = z.object({
   avatar_url: z.coerce.string().nullable(),
   avatar_file: z.string().nullable().default(null),
   email: z.coerce.string().default(''),
-  sys_profile_id: z.coerce.string().default('0'),//UI component is a string, but backend expects a number
+  sys_profile_id: z.coerce.string().default(''),
   sys_profile_name: z.coerce.string(),
   sys_companies_users: z.string().array().default([]),
   is_saving: z.boolean().default(false),
