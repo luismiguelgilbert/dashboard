@@ -898,7 +898,9 @@
         "@typescript-eslint/no-import-type-side-effects": "error"
       },
       "plugins": [
-        "typescript"
+        "typescript",
+        "unicorn",
+        "oxc"
       ]
     }
   ]

@@ -63,8 +63,8 @@ const onLoadMore = async () => {
           ]">
           <UUser
             class="p-3 pl-3 pr-6"
-            :name="item.visitor_name"
-            :description="`${item.visitor_number} Motivo: ${ item.reason_name }`"
+            :name="`${item.visitor_name} (${ item.visitor_number })`"
+            :description="`${item.visitor_company} Motivo: ${ item.reason_name } - ${ DateTime.fromSQL(item.visit_start).setLocale('es-EC').toFormat('dd/MMMM/yyyy HH:mm') }`"
             :avatar="{
               src: item.avatar_url || undefined,
               icon: 'i-lucide-image'

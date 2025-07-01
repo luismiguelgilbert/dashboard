@@ -72,7 +72,7 @@ onBeforeMount(() => {
 <template>
   <UDashboardPanel
     id="user-1"
-    :default-size="35"
+    :default-size="25"
     :min-size="25"
     :max-size="35"
     resizable>

@@ -1,20 +1,18 @@
 import { z } from 'zod/v4';
-// import { DateTime } from 'luxon';
+import { DateTime } from 'luxon';
 
-export const bitacora_visits_sort_enum_keys_schema = z.enum(['1', '2', '3', '4']);
+export const bitacora_visits_sort_enum_keys_schema = z.enum(['1', '2', '3']);
 export type bitacora_visits_sort_enum_keys = z.infer<typeof bitacora_visits_sort_enum_keys_schema>;
 export const bitacora_visits_sort_enum_client: sort_enum_array[] = [
   { id: '1', label: 'Fecha' },
-  { id: '2', label: 'Completa' },
-  { id: '3', label: 'Responsable' },
-  { id: '4', label: 'Creación' },
+  { id: '2', label: 'Responsable' },
+  { id: '3', label: 'Creación' },
 ];
 
 export const bitacora_visits_sort_enum_server: sort_enum_array[] = [
   { id: '1', label: 'a.visit_date_range' },
-  { id: '2', label: 'a.is_complete' },
-  { id: '3', label: 'a.updated_by' },
-  { id: '4', label: 'a.updated_at' },
+  { id: '2', label: 'a.updated_by' },
+  { id: '3', label: 'a.updated_at' },
 ];
 
 export const bitacora_visits_query_schema = z.object({
@@ -41,18 +39,6 @@ export const bitacora_visits_query_schema = z.object({
       if (Array.isArray(val)) return val;
       return [val];
     }),
-  is_complete: z
-    .union([
-      z.literal('True'),
-      z.literal('False'),
-      z.array(z.union([z.literal('True'), z.literal('False')]))
-    ])
-    .optional()
-    .transform((val) => {
-      if (val === undefined) return undefined;
-      if (Array.isArray(val)) return val;
-      return [val];
-    }),
 })
 export type bitacora_visits_query = z.infer<typeof bitacora_visits_query_schema>;
 
@@ -62,13 +48,15 @@ export const bitacora_visits_schema = z.object(
     visitor_name: z.string().default(''),
     visitor_number: z.string().default(''),
     visitor_company: z.string().default(''),
+    visit_start: z.string().default(DateTime.now().toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22)),
     reason_id: z.coerce.string().default(''),
     reason_name: z.coerce.string(),
-    visited_name: z.string().default(''),
-    visited_area: z.string().default(''),
-    comments_in: z.string().default(''),
-    comments_ou: z.string().default(''),
-    // event_at: z.string().default(DateTime.now().toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22)),
+    visited_name: z.string().nullable().optional().default(''),
+    visited_area: z.string().nullable().optional().default(''),
+    vehicle_name: z.string().nullable().optional().default(''),
+    vehicle_plate: z.string().nullable().optional().default(''),
+    comments_in: z.string().nullable().optional().default(''),
+    comments_out: z.string().nullable().optional().default(''),
     is_active: z.coerce.boolean().default(true),
     is_complete: z.coerce.boolean().default(false),
     avatar_url: z.coerce.string().nullable(),

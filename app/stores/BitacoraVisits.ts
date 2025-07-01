@@ -3,8 +3,7 @@ export const useBitacoraVisitsStore = defineStore('bitacoraVisits', () => {
     search: undefined,
     sort: '1',
     order: 'desc',
-    is_active: undefined,
-    is_complete: undefined,
+    is_active: ['True'],
   });
   const computedQueryKey = computed(() => 'bitacora-visits-search');
   const computedRecordQueryKey = computed(() => 'bitacora-visits-record');
@@ -16,10 +15,7 @@ export const useBitacoraVisitsStore = defineStore('bitacoraVisits', () => {
   const isFormPanelCreating = computed<boolean>(() => Boolean(selectedRowData.value && selectedRowData.value.is_new));
   const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva visita' : 'Editar visita');
   const isSaveDisabled = computed<boolean>(() => (isFormPanelCreating.value && !canCreate) || (!isFormPanelCreating.value && !canEdit));// pending
-  const hasFilter = computed<boolean>(() => (queryPayload.value.search && queryPayload.value.search.trim().length > 0)
-    || Boolean(queryPayload.value.is_active?.length && queryPayload.value.is_active.length > 0)
-    || Boolean(queryPayload.value.is_complete?.length && queryPayload.value.is_complete.length > 0)
-  );
+  const hasFilter = computed<boolean>(() => Boolean(queryPayload.value.search && queryPayload.value.search.trim().length > 0));
 
   return {
     computedQueryKey,

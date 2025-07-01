@@ -12,8 +12,8 @@ const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 const isFormPanelOpen = computed<boolean>(() => !!currentRoute.value.params.id);
 const criticalOptions = ref<CheckboxGroupItem[]>([
-  { label: 'Crítico', value: 'True' },
-  { label: 'Normal', value: 'False' },
+  { label: 'Activo', value: 'True' },
+  { label: 'Inactivo', value: 'False' },
 ]);
 
 const openNew = async () => {
@@ -70,7 +70,7 @@ onBeforeMount(() => {
 <template>
   <UDashboardPanel
     id="visit-1"
-    :default-size="35"
+    :default-size="28"
     :min-size="25"
     :max-size="35"
     resizable>
@@ -93,7 +93,7 @@ onBeforeMount(() => {
           @download-file="downloadFile"
           @invalidate-cache="queryClient.invalidateQueries({ queryKey: [computedQueryKey] })">
           <template #FilterSection>
-            <UFormField label="Visitas:">
+            <UFormField label="Estado:">
               <template #hint>
                 <UButton
                   label="Quitar"
@@ -103,12 +103,12 @@ onBeforeMount(() => {
                   color="neutral"
                   icon="i-lucide-eraser"
                   @click="() => {
-                    queryPayload.is_complete = undefined;
+                    queryPayload.is_active = undefined;
                     push({ query: { ...currentRoute.query, is_active: undefined } })
                   }" />
               </template>
               <USelectMenu
-                v-model="queryPayload.is_complete"
+                v-model="queryPayload.is_active"
                 class="w-full"
                 value-key="value"
                 size="xl"
