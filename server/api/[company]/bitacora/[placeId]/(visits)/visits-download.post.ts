@@ -46,14 +46,11 @@ export default defineEventHandler(async (event) => {
       inner join sys_users b on a.updated_by = b.id
       inner join bita_reasons c on a.sys_company_id = c.sys_company_id and a.reason_id = c.id
       where (1 = 1)
+      and a.is_complete = False
       ${companyId ? `and (a.sys_company_id = '${companyId}')` : ''}
       ${placeId ? `and (a.place_id = '${placeId}')` : ''}
       ${payload.is_active && payload.is_active.length > 0
           ? `and (a.is_active in (${payload.is_active.join(',')}))`
-          : ''
-      }
-      ${payload.is_complete && payload.is_complete.length > 0
-          ? `and (a.is_complete in (${payload.is_complete.join(',')}))`
           : ''
       }
       ORDER BY ${sort?.label} ${payload.order}
