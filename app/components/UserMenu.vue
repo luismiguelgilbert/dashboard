@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { DropdownMenuItem } from '@nuxt/ui'
+import type { AccordionItem } from '@nuxt/ui'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
+const open = ref(false);
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
 const { clear, session } = useUserSession();
@@ -17,7 +18,6 @@ const clearCookies = async () => {
 
 const colors = ['bitt', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia']
 const neutrals = ['slate', 'gray', 'zinc', 'neutral', 'stone']
-
 const user = ref({
   name: session.value?.user?.email || 'NA',
   avatar: {
@@ -25,118 +25,111 @@ const user = ref({
     alt: session.value?.user?.email || 'NA'
   }
 })
-
-const items = computed<DropdownMenuItem[][]>(() => ([
-  [
-    {
-      type: 'label',
-      label: user.value.name,
-      avatar: user.value.avatar
-    }
-  ],
-  [
-    {
-      label: 'Configuración',
-      icon: 'i-lucide-settings',
-      to: '/settings'
-    }
-  ],
-  [
-    {
-      label: 'Theme',
-      icon: 'i-lucide-palette',
-      children: [{
-        label: 'Primary',
-        slot: 'chip',
-        chip: appConfig.ui.colors.primary,
-        content: {
-          align: 'center',
-          collisionPadding: 16
-        },
-        children: colors.map(color => ({
-          label: color,
-          chip: color,
-          checked: appConfig.ui.colors.primary === color,
-          slot: 'chip',
-          type: 'checkbox',
-          class: 'cursor-pointer',
-          onSelect: (e) => {
-            e.preventDefault()
-            appConfig.ui.colors.primary = color
-          }
-        }))
-      }, {
-        label: 'Neutral',
-        slot: 'chip',
-        chip: appConfig.ui.colors.neutral,
-        content: {
-          align: 'end',
-          collisionPadding: 16
-        },
-        children: neutrals.map(color => ({
-          label: color,
-          chip: color,
-          slot: 'chip',
-          type: 'checkbox',
-          class: 'cursor-pointer',
-          checked: appConfig.ui.colors.neutral === color,
-          onSelect: (e) => {
-            e.preventDefault()
-
-            appConfig.ui.colors.neutral = color
-          }
-        }))
-      }]
-    },
-    {
-      label: 'Appearance',
-      icon: 'i-lucide-sun-moon',
-      children: [{
-        class: 'cursor-pointer',
-        label: 'Light',
-        icon: 'i-lucide-sun',
-        type: 'checkbox',
-        checked: colorMode.value === 'light',
-        onSelect(e: Event) {
-          e.preventDefault()
-
-          colorMode.preference = 'light'
-        }
-      }, {
-        class: 'cursor-pointer',
-        label: 'Dark',
-        icon: 'i-lucide-moon',
-        type: 'checkbox',
-        checked: colorMode.value === 'dark',
-        onUpdateChecked(checked: boolean) {
-          if (checked) {
-            colorMode.preference = 'dark'
-          }
-        },
-        onSelect(e: Event) {
-          e.preventDefault()
-        }
-      }]
-    }
-  ],
-  [
-    {
-      label: 'Cerrar sesión',
-      icon: 'i-lucide-log-out',
-      class: 'cursor-pointer',
-      onSelect: () => {
-        clear();
-        clearCookies();
-        navigateTo('/auth/login');
-      }
-    }
-  ]
-]
-))
+const accordionItems: AccordionItem[] = [
+  {
+    label: 'Appearance',
+    icon: 'i-lucide-sun-moon',
+    slot: 'appearance' as const,
+  },
+  {
+    label: 'Tonalidad',
+    icon: 'i-lucide-swatch-book',
+    slot: 'background' as const,
+  },
+  {
+    label: 'Color',
+    icon: 'i-lucide-palette',
+    slot: 'color' as const,
+  },
+];
 </script>
 
 <template>
-  <UDropdownMenu
+  <UDrawer
+    title="Mis Ajustes"
+    :handle="true">
+    <UButton
+      :label="user.name"
+      :avatar="{
+        src: user.avatar.src,
+        alt: user.name || 'NA'
+      }"
+      color="neutral"
+      variant="ghost"
+      class="w-full h-full cursor-pointer rounded-none"
+      trailing-icon="i-lucide-chevron-up" />
+    <template #body>
+      <UCard variant="subtle">
+        <UUser
+          :name="user.name"
+          :avatar="user.avatar"
+          size="xl"
+          class="p-3 pl-3 pr-6"
+          description="Ir a mi configuración"
+          to="/settings" />
+        <USeparator />
+        <UAccordion :items="accordionItems">
+          <template #appearance="{ item }">
+            <UButton
+              :trailing-icon="colorMode.value === 'light' ? 'i-lucide-check' : undefined"
+              label="Light"
+              icon="i-lucide-sun"
+              class="w-full cursor-pointer text-muted"
+              variant="ghost"
+              color="neutral"
+              @click="colorMode.preference = 'light'" />
+            <UButton
+              :trailing-icon="colorMode.value === 'dark' ? 'i-lucide-check' : undefined"
+              label="Dark"
+              icon="i-lucide-moon"
+              class="w-full cursor-pointer text-muted"
+              variant="ghost"
+              color="neutral"
+              @click="colorMode.preference = 'dark'" />
+          </template>
+          <template #background="{ item }">
+            <UButton
+              v-for="neutral in neutrals"
+              :key="neutral"
+              :label="neutral"
+              :trailing-icon="appConfig.ui.colors.neutral === neutral ? 'i-lucide-check' : undefined"
+              class="w-full cursor-pointer text-muted"
+              variant="ghost"
+              color="neutral"
+              @click="appConfig.ui.colors.neutral = neutral" />
+          </template>
+          <template #color="{ item }">
+            <div class="max-h-44 overflow-auto">
+              <UButton
+                v-for="color in colors"
+                :key="color"
+                :label="color"
+                :trailing-icon="appConfig.ui.colors.primary === color ? 'i-lucide-check' : undefined"
+                class="w-full cursor-pointer text-muted"
+                :class="appConfig.ui.colors.primary === color ? 'text-primary-500' : 'text-muted'"
+                variant="ghost"
+                color="neutral"
+                @click="appConfig.ui.colors.primary = color" />
+            </div>
+          </template>
+        </UAccordion>
+        <USeparator />
+        <UButton
+          label="Cerrar sesión"
+          icon="i-lucide-log-out"
+          class="mt-5 w-full cursor-pointer"
+          variant="ghost"
+          color="error"
+          size="xl"
+          @click="() => {
+            clear();
+            clearCookies();
+            navigateTo('/auth/login');
+          }" />
+      </UCard>
+    </template>
+  </UDrawer>
+  <!-- <UDropdownMenu
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }">
@@ -160,5 +153,5 @@ const items = computed<DropdownMenuItem[][]>(() => ([
         :style="{ '--chip': `var(--color-${(item as any).chip}-400)` }"
         class="ms-0.5 size-2 rounded-full bg-(--chip)" />
     </template>
-  </UDropdownMenu>
+  </UDropdownMenu> -->
 </template>
