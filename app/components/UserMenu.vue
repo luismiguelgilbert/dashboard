@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { breakpointsTailwind } from '@vueuse/core';
 import type { AccordionItem } from '@nuxt/ui'
 
 defineProps<{
   collapsed?: boolean
 }>()
 
-const open = ref(false);
-const colorMode = useColorMode();
 const appConfig = useAppConfig();
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller('lg');
 const { clear, session } = useUserSession();
 const clearCookies = async () => {
   const companiesCookie = await useCookie('nuxt-session-companies');
@@ -47,6 +48,7 @@ const accordionItems: AccordionItem[] = [
 <template>
   <UDrawer
     title="Mis Ajustes"
+    :direction="!isMobile ? 'left' : 'bottom'"
     :handle="true">
     <UButton
       :label="user.name"
@@ -70,22 +72,9 @@ const accordionItems: AccordionItem[] = [
         <USeparator />
         <UAccordion :items="accordionItems">
           <template #appearance="{ item }">
-            <UButton
-              :trailing-icon="colorMode.value === 'light' ? 'i-lucide-check' : undefined"
-              label="Light"
-              icon="i-lucide-sun"
-              class="w-full cursor-pointer text-muted"
-              variant="ghost"
-              color="neutral"
-              @click="colorMode.preference = 'light'" />
-            <UButton
-              :trailing-icon="colorMode.value === 'dark' ? 'i-lucide-check' : undefined"
-              label="Dark"
-              icon="i-lucide-moon"
-              class="w-full cursor-pointer text-muted"
-              variant="ghost"
-              color="neutral"
-              @click="colorMode.preference = 'dark'" />
+            <UColorModeSelect
+              variant="soft"
+              class="w-full mb-3" />
           </template>
           <template #background="{ item }">
             <UButton
@@ -99,7 +88,9 @@ const accordionItems: AccordionItem[] = [
               @click="appConfig.ui.colors.neutral = neutral" />
           </template>
           <template #color="{ item }">
-            <div class="max-h-44 overflow-auto">
+            <div :class="{
+              'max-h-44 overflow-auto': isMobile,
+            }">
               <UButton
                 v-for="color in colors"
                 :key="color"
@@ -129,29 +120,4 @@ const accordionItems: AccordionItem[] = [
       </UCard>
     </template>
   </UDrawer>
-  <!-- <UDropdownMenu
-    :items="items"
-    :content="{ align: 'center', collisionPadding: 12 }"
-    :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }">
-    <UButton
-      v-bind="{
-        ...user,
-        label: collapsed ? undefined : user?.name,
-        trailingIcon: collapsed ? undefined : 'i-lucide-chevrons-up-down'
-      }"
-      class="data-[state=open]:bg-elevated h-full cursor-pointer rounded-none"
-      color="neutral"
-      variant="ghost"
-      block
-      :square="collapsed"
-      :ui="{
-        trailingIcon: 'text-dimmed'
-      }" />
-
-    <template #chip-leading="{ item }">
-      <span
-        :style="{ '--chip': `var(--color-${(item as any).chip}-400)` }"
-        class="ms-0.5 size-2 rounded-full bg-(--chip)" />
-    </template>
-  </UDropdownMenu> -->
 </template>
