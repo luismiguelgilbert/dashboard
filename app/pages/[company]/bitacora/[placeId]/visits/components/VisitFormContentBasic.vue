@@ -8,6 +8,17 @@ const props = defineProps<{
 
 const moduleStore = useBitacoraVisitsStore();
 const { selectedRowData } = storeToRefs(moduleStore);
+const userCompany = useState<sys_companies | undefined>('userCompany');
+const headers = useRequestHeaders(['cookie']);
+
+const {
+  data: lookupReasons,
+  isFetching: isFetchingLookupReasons,
+} = useQuery({
+  queryKey: ['lookup-bita-reasons', userCompany.value?.id],
+  queryFn: () => $fetch(`/api/lookup/${userCompany.value?.id}/bitacora/reasons`, { method: 'get', headers }),
+  staleTime: 1000 * 60 * 1440, // 1440 minutes = 1 day
+});
 
 const updateVisitStartDate = (newDate: string) => {
   if (selectedRowData.value?.visit_start) {
@@ -69,11 +80,12 @@ const updateVisitStartTime = (newTime: string) => {
           name="reason_id"
           label="Motivo"
           hint="Motivo de la visita">
-          <UInput
+          <USelect
             v-model="selectedRowData.reason_id"
-            disabled
-            class="w-full"
-            icon="i-lucide-list-check" />
+            :items="lookupReasons"
+            label-key="name_es"
+            value-key="id"
+            class="w-full" />
         </UiDashboardSection>
       </UForm>
     </UCard>
