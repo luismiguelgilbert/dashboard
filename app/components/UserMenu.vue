@@ -26,23 +26,6 @@ const user = ref({
     alt: session.value?.user?.email || 'NA'
   }
 })
-const accordionItems: AccordionItem[] = [
-  {
-    label: 'Appearance',
-    icon: 'i-lucide-sun-moon',
-    slot: 'appearance' as const,
-  },
-  {
-    label: 'Tonalidad',
-    icon: 'i-lucide-swatch-book',
-    slot: 'background' as const,
-  },
-  {
-    label: 'Color',
-    icon: 'i-lucide-palette',
-    slot: 'color' as const,
-  },
-];
 </script>
 
 <template>
@@ -65,50 +48,47 @@ const accordionItems: AccordionItem[] = [
         <UUser
           :name="user.name"
           :avatar="user.avatar"
-          size="xl"
+          :size="isMobile ? 'sm' : 'xl'"
           class="p-3 pl-3 pr-6"
           description="Ir a mi configuración"
           to="/settings" />
-        <USeparator />
-        <UAccordion :items="accordionItems">
-          <template #appearance="{ item }">
-            <UColorModeSelect
-              variant="soft"
-              class="w-full mb-3" />
-          </template>
-          <template #background="{ item }">
-            <UButton
-              v-for="neutral in neutrals"
-              :key="neutral"
-              :label="neutral"
-              :trailing-icon="appConfig.ui.colors.neutral === neutral ? 'i-lucide-check' : undefined"
-              class="w-full cursor-pointer text-muted"
-              variant="ghost"
-              color="neutral"
-              @click="appConfig.ui.colors.neutral = neutral" />
-          </template>
-          <template #color="{ item }">
-            <div :class="{
-              'max-h-44 overflow-auto': isMobile,
-            }">
-              <UButton
-                v-for="color in colors"
-                :key="color"
-                :label="color"
-                :trailing-icon="appConfig.ui.colors.primary === color ? 'i-lucide-check' : undefined"
-                class="w-full cursor-pointer text-muted"
-                :class="appConfig.ui.colors.primary === color ? 'text-primary-500' : 'text-muted'"
-                variant="ghost"
-                color="neutral"
-                @click="appConfig.ui.colors.primary = color" />
-            </div>
-          </template>
-        </UAccordion>
-        <USeparator />
+        <USeparator class="py-2" />
+        <UiDashboardSection
+          vertical
+          class="py-3"
+          name="theme"
+          label="Apariencia:">
+          <UColorModeSelect
+            variant="outline"
+            class="w-full" />
+        </UiDashboardSection>
+        <UiDashboardSection
+          vertical
+          class="py-3"
+          name="tone"
+          label="Tonalidad:">
+          <USelect
+            v-model="appConfig.ui.colors.neutral"
+            :items="neutrals"
+            icon="i-lucide-swatch-book"
+            class="w-full" />
+        </UiDashboardSection>
+        <UiDashboardSection
+          vertical
+          class="py-3"
+          name="color"
+          label="Color:">
+          <USelect
+            v-model="appConfig.ui.colors.primary"
+            :items="colors"
+            icon="i-lucide-palette"
+            class="w-full" />
+        </UiDashboardSection>
+        <USeparator class="py-3" />
         <UButton
           label="Cerrar sesión"
           icon="i-lucide-log-out"
-          class="mt-5 w-full cursor-pointer"
+          class="w-full cursor-pointer"
           variant="ghost"
           color="error"
           size="xl"
