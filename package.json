@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@hebilicious/vue-query-nuxt": "^0.3.0",
-    "@iconify-json/lucide": "^1.2.54",
+    "@iconify-json/lucide": "^1.2.55",
     "@iconify-json/simple-icons": "^1.2.41",
     "@internationalized/date": "^3.8.2",
     "@nuxt/ui-pro": "^3.2.0",
@@ -27,8 +27,8 @@
     "@tanstack/vue-query-devtools": "^5.81.5",
     "@unovis/ts": "^1.5.2",
     "@unovis/vue": "^1.5.2",
-    "@vueuse/components": "^13.4.0",
-    "@vueuse/nuxt": "^13.4.0",
+    "@vueuse/components": "^13.5.0",
+    "@vueuse/nuxt": "^13.5.0",
     "browser-image-compression": "2.0.2",
     "date-fns": "^4.1.0",
     "exceljs": "^4.4.0",
@@ -36,14 +36,14 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",
     "luxon": "3.6.0",
-    "maska": "^3.1.1",
-    "nuxt": "^3.17.5",
+    "maska": "^3.2.0",
+    "nuxt": "^3.17.6",
     "nuxt-auth-utils": "^0.5.20",
     "performant-array-to-tree": "^1.11.0",
     "pg": "^8.16.3",
     "pg-native": "^3.5.2",
     "vue": "latest",
-    "zod": "^3.25.67"
+    "zod": "^3.25.74"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
@@ -51,9 +51,9 @@
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.4",
     "npm": "^11.4.2",
-    "oxlint": "^1.4.0",
+    "oxlint": "^1.5.0",
     "typescript": "^5.8.3",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^2.2.12"
   },
   "resolutions": {
     "unimport": "4.1.1"
