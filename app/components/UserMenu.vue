@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { breakpointsTailwind } from '@vueuse/core';
-import type { AccordionItem } from '@nuxt/ui'
 
 defineProps<{
   collapsed?: boolean
@@ -26,6 +25,9 @@ const user = ref({
     alt: session.value?.user?.email || 'NA'
   }
 })
+const updateLocalStorage = (key: 'nuxt-color-tone-mode'|'nuxt-color-accent-mode', value: string ) => {
+  localStorage.setItem(key, value);
+}
 </script>
 
 <template>
@@ -71,7 +73,8 @@ const user = ref({
             v-model="appConfig.ui.colors.neutral"
             :items="neutrals"
             icon="i-lucide-swatch-book"
-            class="w-full" />
+            class="w-full"
+            @update:model-value="updateLocalStorage('nuxt-color-tone-mode', appConfig.ui.colors.neutral)" />
         </UiDashboardSection>
         <UiDashboardSection
           vertical
@@ -82,7 +85,8 @@ const user = ref({
             v-model="appConfig.ui.colors.primary"
             :items="colors"
             icon="i-lucide-palette"
-            class="w-full" />
+            class="w-full"
+            @update:model-value="updateLocalStorage('nuxt-color-accent-mode', appConfig.ui.colors.primary)" />
         </UiDashboardSection>
         <USeparator class="py-3" />
         <UButton

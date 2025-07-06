@@ -3,12 +3,18 @@ const open = ref(false);
 const { loggedIn } = useUserSession();
 if (!loggedIn.value) navigateTo('/auth/login?session_error=true');
 
+const appConfig = useAppConfig();
 const { currentRoute } = useRouter();
 const userMenu = useState<sys_links[]>('userMenu');
 const userCompanies = useState<sys_companies[]>('userCompanies');
 const userCompany = useState<sys_companies | undefined>('userCompany');
 const userBitaPlaces = useState<bitacora_places[]>('userBitaPlaces');
 const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
+const nuxtColorToneMode = useLocalStorage('nuxt-color-tone-mode', 'slate');
+const nuxtColorAccentMode = useLocalStorage('nuxt-color-accent-mode', 'bitt');
+
+appConfig.ui.colors.neutral = nuxtColorToneMode.value;
+appConfig.ui.colors.primary = nuxtColorAccentMode.value;
 
 const requestFetch = useRequestFetch();
 const { data: menuData } = await useAsyncData(() => requestFetch('/api/system/userMenu'));
