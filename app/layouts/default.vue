@@ -27,7 +27,7 @@ userBitaPlace.value = useRoute().params.placeId
 const userMenuFormatted = computed(() => {
   return [
     {
-      label: 'Home',
+      label: 'Inicio',
       class: 'cursor-pointer',
       icon: 'i-lucide-house',
       to: '/',

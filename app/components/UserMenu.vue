@@ -51,7 +51,7 @@ const user = ref({
           :size="isMobile ? 'sm' : 'xl'"
           class="p-3 pl-3 pr-6"
           description="Ir a mi configuración"
-          to="/settings" />
+          to="/" />
         <USeparator class="py-2" />
         <UiDashboardSection
           vertical

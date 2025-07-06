@@ -1,24 +1,22 @@
 <script setup lang="ts">
-import { sub } from 'date-fns'
-import type { Period, Range } from '~/types'
+import type { TabsItem } from '@nuxt/ui';
 
-const { isNotificationsSlideoverOpen } = useDashboard()
-
-const range = shallowRef<Range>({
-  start: sub(new Date(), { days: 14 }),
-  end: new Date()
-})
-const period = ref<Period>('daily')
+const { isNotificationsSlideoverOpen } = useDashboard();
+const selectedTab = ref<'basic' | 'permissions' | 'password'>('basic');
+const tabs = ref<TabsItem[]>([
+  { value: 'basic', icon: 'i-lucide-user', label: 'Datos del Usuario' },
+  { value: 'permissions', icon: 'i-lucide-building-2', label: 'Permisos' },
+  { value: 'password', icon: 'i-lucide-rectangle-ellipsis', label: 'Contraseña' }
+]);
 </script>
 
 <template>
-  <UDashboardPanel id="home">
+  <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }">
     <template #header>
-      <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
+      <UDashboardNavbar title="Mi configuración">
         <template #leading>
-          <UDashboardSidebarCollapse class="cursor-pointer" />
+          <UDashboardSidebarCollapse />
         </template>
-
         <template #right>
           <UTooltip text="Notifications" :shortcuts="['N']">
             <UButton
@@ -34,23 +32,27 @@ const period = ref<Period>('daily')
         </template>
       </UDashboardNavbar>
 
-      <UDashboardToolbar>
-        <template #left>
-          <!-- NOTE: The `-ms-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
-          <HomeDateRangePicker v-model="range" class="-ms-1" />
-
-          <HomePeriodSelect v-model="period" :range="range" />
-        </template>
-      </UDashboardToolbar>
+      <UTabs
+        v-model="selectedTab"
+        :unmount-on-hide="false"
+        :items="tabs"
+        color="neutral"
+        variant="link"
+        class="w-full mt-1.5" />
     </template>
 
     <template #body>
-      <HomeStats :period="period" :range="range" />
-      <HomeChart :period="period" :range="range" />
-      <HomeSales :period="period" :range="range" />
+      <div class="flex flex-col gap-4 sm:gap-6 lg:gap-12 w-full lg:max-w-2xl mx-auto">
+        <template v-if="selectedTab === 'basic'">
+          <SettingsBasicForm />
+        </template>
+        <template v-if="selectedTab === 'permissions'">
+          <SettingsOrganizations />
+        </template>
+        <template v-if="selectedTab === 'password'">
+          <SettingsSecurity />
+        </template>
+      </div>
     </template>
   </UDashboardPanel>
-  <!-- <HomeStats :period="period" :range="range" />
-  <HomeChart :period="period" :range="range" />
-  <HomeSales :period="period" :range="range" /> -->
 </template>
