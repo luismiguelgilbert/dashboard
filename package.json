@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "@hebilicious/vue-query-nuxt": "^0.3.0",
-    "@iconify-json/lucide": "^1.2.55",
-    "@iconify-json/simple-icons": "^1.2.41",
+    "@iconify-json/lucide": "^1.2.56",
+    "@iconify-json/simple-icons": "^1.2.42",
     "@internationalized/date": "^3.8.2",
     "@nuxt/ui-pro": "^3.2.0",
     "@pinia/nuxt": "^0.10.1",
@@ -43,7 +43,7 @@
     "pg": "^8.16.3",
     "pg-native": "^3.5.2",
     "vue": "latest",
-    "zod": "^3.25.74"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
@@ -51,7 +51,7 @@
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.4",
     "npm": "^11.4.2",
-    "oxlint": "^1.5.0",
+    "oxlint": "^1.6.0",
     "typescript": "^5.8.3",
     "vue-tsc": "^2.2.12"
   },
