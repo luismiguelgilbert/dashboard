@@ -36,11 +36,11 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Nombre del motivo"
-          hint="Nombre descriptivo del motivo">
+          hint="Descripción del motivo">
           <UInput
             v-model="selectedRowData.name_es"
             class="w-full"
-            placeholder="Nombre descriptivo del motivo"
+            placeholder="Descripción del motivo"
             icon="i-lucide-list-check" />
         </UiDashboardSection>
         <br>

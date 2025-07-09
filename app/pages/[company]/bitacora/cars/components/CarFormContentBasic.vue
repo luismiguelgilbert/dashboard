@@ -36,11 +36,11 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Nombre del vehículo"
-          hint="Nombre descriptivo del vehículo">
+          hint="Descripción del vehículo">
           <UInput
             v-model="selectedRowData.name_es"
             class="w-full"
-            placeholder="Nombre descriptivo del vehículo"
+            placeholder="Descripción del vehículo"
             icon="i-lucide-car" />
         </UiDashboardSection>
         <USeparator class="py-5" />

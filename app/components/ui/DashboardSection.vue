@@ -23,9 +23,9 @@ const {
       'items-start': labelTop,
       'items-center': !labelTop,
       'grid-cols-1': vertical,
-      'grid-cols-1 sm:grid-cols-2': !vertical
+      'grid-cols-1 sm:grid-cols-5': !vertical
     }">
-    <div>
+    <div class="col-span-2">
       <div class="flex content-center items-center justify-between">
         <label class="block font-medium text-left text-(--ui-text)">
           {{ label }}
@@ -36,7 +36,7 @@ const {
       </div>
       <slot name="hint-content" />
     </div>
-    <div class="relative">
+    <div class="relative col-span-3">
       <UFormField
         size="xl"
         :name="name">

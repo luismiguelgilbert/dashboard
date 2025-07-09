@@ -119,6 +119,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
         v-model="selectedTab"
         :unmount-on-hide="false"
         :items="tabs"
+        :size="isMobile ? 'xs' : 'lg'"
         color="neutral"
         variant="pill"
         class="w-full mt-1.5 ml-2 pr-4" />

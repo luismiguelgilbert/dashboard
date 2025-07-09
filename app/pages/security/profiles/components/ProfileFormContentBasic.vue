@@ -37,11 +37,11 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Nombre del perfil"
-          hint="Nombre descriptivo del perfil">
+          hint="Descripción del perfil">
           <UInput
             v-model="selectedRowData.name_es"
             class="w-full"
-            placeholder="Nombre descriptivo del perfil"
+            placeholder="Descripción del perfil"
             icon="i-lucide-shield-user" />
         </UiDashboardSection>
         <br>

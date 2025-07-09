@@ -36,11 +36,11 @@ const { selectedRowData } = storeToRefs(moduleStore);
           :vertical="vertical"
           name="name_es"
           label="Nombre del punto de control"
-          hint="Nombre descriptivo del punto de control">
+          hint="Descripción del punto de control">
           <UInput
             v-model="selectedRowData.name_es"
             class="w-full"
-            placeholder="Nombre descriptivo del punto de control"
+            placeholder="Descripción del punto de control"
             icon="i-lucide-map-pinned" />
         </UiDashboardSection>
         <USeparator class="py-5" />
