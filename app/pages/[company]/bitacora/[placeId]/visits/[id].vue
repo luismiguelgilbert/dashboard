@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TabsItem } from '@nuxt/ui';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
@@ -12,10 +13,16 @@ const store = useBitacoraVisitsStore();
 const {
   computedQueryKey,
   computedRecordQueryKey,
-  selectedRowData,
   formPanelTitle,
+  isFormPanelCreating,
   isSaveDisabled,
+  selectedRowData,
 } = storeToRefs(store);
+const selectedTab = ref<'input' | 'output'>('input');
+const tabs = computed<TabsItem[]>(() => [
+  { value: 'input', label: 'Ingreso', disabled: false },
+  { value: 'output', label: 'Salida', disabled: isFormPanelCreating.value },
+]);
 
 const { data, isFetching } = useQuery({
   queryKey: [computedRecordQueryKey.value, userCompany.value?.id, currentRoute.value.params.id],
@@ -105,10 +112,28 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
       </template>
     </UDashboardNavbar>
 
-    <UProgress v-if="isFetching" class="p-3" />
+    <header>
+      <UProgress v-if="isFetching" class="p-3" />
+      <UTabs
+        v-if="!isFetching"
+        v-model="selectedTab"
+        :unmount-on-hide="false"
+        :items="tabs"
+        :size="isMobile ? 'xs' : 'lg'"
+        color="neutral"
+        variant="pill"
+        class="w-full mt-1.5 ml-2 pr-4" />
+      <USeparator />
+    </header>
+
     <main v-if="!isFetching && selectedRowData">
-      <VisitFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
-      <VisitFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
+      <template v-if="selectedTab === 'input'">
+        <VisitFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
+        <VisitFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
+      </template>
+      <template v-if="selectedTab === 'output'">
+        Pending...
+      </template>
     </main>
   </div>
 </template>

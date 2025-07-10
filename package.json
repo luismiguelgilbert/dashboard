@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20 <=22"
+    "node": ">=22"
   },
   "scripts": {
     "build": "nuxt build",
@@ -23,8 +23,8 @@
     "@nuxt/ui-pro": "^3.2.0",
     "@pinia/nuxt": "^0.10.1",
     "@supabase/supabase-js": "2.49.1",
-    "@tanstack/vue-query": "^5.81.5",
-    "@tanstack/vue-query-devtools": "^5.81.5",
+    "@tanstack/vue-query": "^5.82.0",
+    "@tanstack/vue-query-devtools": "^5.82.0",
     "@unovis/ts": "^1.5.2",
     "@unovis/vue": "^1.5.2",
     "@vueuse/components": "^13.5.0",
@@ -43,7 +43,7 @@
     "pg": "^8.16.3",
     "pg-native": "^3.5.2",
     "vue": "latest",
-    "zod": "^3.25.76"
+    "zod": "^4.0.2"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
@@ -66,5 +66,5 @@
       "vue-demi"
     ]
   },
-  "packageManager": "pnpm@10.12.4"
+  "packageManager": "pnpm@10.13.1"
 }

@@ -50,3 +50,16 @@ export const lookup_bitacora_reasons_schema = z.object({
   disabled: z.boolean(),
 });
 export type lookup_bitacora_reasons = z.infer<typeof lookup_bitacora_reasons_schema>;
+
+export const lookup_bitacora_visitors_schema = z.object({
+  visitor_name: z.string(),
+  visitor_number: z.string(),
+  visitor_company: z.string().optional().nullable(),
+});
+export type lookup_bitacora_visitors = z.infer<typeof lookup_bitacora_visitors_schema>;
+
+export const lookup_bitacora_visitors_cars_schema = z.object({
+  vehicle_name: z.string().optional().nullable(),
+  vehicle_plate: z.string().optional().nullable(),
+});
+export type lookup_bitacora_visitors_cars = z.infer<typeof lookup_bitacora_visitors_cars_schema>;
