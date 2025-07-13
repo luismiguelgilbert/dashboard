@@ -63,3 +63,9 @@ export const lookup_bitacora_visitors_cars_schema = z.object({
   vehicle_plate: z.string().optional().nullable(),
 });
 export type lookup_bitacora_visitors_cars = z.infer<typeof lookup_bitacora_visitors_cars_schema>;
+
+export const lookup_bitacora_visited_schema = z.object({
+  visited_name: z.string().optional().nullable(),
+  visited_area: z.string().optional().nullable(),
+});
+export type lookup_bitacora_visited = z.infer<typeof lookup_bitacora_visited_schema>;

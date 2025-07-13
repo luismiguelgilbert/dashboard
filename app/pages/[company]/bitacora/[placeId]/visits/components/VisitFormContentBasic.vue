@@ -81,7 +81,35 @@ const addVisitorCar = () => {
     updateLookupVisitorsCars(newVisitorCar.value);
     selectedRowData.value.vehicle_name = newVisitorCar.value.vehicle_name;
     selectedRowData.value.vehicle_plate = newVisitorCar.value.vehicle_plate;
-    visitorInpuSelect.value?.closeDrawer();
+    visitorCarInpuSelect.value?.closeDrawer();
+  }
+};
+// Visited data
+const visitedInpuSelect = useTemplateRef('visitedInpuSelect');
+const { lookupVisited, isFetchingLookupVisited, updateLookupVisited } = useLookupBitaVisited();
+const newVisited = ref<lookup_bitacora_visited>({
+  visited_name: '',
+  visited_area: '',
+});
+const lookupVisitedWithAction = computed(() => 
+  lookupVisited.value?.map((visited) => ({
+    ...visited,
+    onSelect: () => {
+      if (selectedRowData.value) {
+        selectedRowData.value.visited_name = visited.visited_name ?? null;
+        selectedRowData.value.visited_area = visited.visited_area ?? null;
+      }
+    },
+  }))
+);
+const addVisited = () => {
+  if (selectedRowData.value
+    && newVisited.value.visited_name && newVisited.value.visited_name.trim().length > 0
+    && lookupVisitorsCars.value) {
+    updateLookupVisited(newVisited.value);
+    selectedRowData.value.visited_name = newVisited.value.visited_name;
+    selectedRowData.value.visited_area = newVisited.value.visited_area ?? null;
+    visitedInpuSelect.value?.closeDrawer();
   }
 };
 </script>
@@ -271,42 +299,52 @@ const addVisitorCar = () => {
           name="visited_name"
           label="Visita a"
           hint="Pregunta por">
-          <UButtonGroup class="w-full">
-            <USelectMenu
-              v-model="selectedRowData.visitor_name"
-              :filterFields="['visitor_name', 'visitor_number']"
-              :items="lookupVisitors"
-              :loading="isFetchingLookupVisitors"
-              :ui="{ base: 'w-full' }"
-              class="overflow-x-hidden"
-              value-key="visitor_name"
-              label-key="visitor_name"
-              icon="i-lucide-land-plot"
-              placeholder="Buscar...">
-              <template #item-label="{ item }">
-                {{ item.visitor_name }}
-                <br>
-                <span class="text-muted">
-                  {{ item.visitor_number }}
-                </span>
-                <br>
-                <span
-                  v-if="item.visitor_company"
-                  class="items-center self-center">
-                  <UIcon name="i-lucide-building" size="12" />
-                  <span class="text-muted pl-1">
-                    {{ item.visitor_company }}
-                  </span>
-                </span>
-              </template>
-            </USelectMenu>
-            <UButton
-              color="neutral"
-              class="cursor-pointer"
-              variant="subtle"
-              icon="i-lucide-circle-plus"
-              size="lg" />
-          </UButtonGroup>
+          <UiInputSelect
+            ref="visitedInpuSelect"
+            title="Agregar persona"
+            :disabled="!selectedRowData.is_new"
+            @save="addVisited">
+            <template #selectMenu>
+              <USelectMenu
+                v-model="selectedRowData.visited_name"
+                value-key="visited_name"
+                label-key="visited_name"
+                icon="i-lucide-user-circle"
+                class="overflow-x-hidden"
+                placeholder="Buscar persona..."
+                :disabled="!selectedRowData.is_new"
+                :items="lookupVisitedWithAction"
+                :loading="isFetchingLookupVisited"
+                :filterFields="['visited_name', 'visited_area']"
+                :ui="{ base: 'w-full' }"
+                :search-input="{
+                  placeholder: 'Buscar persona...',
+                  icon: 'i-lucide-search',
+                }">
+                <template #item-label="{ item }">
+                  {{ item.visited_name }} <br>
+                  <span class="text-muted">{{ item.visited_area }}</span>
+                </template>
+              </USelectMenu>
+            </template>
+            <template #draw-content>
+              <UFormField size="xl" label="Persona" required>
+                <UInput
+                  v-model="newVisited.visited_name"
+                  autofocus
+                  class="w-full"
+                  placeholder="Nombre de la persona"
+                  icon="i-lucide-user-circle" />
+              </UFormField>
+              <UFormField size="xl" label="Área" class="mt-5">
+                <UInput
+                  v-model="newVisited.visited_area"
+                  class="w-full"
+                  placeholder="Área donde trabaja"
+                  icon="i-lucide-land-plot" />
+              </UFormField>
+            </template>
+          </UiInputSelect>
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
