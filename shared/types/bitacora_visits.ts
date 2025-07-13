@@ -47,7 +47,7 @@ export const bitacora_visits_schema = z.object(
     id: z.string().default(''),
     visitor_name: z.string().default(''),
     visitor_number: z.string().default(''),
-    visitor_company: z.string().default(''),
+    visitor_company: z.string().default('').optional().nullable(),
     visit_start: z.string().default(DateTime.now().toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22)),
     reason_id: z.coerce.string().default(''),
     reason_name: z.coerce.string(),

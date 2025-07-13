@@ -77,16 +77,31 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp
-    :toaster="{
-      expand: false
-    }">
-    <NuxtLoadingIndicator />
-    <NuxtLayout>
-      <NuxtPage />
-      <!-- <VueQueryDevtools :initial-is-open="true" /> -->
-    </NuxtLayout>
-  </UApp>
+  <NuxtErrorBoundary>
+    <UApp :toaster="{ expand: false }">
+      <NuxtLoadingIndicator />
+      <NuxtLayout>
+        <NuxtPage />
+        <!-- <VueQueryDevtools :initial-is-open="true" /> -->
+      </NuxtLayout>
+    </UApp>
+    <template #error="{ error, clearError }">
+      <UPageHero
+        title="Encontramos un error!"
+        :description="error.message"
+        headline="Error inesperado!">
+        <template #links>
+          <UButton
+            @click=" async () => {
+              clearError();
+              await navigateTo('/');
+            }">
+            Ir a Inicio
+          </UButton>
+        </template>
+      </UPageHero>
+    </template>
+  </NuxtErrorBoundary>
 </template>
 
 <style>

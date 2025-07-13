@@ -17,12 +17,14 @@ export default defineEventHandler(async (event) => {
     const serverDB = useDatabase();
     const query = await serverDB.sql`
       select distinct
-      vehicle_name,
-      vehicle_plate
+      initcap(vehicle_name) as vehicle_name,
+      upper(vehicle_plate) as vehicle_plate
       from bita_visits
       where sys_company_id = ${companyId}
       and place_id = ${placeId}
       and is_active = True
+      and vehicle_plate is not null
+      and vehicle_name is not null
       order by vehicle_plate
     `;
 

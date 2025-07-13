@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
     const serverDB = useDatabase();
     const query = await serverDB.sql`
       select distinct
-      visitor_name,
-      visitor_number,
-      visitor_company
+      initcap(visitor_name) as visitor_name,
+      initcap(visitor_number) as visitor_number,
+      initcap(visitor_company) as visitor_company
       from bita_visits
       where sys_company_id = ${companyId}
       and place_id = ${placeId}

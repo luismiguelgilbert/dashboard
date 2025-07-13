@@ -8,11 +8,7 @@ const props = defineProps<{
 
 const moduleStore = useBitacoraVisitsStore();
 const { selectedRowData } = storeToRefs(moduleStore);
-
 const { lookupReasons, isFetchingLookupReasons } = useLookupBitaReasons();
-const { lookupVisitors, isFetchingLookupVisitors } = useLookupBitaVisitors();
-const { lookupVisitorsCars, isFetchingLookupVisitorsCars } = useLookupBitaVisitorsCars();
-
 const updateVisitStartDate = (newDate: string) => {
   if (selectedRowData.value?.visit_start) {
     const modelDate = DateTime.fromSQL(selectedRowData.value.visit_start).toISO()?.toString();
@@ -25,6 +21,67 @@ const updateVisitStartTime = (newTime: string) => {
     const modelDate = DateTime.fromSQL(selectedRowData.value.visit_start).toISO()?.toString();
     const newDate = `${modelDate?.slice(0, 10)}T${newTime}${modelDate?.slice(16, 29)}`;
     selectedRowData.value.visit_start = DateTime.fromFormat(newDate, `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`).toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22);
+  }
+};
+// Visitors data
+const visitorInpuSelect = useTemplateRef('visitorInpuSelect');
+const { lookupVisitors, isFetchingLookupVisitors, updateLookupVisitors } = useLookupBitaVisitors();
+const newVisitor = ref<lookup_bitacora_visitors>({
+  visitor_name: '',
+  visitor_number: '',
+  visitor_company: null,
+});
+const lookupVisitorsWithAction = computed(() => 
+  lookupVisitors.value?.map((visitor) => ({
+    ...visitor,
+    onSelect: () => {
+      if (selectedRowData.value) {
+        selectedRowData.value.visitor_name = visitor.visitor_name;
+        selectedRowData.value.visitor_number = visitor.visitor_number;
+        selectedRowData.value.visitor_company = visitor.visitor_company;
+      }
+    },
+  }))
+);
+const addVisitor = () => {
+  if (selectedRowData.value
+    && newVisitor.value.visitor_name.trim().length > 0
+    && newVisitor.value.visitor_number.trim().length > 0
+    && lookupVisitors.value) {
+    updateLookupVisitors(newVisitor.value);
+    selectedRowData.value.visitor_name = newVisitor.value.visitor_name;
+    selectedRowData.value.visitor_number = newVisitor.value.visitor_number;
+    selectedRowData.value.visitor_company = newVisitor.value.visitor_company;
+    visitorInpuSelect.value?.closeDrawer();
+  }
+};
+// Visitors Cars data
+const visitorCarInpuSelect = useTemplateRef('visitorCarInpuSelect');
+const { lookupVisitorsCars, isFetchingLookupVisitorsCars, updateLookupVisitorsCars } = useLookupBitaVisitorsCars();
+const newVisitorCar = ref<lookup_bitacora_visitors_cars>({
+  vehicle_name: '',
+  vehicle_plate: '',
+});
+const lookupVisitorsCarsWithAction = computed(() => 
+  lookupVisitorsCars.value?.map((visitorCar) => ({
+    ...visitorCar,
+    onSelect: () => {
+      if (selectedRowData.value) {
+        selectedRowData.value.vehicle_name = visitorCar.vehicle_name ?? null;
+        selectedRowData.value.vehicle_plate = visitorCar.vehicle_plate ?? null;
+      }
+    },
+  }))
+);
+const addVisitorCar = () => {
+  if (selectedRowData.value
+    && newVisitorCar.value.vehicle_name && newVisitorCar.value.vehicle_name.trim().length > 0
+    && newVisitorCar.value.vehicle_plate && newVisitorCar.value.vehicle_plate.trim().length > 0
+    && lookupVisitorsCars.value) {
+    updateLookupVisitorsCars(newVisitorCar.value);
+    selectedRowData.value.vehicle_name = newVisitorCar.value.vehicle_name;
+    selectedRowData.value.vehicle_plate = newVisitorCar.value.vehicle_plate;
+    visitorInpuSelect.value?.closeDrawer();
   }
 };
 </script>
@@ -77,6 +134,8 @@ const updateVisitStartTime = (newTime: string) => {
             v-model="selectedRowData.reason_id"
             :items="lookupReasons"
             :loading="isFetchingLookupReasons"
+            :disabled="!selectedRowData.is_new"
+            icon="i-lucide-list-check"
             label-key="name_es"
             value-key="id"
             class="w-full" />
@@ -88,41 +147,60 @@ const updateVisitStartTime = (newTime: string) => {
           name="visitor_name"
           label="Visitante"
           hint="Nombre del visitante">
-          <UButtonGroup class="w-full">
-            <USelectMenu
-              v-model="selectedRowData.visitor_name"
-              :filterFields="['visitor_name', 'visitor_number']"
-              :items="lookupVisitors"
-              :loading="isFetchingLookupVisitors"
-              value-key="visitor_name"
-              label-key="visitor_name"
-              class="w-full"
-              icon="i-lucide-user"
-              placeholder="Select user">
-              <template #item-label="{ item }">
-                {{ item.visitor_name }}
-                <br>
-                <span class="text-muted">
-                  {{ item.visitor_number }}
-                </span>
-                <br>
-                <span
-                  v-if="item.visitor_company"
-                  class="items-center self-center">
-                  <UIcon name="i-lucide-building" size="12" />
-                  <span class="text-muted pl-1">
-                    {{ item.visitor_company }}
-                  </span>
-                </span>
-              </template>
-            </USelectMenu>
-            <UButton
-              color="neutral"
-              class="cursor-pointer"
-              variant="subtle"
-              icon="i-lucide-circle-plus"
-              size="lg" />
-          </UButtonGroup>
+          <UiInputSelect
+            ref="visitorInpuSelect"
+            title="Agregar visitante"
+            :disabled="!selectedRowData.is_new"
+            @save="addVisitor">
+            <template #selectMenu>
+              <USelectMenu
+                v-model="selectedRowData.visitor_name"
+                value-key="visitor_name"
+                label-key="visitor_name"
+                icon="i-lucide-user"
+                class="overflow-x-hidden"
+                placeholder="Buscar visitante..."
+                :disabled="!selectedRowData.is_new"
+                :loading="isFetchingLookupVisitors"
+                :items="lookupVisitorsWithAction"
+                :filterFields="['visitor_name', 'visitor_number']"
+                :ui="{ base: 'w-full' }"
+                :search-input="{
+                  placeholder: 'Buscar visitante...',
+                  icon: 'i-lucide-search',
+                }">
+                <template #item-label="{ item }">
+                  {{ item.visitor_name }} <br>
+                  <span class="text-muted">{{ item.visitor_number }}</span><br>
+                  <span class="text-muted">{{ item.visitor_company }}</span>
+                </template>
+              </USelectMenu>
+            </template>
+            <template #draw-content>
+              <UFormField size="xl" label="Nombre" required>
+                <UInput
+                  v-model="newVisitor.visitor_name"
+                  autofocus
+                  class="w-full"
+                  placeholder="Nombre del visitante"
+                  icon="i-lucide-user-round" />
+              </UFormField>
+              <UFormField size="xl" label="Cédula" required class="mt-5">
+                <UInput
+                  v-model="newVisitor.visitor_number"
+                  class="w-full"
+                  placeholder="Número de Identificación"
+                  icon="i-lucide-id-card" />
+              </UFormField>
+              <UFormField size="xl" label="Empresa" class="mt-5">
+                <UInput
+                  v-model="newVisitor.visitor_company"
+                  class="w-full"
+                  placeholder="Empresa donde trabaja"
+                  icon="i-lucide-building-2" />
+              </UFormField>
+            </template>
+          </UiInputSelect>
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
@@ -131,32 +209,52 @@ const updateVisitStartTime = (newTime: string) => {
           name="vehicle_name"
           label="Vehículo"
           hint="Descripción del vehículo">
-          <UButtonGroup class="w-full">
-            <USelectMenu
-              v-model="selectedRowData.vehicle_name"
-              :filterFields="['visitor_name', 'visitor_number']"
-              :items="lookupVisitorsCars"
-              :loading="isFetchingLookupVisitorsCars"
-              value-key="vehicle_name"
-              label-key="vehicle_plate"
-              class="w-full"
-              icon="i-lucide-car"
-              placeholder="Select user">
-              <template #item-label="{ item }">
-                {{ item.vehicle_name }}
-                <br>
-                <span class="text-muted">
-                  {{ item.vehicle_plate }}
-                </span>
-              </template>
-            </USelectMenu>
-            <UButton
-              color="neutral"
-              class="cursor-pointer"
-              variant="subtle"
-              icon="i-lucide-circle-plus"
-              size="lg" />
-          </UButtonGroup>
+          <UiInputSelect
+            ref="visitorCarInpuSelect"
+            title="Agregar visitante"
+            :disabled="!selectedRowData.is_new"
+            @save="addVisitorCar">
+            <template #selectMenu>
+              <USelectMenu
+                v-model="selectedRowData.vehicle_plate"
+                value-key="vehicle_plate"
+                label-key="vehicle_plate"
+                icon="i-lucide-car"
+                class="overflow-x-hidden"
+                placeholder="Buscar vehículo..."
+                :disabled="!selectedRowData.is_new"
+                :items="lookupVisitorsCarsWithAction"
+                :loading="isFetchingLookupVisitorsCars"
+                :filterFields="['vehicle_plate', 'vehicle_name']"
+                :ui="{ base: 'w-full' }"
+                :search-input="{
+                  placeholder: 'Buscar vehículo...',
+                  icon: 'i-lucide-search',
+                }">
+                <template #item-label="{ item }">
+                  {{ item.vehicle_plate }} <br>
+                  <span class="text-muted">{{ item.vehicle_name }}</span>
+                </template>
+              </USelectMenu>
+            </template>
+            <template #draw-content>
+              <UFormField size="xl" label="Placa" required>
+                <UInput
+                  v-model="newVisitorCar.vehicle_plate"
+                  autofocus
+                  class="w-full"
+                  placeholder="Placa del vehículo"
+                  icon="i-lucide-car" />
+              </UFormField>
+              <UFormField size="xl" label="Descripción" required class="mt-5">
+                <UInput
+                  v-model="newVisitorCar.vehicle_name"
+                  class="w-full"
+                  placeholder="Descripción del Vehículo"
+                  icon="i-lucide-car" />
+              </UFormField>
+            </template>
+          </UiInputSelect>
         </UiDashboardSection>
       </UForm>
     </UCard>
@@ -179,9 +277,10 @@ const updateVisitStartTime = (newTime: string) => {
               :filterFields="['visitor_name', 'visitor_number']"
               :items="lookupVisitors"
               :loading="isFetchingLookupVisitors"
+              :ui="{ base: 'w-full' }"
+              class="overflow-x-hidden"
               value-key="visitor_name"
               label-key="visitor_name"
-              class="w-full"
               icon="i-lucide-land-plot"
               placeholder="Buscar...">
               <template #item-label="{ item }">

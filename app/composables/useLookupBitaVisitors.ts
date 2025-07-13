@@ -1,4 +1,5 @@
 export function useLookupBitaVisitors() {
+  const queryClient = useQueryClient();
   const headers = useRequestHeaders(['cookie']);
   const userCompany = useState<sys_companies | undefined>('userCompany');
   const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
@@ -14,8 +15,15 @@ export function useLookupBitaVisitors() {
 		},
 	);
 
+  const updateLookupVisitors = (newVisitor: lookup_bitacora_visitors) => {
+    queryClient.setQueryData<lookup_bitacora_visitors[]>(['lookup-bita-visitors', userCompany.value?.id, userBitaPlace.value?.id], (oldData) => {
+      return oldData ? [...oldData, newVisitor] : [newVisitor];
+    }
+  )};
+
 	return {
     lookupVisitors,
     isFetchingLookupVisitors,
+    updateLookupVisitors,
 	};
 }
