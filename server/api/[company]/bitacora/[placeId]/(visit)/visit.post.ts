@@ -53,7 +53,11 @@ export default defineEventHandler(async (event) => {
 
     return (recordDataQuery.rows && recordDataQuery.rows[0])
       ? bitacora_visits_schema.parse(recordDataQuery.rows[0])
-      : bitacora_visits_schema.parse({ id: payload.id, is_new: true, responsible: `${user?.user_name} ${user?.user_lastname}` })
+      : bitacora_visits_schema.parse({
+        id: payload.id,
+        is_new: true,
+        visit_end: null,
+        responsible: `${user?.user_name} ${user?.user_lastname}` })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
