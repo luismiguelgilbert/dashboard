@@ -98,5 +98,18 @@ const resetVisitEnd = () => {
         </UiDashboardSection>
       </UForm>
     </UCard>
+
+    <UCard variant="subtle" class="mt-10">
+      <UiDashboardSection
+          :vertical="vertical"
+          name="is_active"
+          label="Eliminar registro?">
+          <USwitch
+            :modelValue="!selectedRowData.is_active"
+            :color="!selectedRowData.is_active ? 'error' : 'success'"
+            :label="!selectedRowData.is_active ? 'Eliminar' : 'No'"
+            @change="selectedRowData.is_active = !selectedRowData.is_active" />
+        </UiDashboardSection>
+    </UCard>
   </div>
 </template>

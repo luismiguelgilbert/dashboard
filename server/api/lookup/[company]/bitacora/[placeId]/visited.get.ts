@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
       and is_active = True
       and visited_area is not null
       and visited_name is not null
+      and length(visited_name) > 0
       order by visited_name
     `;
 

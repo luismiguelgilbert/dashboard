@@ -25,6 +25,7 @@ export default defineEventHandler(async (event) => {
       and is_active = True
       and vehicle_plate is not null
       and vehicle_name is not null
+      and length(vehicle_plate) > 0 and length(vehicle_name) > 0
       order by vehicle_plate
     `;
 

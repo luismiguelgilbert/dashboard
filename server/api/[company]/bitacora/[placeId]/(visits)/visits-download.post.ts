@@ -25,14 +25,14 @@ export default defineEventHandler(async (event) => {
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
-       select
        a.id
       ,a.visitor_name
       ,a.visitor_number
       ,a.visitor_company
+      ,to_char (a.visit_start::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as visit_start
+      ,to_char (a.visit_end::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as visit_end
       ,a.visited_name
       ,a.visited_area
-      ,a.reason_id
       ,c.name_es as reason_name
       ,a.vehicle_name
       ,a.vehicle_plate
@@ -61,10 +61,18 @@ export default defineEventHandler(async (event) => {
     const workbook = new Excel.Workbook();
     const worksheet = await workbook.addWorksheet('Visitas');
     const fileColumns = [
-      { key: 'event_at', header: 'Código', width: 30 },
+      { key: 'visitor_name', header: 'Visitante (Nombre)', width: 30 },
+      { key: 'visitor_number', header: 'Visitante (Identificación)', width: 20 },
+      { key: 'visitor_company', header: 'Visitante (Empresa)', width: 20 },
+      { key: 'reason_name', header: 'Motivo', width: 20 },
+      { key: 'visit_start', header: 'Fecha Ingreso', width: 20 },
+      { key: 'visited_name', header: 'Pregunta Por', width: 20 },
+      { key: 'visited_area', header: 'Area a la que se dirige', width: 20 },
+      { key: 'vehicle_name', header: 'Vehículo', width: 20 },
+      { key: 'vehicle_plate', header: 'Placa', width: 20 },
       { key: 'responsible', header: 'Código', width: 30 },
-      { key: 'comments', header: 'Nombre', width: 100 },
-      { key: 'is_complete', header: 'Completa?', width: 10 },
+      { key: 'comments_in', header: 'Comentario (Ingreso)', width: 100 },
+      { key: 'responsible', header: 'Registrado por', width: 10 },
     ];
     worksheet.columns = fileColumns;
     worksheet.getRow(1).font = { size: 16, bold: true };

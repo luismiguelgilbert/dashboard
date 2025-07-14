@@ -1,18 +1,16 @@
 import { z } from 'zod/v4';
 import { DateTime } from 'luxon';
 
-export const bitacora_visits_sort_enum_keys_schema = z.enum(['1', '2', '3']);
+export const bitacora_visits_sort_enum_keys_schema = z.enum(['1', '2']);
 export type bitacora_visits_sort_enum_keys = z.infer<typeof bitacora_visits_sort_enum_keys_schema>;
 export const bitacora_visits_sort_enum_client: sort_enum_array[] = [
-  { id: '1', label: 'Fecha' },
+  { id: '1', label: 'Fecha Ingreso' },
   { id: '2', label: 'Responsable' },
-  { id: '3', label: 'Creación' },
 ];
 
 export const bitacora_visits_sort_enum_server: sort_enum_array[] = [
   { id: '1', label: 'a.visit_start' },
   { id: '2', label: 'a.updated_by' },
-  { id: '3', label: 'a.updated_at' },
 ];
 
 export const bitacora_visits_query_schema = z.object({
@@ -83,11 +81,6 @@ export const bitacora_visits_schema = z.object(
     val => ((!val.is_saving) || (val.is_saving && !val.is_complete) || (val.is_saving && val.is_complete && val.visit_end && DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
     { message: `Fecha de salida debe tener un formato correcto`, path: ['visit_end'] },
   )
-  // .refine(
-  //   //use Luxon to validate if event_at is a valid date and it is in the UTC format
-  //   val => DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid,
-  //   { message: `Fecha debe ser válida y en formato UTC`, path: ['event_at'] },
-  // )
 ;
 export type bitacora_visits = z.infer<typeof bitacora_visits_schema>;
 
