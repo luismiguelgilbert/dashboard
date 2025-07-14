@@ -130,7 +130,7 @@ const addVisited = () => {
         :schema="bitacora_visits_schema">
         <UiDashboardSection
           :vertical="vertical"
-          name="name_es"
+          name="visit_start"
           label="Fecha Ingreso"
           hint="Fecha de ingreso">
           <UiInputDate
@@ -142,7 +142,7 @@ const addVisited = () => {
         <USeparator class="py-5" />
         <UiDashboardSection
           :vertical="vertical"
-          name="name_es"
+          name="visit_start"
           label="Hora Ingreso"
           hint="Hora de ingreso">
           <UiInputTime
@@ -234,7 +234,7 @@ const addVisited = () => {
         <UiDashboardSection
           :vertical="vertical"
           labelTop
-          name="vehicle_name"
+          name="vehicle_plate"
           label="Vehículo"
           hint="Descripción del vehículo">
           <UiInputSelect
@@ -350,7 +350,7 @@ const addVisited = () => {
         <UiDashboardSection
           :vertical="vertical"
           labelTop
-          name="visitor_company"
+          name="comments_in"
           label="Comentario"
           hint="Comentario al ingreso">
         <UTextarea

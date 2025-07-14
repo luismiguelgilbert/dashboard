@@ -33,26 +33,9 @@ const { data, isFetching } = useQuery({
 const { mutateAsync, isPending } = useMutation({
   mutationFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/visit-upsert`, { method: 'POST', body: selectedRowData.value }),
   onSuccess: async () => {
-    if (selectedRowData.value?.is_new) {
-      queryClient.invalidateQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id] });
-    } else {
-      // this optimisticly updates the cache data record to reflect changes in the list component
-      queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: bitacora_visits_query_cache | undefined) => {
-        cacheData?.pages.forEach((page) => {
-          const recordIndex = page.findIndex(visit => visit.id === selectedRowData.value?.id);
-          if (page[recordIndex]) {
-            page[recordIndex] = {
-              ...page[recordIndex],
-              // Update fields used in the list component
-              comments_in: String(selectedRowData.value?.comments_in),
-              comments_out: String(selectedRowData.value?.comments_out),
-            };
-          }
-        });
-        return cacheData;
-      })
-    }
+    queryClient.invalidateQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id, userBitaPlace.value?.id] });
     await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value, userCompany.value?.id] });
+    navigateTo({ name: 'company-bitacora-placeId-visits', query: { ...useRoute().query } });
   },
 });
 
@@ -132,7 +115,7 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
         <VisitFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
       </template>
       <template v-if="selectedTab === 'output'">
-        Pending...
+        <VisitFormContentExit :vertical="isMobile" :disable="isFetching || isPending" />
       </template>
     </main>
   </div>

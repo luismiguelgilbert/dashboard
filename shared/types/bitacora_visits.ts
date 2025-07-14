@@ -10,7 +10,7 @@ export const bitacora_visits_sort_enum_client: sort_enum_array[] = [
 ];
 
 export const bitacora_visits_sort_enum_server: sort_enum_array[] = [
-  { id: '1', label: 'a.visit_date_range' },
+  { id: '1', label: 'a.visit_start' },
   { id: '2', label: 'a.updated_by' },
   { id: '3', label: 'a.updated_at' },
 ];
@@ -49,6 +49,7 @@ export const bitacora_visits_schema = z.object(
     visitor_number: z.string().default(''),
     visitor_company: z.string().default('').optional().nullable(),
     visit_start: z.string().default(DateTime.now().toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22)),
+    visit_end: z.string().nullable(),
     reason_id: z.coerce.string().default(''),
     reason_name: z.coerce.string(),
     visited_name: z.string().nullable().optional().default(''),
@@ -66,13 +67,25 @@ export const bitacora_visits_schema = z.object(
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
   })
-  // .refine(
-  //   val => ((!val.is_saving) || (val.is_saving && val. && val.comments.length >= 3)),
-  //   { message: `Comentario debe incluir 3 o más caracteres`, path: ['comments'] },
-  // )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.reason_id && val.reason_id.length >= 3)),
+    { message: `Motivo debe estar seleccionado`, path: ['reason_id'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.visitor_name && val.visitor_name.length >= 3)),
+    { message: `Visitante debe estar seleccionado`, path: ['visitor_name'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.visitor_number && val.visitor_number.length >= 3)),
+    { message: `Visitante debe estar seleccionado`, path: ['visitor_number'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && !val.is_complete) || (val.is_saving && val.is_complete && val.visit_end && DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
+    { message: `Fecha de salida debe tener un formato correcto`, path: ['visit_end'] },
+  )
   // .refine(
   //   //use Luxon to validate if event_at is a valid date and it is in the UTC format
-  //   val => DateTime.fromFormat(val.event_at, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid,
+  //   val => DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid,
   //   { message: `Fecha debe ser válida y en formato UTC`, path: ['event_at'] },
   // )
 ;

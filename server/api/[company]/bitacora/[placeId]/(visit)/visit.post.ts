@@ -26,7 +26,8 @@ export default defineEventHandler(async (event) => {
       ,a.visitor_name
       ,a.visitor_number
       ,a.visitor_company
-      ,to_char (lower(a.visit_date_range)::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as visit_start
+      ,to_char (a.visit_start::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as visit_start
+      ,to_char (a.visit_end::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as visit_end
       ,a.visited_name
       ,a.visited_area
       ,a.vehicle_name
