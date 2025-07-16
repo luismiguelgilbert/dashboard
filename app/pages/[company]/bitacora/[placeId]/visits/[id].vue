@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query';
 import type { TabsItem } from '@nuxt/ui';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 const breakpoints = useBreakpoints(breakpointsTailwind);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon';
+import { useInfiniteQuery } from '@tanstack/vue-query';
 
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();

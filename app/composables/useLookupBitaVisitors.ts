@@ -1,3 +1,5 @@
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
+
 export function useLookupBitaVisitors() {
   const queryClient = useQueryClient();
   const headers = useRequestHeaders(['cookie']);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import { useQueryClient } from '@tanstack/vue-query';
 import type { CheckboxGroupItem } from '@nuxt/ui';
 
 const { currentRoute, push } = useRouter();

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useInfiniteQuery } from '@tanstack/vue-query';
+
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
 const store = useBitacoraPlacesStore();

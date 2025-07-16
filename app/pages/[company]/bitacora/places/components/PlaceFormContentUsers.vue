@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useQuery } from '@tanstack/vue-query';
+
 const props = defineProps<{
   disable: boolean;
   vertical?: boolean;

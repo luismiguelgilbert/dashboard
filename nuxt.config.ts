@@ -4,7 +4,6 @@ import { useNuxt } from 'nuxt/kit';
 
 export default defineNuxtConfig({
   modules: [
-    '@hebilicious/vue-query-nuxt',
     '@nuxt/ui-pro',
     '@pinia/nuxt',
     '@vueuse/nuxt',
@@ -105,10 +104,10 @@ export default defineNuxtConfig({
       }
     },
   },
-  vueQuery: {
-    // https://nuxt.com/modules/vue-query
-    vueQueryPluginOptions: {
-      enableDevtoolsV6Plugin: true,
-    }
-  },
+  // vueQuery: {
+  //   // https://nuxt.com/modules/vue-query
+  //   vueQueryPluginOptions: {
+  //     enableDevtoolsV6Plugin: true,
+  //   }
+  // },
 })

@@ -1,3 +1,5 @@
+import { useQuery } from '@tanstack/vue-query';
+
 export function useLookupBitaReasons() {
   const headers = useRequestHeaders(['cookie']);
   const userCompany = useState<sys_companies | undefined>('userCompany');

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import type { CheckboxGroupItem } from '@nuxt/ui';
 

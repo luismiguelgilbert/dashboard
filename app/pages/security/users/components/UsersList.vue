@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useInfiniteQuery } from '@tanstack/vue-query';
 import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
