@@ -53,7 +53,15 @@ export default defineEventHandler(async (event) => {
     sys_link_id as id
     from sys_profiles_links
     where sys_profile_id = ${userProfileId}
+    union
+    select distinct y.parent
+    from sys_profiles_links x
+    inner join sys_links y on x.sys_link_id = y.id
+    where x.sys_profile_id = ${userProfileId}
+    and y.parent is not null
+    order by id
   `;
+
   if (userPermissions?.error || (userPermissions.rows?.length && userPermissions.rows.length <= 0)) {
     sendRedirect(event, '/auth/login?invalid_permissions=true');
   }

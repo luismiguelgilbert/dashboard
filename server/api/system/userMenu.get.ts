@@ -39,8 +39,9 @@ export default defineEventHandler(async (event) => {
         union select * from user_links_level_1
         union select * from user_links_level_2
       )X inner join sys_links Y on X.id = Y.id
-      order by case when Y.parent is null then 1 else 2 end, Y.id, Y.position, Y.parent
+      order by case when Y.parent is null then 1 else 2 end, Y.position, Y.parent, Y.id
     `;
+    // order by case when Y.parent is null then 1 else 2 end, Y.id, Y.position, Y.parent
 
     const queryResult = sys_links_schema.array().parse(query.rows);
     const allowedPermissions: sys_links[] = [];
