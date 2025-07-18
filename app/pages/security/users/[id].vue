@@ -1,21 +1,13 @@
 <script setup lang="ts">
-import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query';
 import type { TabsItem } from '@nuxt/ui'
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 
-const { currentRoute } = useRouter();
-const headers = useRequestHeaders(['cookie']);
-const queryClient = useQueryClient();
 const store = useSecurityUsersStore();
-const {
-  computedQueryKey,
-  computedRecordQueryKey,
-  selectedRowData,
-  formPanelTitle,
-  isSaveDisabled,
-} = storeToRefs(store);
+const { selectedRowData, formPanelTitle, isSaveDisabled } = storeToRefs(store);
+const { dataRecord, dataRecordFetching, dataRecordUpdate, dataRecordUpdating } = useSecurityUsersQueries();
+
 const selectedTab = ref<'basic' | 'permissions' | 'password'>('basic');
 const tabs = ref<TabsItem[]>([
   { value: 'basic', label: 'Datos del Usuario' },
@@ -23,52 +15,15 @@ const tabs = ref<TabsItem[]>([
   { value: 'password', label: 'Contraseña' }
 ]);
 
-const { data, isFetching } = useQuery({
-  queryKey: [computedRecordQueryKey.value, currentRoute.value.params.id],
-  queryFn: () => $fetch('/api/security/user', { method: 'post', headers, body: { id: currentRoute.value.params.id } }),
-  staleTime: 1000 * 60 * 5, // 5 minutes
-});
-
-const { mutateAsync, isPending } = useMutation({
-  mutationFn: () => $fetch('/api/security/user-upsert', { method: 'POST', body: selectedRowData.value }),
-  onSuccess: async () => {
-    if (selectedRowData.value?.is_new) {
-      await queryClient.invalidateQueries({ queryKey: [computedQueryKey.value] });
-    } else {
-      // this optimisticly updates the cache data record to reflect changes in the list component
-      queryClient.setQueriesData({ queryKey: [computedQueryKey.value] }, (cacheData: sys_users_query_cache | undefined) => {
-        cacheData?.pages.forEach((page) => {
-          const recordIndex = page.findIndex(user => user.id === selectedRowData.value?.id);
-          if (page[recordIndex]) {
-            page[recordIndex] = {
-              ...page[recordIndex],
-              // Update fields used in the list component
-              user_name: String(selectedRowData.value?.user_name),
-              user_lastname: String(selectedRowData.value?.user_lastname),
-              is_active: Boolean(selectedRowData.value?.is_active),
-            };
-          }
-        });
-        return cacheData;
-      })
-    }
-    await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value] });
-  },
-});
-
 const saveForm = async () => {
   try {
     if (selectedRowData.value) {
       selectedRowData.value.is_saving = true;
       const { error } = sys_users_schema.safeParse(selectedRowData.value);
       if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
-      await mutateAsync();
+      await dataRecordUpdate(selectedRowData.value);
       selectedRowData.value.is_saving = false;
-      useToast().add({
-        title: 'Datos guardados',
-        icon: 'i-lucide-circle-check',
-        color: 'success',
-      });
+      useToast().add({ title: 'Datos guardados', icon: 'i-lucide-circle-check', color: 'success' });
     }
   } catch (error) {
     useToast().add({
@@ -83,7 +38,7 @@ const saveForm = async () => {
 };
 
 // Keep useQuery props synced with Pinia store
-watch(() => data.value, newData => selectedRowData.value = newData ? { ...newData } : undefined, { deep: true, immediate: true });
+watch(() => dataRecord.value, newData => selectedRowData.value = newData ? { ...newData } : undefined, { deep: true, immediate: true });
 </script>
 
 <template>
@@ -106,16 +61,16 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           variant="solid"
           label="Guardar"
           class="-ms-1.5 cursor-pointer"
-          :loading="isFetching || isPending"
-          :disabled="isFetching || isPending || isSaveDisabled"
+          :loading="dataRecordFetching || dataRecordUpdating"
+          :disabled="dataRecordFetching || dataRecordUpdating || isSaveDisabled"
           @click="saveForm" />
       </template>
     </UDashboardNavbar>
 
     <header>
-      <UProgress v-if="isFetching" class="p-3" />
+      <UProgress v-if="dataRecordFetching" class="p-3" />
       <UTabs
-        v-if="!isFetching"
+        v-if="!dataRecordFetching"
         v-model="selectedTab"
         :unmount-on-hide="false"
         :items="tabs"
@@ -125,16 +80,16 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
         class="w-full mt-1.5 ml-2 pr-4" />
       <USeparator />
     </header>
-    <main v-if="!isFetching && selectedRowData">
+    <main v-if="!dataRecordFetching && selectedRowData">
       <template v-if="selectedTab === 'basic'">
-        <UserFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
-        <UserFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
+        <UserFormContentBasic :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
+        <UserFormContentAvatar :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
       </template>
       <template v-if="selectedTab === 'permissions'">
-        <UserFormContentAccess :vertical="isMobile" :disable="isFetching || isPending" />
+        <UserFormContentAccess :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
       </template>
       <template v-if="selectedTab === 'password'">
-        <UserFormContentPassword :vertical="isMobile" :disable="isFetching || isPending" />
+        <UserFormContentPassword :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
       </template>
     </main>
   </div>

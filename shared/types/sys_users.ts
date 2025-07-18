@@ -116,12 +116,6 @@ export const sys_users_schema = z.object({
 ;
 export type sys_users = z.infer<typeof sys_users_schema>;
 
-export const sys_users_query_cache_schema = z.object({
-  pageParams: z.array(z.number()).default([]),
-  pages: z.array(sys_users_schema.array()).default([]),
-});
-export type sys_users_query_cache = z.infer<typeof sys_users_query_cache_schema>;
-
 export const profileSchema = z.object({
   user_name: z.string().min(3, 'Debe tener al menos 3 caracteres'),
   user_lastname: z.string().min(3, 'Debe tener al menos 3 caracteres'),

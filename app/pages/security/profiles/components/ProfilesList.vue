@@ -1,41 +1,12 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query';
 import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
-const store = useSecurityProfilesStore();
-const { queryPayload, computedQueryKey } = storeToRefs(store);
-const headers = useRequestHeaders(['cookie']);
-const errorFetching = ref(false);
-const errorFetchingMessage = ref('');
-
-const fetcher = async (pageParam: number) => {
-  const { data, error } = await useFetch('/api/security/profiles', { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) })
-  if (error.value) {
-    errorFetching.value = true;
-    errorFetchingMessage.value = error.value?.message || 'An error occurred while fetching data';
-  }
-  return data.value;
-}
-
-const {
-  data,
-  isStale,
-  dataUpdatedAt,
-  fetchNextPage,
-  isFetching,
-  hasNextPage,
-} = useInfiniteQuery({
-  queryKey: [computedQueryKey.value, queryPayload],
-  queryFn: ({ pageParam }) => fetcher(pageParam),
-  initialPageParam: 1,
-  getNextPageParam: (lastPage, pages) => lastPage && lastPage.length > 0 ? pages.length + 1 : undefined,
-  staleTime: 1000 * 60 * 5, // 5 minutes
-});
+const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useSecurityProfilesQueries();
 
 const onLoadMore = async () => {
-  if (isStale.value || hasNextPage.value) {
+  if (dataListStale.value || hasNextPage.value) {
     await fetchNextPage();
   }
 };
@@ -44,15 +15,15 @@ const onLoadMore = async () => {
 <template>
   <div>
     <UPageCard
-      v-if="errorFetching"
+      v-if="dataListError"
       class="m-2 bg-red-500 text-white">
-      {{ errorFetchingMessage }}
+      {{ dataListError.message }}
     </UPageCard>
     <div
-      v-if="!errorFetching"
+      v-if="!dataListError"
       v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
       style="height: calc(100dvh - 65px); overflow-y: auto;">
-      <template v-for="page in data?.pages">
+      <template v-for="page in dataList?.pages">
         <div
           v-for="item in page"
           :key="`${dataUpdatedAt}-${item.id}`"
@@ -74,7 +45,7 @@ const onLoadMore = async () => {
             @click="emits('row-clicked', item)" />
         </div>
       </template>
-      <UProgress v-if="isFetching" class="p-3" />
+      <UProgress v-if="dataListFetching" class="p-3" />
     </div>
   </div>
 </template>

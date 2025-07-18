@@ -18,10 +18,11 @@ export default defineEventHandler(async (event) => {
        a.id
       ,initcap(a.user_name) as user_name
       ,initcap(a.user_lastname) as user_lastname
-      ,a.is_active
-      ,a.user_sex
+      ,COALESCE(a.user_sex, False) as user_sex
       ,a.avatar_url
+      ,a.is_active
       ,a.email
+      ,a.sys_profile_id
       ,b.name_es as sys_profile_name
       from sys_users a
       inner join sys_profiles b on a.sys_profile_id = b.id

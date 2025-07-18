@@ -1,4 +1,5 @@
 import { base64toBlob } from '~~/app/utils/index';
+import { recordQuery } from './user.post';
 
 export default defineEventHandler(async (event) => {
   const { user } = await getUserSession(event);
@@ -82,7 +83,12 @@ export default defineEventHandler(async (event) => {
     }
 
     await serverDB.exec('COMMIT');
-    return new Response('Record saved', { status: 200 });
+
+    const recordData = await recordQuery(payload.id).all();
+
+    return (recordData && recordData.length > 0)
+      ? sys_users_schema.parse(recordData[0])
+      : sys_users_schema.parse({ id: payload.id, sys_profile_id: 0, is_new: true })
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     await serverDB.exec('ROLLBACK');

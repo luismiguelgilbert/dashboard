@@ -59,9 +59,3 @@ export const sys_profiles_schema = z.object(
   )
 ;
 export type sys_profiles = z.infer<typeof sys_profiles_schema>;
-
-export const sys_profiles_query_cache_schema = z.object({
-  pageParams: z.array(z.number()).default([]),
-  pages: z.array(sys_profiles_schema.array()).default([]),
-});
-export type sys_profiles_query_cache = z.infer<typeof sys_profiles_query_cache_schema>;
