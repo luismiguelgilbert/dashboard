@@ -14,7 +14,7 @@ export const useBitacoraVisitsStore = defineStore('bitacoraVisits', () => {
   const canDownload = computed(() => userMenu.value.some(link => link.id === PermissionsList.BITACORA_VISITS_EXPORT));
   const isFormPanelCreating = computed<boolean>(() => Boolean(selectedRowData.value && selectedRowData.value.is_new));
   const formPanelTitle = computed<string>(() => isFormPanelCreating.value ? 'Nueva visita' : 'Editar visita');
-  const isSaveDisabled = computed<boolean>(() => (isFormPanelCreating.value && !canCreate) || (!isFormPanelCreating.value && !canEdit));// pending
+  const isSaveDisabled = computed<boolean>(() => (isFormPanelCreating.value && !canCreate.value) || (!isFormPanelCreating.value && !canEdit.value));
   const hasFilter = computed<boolean>(() => Boolean(queryPayload.value.search && queryPayload.value.search.trim().length > 0));
 
   return {
