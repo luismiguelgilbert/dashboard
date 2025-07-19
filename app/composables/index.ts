@@ -1,4 +1,5 @@
 export { useBitacoraCarsQueries } from './queries/useBitacoraCarsQueries';
+export { useBitacoraEventsQueries } from './queries/useBitacoraEventsQueries';
 export { useBitacoraPlacesQueries } from './queries/useBitacoraPlacesQueries';
 export { useBitacoraReasonsQueries } from './queries/useBitacoraReasonsQueries';
 export { useBitacoraRidesReasonsQueries } from './queries/useBitacoraRidesReasonsQueries';

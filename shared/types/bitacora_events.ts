@@ -81,9 +81,3 @@ export const bitacora_events_schema = z.object(
   )
 ;
 export type bitacora_events = z.infer<typeof bitacora_events_schema>;
-
-export const bitacora_events_query_cache_schema = z.object({
-  pageParams: z.array(z.number()).default([]),
-  pages: z.array(bitacora_events_schema.array()).default([]),
-});
-export type bitacora_events_query_cache = z.infer<typeof bitacora_events_query_cache_schema>;
