@@ -53,9 +53,3 @@ export const bitacora_reasons_schema = z.object(
   )
 ;
 export type bitacora_reasons = z.infer<typeof bitacora_reasons_schema>;
-
-export const bitacora_reasons_query_cache_schema = z.object({
-  pageParams: z.array(z.number()).default([]),
-  pages: z.array(bitacora_reasons_schema.array()).default([]),
-});
-export type bitacora_reasons_query_cache = z.infer<typeof bitacora_reasons_query_cache_schema>;
