@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
     and b.is_active = True
   `;
   const userId = userData.rows && userData.rows[0]?.id as string;
-  const userProfileId = userData.rows && userData.rows[0]?.sys_profile_id as string;
   if (userData?.error || !userId || (userData.rows?.length && userData.rows.length <= 0)) {
     sendRedirect(event, '/auth/login?invalid=true');
   }
@@ -49,17 +48,34 @@ export default defineEventHandler(async (event) => {
 
   // Create Cookie with app permissions
   const userPermissions = await serverDB.sql`
-    select
-    sys_link_id as id
-    from sys_profiles_links
-    where sys_profile_id = ${userProfileId}
-    union
-    select distinct y.parent
-    from sys_profiles_links x
-    inner join sys_links y on x.sys_link_id = y.id
-    where x.sys_profile_id = ${userProfileId}
-    and y.parent is not null
-    order by id
+    with user_links_level_2 as (
+      select c.id, c.parent
+      from sys_users a
+      inner join sys_profiles_links b on a.sys_profile_id = b.sys_profile_id
+      inner join sys_links c on b.sys_link_id = c.id
+      inner join sys_profiles d on a.sys_profile_id = d.id
+      where a.id = ${userId}
+      and a.is_active = True
+      and d.is_active = True
+      and c.row_level = 2
+      ),
+      user_links_level_1 as (
+      select distinct sys_links.id, sys_links.parent
+      from user_links_level_2
+      inner join sys_links on user_links_level_2.parent = sys_links.id 
+      ),
+      user_links_level_0 as (
+      select distinct sys_links.id, sys_links.parent
+      from user_links_level_1
+      inner join sys_links on user_links_level_1.parent = sys_links.id 
+    )
+    select Y.id
+    from (
+        select * from user_links_level_0
+        union select * from user_links_level_1
+        union select * from user_links_level_2
+    )X inner join sys_links Y on X.id = Y.id
+    order by Y.id
   `;
 
   if (userPermissions?.error || (userPermissions.rows?.length && userPermissions.rows.length <= 0)) {
