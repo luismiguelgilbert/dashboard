@@ -1,44 +1,17 @@
 <script setup lang="ts">
-import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query';
 import type { TabsItem } from '@nuxt/ui';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 
-const { currentRoute } = useRouter();
-const headers = useRequestHeaders(['cookie']);
-const userCompany = useState<sys_companies | undefined>('userCompany');
-const userBitaPlace = useState<bitacora_places | undefined>('userBitaPlace');
-const queryClient = useQueryClient();
 const store = useBitacoraVisitsStore();
-const {
-  computedQueryKey,
-  computedRecordQueryKey,
-  formPanelTitle,
-  isFormPanelCreating,
-  isSaveDisabled,
-  selectedRowData,
-} = storeToRefs(store);
+const { selectedRowData, formPanelTitle, isSaveDisabled, isFormPanelCreating } = storeToRefs(store);
+const { dataRecord, dataRecordFetching, dataRecordUpdate, dataRecordUpdating } = useBitacoraVisitsQueries();
 const selectedTab = ref<'input' | 'output'>('input');
 const tabs = computed<TabsItem[]>(() => [
   { value: 'input', label: 'Ingreso', disabled: false },
   { value: 'output', label: 'Salida', disabled: isFormPanelCreating.value },
 ]);
-
-const { data, isFetching } = useQuery({
-  queryKey: [computedRecordQueryKey.value, userCompany.value?.id, currentRoute.value.params.id],
-  queryFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/visit`, { method: 'post', headers, body: { id: currentRoute.value.params.id } }),
-  staleTime: 1000 * 60 * 5, // 5 minutes
-});
-
-const { mutateAsync, isPending } = useMutation({
-  mutationFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/visit-upsert`, { method: 'POST', body: selectedRowData.value }),
-  onSuccess: async () => {
-    queryClient.invalidateQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id, userBitaPlace.value?.id] });
-    await queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value, userCompany.value?.id] });
-    navigateTo({ name: 'company-bitacora-placeId-visits', query: { ...useRoute().query } });
-  },
-});
 
 const saveForm = async () => {
   try {
@@ -46,13 +19,8 @@ const saveForm = async () => {
       selectedRowData.value.is_saving = true;
       const { error } = bitacora_visits_schema.safeParse(selectedRowData.value);
       if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
-      await mutateAsync();
-      selectedRowData.value.is_saving = false;
-      useToast().add({
-        title: 'Datos guardados',
-        icon: 'i-lucide-circle-check',
-        color: 'success',
-      });
+      await dataRecordUpdate(selectedRowData.value);
+      useToast().add({ title: 'Datos guardados', icon: 'i-lucide-circle-check', color: 'success' });
     }
   } catch (error) {
     useToast().add({
@@ -67,7 +35,7 @@ const saveForm = async () => {
 };
 
 // Keep useQuery props synced with Pinia store
-watch(() => data.value, newData => selectedRowData.value = newData ? { ...newData } : undefined, { deep: true, immediate: true });
+watch(() => dataRecord.value, newData => selectedRowData.value = newData ? { ...newData } : undefined, { deep: true, immediate: true });
 </script>
 
 <template>
@@ -90,16 +58,16 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
           variant="solid"
           label="Guardar"
           class="-ms-1.5 cursor-pointer"
-          :loading="isFetching || isPending"
-          :disabled="isFetching || isPending || isSaveDisabled"
+          :loading="dataRecordFetching || dataRecordUpdating"
+          :disabled="dataRecordFetching || dataRecordUpdating || isSaveDisabled"
           @click="saveForm" />
       </template>
     </UDashboardNavbar>
 
     <header>
-      <UProgress v-if="isFetching" class="p-3" />
+      <UProgress v-if="dataRecordFetching" class="p-3" />
       <UTabs
-        v-if="!isFetching"
+        v-if="!dataRecordFetching"
         v-model="selectedTab"
         :unmount-on-hide="false"
         :items="tabs"
@@ -110,13 +78,13 @@ watch(() => data.value, newData => selectedRowData.value = newData ? { ...newDat
       <USeparator />
     </header>
 
-    <main v-if="!isFetching && selectedRowData">
+    <main v-if="!dataRecordFetching && selectedRowData">
       <template v-if="selectedTab === 'input'">
-        <VisitFormContentBasic :vertical="isMobile" :disable="isFetching || isPending" />
-        <VisitFormContentAvatar :vertical="isMobile" :disable="isFetching || isPending" />
+        <VisitFormContentBasic :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
+        <VisitFormContentAvatar :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
       </template>
       <template v-if="selectedTab === 'output'">
-        <VisitFormContentExit :vertical="isMobile" :disable="isFetching || isPending" />
+        <VisitFormContentExit :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
       </template>
     </main>
   </div>
