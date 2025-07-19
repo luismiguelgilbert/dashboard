@@ -39,8 +39,8 @@ export const useSecurityCompaniesQueries = () => {
   const { mutateAsync: dataRecordUpdate, isPending: dataRecordUpdating } = useMutation({
     mutationFn: postData,
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: [computedQueryKey.value] });
-      queryClient.invalidateQueries({ queryKey: [computedRecordQueryKey.value] });
+      queryClient.resetQueries({ queryKey: [computedQueryKey.value] });
+      queryClient.resetQueries({ queryKey: [computedRecordQueryKey.value] });
     },
     retry: 0, // Disable retries for this mutation
   });

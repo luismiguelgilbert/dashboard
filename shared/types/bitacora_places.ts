@@ -65,9 +65,3 @@ export const bitacora_places_schema = z.object(
   )
 ;
 export type bitacora_places = z.infer<typeof bitacora_places_schema>;
-
-export const bitacora_places_query_cache_schema = z.object({
-  pageParams: z.array(z.number()).default([]),
-  pages: z.array(bitacora_places_schema.array()).default([]),
-});
-export type bitacora_places_query_cache = z.infer<typeof bitacora_places_query_cache_schema>;

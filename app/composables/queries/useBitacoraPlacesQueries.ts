@@ -1,8 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
-export const useSecurityProfilesQueries = () => {
-  const store = useSecurityProfilesStore();
+export const useBitacoraPlacesQueries = () => {
+  const store = useBitacoraPlacesStore();
   const headers = useRequestHeaders(['cookie']);
+  const userCompany = useState<sys_companies | undefined>('userCompany');
   const { currentRoute } = useRouter();
   const queryClient = useQueryClient();
   const { queryPayload, computedQueryKey, computedRecordQueryKey } = storeToRefs(store);
@@ -17,29 +18,29 @@ export const useSecurityProfilesQueries = () => {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: [computedQueryKey.value, queryPayload],
-    queryFn: ({ pageParam }) => $fetch('/api/security/profiles', { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) }),
+    queryKey: [computedQueryKey.value, userCompany.value?.id, queryPayload],
+    queryFn: ({ pageParam }) => $fetch(`/api/${userCompany.value?.id}/bitacora/places`, { method: 'post', headers, body: JSON.stringify({ ...queryPayload.value, page: pageParam }) }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, pages) => lastPage && lastPage.length > 0 ? pages.length + 1 : undefined,
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 3, // Retry failed requests up to 3 times
-    enabled: Boolean(queryPayload.value), // Only run if payload is defined
+    enabled: Boolean(userCompany.value?.id) && Boolean(queryPayload.value), // Only run if payload is defined
   });
 
   // DataRecord Actions
   const { data: dataRecord, isFetching: dataRecordFetching } = useQuery({
-    queryKey: [computedRecordQueryKey.value, currentRoute.value.params.id],
-    queryFn: () => $fetch('/api/security/profile', { method: 'post', headers, body: { id: currentRoute.value.params.id } }),
+    queryKey: [computedRecordQueryKey.value, userCompany.value?.id, currentRoute.value.params.id],
+    queryFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/place`, { method: 'post', headers, body: { id: currentRoute.value.params.id } }),
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: Boolean(currentRoute.value.params.id), // Only run if an ID is provided
   });
 
-  const postData = async (payload: sys_profiles) => await $fetch('/api/security/profile-upsert', { method: 'POST', body: payload });
+  const postData = async (payload: bitacora_places) => await $fetch(`/api/${userCompany.value?.id}/bitacora/place-upsert`, { method: 'POST', body: payload });
 
   const { mutateAsync: dataRecordUpdate, isPending: dataRecordUpdating } = useMutation({
     mutationFn: postData,
     onSuccess: async () => {
-      queryClient.resetQueries({ queryKey: [computedQueryKey.value] });
+      queryClient.resetQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id] });
       queryClient.resetQueries({ queryKey: [computedRecordQueryKey.value] });
     },
     retry: 0, // Disable retries for this mutation

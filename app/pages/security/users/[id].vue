@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { TabsItem } from '@nuxt/ui'
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
+import type { TabsItem } from '@nuxt/ui'
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
 
@@ -22,7 +22,6 @@ const saveForm = async () => {
       const { error } = sys_users_schema.safeParse(selectedRowData.value);
       if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
       await dataRecordUpdate(selectedRowData.value);
-      selectedRowData.value.is_saving = false;
       useToast().add({ title: 'Datos guardados', icon: 'i-lucide-circle-check', color: 'success' });
     }
   } catch (error) {

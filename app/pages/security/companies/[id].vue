@@ -14,7 +14,6 @@ const saveForm = async () => {
       const { error } = sys_companies_schema.safeParse(selectedRowData.value);
       if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
       await dataRecordUpdate(selectedRowData.value);
-      selectedRowData.value.is_saving = false;
       useToast().add({ title: 'Datos guardados', icon: 'i-lucide-circle-check', color: 'success' });
     }
   } catch (error) {
