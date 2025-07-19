@@ -1,18 +1,21 @@
-import { useInfiniteQuery } from '@tanstack/vue-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/vue-query';
 
 export const useBitacoraRidesReasonsQueries = () => {
   const store = useBitacoraRidesReasonsStore();
   const headers = useRequestHeaders(['cookie']);
   const userCompany = useState<sys_companies | undefined>('userCompany');
-  const { queryPayload, computedQueryKey } = storeToRefs(store);
+  const { currentRoute } = useRouter();
+  const queryClient = useQueryClient();
+  const { queryPayload, computedQueryKey, computedRecordQueryKey } = storeToRefs(store);
 
+  // DataList Actions
 	const {
-    data,
-    error,
-    isStale,
+    data: dataList,
+    error: dataListError,
+    isStale: dataListStale,
+    isFetching: dataListFetching,
     dataUpdatedAt,
     fetchNextPage,
-    isFetching,
     hasNextPage,
   } = useInfiniteQuery({
     queryKey: [computedQueryKey.value, userCompany.value?.id, queryPayload],
@@ -21,23 +24,41 @@ export const useBitacoraRidesReasonsQueries = () => {
     getNextPageParam: (lastPage, pages) => lastPage && lastPage.length > 0 ? pages.length + 1 : undefined,
     staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 3, // Retry failed requests up to 3 times
-    enabled: Boolean(queryPayload.value), // Only run if payload is defined
+    enabled: Boolean(userCompany.value?.id) && Boolean(queryPayload.value), // Only run if payload is defined
   });
 
-  // const updateLookupVisitorsCars = (newVisitor: lookup_bitacora_visitors_cars) => {
-  //   queryClient.setQueryData<lookup_bitacora_visitors_cars[]>(['lookup-bita-visitors_cars', userCompany.value?.id, userBitaPlace.value?.id], (oldData) => {
-  //     return oldData ? [...oldData, newVisitor] : [newVisitor];
-  //   }
-  // )};
+  // DataRecord Actions
+  const { data: dataRecord, isFetching: dataRecordFetching } = useQuery({
+    queryKey: [computedRecordQueryKey.value, userCompany.value?.id, currentRoute.value.params.id],
+    queryFn: () => $fetch(`/api/${userCompany.value?.id}/bitacora/rideReason`, { method: 'post', headers, body: { id: currentRoute.value.params.id } }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: Boolean(currentRoute.value.params.id), // Only run if an ID is provided
+  });
+
+  const postData = async (payload: bitacora_rides_reasons) => await $fetch(`/api/${userCompany.value?.id}/bitacora/rideReason-upsert`, { method: 'POST', body: payload });
+
+  const { mutateAsync: dataRecordUpdate, isPending: dataRecordUpdating } = useMutation({
+    mutationFn: postData,
+    onSuccess: async () => {
+      queryClient.resetQueries({ queryKey: [computedQueryKey.value, userCompany.value?.id] });
+      queryClient.resetQueries({ queryKey: [computedRecordQueryKey.value] });
+    },
+    retry: 0, // Disable retries for this mutation
+  });
 
 	return {
-    data,
-    error,
-    isStale,
+    // DataList Props:
+    dataList,
+    dataListError,
+    dataListStale,
+    dataListFetching,
     dataUpdatedAt,
     fetchNextPage,
-    isFetching,
     hasNextPage,
-    // updateLookupVisitorsCars,
+    // DataRecord Props:
+    dataRecord,
+    dataRecordFetching,
+    dataRecordUpdate,
+    dataRecordUpdating,
 	};
 }

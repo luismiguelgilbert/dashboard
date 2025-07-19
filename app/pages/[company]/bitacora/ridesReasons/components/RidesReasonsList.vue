@@ -3,10 +3,10 @@ import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
-const { data, error, isStale, dataUpdatedAt, fetchNextPage, isFetching, hasNextPage } = useBitacoraRidesReasonsQueries();
+const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraRidesReasonsQueries();
 
 const onLoadMore = async () => {
-  if (isStale.value || hasNextPage.value) {
+  if (dataListStale.value || hasNextPage.value) {
     await fetchNextPage();
   }
 };
@@ -15,15 +15,15 @@ const onLoadMore = async () => {
 <template>
   <div>
     <UPageCard
-      v-if="error"
+      v-if="dataListError"
       class="m-2 bg-red-500 text-white">
-      {{ error.message }}
+      {{ dataListError.message }}
     </UPageCard>
     <div
-      v-if="!error"
+      v-if="!dataListError"
       v-infinite-scroll="[onLoadMore, { distance: 0, canLoadMore: () => true }]"
       style="height: calc(100dvh - 65px); overflow-y: auto;">
-      <template v-for="page in data?.pages">
+      <template v-for="page in dataList?.pages">
         <div
           v-for="item in page"
           :key="`${dataUpdatedAt}-${item.id}`"
@@ -44,7 +44,7 @@ const onLoadMore = async () => {
             @click="emits('row-clicked', item)" />
         </div>
       </template>
-      <UProgress v-if="isFetching" class="p-3" />
+      <UProgress v-if="dataListFetching" class="p-3" />
     </div>
   </div>
 </template>
