@@ -16,11 +16,11 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.57",
-    "@iconify-json/simple-icons": "^1.2.43",
+    "@iconify-json/lucide": "^1.2.58",
+    "@iconify-json/simple-icons": "^1.2.44",
     "@internationalized/date": "^3.8.2",
-    "@nuxt/ui-pro": "^3.2.0",
-    "@pinia/nuxt": "^0.11.1",
+    "@nuxt/ui-pro": "^3.3.0",
+    "@pinia/nuxt": "^0.11.2",
     "@supabase/supabase-js": "2.49.1",
     "@tanstack/vue-query": "^5.83.0",
     "@tanstack/vue-query-devtools": "^5.83.0",
@@ -36,21 +36,21 @@
     "jspdf": "^2.5.2",
     "luxon": "3.6.0",
     "maska": "^3.2.0",
-    "nuxt": "^4.0.0",
+    "nuxt": "^4.0.1",
     "nuxt-auth-utils": "^0.5.20",
     "performant-array-to-tree": "^1.11.0",
     "pg": "^8.16.3",
     "pg-native": "^3.5.2",
     "vue": "latest",
-    "zod": "^4.0.5"
+    "zod": "^4.0.10"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.4",
-    "npm": "^11.4.2",
-    "oxlint": "^1.6.0",
+    "npm": "^11.5.1",
+    "oxlint": "^1.8.0",
     "typescript": "^5.8.3",
     "vue-tsc": "^2.2.12"
   },
