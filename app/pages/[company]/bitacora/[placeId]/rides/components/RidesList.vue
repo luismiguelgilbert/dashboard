@@ -4,7 +4,7 @@ import { vInfiniteScroll } from '@vueuse/components';
 
 const emits = defineEmits(['row-clicked']);
 const { currentRoute } = useRouter();
-const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraEventsQueries();
+const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraRidesQueries();
 
 const onLoadMore = async () => {
   if (dataListStale.value || hasNextPage.value) {
@@ -34,12 +34,14 @@ const onLoadMore = async () => {
           ]">
           <UUser
             class="p-3 pl-3 pr-6"
-            :name="item.comments"
-            :description="`${item.responsible} - ${ DateTime.fromSQL(item.event_at).setLocale('es-EC').toFormat('dd/MMMM/yyyy HH:mm') }`"
+            :name="`${item.name_es} (${ item.name_es_short })`"
+            :description="item.reason_name
+              ? `${item.reason_name} - ${item.ride_start ? DateTime.fromSQL(item.ride_start).setLocale('es-EC').toFormat('dd/MMMM/yyyy HH:mm') : ''}`
+              : ''"
             :avatar="{
-              icon: item.is_critical ? 'i-lucide-triangle-alert' : 'i-lucide-check',
-              class: item.is_critical ? 'bg-red-400' : undefined,
-              ui: { icon: item.is_critical ? 'text-white' : undefined }
+              icon: (item.reason_id?.length || 0 > 0) ? 'i-lucide-octagon-minus' : 'i-lucide-check',
+              class: (item.reason_id?.length || 0 > 0) ? 'bg-red-400' : undefined,
+              ui: { icon: (item.reason_id?.length || 0 > 0) ? 'text-white' : undefined }
             }"
             @click="emits('row-clicked', item)" />
         </div>
