@@ -9,6 +9,7 @@ const props = defineProps<{
   sortItems: sort_by_options[],
   canCreate?: boolean,
   canDownload?: boolean,
+  hideButtonNew?: boolean,
 }>();
 const emits = defineEmits(['download-file', 'open-new', 'invalidate-cache']);
 
@@ -21,6 +22,7 @@ const isOpen = ref<boolean>(false);
 <template>
   <UButtonGroup size="sm">
     <UButton
+      v-if="!hideButtonNew"
       class="cursor-pointer"
       color="neutral"
       variant="subtle"

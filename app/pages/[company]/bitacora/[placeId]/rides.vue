@@ -90,6 +90,7 @@ onBeforeMount(() => {
           :sort-items="bitacora_rides_sort_enum_client"
           :can-create="canCreate"
           :can-download="canDownload"
+          hide-button-new
           @open-new="openNew"
           @download-file="downloadFile"
           @invalidate-cache="queryClient.invalidateQueries({ queryKey: [computedQueryKey] })">

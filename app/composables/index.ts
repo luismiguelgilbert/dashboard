@@ -9,6 +9,7 @@ export { useLookupBitaReasons } from './queries/useLookupBitaReasons';
 export { useLookupBitaRideReasons } from './queries/useLookupBitaRideReasons';
 export { useLookupBitaVisited } from './queries/useLookupBitaVisited';
 export { useLookupBitaVisitors } from './queries/useLookupBitaVisitors';
+export { useLookupBitaRiders } from './queries/useLookupBitaRiders';
 export { useLookupBitaVisitorsCars } from './queries/useLookupBitaVisitorsCars';
 export { useSecurityCompaniesQueries } from './queries/useSecurityCompaniesQueries';
 export { useSecurityProfilesQueries } from './queries/useSecurityProfilesQueries';

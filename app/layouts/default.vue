@@ -66,7 +66,7 @@ const userMenuFormatted = computed(() => {
       v-model:open="open"
       collapsible
       resizable
-      class="bg-elevated/25"
+      class="bg-neutral-100 dark:bg-neutral-800/30"
       :ui="{
         header: 'h-(--ui-header-height) shrink-0 flex items-center gap-1.5 px-4 pt-safe',
         footer: 'lg:border-t lg:border-default h-15 p-0'
