@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TabsItem } from '@nuxt/ui';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller('lg');
@@ -6,6 +7,11 @@ const isMobile = breakpoints.smaller('lg');
 const store = useBitacoraRidesStore();
 const { selectedRowData, formPanelTitle, isSaveDisabled } = storeToRefs(store);
 const { dataRecord, dataRecordFetching, dataRecordUpdate, dataRecordUpdating } = useBitacoraRidesQueries();
+const selectedTab = ref<'input' | 'output'>('output');
+const tabs = computed<TabsItem[]>(() => [
+  { value: 'output', label: 'Salida', disabled: false },
+  { value: 'input', label: 'Retorno', disabled: selectedRowData.value?.is_new },
+]);
 
 const saveForm = async () => {
   try {
@@ -58,9 +64,27 @@ watch(() => dataRecord.value, newData => selectedRowData.value = newData ? { ...
       </template>
     </UDashboardNavbar>
 
-    <UProgress v-if="dataRecordFetching" class="p-3" />
+    <header>
+      <UProgress v-if="dataRecordFetching" class="p-3" />
+      <UTabs
+        v-if="!dataRecordFetching"
+        v-model="selectedTab"
+        :unmount-on-hide="false"
+        :items="tabs"
+        :size="isMobile ? 'xs' : 'lg'"
+        color="neutral"
+        variant="pill"
+        class="w-full mt-1.5 ml-2 pr-4" />
+      <USeparator />
+    </header>
+
     <main v-if="!dataRecordFetching && selectedRowData">
-      <RideFormContentBasic :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
+      <template v-if="selectedTab === 'output'">
+        <RideFormContentBasic :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
+      </template>
+      <template v-if="selectedTab === 'input'">
+        <RideFormContentReturn :vertical="isMobile" :disable="dataRecordFetching || dataRecordUpdating" />
+      </template>
     </main>
   </div>
 </template>

@@ -25,66 +25,29 @@ const updateRideStartTime = (newTime: string) => {
 };
 // Visitors data
 const visitorInpuSelect = useTemplateRef('visitorInpuSelect');
-const { lookupVisitors, isFetchingLookupVisitors, updateLookupVisitors } = useLookupBitaVisitors();
-const newVisitor = ref<lookup_bitacora_visitors>({
-  visitor_name: '',
-  visitor_number: '',
-  visitor_company: null,
+const { lookupBitaRiders, isFetchingLookupRiders, updateLookupRiders } = useLookupBitaRiders();
+const newVisitor = ref<lookup_bitacora_riders>({
+  driver: '',
 });
-const lookupVisitorsWithAction = computed(() => 
-  lookupVisitors.value?.map((visitor) => ({
+const lookupRidersWithAction = computed(() => 
+  lookupBitaRiders.value?.map((visitor) => ({
     ...visitor,
     onSelect: () => {
       if (selectedRowData.value) {
-        selectedRowData.value.driver = visitor.visitor_name;
+        selectedRowData.value.driver = visitor.driver;
       }
     },
   }))
 );
-const addVisitor = () => {
+const addChofer = () => {
   if (selectedRowData.value
-    && newVisitor.value.visitor_name.trim().length > 0
-    && newVisitor.value.visitor_number.trim().length > 0
-    && lookupVisitors.value) {
-    updateLookupVisitors(newVisitor.value);
-    // selectedRowData.value.visitor_name = newVisitor.value.visitor_name;
-    // selectedRowData.value.visitor_number = newVisitor.value.visitor_number;
-    // selectedRowData.value.driver = newVisitor.value.visitor_company;
+    && newVisitor.value.driver.trim().length > 0
+    && lookupBitaRiders.value) {
+    updateLookupRiders(newVisitor.value);
+    selectedRowData.value.driver = newVisitor.value.driver;
     visitorInpuSelect.value?.closeDrawer();
   }
 };
-// const lookupVisitorsCarsWithAction = computed(() => 
-//   lookupVisitorsCars.value?.map((visitorCar) => ({
-//     ...visitorCar,
-//     onSelect: () => {
-//       if (selectedRowData.value) {
-//         selectedRowData.value.vehicle_name = visitorCar.vehicle_name ?? null;
-//         selectedRowData.value.vehicle_plate = visitorCar.vehicle_plate ?? null;
-//       }
-//     },
-//   }))
-// );
-// const lookupVisitedWithAction = computed(() => 
-//   lookupVisited.value?.map((visited) => ({
-//     ...visited,
-//     onSelect: () => {
-//       if (selectedRowData.value) {
-//         selectedRowData.value.visited_name = visited.visited_name ?? null;
-//         selectedRowData.value.visited_area = visited.visited_area ?? null;
-//       }
-//     },
-//   }))
-// );
-// const addVisited = () => {
-//   if (selectedRowData.value
-//     && newVisited.value.visited_name && newVisited.value.visited_name.trim().length > 0
-//     && lookupVisitorsCars.value) {
-//     updateLookupVisited(newVisited.value);
-//     selectedRowData.value.visited_name = newVisited.value.visited_name;
-//     selectedRowData.value.visited_area = newVisited.value.visited_area ?? null;
-//     visitedInpuSelect.value?.closeDrawer();
-//   }
-// };
 </script>
 
 <template>
@@ -92,12 +55,11 @@ const addVisitor = () => {
     v-if="selectedRowData"
     class="m-4 md:m-6">
     <UPageFeature
-      title="Datos de la Visita"
-      description="Información del visitante" />
+      title="Datos del Viaje"
+      description="Información del viaje" />
     <br>
 
     <UCard variant="subtle">
-      {{ selectedRowData }}
       <UForm
         :disabled="props.disable"
         :state="selectedRowData"
@@ -105,8 +67,8 @@ const addVisitor = () => {
         <UiDashboardSection
           :vertical="vertical"
           name="ride_start"
-          label="Fecha Inicio"
-          hint="Fecha de inicio">
+          label="Inicio de viaje"
+          hint="Fecha de salida">
           <UiInputDate
             v-if="selectedRowData.ride_start"
             :initial-date="selectedRowData.ride_start"
@@ -117,8 +79,8 @@ const addVisitor = () => {
         <UiDashboardSection
           :vertical="vertical"
           name="ride_start"
-          label="Hora Inicio"
-          hint="Hora de inicio">
+          label="Inicio de viaje"
+          hint="Hora de salida">
           <UiInputTime
             v-if="selectedRowData.ride_start"
             :initial-date="selectedRowData.ride_start"
@@ -128,10 +90,21 @@ const addVisitor = () => {
         <USeparator class="py-5" />
         <UiDashboardSection
           :vertical="vertical"
+          name="ride_start_km"
+          label="Inicio de viaje"
+          hint="Kilomentraje al salir">
+          <UInputNumber
+            v-model="selectedRowData.ride_start_km"
+            class="w-full"
+            orientation="vertical" />
+        </UiDashboardSection>
+        <USeparator class="py-5" />
+        <UiDashboardSection
+          :vertical="vertical"
           v-model="selectedRowData.reason_id"
           name="reason_id"
           label="Motivo"
-          hint="Motivo de la visita">
+          hint="Motivo de viaje">
           <USelect
             v-model="selectedRowData.reason_id"
             :items="lookupRideReasons?.filter((record) => record.is_active)"
@@ -145,61 +118,58 @@ const addVisitor = () => {
         <UiDashboardSection
           :vertical="vertical"
           labelTop
-          name="visitor_name"
-          label="Visitante"
-          hint="Nombre del visitante">
+          name="driver"
+          label="Responsable"
+          hint="Nombre del chofer">
           <UiInputSelect
             ref="visitorInpuSelect"
-            title="Agregar visitante"
-            @save="addVisitor">
+            title="Agregar chofer"
+            @save="addChofer">
             <template #selectMenu>
               <USelectMenu
                 v-model="selectedRowData.driver"
-                value-key="visitor_name"
-                label-key="visitor_name"
+                value-key="driver"
+                label-key="driver"
                 icon="i-lucide-user"
                 class="overflow-x-hidden"
-                placeholder="Buscar visitante..."
-                :loading="isFetchingLookupVisitors"
-                :items="lookupVisitorsWithAction"
-                :filterFields="['visitor_name', 'visitor_number']"
+                placeholder="Buscar chofer..."
+                :loading="isFetchingLookupRiders"
+                :items="lookupRidersWithAction"
+                :filterFields="['driver']"
                 :ui="{ base: 'w-full' }"
                 :search-input="{
-                  placeholder: 'Buscar visitante...',
+                  placeholder: 'Buscar chofer...',
                   icon: 'i-lucide-search',
                 }">
                 <template #item-label="{ item }">
-                  {{ item.visitor_name }} <br>
-                  <span class="text-muted">{{ item.visitor_number }}</span><br>
-                  <span class="text-muted">{{ item.visitor_company }}</span>
+                  {{ item.driver }} <br>
                 </template>
               </USelectMenu>
             </template>
             <template #draw-content>
               <UFormField size="xl" label="Nombre" required>
                 <UInput
-                  v-model="newVisitor.visitor_name"
+                  v-model="newVisitor.driver"
                   autofocus
                   class="w-full"
-                  placeholder="Nombre del visitante"
+                  placeholder="Nombre del chofer"
                   icon="i-lucide-user-round" />
-              </UFormField>
-              <UFormField size="xl" label="Cédula" required class="mt-5">
-                <UInput
-                  v-model="newVisitor.visitor_number"
-                  class="w-full"
-                  placeholder="Número de Identificación"
-                  icon="i-lucide-id-card" />
-              </UFormField>
-              <UFormField size="xl" label="Empresa" class="mt-5">
-                <UInput
-                  v-model="newVisitor.visitor_company"
-                  class="w-full"
-                  placeholder="Empresa donde trabaja"
-                  icon="i-lucide-building-2" />
               </UFormField>
             </template>
           </UiInputSelect>
+        </UiDashboardSection>
+        <USeparator class="py-5" />
+        <UiDashboardSection
+          :vertical="vertical"
+          labelTop
+          name="ride_start_comment"
+          label="Comentario"
+          hint="Comentario al salir">
+        <UTextarea
+            v-model="selectedRowData.ride_start_comment"
+            class="w-full"
+            placeholder="Comentario al salir"
+            icon="i-lucide-notebook-pen" />
         </UiDashboardSection>
       </UForm>
     </UCard>

@@ -27,6 +27,11 @@ export default defineEventHandler(async (event) => {
         ,ii.name_es as reason_name
         ,i.driver
         ,i.ride_start
+        ,i.ride_start_km
+        ,i.ride_start_comment
+        ,i.ride_end
+        ,i.ride_end_km
+        ,i.ride_end_comment
         from bita_rides i
         inner join bita_rides_reasons ii on i.sys_company_id = ii.sys_company_id and i.reason_id = ii.id
         where i.sys_company_id = '${companyId}'
@@ -45,6 +50,15 @@ export default defineEventHandler(async (event) => {
       ,b.reason_name
       ,b.driver
       ,to_char (coalesce(b.ride_start, now())::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as ride_start
+      ,b.ride_start_km
+      ,b.ride_start_comment
+      ,to_char (coalesce(b.ride_end, now())::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as ride_end
+      ,b.ride_end_km
+      ,b.ride_end_comment
+      ,case
+          when b.reason_id is null then True
+          else False
+      end as is_new
       from bita_cars a
       inner join bita_places_cars aa ON a.id = aa.car_id
       inner join bita_places aaa ON aa.place_id = aaa.id
@@ -55,19 +69,19 @@ export default defineEventHandler(async (event) => {
       and aaa.id = '${placeId}'
     `);
     const result = await recordDataQuery.all();
+    console.log(result)
     
-    return (result[0]
-      ? bitacora_rides_schema.parse(result[0])
-      : bitacora_rides_schema.parse({
-        id: payload.id,
-        is_new: true,
-        driver: null,
-        reason_id: null,
-        ride_end: null,
-        ride_start_km: null,
-        ride_end_km: null,
-        responsible: `${user?.user_name} ${user?.user_lastname}` })
-      );
+    return (bitacora_rides_schema.parse(result[0]));
+      // : bitacora_rides_schema.parse({
+      //   id: payload.id,
+      //   is_new: true,
+      //   driver: null,
+      //   reason_id: null,
+      //   ride_end: null,
+      //   ride_start_km: null,
+      //   ride_end_km: null,
+      //   responsible: `${user?.user_name} ${user?.user_lastname}` })
+      // );
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({
