@@ -81,5 +81,13 @@ export const bitacora_visits_schema = z.object(
     val => ((!val.is_saving) || (val.is_saving && !val.is_complete) || (val.is_saving && val.is_complete && val.visit_end && DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
     { message: `Fecha de salida debe tener un formato correcto`, path: ['visit_end'] },
   )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.is_new) || (val.is_saving && !val.is_new && val.visit_end && DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
+    { message: `Fin de visita debe tener un formato correcto`, path: ['visit_end'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.is_new) || (val.is_saving && !val.is_new && val.visit_start && val.visit_end && DateTime.fromFormat(val.visit_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }) > DateTime.fromFormat(val.visit_start, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }))),
+    { message: `Fin de visita debe ser mayor a Inicio de visita`, path: ['visit_end'] },
+  )
 ;
 export type bitacora_visits = z.infer<typeof bitacora_visits_schema>;
