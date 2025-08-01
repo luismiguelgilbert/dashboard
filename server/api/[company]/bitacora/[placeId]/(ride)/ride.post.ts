@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    const { user } = await getUserSession(event);
+    // const { user } = await getUserSession(event);
     await hasPermissions(event, [PermissionsList.BITACORA_RIDES_READ]);
     const { data: payload, error } = await readValidatedBody(event, get_record_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
