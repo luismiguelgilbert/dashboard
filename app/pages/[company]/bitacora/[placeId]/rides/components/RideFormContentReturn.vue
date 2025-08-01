@@ -22,6 +22,15 @@ const updateRideEndTime = (newTime: string) => {
     selectedRowData.value.ride_end = DateTime.fromFormat(newDate, `yyyy-MM-dd'T'HH:mm:ss.SSSZZ`).toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22);
   }
 };
+const resetRideEnd = () => {
+  if (selectedRowData.value) {
+    if (!selectedRowData.value?.is_complete) {
+      selectedRowData.value.ride_end = null;
+    } else {
+      selectedRowData.value.ride_end = DateTime.now().toUTC().toFormat('yyyy-MM-dd HH:mm:ssZZ').slice(0, 22);
+    }
+  }
+};
 </script>
 
 <template>
@@ -38,6 +47,17 @@ const updateRideEndTime = (newTime: string) => {
         :disabled="props.disable"
         :state="selectedRowData"
         :schema="bitacora_visits_schema">
+        <UiDashboardSection
+          :vertical="vertical"
+          name="is_complete"
+          label="Viaje Completo?"
+          hint="Completar viaje">
+          <USwitch
+            v-model="selectedRowData.is_complete"
+            :label="selectedRowData.is_complete ? 'Sí' : 'No'"
+            @update:model-value="resetRideEnd" />
+        </UiDashboardSection>
+        <USeparator class="py-5" />
         <UiDashboardSection
           :vertical="vertical"
           name="ride_end"

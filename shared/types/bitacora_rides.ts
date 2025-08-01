@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-// import { DateTime } from 'luxon';
+import { DateTime } from 'luxon';
 
 export const bitacora_rides_sort_enum_keys_schema = z.enum(['1', '2']);
 export type bitacora_rides_sort_enum_keys = z.infer<typeof bitacora_rides_sort_enum_keys_schema>;
@@ -56,7 +56,6 @@ export const bitacora_rides_schema = z.object(
     ride_end: z.string().nullable(),
     ride_end_km: z.number().nullable().transform(val => !val ? undefined : val).optional(),
     ride_end_comment: z.string().nullable().transform(val => !val ? undefined : val).optional(),
-    // disabled: z.coerce.boolean().default(true),
     is_saving: z.boolean().default(false),
     is_new: z.boolean().default(false),
   })
@@ -68,9 +67,21 @@ export const bitacora_rides_schema = z.object(
     val => ((!val.is_saving) || (val.is_saving && val.driver && val.driver.length >= 3)),
     { message: `Responsable debe estar seleccionado`, path: ['driver'] },
   )
-  // .refine(
-  //   val => ((!val.is_saving) || (val.is_saving && !val.is_complete) || (val.is_saving && val.is_complete && val.ride_end && DateTime.fromFormat(val.ride_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
-  //   { message: `Fecha de salida debe tener un formato correcto`, path: ['visit_end'] },
-  // )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.ride_start_km && val.ride_start_km > 0)),
+    { message: `Inicio de viaje (Kilometraje al salir) debe ser mayor a 0`, path: ['ride_start_km'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.is_new) || (val.is_saving && !val.is_new && val.ride_start_km && val.ride_end_km && val.ride_end_km > 0 && val.ride_start_km <= val.ride_end_km)),
+    { message: `Kilometraje al salir debe ser mayor a Kilometraje al llegar`, path: ['ride_start_km'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.is_new) || (val.is_saving && !val.is_new && val.ride_end && DateTime.fromFormat(val.ride_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
+    { message: `Fin de viaje debe tener un formato correcto`, path: ['ride_end'] },
+  )
+  .refine(
+    val => ((!val.is_saving) || (val.is_saving && val.is_new) || (val.is_saving && !val.is_new && val.ride_start && val.ride_end && DateTime.fromFormat(val.ride_end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }) > DateTime.fromFormat(val.ride_start, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }))),
+    { message: `Fin de viaje debe ser mayor a Inicio de viaje`, path: ['ride_end'] },
+  )
 ;
 export type bitacora_rides = z.infer<typeof bitacora_rides_schema>;

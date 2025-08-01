@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
       ,to_char (coalesce(b.ride_start, now())::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as ride_start
       ,b.ride_start_km
       ,b.ride_start_comment
-      ,to_char (coalesce(b.ride_end, now())::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as ride_end
+      ,to_char (b.ride_end::timestamp at time zone 'UTC', 'YYYY-MM-DD" "HH24:MI:00+00') as ride_end
       ,b.ride_end_km
       ,b.ride_end_comment
       ,case
@@ -69,19 +69,8 @@ export default defineEventHandler(async (event) => {
       and aaa.id = '${placeId}'
     `);
     const result = await recordDataQuery.all();
-    console.log(result)
     
     return (bitacora_rides_schema.parse(result[0]));
-      // : bitacora_rides_schema.parse({
-      //   id: payload.id,
-      //   is_new: true,
-      //   driver: null,
-      //   reason_id: null,
-      //   ride_end: null,
-      //   ride_start_km: null,
-      //   ride_end_km: null,
-      //   responsible: `${user?.user_name} ${user?.user_lastname}` })
-      // );
   } catch (err) {
     console.error(`Error at ${event.method} ${event.path}.`, err);
     throw createError({

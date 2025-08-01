@@ -72,6 +72,7 @@ const addChofer = () => {
           <UiInputDate
             v-if="selectedRowData.ride_start"
             :initial-date="selectedRowData.ride_start"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             @value-changed="updateRideStartDate" />
         </UiDashboardSection>
@@ -84,6 +85,7 @@ const addChofer = () => {
           <UiInputTime
             v-if="selectedRowData.ride_start"
             :initial-date="selectedRowData.ride_start"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             @value-changed="updateRideStartTime" />
         </UiDashboardSection>
@@ -95,13 +97,14 @@ const addChofer = () => {
           hint="Kilomentraje al salir">
           <UInputNumber
             v-model="selectedRowData.ride_start_km"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             orientation="vertical" />
         </UiDashboardSection>
         <USeparator class="py-5" />
         <UiDashboardSection
-          :vertical="vertical"
           v-model="selectedRowData.reason_id"
+          :vertical="vertical"
           name="reason_id"
           label="Motivo"
           hint="Motivo de viaje">
@@ -109,6 +112,7 @@ const addChofer = () => {
             v-model="selectedRowData.reason_id"
             :items="lookupRideReasons?.filter((record) => record.is_active)"
             :loading="isFetchingLookupRideReasons"
+            :disabled="!selectedRowData.is_new"
             icon="i-lucide-list-check"
             label-key="name_es"
             value-key="id"
@@ -124,6 +128,7 @@ const addChofer = () => {
           <UiInputSelect
             ref="visitorInpuSelect"
             title="Agregar chofer"
+            :disabled="!selectedRowData.is_new"
             @save="addChofer">
             <template #selectMenu>
               <USelectMenu
@@ -133,6 +138,7 @@ const addChofer = () => {
                 icon="i-lucide-user"
                 class="overflow-x-hidden"
                 placeholder="Buscar chofer..."
+                :disabled="!selectedRowData.is_new"
                 :loading="isFetchingLookupRiders"
                 :items="lookupRidersWithAction"
                 :filterFields="['driver']"
@@ -150,6 +156,7 @@ const addChofer = () => {
               <UFormField size="xl" label="Nombre" required>
                 <UInput
                   v-model="newVisitor.driver"
+                  :disabled="!selectedRowData.is_new"
                   autofocus
                   class="w-full"
                   placeholder="Nombre del chofer"
@@ -167,6 +174,7 @@ const addChofer = () => {
           hint="Comentario al salir">
         <UTextarea
             v-model="selectedRowData.ride_start_comment"
+            :disabled="!selectedRowData.is_new"
             class="w-full"
             placeholder="Comentario al salir"
             icon="i-lucide-notebook-pen" />

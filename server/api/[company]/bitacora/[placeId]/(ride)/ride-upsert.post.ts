@@ -1,10 +1,8 @@
-import { base64toBlob } from '~~/app/utils/index';
-
 export default defineEventHandler(async (event) => {
   const { user } = await getUserSession(event);
   const serverDB = useDatabase();
   try {
-    const { data: payload, error } = await readValidatedBody(event, bitacora_visits_schema.safeParse);
+    const { data: payload, error } = await readValidatedBody(event, bitacora_rides_schema.safeParse);
     const companyId = get_company_schema.parse(event.context.params?.company);
     const placeId = get_company_schema.parse(event.context.params?.placeId);
     if (error) {
@@ -21,68 +19,49 @@ export default defineEventHandler(async (event) => {
     }
     await hasCompanies(event, [companyId]);
     if (payload.is_new) {
-      hasPermissions(event, [PermissionsList.BITACORA_EVENTS_CREATE])
+      hasPermissions(event, [PermissionsList.BITACORA_RIDES_CREATE])
     } else {
-      hasPermissions(event, [PermissionsList.BITACORA_EVENTS_EDIT]);
+      hasPermissions(event, [PermissionsList.BITACORA_RIDES_EDIT]);
     }
 
     await serverDB.exec('BEGIN');
-
-    // Upsert data
-    await serverDB.sql`insert into bita_visits
-      (id, sys_company_id, place_id, visit_start, visit_end, visitor_name, visitor_number, visitor_company, is_complete, is_active
-      , visited_name, visited_area, vehicle_name, vehicle_plate, reason_id, comments_in, comments_out, updated_by)
-      values (
-        ${payload.id},
-        ${companyId},
-        ${placeId},
-        ${payload.visit_start},
-        ${payload.visit_end},
-        ${payload.visitor_name},
-        ${payload.visitor_number},
-        ${payload.visitor_company},
-        ${payload.is_complete},
-        ${payload.is_active},
-        ${payload.visited_name},
-        ${payload.visited_area},
-        ${payload.vehicle_name},
-        ${payload.vehicle_plate},
-        ${payload.reason_id},
-        ${payload.comments_in},
-        ${payload.comments_out},
-        ${user?.userId}
-      )
-      ON CONFLICT(id) DO UPDATE SET
-        visit_start =${payload.visit_start},
-        visit_end =${payload.visit_end},
-        is_active = ${payload.is_active},
-        is_complete = ${payload.is_complete},
-        comments_out = ${payload.comments_out},
-        updated_by = ${user?.userId}
-    `;
-
-    // Upload and Upsert avatar URL if file is provided
-    if (payload.avatar_file) {
-      const fileExt = payload.avatar_file.split('/')[1]?.split(';')[0];
-      const filename = `bita-visits/${payload.id}.${fileExt}`;
-      const blob = base64toBlob(payload.avatar_file, `image/${fileExt}`);
-      if (blob) {
-        const { error: fileError } = await supabase.storage.from('avatars')
-          .upload(filename, blob, {
-            cacheControl: '0',
-            upsert: true,
-          });
-        if (fileError) {
-          throw createError({
-            statusCode: 500,
-            statusMessage: `Error uploading file: ${fileError.message}`,
-          });
-        }
-        const { data: fileURL } = supabase.storage.from('avatars').getPublicUrl(filename);
-        await serverDB.sql`update bita_visits set
-          avatar_url = COALESCE(${fileURL.publicUrl}, avatar_url)
-          WHERE id = ${payload.id} and sys_company_id = ${companyId}`;
-      }
+    // NOTE: [car_id] will be in [payload.id]
+    // NOTE: when [payload.is_new] then => Insert records || else, update all open records for the company/place/car
+    if (payload.is_new) {
+      await serverDB.sql`insert into bita_rides
+        (sys_company_id, place_id, car_id, reason_id, driver, is_complete, is_active, ride_start, ride_start_km, ride_start_comment
+        , ride_end, ride_end_km, ride_end_comment, updated_by)
+        values (
+          ${companyId},
+          ${placeId},
+          ${payload.id},
+          ${payload.reason_id},
+          ${payload.driver},
+          ${payload.is_complete},
+          ${payload.is_active},
+          ${payload.ride_start},
+          ${payload.ride_start_km},
+          ${payload.ride_start_comment},
+          ${payload.ride_end},
+          ${payload.ride_end_km},
+          ${payload.ride_end_comment},
+          ${user?.userId}
+        )
+      `;
+    } else {
+      await serverDB.sql`update bita_rides
+        set is_complete = ${payload.is_complete}
+        , is_active = ${payload.is_active}
+        , ride_end = ${payload.ride_end}
+        , ride_end_km = ${payload.ride_end_km}
+        , ride_end_comment = ${payload.ride_end_comment}
+        , updated_by = ${user?.userId}
+        , updated_at = now()
+        where sys_company_id = ${companyId}
+        and place_id = ${placeId}
+        and car_id = ${payload.id}
+        and is_complete = false
+      `;
     }
 
     await serverDB.exec('COMMIT');

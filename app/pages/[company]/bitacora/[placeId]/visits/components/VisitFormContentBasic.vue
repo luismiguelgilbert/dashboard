@@ -160,7 +160,7 @@ const addVisited = () => {
           hint="Motivo de la visita">
           <USelect
             v-model="selectedRowData.reason_id"
-            :items="lookupReasons"
+            :items="lookupReasons?.filter((record) => record.is_active)"
             :loading="isFetchingLookupReasons"
             :disabled="!selectedRowData.is_new"
             icon="i-lucide-list-check"

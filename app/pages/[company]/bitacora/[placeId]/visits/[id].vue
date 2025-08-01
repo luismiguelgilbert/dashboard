@@ -16,11 +16,15 @@ const tabs = computed<TabsItem[]>(() => [
 const saveForm = async () => {
   try {
     if (selectedRowData.value) {
+      const shouldNavigateBacktoList = selectedRowData.value.is_complete;
       selectedRowData.value.is_saving = true;
       const { error } = bitacora_visits_schema.safeParse(selectedRowData.value);
       if (error) throw error.issues.map(err => `- ${err.message}`).join('\n    ');
       await dataRecordUpdate(selectedRowData.value);
       useToast().add({ title: 'Datos guardados', icon: 'i-lucide-circle-check', color: 'success' });
+      if (shouldNavigateBacktoList) {
+        navigateTo({ name: 'company-bitacora-placeId-visits', query: { ...useRoute().query } })
+      }
     }
   } catch (error) {
     useToast().add({
