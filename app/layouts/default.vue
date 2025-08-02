@@ -43,7 +43,7 @@ const userMenuFormatted = computed(() => {
       .map(rootItem => ({
         ...rootItem,
         label: rootItem.name_es,
-        defaultOpen: true,
+        defaultOpen: false, // boolean to keep the root item open
         children: userMenu.value.filter(x => x.parent === rootItem.id)
           .map(childItem => ({
             ...childItem,

@@ -37,7 +37,8 @@ const isOpen = ref<boolean>(false);
       v-model:open="isOpen"
       title="Opciones"
       description="Buscar, ordenar y filtrar la lista"
-      :overlay="false"
+      :overlay="true"
+      :ui="{ overlay: 'fixed inset-0 bg-elevated/50'}"
       :direction="isMobile ? 'top' : 'right'">
       <template #header>
         <div class="flex items-center justify-between pt-safe">

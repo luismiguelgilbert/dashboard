@@ -13,7 +13,7 @@ export function useLookupBitaRiders() {
 		{
       queryKey: ['lookup-bita-riders', userCompany.value?.id, userBitaPlace.value?.id],
       queryFn: () => $fetch(`/api/lookup/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/riders`, { method: 'get', headers }),
-      staleTime: 1000 * 60 * 1440, // 1440 minutes = 1 day
+      staleTime: Infinity,
 		},
 	);
 

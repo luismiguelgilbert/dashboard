@@ -13,7 +13,7 @@ export function useLookupBitaVisited() {
 		{
       queryKey: ['lookup-bita-visited', userCompany.value?.id, userBitaPlace.value?.id],
       queryFn: () => $fetch(`/api/lookup/${userCompany.value?.id}/bitacora/${userBitaPlace.value?.id}/visited`, { method: 'get', headers }),
-      staleTime: 1000 * 60 * 1440, // 1440 minutes = 1 day
+      staleTime: Infinity,
 		},
 	);
 
