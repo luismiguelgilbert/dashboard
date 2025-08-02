@@ -74,27 +74,12 @@ useSeoMeta({
   twitterImage: 'https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2Rhc2hib2FyZC10ZW1wbGF0ZS5udXh0LmRldiIsImlhdCI6MTczOTQ2MzU2N30._VElt4uvLjvAMdnTLytCInOajMElzWDKbmvOaMZhZUI.jpg?theme=light',
   twitterCard: 'summary_large_image'
 })
-
-const useVersionUpdater = () => {
-  const isNewVersionAvailable = ref(false);
-  const nuxtApp = useNuxtApp();
-  nuxtApp.hooks.hookOnce('app:manifest:update', () => {
-    isNewVersionAvailable.value = true;
-  });
-
-  return { isNewVersionAvailable: readonly(isNewVersionAvailable) };
-};
-const { isNewVersionAvailable } = useVersionUpdater();
 </script>
 
 <template>
   <NuxtErrorBoundary>
     <UApp :toaster="{ expand: false }">
       <NuxtLoadingIndicator />
-      <UBanner
-        v-if="isNewVersionAvailable"
-        title="Nueva versión disponible. Refresca la página para actualizar."
-        icon="i-lucide-info" />
       <NuxtLayout>
         <NuxtPage />
         <!-- <VueQueryDevtools :initial-is-open="true" /> -->
