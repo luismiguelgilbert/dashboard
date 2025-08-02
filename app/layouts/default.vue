@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const open = ref(false);
-const { loggedIn } = useUserSession();
+const { loggedIn, fetch: refreshSession } = useUserSession();
 if (!loggedIn.value) navigateTo('/auth/login?session_error=true');
 
 const appConfig = useAppConfig();
@@ -30,6 +30,7 @@ userBitaPlace.value = useRoute().params.placeId
   ? userBitaPlaces.value.find(c => c.id === useRoute().params.placeId)
   : userBitaPlaces.value[0];
 
+await refreshSession();
 const userMenuFormatted = computed(() => {
   return [
     {
