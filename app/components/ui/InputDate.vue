@@ -70,7 +70,6 @@ const formattedDate = computed(() => {
 });
 
 const isformattedDateValid = computed(() => {
-  // const date = DateTime.fromFormat(_value.value, 'yyyy-MM-dd', { locale: 'es' });
   const date = DateTime.fromFormat(_value.value, 'yyyy-MM-dd');
   return date.isValid;
 });

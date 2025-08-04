@@ -40,6 +40,25 @@ export const bitacora_visits_query_schema = z.object({
 })
 export type bitacora_visits_query = z.infer<typeof bitacora_visits_query_schema>;
 
+export const bitacora_visits_report_query_schema = z.object({
+  page: z.coerce.number().optional().refine(p => !p || p > 0, 'Página debe ser mayor a 0'),
+  start: z.string(),
+  end: z.string(),
+})
+  .refine(
+    val => ((val.start && DateTime.fromFormat(val.start, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
+    { message: `Fecha de inicio debe tener un formato correcto`, path: ['start'] },
+  )
+  .refine(
+    val => ((val.end && DateTime.fromFormat(val.end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }).isValid)),
+    { message: `Fecha de corte debe tener un formato correcto`, path: ['end'] },
+  )
+  .refine(
+    val => ((val.start && val.end && DateTime.fromFormat(val.end, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }) > DateTime.fromFormat(val.start, 'yyyy-MM-dd HH:mm:ssZZ', { zone: 'UTC' }))),
+    { message: `Fecha de corte debe ser mayor a fecha de inicio`, path: ['end'] },
+  )
+export type bitacora_visits_report_query = z.infer<typeof bitacora_visits_report_query_schema>;
+
 export const bitacora_visits_schema = z.object(
   {
     id: z.string().default(''),
