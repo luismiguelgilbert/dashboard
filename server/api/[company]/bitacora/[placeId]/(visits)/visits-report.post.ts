@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     await hasCompanies(event, [companyId]);
 
     // QUERIES
-    const pageSize = 25;
+    const pageSize = 100;
     const serverDB = useDatabase();
     const userDataQuery = await serverDB.prepare(`
       select
