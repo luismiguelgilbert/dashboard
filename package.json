@@ -16,8 +16,8 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.59",
-    "@iconify-json/simple-icons": "^1.2.45",
+    "@iconify-json/lucide": "^1.2.62",
+    "@iconify-json/simple-icons": "^1.2.47",
     "@internationalized/date": "^3.8.2",
     "@nuxt/ui-pro": "^3.3.0",
     "@pinia/nuxt": "^0.11.2",
@@ -36,13 +36,13 @@
     "jspdf": "^2.5.2",
     "luxon": "3.6.0",
     "maska": "^3.2.0",
-    "nuxt": "^4.0.2",
-    "nuxt-auth-utils": "^0.5.22",
+    "nuxt": "^4.0.3",
+    "nuxt-auth-utils": "^0.5.23",
     "performant-array-to-tree": "^1.11.0",
     "pg": "^8.16.3",
     "pg-native": "^3.5.2",
     "vue": "latest",
-    "zod": "^4.0.14"
+    "zod": "^4.0.17"
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.43",
@@ -50,7 +50,7 @@
     "@types/luxon": "3.4.2",
     "@types/pg": "^8.15.5",
     "npm": "^11.5.2",
-    "oxlint": "^1.9.0",
+    "oxlint": "^1.11.2",
     "typescript": "^5.9.2",
     "vue-tsc": "^2.2.12"
   },
