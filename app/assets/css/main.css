@@ -1,5 +1,6 @@
 @import "tailwindcss" theme(static);
-@import "@nuxt/ui-pro";
+/* @import "@nuxt/ui-pro"; */
+@import "@nuxt/ui";
 
 @media (max-width: 640px) {
   html {

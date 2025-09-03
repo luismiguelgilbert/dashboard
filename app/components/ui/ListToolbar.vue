@@ -20,7 +20,7 @@ const isOpen = ref<boolean>(false);
 </script>
 
 <template>
-  <UButtonGroup size="sm">
+  <UFieldGroup size="sm">
     <UButton
       v-if="!hideButtonNew"
       class="cursor-pointer"
@@ -78,7 +78,7 @@ const isOpen = ref<boolean>(false);
               v-model="search"
               size="xl"
               placeholder="Buscar..."
-              @update:model-value="val => push({ query: { ...currentRoute.query, search: val || undefined } })" />
+              @update:model-value="(val: string) => push({ query: { ...currentRoute.query, search: val || undefined } })" />
           </UFormField>
           <UButton
             class="cursor-pointer !rounded-md"
@@ -109,7 +109,7 @@ const isOpen = ref<boolean>(false);
                   { id: 'asc', label: 'Ascendente   ⬇️' },
                   { id: 'desc', label: 'Descendente ⬆️' }
                 ]"
-                @update:model-value="val => push({ query: { ...currentRoute.query, order: val || undefined } })" />
+                @update:model-value="(val: string) => push({ query: { ...currentRoute.query, order: val || undefined } })" />
             </UFormField>
             <UFormField label="Campo:" size="xl">
               <USelectMenu
@@ -119,7 +119,7 @@ const isOpen = ref<boolean>(false);
                 class="w-full"
                 :search-input="false"
                 :items="props.sortItems"
-                @update:model-value="val => push({ query: { ...currentRoute.query, sort: val || undefined } })" />
+                @update:model-value="(val: string) => push({ query: { ...currentRoute.query, sort: val || undefined } })" />
             </UFormField>
           </UPageCard>
 
@@ -132,5 +132,5 @@ const isOpen = ref<boolean>(false);
         </div>
       </template>
     </UDrawer>
-  </UButtonGroup>
+  </UFieldGroup>
 </template>

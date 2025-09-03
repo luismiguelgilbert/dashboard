@@ -23,7 +23,7 @@ const queryParams = useRoute().query;
           method="post">
           <div class="grid gap-2">
             <UFormField label="Email" name="email" size="xl">
-              <UButtonGroup class="w-full">
+              <UFieldGroup class="w-full">
                 <UButton
                   color="neutral"
                   variant="subtle"
@@ -34,13 +34,16 @@ const queryParams = useRoute().query;
                   placeholder="Ingrese su dirección de correo"
                   class="w-full"
                   size="xl" />
-              </UButtonGroup>
+              </UFieldGroup>
             </UFormField>
           </div>
           <div class="grid gap-2">
             <UFormField label="Password" name="password">
-              <UButtonGroup class="w-full">
-                <UButton variant="subtle" icon="i-lucide-rectangle-ellipsis" />
+              <UFieldGroup class="w-full">
+                <UButton
+                  color="neutral"
+                  variant="subtle"
+                  icon="i-lucide-rectangle-ellipsis" />
                 <UInput
                   autofocus
                   required
@@ -48,7 +51,7 @@ const queryParams = useRoute().query;
                   class="w-full"
                   size="xl"
                   type="password" />
-              </UButtonGroup>
+              </UFieldGroup>
             </UFormField>
           </div>
 

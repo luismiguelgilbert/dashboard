@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { vInfiniteScroll } from '@vueuse/components';
+import type { bitacora_places } from '@@/shared/types/bitacora_places';
 
-const emits = defineEmits(['row-clicked']);
+const emits = defineEmits<{'row-clicked': [row: bitacora_places]}>();
 const { currentRoute } = useRouter();
 const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraPlacesQueries();
 

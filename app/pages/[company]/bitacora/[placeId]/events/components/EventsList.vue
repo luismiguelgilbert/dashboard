@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon';
 import { vInfiniteScroll } from '@vueuse/components';
+import type { bitacora_events } from '@@/shared/types/bitacora_events';
 
-const emits = defineEmits(['row-clicked']);
+const emits = defineEmits<{'row-clicked': [row: bitacora_events]}>();
 const { currentRoute } = useRouter();
 const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraEventsQueries();
 

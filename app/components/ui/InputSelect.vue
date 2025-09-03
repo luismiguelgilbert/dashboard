@@ -12,7 +12,7 @@ defineExpose({ closeDrawer });
 </script>
 
 <template>
-  <UButtonGroup class="w-full">
+  <UFieldGroup class="w-full">
     <slot name="selectMenu" />
     <UButton
       color="neutral"
@@ -22,7 +22,7 @@ defineExpose({ closeDrawer });
       size="lg"
       :disabled="props.disabled"
       @click="open = true" />
-  </UButtonGroup>
+  </UFieldGroup>
   <UDrawer
     v-model:open="open"
     direction="right">

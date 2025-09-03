@@ -82,7 +82,7 @@ watch(_value, () => {
 </script>
 
 <template>
-  <UButtonGroup
+  <UFieldGroup
     class="w-full">
     <UInput
       v-model="_value"
@@ -96,5 +96,5 @@ watch(_value, () => {
       :label="formattedDate"
       :color="isformattedDateValid ? 'neutral' : 'error'"
       variant="subtle" />
-  </UButtonGroup>
+  </UFieldGroup>
 </template>

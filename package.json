@@ -19,7 +19,7 @@
     "@iconify-json/lucide": "^1.2.66",
     "@iconify-json/simple-icons": "^1.2.50",
     "@internationalized/date": "^3.9.0",
-    "@nuxt/ui-pro": "^3.3.3",
+    "@nuxt/ui": "4.0.0-alpha.1",
     "@pinia/nuxt": "^0.11.2",
     "@supabase/supabase-js": "2.49.1",
     "@tanstack/vue-query": "^5.85.9",

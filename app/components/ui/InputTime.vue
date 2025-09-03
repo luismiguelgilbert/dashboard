@@ -35,7 +35,7 @@ watch(_value, () => {
 </script>
 
 <template>
-  <UButtonGroup class="w-full">
+  <UFieldGroup class="w-full">
     <UInput
       v-model="_value"
       v-maska="options"
@@ -49,5 +49,5 @@ watch(_value, () => {
       icon="i-lucide-circle-check"
       :color="isformattedTimeValid ? 'neutral' : 'error'"
       variant="subtle" />
-  </UButtonGroup>
+  </UFieldGroup>
 </template>

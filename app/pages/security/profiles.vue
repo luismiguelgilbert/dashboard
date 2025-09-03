@@ -2,6 +2,7 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import type { CheckboxGroupItem } from '@nuxt/ui';
+import type { sys_profiles } from '@@/shared/types/sys_profiles';
 
 const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
@@ -121,7 +122,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <ProfilesList @row-clicked="async (row) => await navigateTo({ name: 'security-profiles-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <ProfilesList @row-clicked="async (row: sys_profiles) => await navigateTo({ name: 'security-profiles-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

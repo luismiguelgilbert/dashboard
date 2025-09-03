@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useInfiniteQuery } from '@tanstack/vue-query';
+import { vInfiniteScroll } from '@vueuse/components';
+import type { bitacora_reasons } from '@@/shared/types/bitacora_reasons';
 
-const emits = defineEmits(['row-clicked']);
+const emits = defineEmits<{'row-clicked': [row: bitacora_reasons]}>();
 const { currentRoute } = useRouter();
 const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useBitacoraReasonsQueries();
 

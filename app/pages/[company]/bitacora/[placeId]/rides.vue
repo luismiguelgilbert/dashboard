@@ -124,7 +124,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <RidesList @row-clicked="async (row) => await navigateTo({ name: 'company-bitacora-placeId-rides-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <RidesList @row-clicked="async (row: bitacora_rides) => await navigateTo({ name: 'company-bitacora-placeId-rides-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

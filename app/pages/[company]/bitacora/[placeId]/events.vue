@@ -2,7 +2,7 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import type { CheckboxGroupItem } from '@nuxt/ui';
-
+import type { bitacora_events } from '@@/shared/types/bitacora_events';
 const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
 const userCompany = useState<sys_companies | undefined>('userCompany');
@@ -123,7 +123,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <EventsList @row-clicked="async (row) => await navigateTo({ name: 'company-bitacora-placeId-events-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <EventsList @row-clicked="async (row: bitacora_events) => await navigateTo({ name: 'company-bitacora-placeId-events-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

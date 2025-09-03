@@ -2,6 +2,7 @@
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import { useQueryClient } from '@tanstack/vue-query';
 import type { CheckboxGroupItem } from '@nuxt/ui';
+import type { sys_users } from '@@/shared/types/sys_users';
 
 const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
@@ -149,7 +150,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <UsersList @row-clicked="async (row) => await navigateTo({ name: 'security-users-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <UsersList @row-clicked="async (row: sys_users) => await navigateTo({ name: 'security-users-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

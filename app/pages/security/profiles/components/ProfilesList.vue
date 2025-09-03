@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { vInfiniteScroll } from '@vueuse/components';
+import type { sys_profiles } from '@@/shared/types/sys_profiles';
 
-const emits = defineEmits(['row-clicked']);
+const emits = defineEmits<{'row-clicked': [row: sys_profiles]}>();
 const { currentRoute } = useRouter();
 const { dataList, dataListError, dataListStale, dataListFetching, dataUpdatedAt, fetchNextPage, hasNextPage } = useSecurityProfilesQueries();
 

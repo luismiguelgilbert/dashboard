@@ -2,6 +2,7 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import { useBreakpoints, breakpointsTailwind } from '@vueuse/core';
 import type { CheckboxGroupItem } from '@nuxt/ui';
+import type { bitacora_visits } from '@@/shared/types/bitacora_visits';
 
 const { currentRoute, push } = useRouter();
 const queryClient = useQueryClient();
@@ -123,7 +124,7 @@ onBeforeMount(() => {
       </template>
     </UDashboardNavbar>
     <ClientOnly>
-      <VisitsList @row-clicked="async (row) => await navigateTo({ name: 'company-bitacora-placeId-visits-id', params: { id: row.id }, query: { ...useRoute().query } })" />
+      <VisitsList @row-clicked="async (row: bitacora_visits) => await navigateTo({ name: 'company-bitacora-placeId-visits-id', params: { id: row.id }, query: { ...useRoute().query } })" />
     </ClientOnly>
   </UDashboardPanel>
 

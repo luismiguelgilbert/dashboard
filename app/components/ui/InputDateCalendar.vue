@@ -88,7 +88,7 @@ watch(utcDate, (newValue) => model.value = newValue);
 
 <template>
   <div class="grid">
-    <UButtonGroup
+    <UFieldGroup
       class="w-full">
       <UInput
         v-model="inputDate"
@@ -126,7 +126,7 @@ watch(utcDate, (newValue) => model.value = newValue);
             :size="isMobile ? 'xs' : 'md'" />
         </template>
       </UPopover>
-    </UButtonGroup>
+    </UFieldGroup>
     <!-- <br>model: {{ model }}
     <br>inputDate: {{ inputDate }}
     <br>utcDate: {{ utcDate }}
