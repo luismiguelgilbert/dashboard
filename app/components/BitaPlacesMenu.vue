@@ -35,7 +35,7 @@ const userBitaPlacesFormatted = computed(() => {
 </script>
 
 <template>
-  <div class="border-b border-b-neutral-800 pb-2">
+  <div class="border-b border-b-neutral-200 dark:border-b-neutral-800 pb-2">
     <span v-if="!collapsed" class="text-dimmed text-sm pl-2">Punto de Control:</span>
     <UDropdownMenu
       :items="userBitaPlacesFormatted"
