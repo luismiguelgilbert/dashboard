@@ -43,7 +43,7 @@ const userMenuFormatted = computed(() => {
       .map(rootItem => ({
         ...rootItem,
         label: rootItem.name_es,
-        defaultOpen: false, // boolean to keep the root item open
+        defaultOpen: true, // boolean to keep the root item open
         children: userMenu.value.filter(x => x.parent === rootItem.id)
           .map(childItem => ({
             ...childItem,
@@ -85,10 +85,11 @@ const userMenuFormatted = computed(() => {
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"
-          :ui="{ link: 'text-md lg:text-xs' }"
-          popover
+          :ui="{ link: 'text-md lg:text-xs hover:before:bg-neutral-200 dark:hover:before:bg-neutral-700 data-active:before:bg-neutral-300 dark:data-active:before:bg-neutral-700' }"
+          variant="pill"
           :class="{ 'px-4': collapsed, 'px-2': !collapsed  }"
-          orientation="vertical" />
+          orientation="vertical"
+          popover />
       </template>
 
       <template #footer="{ collapsed }">
