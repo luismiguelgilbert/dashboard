@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { breakpointsTailwind } from '@vueuse/core';
 
-defineProps<{
+const { collapsed } = defineProps<{
   collapsed?: boolean
 }>()
 
@@ -36,15 +36,16 @@ const updateLocalStorage = (key: 'nuxt-color-tone-mode'|'nuxt-color-accent-mode'
     :direction="!isMobile ? 'left' : 'bottom'"
     :handle="true">
     <UButton
-      :label="user.name"
+      :label="collapsed ? undefined : user.name"
       :avatar="{
         src: user.avatar.src,
         alt: user.name || 'NA'
       }"
+      block
       color="neutral"
       variant="link"
       class="w-full h-full cursor-pointer rounded-none"
-      trailing-icon="i-lucide-chevron-up" />
+      :trailing-icon="collapsed ? undefined : 'i-lucide-chevron-up'" />
     <template #body>
       <UCard variant="subtle">
         <UUser
