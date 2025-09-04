@@ -81,11 +81,11 @@ const userMenuFormatted = computed(() => {
         <BitaPlacesMenu
           v-if="userBitaPlaces.length > 0"
           :collapsed="collapsed" />
-        <span v-if="!collapsed" class="text-dimmed text-sm pl-2">Aplicaciones:</span>
+        <span v-if="!collapsed" class="text-dimmed text-sm pl-2">Sistema:</span>
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"
-          :ui="{ link: 'text-md' }"
+          :ui="{ link: 'text-md lg:text-xs' }"
           popover
           :class="{ 'px-4': collapsed, 'px-2': !collapsed  }"
           orientation="vertical" />
