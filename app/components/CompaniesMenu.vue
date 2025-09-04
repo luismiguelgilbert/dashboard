@@ -46,6 +46,8 @@ const userCompaniesFormatted = computed(() => {
     :items="userCompaniesFormatted"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
+    <!-- class="data-[state=open]:bg-elevated cursor-pointer h-full" -->
+    <!-- :class="collapsed ? 'pl-3' : undefined" -->
     <UButton
       :label="userCompany?.name_es_short"
       :avatar="{
@@ -54,10 +56,9 @@ const userCompaniesFormatted = computed(() => {
       }"
       :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
       color="neutral"
-      variant="ghost"
+      variant="link"
       :square="collapsed"
-      class="data-[state=open]:bg-elevated cursor-pointer"
-      :class="collapsed ? 'pl-3' : undefined"
+      class="w-full h-full cursor-pointer rounded-none"
       block
       :ui="{
         trailingIcon: 'text-dimmed'

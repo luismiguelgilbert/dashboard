@@ -75,7 +75,8 @@ onBeforeMount(() => {
     :default-size="28"
     :min-size="25"
     :max-size="35"
-    resizable>
+    resizable
+    class="lg:ml-5 border-l border-l-neutral-200 dark:border-l-neutral-800">
     <UDashboardNavbar title="Visitas">
       <template #leading>
         <UDashboardSidebarCollapse class="cursor-pointer" />

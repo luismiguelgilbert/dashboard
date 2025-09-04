@@ -24,7 +24,7 @@ const { data, error, pending } = await useFetch(`/api/${userCompany.value?.id}/b
 </script>
 
 <template>
-  <UDashboardPanel id="bita-visits-report" >
+  <UDashboardPanel id="bita-visits-report" class="lg:ml-5 border-l border-l-neutral-200 dark:border-l-neutral-800">
     <UDashboardNavbar title="Reporte de Visitas">
       <template #leading>
         <UDashboardSidebarCollapse class="cursor-pointer" />

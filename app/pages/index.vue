@@ -11,7 +11,7 @@ const tabs = ref<TabsItem[]>([
 </script>
 
 <template>
-  <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }">
+  <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }" class="lg:ml-5 border-l border-l-neutral-200 dark:border-l-neutral-800">
     <template #header>
       <UDashboardNavbar title="Mi configuración">
         <template #leading>

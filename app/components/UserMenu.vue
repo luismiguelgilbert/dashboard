@@ -42,7 +42,7 @@ const updateLocalStorage = (key: 'nuxt-color-tone-mode'|'nuxt-color-accent-mode'
         alt: user.name || 'NA'
       }"
       color="neutral"
-      variant="ghost"
+      variant="link"
       class="w-full h-full cursor-pointer rounded-none"
       trailing-icon="i-lucide-chevron-up" />
     <template #body>

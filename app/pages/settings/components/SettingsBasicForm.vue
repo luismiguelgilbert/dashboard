@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import imageCompression from 'browser-image-compression';
 import type { FormSubmitEvent } from '@nuxt/ui';
+import type { container } from '#build/ui';
 
 const userSession = await useUserSession();
 const isProcessing = ref(false);
@@ -109,13 +110,13 @@ const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
         :disabled="isProcessing" />
     </UPageCard>
 
-    <UPageCard variant="subtle">
+    <UPageCard variant="subtle" :ui="{ container: 'relative flex flex-col flex-1 lg:grid gap-x-8 gap-y-4 sm:p-6 px-0' }">
       <UFormField
         name="user_name"
         label="Nombres"
         description="Aparece en reportes y notificaciones del sistema."
         required
-        class="flex max-sm:flex-col justify-between items-start gap-4">
+        class="flex max-sm:flex-col justify-between items-start gap-4 pl-2">
         <UInput
           v-model="profile.user_name"
           class="min-w-64"
@@ -128,7 +129,7 @@ const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
         label="Apellidos"
         description="Aparece en reportes y notificaciones del sistema."
         required
-        class="flex max-sm:flex-col justify-between items-start gap-4">
+        class="flex max-sm:flex-col justify-between items-start gap-4 pl-2">
         <UInput
           v-model="profile.user_lastname"
           class="min-w-64"
@@ -141,7 +142,7 @@ const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
         label="Email"
         description="Usado al iniciar sesión."
         required
-        class="flex max-sm:flex-col justify-between items-start gap-4">
+        class="flex max-sm:flex-col justify-between items-start gap-4 pl-2">
         <UInput
           v-model="profile.email"
           class="min-w-64"
@@ -155,7 +156,7 @@ const onSubmit = async (event: FormSubmitEvent<ProfileSchema>) => {
         name="avatar"
         label="Avatar"
         description="JPG, GIF or PNG. 1MB Max."
-        class="flex max-sm:flex-col justify-between sm:items-center gap-4">
+        class="flex max-sm:flex-col justify-between items-start gap-4 pl-2">
         <div class="flex flex-wrap items-center gap-3">
           <UAvatar
             :src="profile.avatar"

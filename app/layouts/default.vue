@@ -67,10 +67,11 @@ const userMenuFormatted = computed(() => {
       v-model:open="open"
       collapsible
       resizable
-      class="bg-neutral-100 dark:bg-neutral-800/30"
+      class="bg-neutral-100 dark:bg-neutral-800/30 mt-2 ml-2 mb-2 rounded-2xl min-h-min border shadow-xl"
       :ui="{
-        header: 'h-(--ui-header-height) shrink-0 flex items-center gap-1.5 px-4 pt-safe',
-        footer: 'lg:border-t lg:border-default h-15 p-0'
+        header: 'h-(--ui-header-height) shrink-0 flex items-center gap-1.5 px-0 pt-safe border-b border-b-neutral-200 dark:border-b-neutral-800',
+        footer: 'lg:border-t lg:border-default h-15 p-0',
+        body: 'flex flex-col gap-4 flex-1 overflow-y-auto px-1.5 py-2',
       }">
       <template #header="{ collapsed }">
         <CompaniesMenu :collapsed="collapsed" />

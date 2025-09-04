@@ -63,7 +63,10 @@
       "esbuild",
       "maplibre-gl",
       "vue-demi"
-    ]
+    ],
+    "overrides": {
+      "vite": "npm:rolldown-vite@latest"
+    }
   },
   "packageManager": "pnpm@10.14.0"
 }

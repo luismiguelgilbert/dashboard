@@ -49,7 +49,7 @@ const updateCompany = async (company: sys_companies) => {
       <div
         v-for="company in userCompanies"
         :key="company.id"
-        class="border-b border-default p-2 mx-6 flex items-center gap-4 hover:bg-default/10">
+        class="border-b border-default p-2 sm:mx-6 sm:flex grid items-center gap-4 hover:bg-default/10">
         <UUser
           class="w-full p-2  border-b-neutral-200 dark:boder-b-neutral-600 hover:bg-default/10"
           :name="company.name_es_short"
