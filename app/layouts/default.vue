@@ -71,7 +71,7 @@ const userMenuFormatted = computed(() => {
       :ui="{
         header: 'h-(--ui-header-height) shrink-0 flex items-center gap-1.5 px-0 pt-safe border-b border-b-neutral-200 dark:border-b-neutral-800',
         footer: 'lg:border-t lg:border-default h-15 p-0',
-        body: 'flex flex-col gap-4 flex-1 overflow-y-auto px-1.5 py-2',
+        body: 'flex flex-col flex-1 overflow-y-auto p-0 py-2 gap-1.5',
       }">
       <template #header="{ collapsed }">
         <CompaniesMenu :collapsed="collapsed" />
@@ -81,11 +81,13 @@ const userMenuFormatted = computed(() => {
         <BitaPlacesMenu
           v-if="userBitaPlaces.length > 0"
           :collapsed="collapsed" />
+        <span v-if="!collapsed" class="text-dimmed text-sm pl-2">Aplicaciones:</span>
         <UNavigationMenu
           :collapsed="collapsed"
           :items="userMenuFormatted"
           :ui="{ link: 'text-md' }"
           popover
+          :class="{ 'px-4': collapsed, 'px-2': !collapsed  }"
           orientation="vertical" />
       </template>
 

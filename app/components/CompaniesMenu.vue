@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const { collapsed } = defineProps<{
   collapsed?: boolean
 }>()
 
@@ -46,10 +46,8 @@ const userCompaniesFormatted = computed(() => {
     :items="userCompaniesFormatted"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
-    <!-- class="data-[state=open]:bg-elevated cursor-pointer h-full" -->
-    <!-- :class="collapsed ? 'pl-3' : undefined" -->
     <UButton
-      :label="userCompany?.name_es_short"
+      :label="collapsed ? undefined : userCompany?.name_es_short"
       :avatar="{
         src: userCompany?.avatar_url ?? undefined,
         alt: userCompany?.name_es_short

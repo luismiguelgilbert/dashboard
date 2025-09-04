@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const { collapsed } = defineProps<{
   collapsed?: boolean
 }>()
 
@@ -35,31 +35,27 @@ const userBitaPlacesFormatted = computed(() => {
 </script>
 
 <template>
-  <UFormField
-    v-if="userBitaPlacesFormatted[0]?.length && userBitaPlacesFormatted[0]?.length > 0"
-    size="sm"
-    :ui="{ description: 'pl-3' }"
-    :description="collapsed ? undefined : 'Punto de Control:'">
+  <div class="border-b border-b-neutral-800 pb-2">
+    <span v-if="!collapsed" class="text-dimmed text-sm pl-2">Punto de Control:</span>
     <UDropdownMenu
       :items="userBitaPlacesFormatted"
       :content="{ align: 'center', collisionPadding: 12 }"
       :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }">
       <UButton
-        :label="userBitaPlace?.name_es_short"
+        :label="collapsed ? undefined : userBitaPlace?.name_es_short"
         :avatar="{
           src: userBitaPlace?.avatar_url ?? undefined,
           alt: userBitaPlace?.name_es_short
         }"
         :trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
         color="neutral"
-        variant="ghost"
+        variant="link"
         :square="collapsed"
-        class="data-[state=open]:bg-elevated cursor-pointer"
-        :class="collapsed ? 'pl-3' : undefined"
+        class="w-full cursor-pointer rounded-none"
         block
         :ui="{
           trailingIcon: 'text-dimmed'
         }" />
     </UDropdownMenu>
-  </UFormField>
+  </div>
 </template>
